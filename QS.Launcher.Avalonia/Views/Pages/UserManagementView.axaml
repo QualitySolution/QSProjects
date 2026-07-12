@@ -104,16 +104,28 @@
                         <ItemsControl ItemsSource="{Binding BaseAccesses}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate x:DataType="vm:BaseAccessRowVM">
-                                    <Grid Margin="5,2" ColumnDefinitions="*,52,52,52">
-                                        <TextBlock Grid.Column="0" VerticalAlignment="Center"
-                                                   TextTrimming="CharacterEllipsis" Text="{Binding Title}" />
-                                        <CheckBox Grid.Column="1" MinWidth="0" Padding="0" HorizontalAlignment="Center"
-                                                  IsChecked="{Binding HasAccess}" IsEnabled="{Binding CanEdit}" />
-                                        <CheckBox Grid.Column="2" MinWidth="0" Padding="0" HorizontalAlignment="Center"
-                                                  IsChecked="{Binding IsAdmin}" IsEnabled="{Binding CanEdit}" />
-                                        <CheckBox Grid.Column="3" MinWidth="0" Padding="0" HorizontalAlignment="Center"
-                                                  IsChecked="{Binding ReadOnly}" IsVisible="{Binding ShowReadOnly}" IsEnabled="{Binding CanEdit}" />
-                                    </Grid>
+                                    <StackPanel Margin="5,2">
+                                        <Grid ColumnDefinitions="*,52,52,52">
+                                            <TextBlock Grid.Column="0" VerticalAlignment="Center"
+                                                       TextTrimming="CharacterEllipsis" Text="{Binding Title}" />
+                                            <CheckBox Grid.Column="1" MinWidth="0" Padding="0" HorizontalAlignment="Center"
+                                                      IsChecked="{Binding HasAccess}" IsEnabled="{Binding CanEdit}" />
+                                            <CheckBox Grid.Column="2" MinWidth="0" Padding="0" HorizontalAlignment="Center"
+                                                      IsChecked="{Binding IsAdmin}" IsEnabled="{Binding CanEdit}" />
+                                            <CheckBox Grid.Column="3" MinWidth="0" Padding="0" HorizontalAlignment="Center"
+                                                      IsChecked="{Binding ReadOnly}" IsVisible="{Binding ShowReadOnly}" IsEnabled="{Binding CanEdit}" />
+                                        </Grid>
+                                        <!-- Прикладные права в таблице users базы - видны, когда доступ выдан -->
+                                        <StackPanel Orientation="Horizontal" Margin="12,0,0,2"
+                                                    IsVisible="{Binding AppPermissionsVisible}">
+                                            <CheckBox MinWidth="0" FontSize="12" Content="удаление"
+                                                      IsChecked="{Binding CanDelete}" IsEnabled="{Binding CanEdit}" />
+                                            <CheckBox MinWidth="0" Margin="10,0,0,0" FontSize="12" Content="настройки учёта"
+                                                      IsChecked="{Binding CanAccountingSettings}" IsEnabled="{Binding CanEdit}" />
+                                            <CheckBox MinWidth="0" Margin="10,0,0,0" FontSize="12" Content="дата документа"
+                                                      IsChecked="{Binding CanChangeDocumentDate}" IsEnabled="{Binding CanEdit}" />
+                                        </StackPanel>
+                                    </StackPanel>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>

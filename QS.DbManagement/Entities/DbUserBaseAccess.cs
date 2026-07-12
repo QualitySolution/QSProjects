@@ -16,5 +16,9 @@ namespace QS.DbManagement.Entities {
 		public bool CanEdit { get; set; } = true;
 		public string Name { get; set; }
 		public string Email { get; set; }
+
+		public bool CanDelete { get; set; } = true;
+		public bool CanAccountingSettings { get; set; } = true;
+		public bool CanChangeDocumentDate { get; set; } = true;
 	}
 }

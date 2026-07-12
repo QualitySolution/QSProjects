@@ -32,6 +32,7 @@ namespace QS.DbManagement.Entities {
 		AdminFlag = 32,
 		/// <summary>Возможность отключать пользователя</summary>
 		Disabling = 64,
-		BaseReadOnly = 128
+		BaseReadOnly = 128,
+		BaseAppPermissions = 256
 	}
 }
