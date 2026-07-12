@@ -75,6 +75,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			this.RaisePropertyChanged(nameof(ShowAdminFlag));
 			this.RaisePropertyChanged(nameof(ShowDisabling));
 			this.RaisePropertyChanged(nameof(ShowReadOnly));
+			this.RaisePropertyChanged(nameof(ShowAppPermissions));
 
 			RefreshUsers();
 		}
@@ -130,6 +131,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		public bool ShowAdminFlag => (provider?.SupportedUserFields.HasFlag(DbUserFields.AdminFlag)) == true;
 		public bool ShowDisabling => (provider?.SupportedUserFields.HasFlag(DbUserFields.Disabling)) == true;
 		public bool ShowReadOnly => (provider?.SupportedUserFields.HasFlag(DbUserFields.BaseReadOnly)) == true;
+		public bool ShowAppPermissions => (provider?.SupportedUserFields.HasFlag(DbUserFields.BaseAppPermissions)) == true;
 
 		public ObservableCollection<DbUserInfo> Users { get; }
 
@@ -351,7 +353,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			try {
 				var rows = provider.GetUserBaseAccess(login, applicationInfo);
 				foreach(var row in rows)
-					BaseAccesses.Add(new BaseAccessRowVM(row, ShowReadOnly));
+					BaseAccesses.Add(new BaseAccessRowVM(row, ShowReadOnly, ShowAppPermissions));
 
 				var profile = rows.FirstOrDefault(r => !string.IsNullOrEmpty(r.Name) || !string.IsNullOrEmpty(r.Email));
 				if(profile != null) {
