@@ -217,6 +217,8 @@ namespace QS.DbManagement
 			dumpService.Export(ConnectionStringBuilder.ConnectionString, database.BaseName, filePath, progress, cancellation);
 		}
 
+		#endregion
+
 		#region Управление пользователями
 
 		public DbUserFields SupportedUserFields =>
@@ -264,7 +266,7 @@ namespace QS.DbManagement
 			var rows = connection.Query<MySqlUserRow>(
 				$"SELECT User AS Login, Host, {lockedColumn} AS AccountLocked, " +
 				"Super_priv AS SuperPriv, Create_user_priv AS CreateUserPriv " +
-				"FROM mysql.user ORDER BY User, Host").ToList();
+				"FROM mysql.user").ToList();
 
 			userHosts.Clear();
 			var result = new List<DbUserInfo>();
@@ -277,10 +279,8 @@ namespace QS.DbManagement
 				userHosts[userRows.Key] = userRows.Select(r => string.IsNullOrEmpty(r.Host) ? "%" : r.Host).ToList();
 				result.Add(new DbUserInfo {
 					Login = userRows.Key,
-					// отключён, только если заблокированы все хосты логина
 					Disabled = userRows.All(r => string.Equals(r.AccountLocked, "Y", StringComparison.OrdinalIgnoreCase)),
-					// админ, если хоть на одном хосте есть SUPER или CREATE USER
-					IsAdmin = userRows.Any(r => string.Equals(r.SuperPriv, "Y", StringComparison.OrdinalIgnoreCase)
+					IsAdmin = userRows.All(r => string.Equals(r.SuperPriv, "Y", StringComparison.OrdinalIgnoreCase)
 						|| string.Equals(r.CreateUserPriv, "Y", StringComparison.OrdinalIgnoreCase)),
 					IsCurrentUser = string.Equals(userRows.Key, UserName, StringComparison.OrdinalIgnoreCase)
 				});
@@ -369,7 +369,7 @@ namespace QS.DbManagement
 						var scope = GrantScope(g);
 						if(scope == null)
 							return false;
-						// шаблонные гранты вида не разворачиваем
+						// шаблонные гранты не разворачиваем
 						return scope == "*" || string.Equals(UnescapeGrantPattern(scope), db.BaseName, StringComparison.OrdinalIgnoreCase);
 					})
 					.SelectMany(GrantPrivileges)
@@ -634,6 +634,5 @@ namespace QS.DbManagement
 		public void Dispose() {
 			connection?.Dispose();
 		}
-		#endregion
 	}
 }
