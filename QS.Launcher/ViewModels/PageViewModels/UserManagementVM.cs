@@ -3,7 +3,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
+using DynamicData;
 using QS.DbManagement;
 using QS.DbManagement.Entities;
 using QS.Dialog;
@@ -138,7 +140,10 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		private DbUserInfo selectedUser;
 		public DbUserInfo SelectedUser {
 			get => selectedUser;
-			set => this.RaiseAndSetIfChanged(ref selectedUser, value);
+			set
+			{
+				this.RaiseAndSetIfChanged(ref selectedUser, value);
+			}
 		}
 
 		public bool HasSelectedUser => SelectedUser != null;
@@ -203,6 +208,8 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 				Disabled = EditDisabled,
 				IsAdmin = EditIsAdmin
 			};
+			user.DirtyFields = editedDirtyFields;
+
 			bool creating = IsNewUser;
 			string password = EditNewPassword;
 
@@ -253,6 +260,8 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 
 		#region Редактируемые поля пользователя
 
+		DbUserFields editedDirtyFields = DbUserFields.None;
+
 		private bool isNewUser;
 		public bool IsNewUser {
 			get => isNewUser;
@@ -262,49 +271,73 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		private string editLogin;
 		public string EditLogin {
 			get => editLogin;
-			set => this.RaiseAndSetIfChanged(ref editLogin, value);
+			set
+			{
+				this.RaiseAndSetIfChanged(ref editLogin, value);
+			}
 		}
 
 		private string editName;
 		public string EditName {
 			get => editName;
-			set => this.RaiseAndSetIfChanged(ref editName, value);
+			set {
+				editedDirtyFields |= DbUserFields.Name;
+				this.RaiseAndSetIfChanged(ref editName, value);
+			}
 		}
 
 		private string editEmail;
 		public string EditEmail {
 			get => editEmail;
-			set => this.RaiseAndSetIfChanged(ref editEmail, value);
+			set {
+				editedDirtyFields |= DbUserFields.Email;
+				this.RaiseAndSetIfChanged(ref editEmail, value);
+			}
 		}
 
 		private string editPhone;
 		public string EditPhone {
 			get => editPhone;
-			set => this.RaiseAndSetIfChanged(ref editPhone, value);
+			set {
+				editedDirtyFields |= DbUserFields.Phone;
+				this.RaiseAndSetIfChanged(ref editPhone, value);
+			}
 		}
 
 		private string editPost;
 		public string EditPost {
 			get => editPost;
-			set => this.RaiseAndSetIfChanged(ref editPost, value);
+			set {
+				editedDirtyFields |= DbUserFields.Post;
+				this.RaiseAndSetIfChanged(ref editPost, value);
+			}
 		}
 
 		private string editComment;
 		public string EditComment {
 			get => editComment;
-			set => this.RaiseAndSetIfChanged(ref editComment, value);
+			set {
+				editedDirtyFields |= DbUserFields.Comment;
+				this.RaiseAndSetIfChanged(ref editComment, value);
+			}
 		}
 
 		private bool editDisabled;
 		public bool EditDisabled {
 			get => editDisabled;
-			set => this.RaiseAndSetIfChanged(ref editDisabled, value);
+			set {
+				editedDirtyFields |= DbUserFields.Disabling;
+				this.RaiseAndSetIfChanged(ref editDisabled, value);
+			}
 		}
 
 		private bool editIsAdmin;
 		public bool EditIsAdmin {
 			get => editIsAdmin;
-			set => this.RaiseAndSetIfChanged(ref editIsAdmin, value);
+			set {
+				editedDirtyFields |= DbUserFields.AdminFlag;
+				this.RaiseAndSetIfChanged(ref editIsAdmin, value);
+			}
 		}
 
 		private string editNewPassword;
@@ -323,6 +356,8 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			EditDisabled = user.Disabled;
 			EditIsAdmin = user.IsAdmin;
 			EditNewPassword = null;
+
+			editedDirtyFields = DbUserFields.None;
 		}
 
 		private void ClearEditBuffer() {

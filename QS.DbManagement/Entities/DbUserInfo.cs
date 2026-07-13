@@ -16,11 +16,11 @@ namespace QS.DbManagement.Entities {
 		public bool IsAdmin { get; set; }
 		/// <summary>текущий пользователь подключения</summary>
 		public bool IsCurrentUser { get; set; }
+
+		/// <summary>затронутые поля изменениями с вьюхи</summary>
+		public DbUserFields DirtyFields { get; set; } = DbUserFields.None;
 	}
 
-	/// <summary>
-	/// Какие поля <see cref="DbUserInfo"/> и виды доступа поддерживает конкретный провайдер
-	/// </summary>
 	[Flags]
 	public enum DbUserFields {
 		None = 0,
@@ -30,7 +30,6 @@ namespace QS.DbManagement.Entities {
 		Post = 8,
 		Comment = 16,
 		AdminFlag = 32,
-		/// <summary>Возможность отключать пользователя</summary>
 		Disabling = 64,
 		BaseReadOnly = 128,
 		BaseAppPermissions = 256

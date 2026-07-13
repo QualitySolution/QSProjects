@@ -314,7 +314,7 @@ namespace QS.DbManagement
 			var options = new List<string>();
 			if(!string.IsNullOrEmpty(newPassword))
 				options.Add($"IDENTIFIED BY '{EscapeString(newPassword)}'");
-			if(SupportsAccountLock)
+			if(SupportsAccountLock && user.DirtyFields.HasFlag(DbUserFields.Disabling))
 				options.Add(user.Disabled ? "ACCOUNT LOCK" : "ACCOUNT UNLOCK");
 			string suffix = string.Join(" ", options);
 
@@ -324,7 +324,7 @@ namespace QS.DbManagement
 				string account = $"'{EscapeString(user.Login)}'@'{EscapeString(host)}'";
 				if(options.Count > 0)
 					statements.Add($"ALTER USER {account} {suffix}");
-				if(SupportsAdminFlag)
+				if(SupportsAdminFlag && user.DirtyFields.HasFlag(DbUserFields.AdminFlag))
 					statements.Add(user.IsAdmin
 						? $"GRANT ALL PRIVILEGES ON *.* TO {account} WITH GRANT OPTION"
 						: $"REVOKE ALL PRIVILEGES, GRANT OPTION ON *.* FROM {account}");
@@ -474,39 +474,46 @@ namespace QS.DbManagement
 
 		// если таблицы может не быть, тогда молча пропускаем; запись идемпотентна
 		private void SyncUsersTable(string login, DbUserBaseAccess access) {
-			bool tableExists = connection.ExecuteScalar<bool>(
-				"SELECT COUNT(*) > 0 FROM information_schema.tables WHERE table_schema = @db AND table_name = 'users'",
-				new { db = access.BaseName });
-			if(!tableExists)
-				return;
+			try {
+				bool tableExists = connection.ExecuteScalar<bool>(
+					"SELECT COUNT(*) > 0 FROM information_schema.tables WHERE table_schema = @db AND table_name = 'users'",
+					new { db = access.BaseName });
+				if(!tableExists)
+					return;
 
-			string table = $"`{EscapeIdentifier(access.BaseName)}`.users";
+				string table = $"`{EscapeIdentifier(access.BaseName)}`.users";
 
-			if(!access.HasAccess) {
-				connection.Execute($"UPDATE {table} SET deactivated = TRUE WHERE login = @login", new { login });
-				return;
+				if(!access.HasAccess) {
+					connection.Execute($"UPDATE {table} SET deactivated = TRUE WHERE login = @login", new { login });
+					return;
+				}
+
+				var p = new {
+					login,
+					name = access.Name,
+					email = access.Email,
+					admin = access.IsAdmin,
+					canDelete = access.CanDelete,
+					canAccounting = access.CanAccountingSettings,
+					canDocDate = access.CanChangeDocumentDate
+				};
+				var existingId = connection.QueryFirstOrDefault<int?>($"SELECT id FROM {table} WHERE login = @login", new { login });
+				if(existingId != null)
+					// пустые поля формы не затирают уже заполненное приложением значение (COALESCE/NULLIF)
+					connection.Execute($"UPDATE {table} SET name = COALESCE(NULLIF(@name, ''), name), " +
+						"email = COALESCE(NULLIF(@email, ''), email), admin = @admin, " +
+						"can_delete = @canDelete, can_accounting_settings = @canAccounting, can_change_document_date = @canDocDate, " +
+						"deactivated = FALSE WHERE login = @login", p);
+				else
+					connection.Execute($"INSERT INTO {table} " +
+						"(name, login, email, admin, can_delete, can_accounting_settings, can_change_document_date, deactivated) " +
+						"VALUES (COALESCE(NULLIF(@name, ''), @login), @login, NULLIF(@email, ''), @admin, @canDelete, @canAccounting, @canDocDate, FALSE)", p);
 			}
+			catch(MySqlException ex) {
+				logger.Debug(ex, "Не удалось синхронизировать users в базе {0} для пользователя {1}", access.BaseName, login);
+			}
+		}
 
-			var p = new {
-				login,
-				name = access.Name,
-				email = access.Email,
-				admin = access.IsAdmin,
-				canDelete = access.CanDelete,
-				canAccounting = access.CanAccountingSettings,
-				canDocDate = access.CanChangeDocumentDate
-			};
-			var existingId = connection.QueryFirstOrDefault<int?>($"SELECT id FROM {table} WHERE login = @login", new { login });
-			if(existingId != null)
-				// пустые поля формы не затирают уже заполненное приложением значение (COALESCE/NULLIF)
-				connection.Execute($"UPDATE {table} SET name = COALESCE(NULLIF(@name, ''), name), " +
-					"email = COALESCE(NULLIF(@email, ''), email), admin = @admin, " +
-					"can_delete = @canDelete, can_accounting_settings = @canAccounting, can_change_document_date = @canDocDate, " +
-					"deactivated = FALSE WHERE login = @login", p);
-			else
-				connection.Execute($"INSERT INTO {table} " +
-					"(name, login, email, admin, can_delete, can_accounting_settings, can_change_document_date, deactivated) " +
-					"VALUES (COALESCE(NULLIF(@name, ''), @login), @login, NULLIF(@email, ''), @admin, @canDelete, @canAccounting, @canDocDate, FALSE)", p);
 		}
 
 		private Dictionary<string, List<string>> ReadGrantsByHost(string login) {
