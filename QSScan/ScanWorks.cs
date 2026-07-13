@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Collections.Generic;
 using Gdk;
@@ -21,6 +22,7 @@ namespace QSScan
 		private int TotalImages = -1;
 		private int CurrentImage = 0;
 		private bool _isEnable = false;
+		private bool _saveImageAsJpegOnPngEncodingError;
 
 		public event EventHandler<ImageTransferEventArgs> ImageTransfer;
 		public event EventHandler<ScanWorksPulseEventArgs> Pulse;
@@ -59,6 +61,11 @@ namespace QSScan
 				logger.Debug ("Selected Scaner {0}", value);
 				logger.Debug ("IsSourceTwain2Compatible = {0}", _twain32.GetIsSourceTwain2Compatible (value));
 			}
+		}
+
+		public bool SaveImageAsJpegOnPngEncodingError {
+			get => _saveImageAsJpegOnPngEncodingError;
+			set => _saveImageAsJpegOnPngEncodingError = value;
 		}
 
 		public string[] GetScannerList()
@@ -101,7 +108,7 @@ namespace QSScan
 
 		void OnTwainAcquireError (object sender, Twain32.AcquireErrorEventArgs e)
 		{
-			logger.Error ($"Ошибка в процессе сканирования: {e.Exception.Message}");
+			logger.Error (e.Exception, "Ошибка в процессе сканирования");
 			this.Close ();
 		}
 
@@ -146,14 +153,35 @@ namespace QSScan
 
 		private Pixbuf WinImageToPixbuf( System.Drawing.Image img)
 		{
-			MemoryStream  stream = new MemoryStream();
-			img.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
-			stream.Position = 0;
+			logger.Debug("WinImageToPixbuf: {0}x{1}, PixelFormat = {2}", img.Width, img.Height, img.PixelFormat);
+			using(MemoryStream stream = new MemoryStream())
+			{
+				try
+				{
+					img.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+				}
+				catch(Exception ex)
+				{
+					logger.Warn(ex, "Не удалось сохранить изображение в PNG (PixelFormat = {0})", img.PixelFormat);
 
-			Pixbuf PixImage = new Pixbuf(stream);
-			stream.Close();
+					if(!SaveImageAsJpegOnPngEncodingError) {
+						throw;
+					}
 
-			return PixImage;
+					logger.Info("Попытка сохранить изображение в JPEG (PixelFormat = {0})", img.PixelFormat);
+
+					stream.SetLength(0);
+					var jpegCodec = System.Drawing.Imaging.ImageCodecInfo.GetImageEncoders()
+						.First(c => c.FormatID == System.Drawing.Imaging.ImageFormat.Jpeg.Guid);
+					var encoderParams = new System.Drawing.Imaging.EncoderParameters(1);
+					encoderParams.Param[0] = new System.Drawing.Imaging.EncoderParameter(System.Drawing.Imaging.Encoder.Quality, 100L);
+					
+					img.Save(stream, jpegCodec, encoderParams);
+				}
+				stream.Position = 0;
+
+				return new Pixbuf(stream);
+			}
 		}
 
 		public void GetImages()
