@@ -19,6 +19,8 @@ public class PageViewLocator {
 		factories = new Dictionary<Type, Func<CarouselPageVM, UserControl>> {
 			[typeof(LoginVM)] = vm => new LoginView((LoginVM)vm),
 			[typeof(DataBasesVM)] = vm => new DataBasesView((DataBasesVM)vm),
+			[typeof(UsersVM)] = vm => new UsersView((UsersVM)vm),
+			[typeof(ChangePasswordVM)] = vm => new ChangePasswordView((ChangePasswordVM)vm),
 			[typeof(UserManagementVM)] = vm => new UserManagementView((UserManagementVM)vm),
 			[typeof(CreateDbSettingsVM)] = vm => new CreateDbSettingsView((CreateDbSettingsVM)vm),
 			[typeof(ImportDbSettingsVM)] = vm => new ImportDbSettingsView((ImportDbSettingsVM)vm),

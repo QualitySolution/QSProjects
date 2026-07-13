@@ -13,43 +13,8 @@
         <StackPanel Margin="20">
             <Label Margin="5" FontSize="16" FontWeight="Bold" Content="Управление пользователями" />
 
-            <!-- Смена своего пароля - доступна всем -->
-            <Label Margin="5,10,5,0" FontWeight="Bold" Content="Смена своего пароля" />
-            <TextBox Margin="5" PasswordChar="•" Watermark="Новый пароль" Text="{Binding OwnNewPassword}" />
-            <TextBox Margin="5" PasswordChar="•" Watermark="Повторите пароль" Text="{Binding OwnConfirmPassword}" />
-            <Button Margin="5" HorizontalAlignment="Stretch" Command="{Binding ChangeOwnPasswordCommand}" Content="Сменить пароль" />
-
             <!-- Управление другими пользователями - только при наличии прав -->
             <StackPanel IsVisible="{Binding CanManageUsers}">
-                <Grid Margin="0,15,0,0" ColumnDefinitions="*,Auto,*">
-                    <Separator Grid.Column="0" />
-                    <Label Grid.Column="1" Margin="5" Opacity="0.6" Content="Пользователи" />
-                    <Separator Grid.Column="2" />
-                </Grid>
-
-                <ListBox Margin="5" MinHeight="120" MaxHeight="220"
-                         ItemsSource="{Binding Users}" SelectedItem="{Binding SelectedUser}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate x:DataType="dbme:DbUserInfo">
-                            <DockPanel>
-                                <TextBlock DockPanel.Dock="Right" Margin="8,0,0,0" VerticalAlignment="Center"
-                                           FontSize="12" Opacity="0.6" Text="отключён" IsVisible="{Binding Disabled}" />
-                                <TextBlock VerticalAlignment="Center" Text="{Binding Login}" TextTrimming="CharacterEllipsis" />
-                            </DockPanel>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-
-                <Grid ColumnDefinitions="*,*,*">
-                    <Button Grid.Column="0" Margin="5" HorizontalAlignment="Stretch" Command="{Binding NewUserCommand}" Content="Создать" />
-                    <Button Grid.Column="1" Margin="5" HorizontalAlignment="Stretch" Command="{Binding DeleteUserCommand}" Content="Удалить" />
-                    <Button Grid.Column="2" Margin="5" HorizontalAlignment="Stretch" Command="{Binding RefreshUsersCommand}" Content="Обновить" />
-                </Grid>
-
-                <TextBlock Margin="5,15" HorizontalAlignment="Center" Opacity="0.6" TextWrapping="Wrap"
-                           Text="Выберите пользователя в списке или создайте нового"
-                           IsVisible="{Binding !ShowEditForm}" />
-
                 <!-- Форма редактирования -->
                 <StackPanel IsVisible="{Binding ShowEditForm}">
                     <Label Margin="5,10,5,0" Content="Логин:" />
@@ -87,8 +52,6 @@
 
                     <Label Margin="5,5,5,0" Content="Пароль:" />
                     <TextBox Margin="5" PasswordChar="•" Text="{Binding EditNewPassword}" Watermark="{Binding PasswordWatermark}" />
-
-                    <Button Margin="5" HorizontalAlignment="Stretch" Command="{Binding SaveUserCommand}" Content="Сохранить пользователя" />
 
                     <!-- Доступ к базам -->
                     <StackPanel IsVisible="{Binding HasSelectedUser}">
@@ -134,11 +97,12 @@
                                    Text="У пользователя глобальные права на весь сервер — доступ к отдельным базам не настраивается"
                                    IsVisible="{Binding BaseAccessLocked}" />
 
-                        <Button Margin="5" HorizontalAlignment="Stretch" Command="{Binding SaveAccessCommand}" Content="Сохранить доступы" />
                         <TextBlock Margin="5,0,5,5" FontSize="12" Opacity="0.6" TextWrapping="Wrap"
                                    Text="Недостаточно прав для изменения доступов"
                                    IsVisible="{Binding !CanManageBaseAccess}" />
                     </StackPanel>
+
+                    <Button Margin="5" HorizontalAlignment="Stretch" Command="{Binding SaveCommand}" Content="Сохранить измененния" />
                 </StackPanel>
             </StackPanel>
 

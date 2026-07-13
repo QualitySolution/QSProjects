@@ -16,6 +16,8 @@ namespace QS.Launcher {
 				.AddSingleton<LoginVM>()
 				.AddSingleton<DataBasesVM>()
 				.AddSingleton<UserManagementVM>()
+				.AddSingleton<ChangePasswordVM>()
+				.AddSingleton<UsersVM>()
 				// Страница прогресса создаётся заново на каждую операцию с базой
 				.AddTransient<CreateDataBaseProgressVM>()
 				.AddSingleton<IDbCreatorInteraction, LauncherDbCreatorInteraction>()
