@@ -329,6 +329,7 @@ namespace QS.DbManagement
 						? $"GRANT ALL PRIVILEGES ON *.* TO {account} WITH GRANT OPTION"
 						: $"REVOKE ALL PRIVILEGES, GRANT OPTION ON *.* FROM {account}");
 			}
+			SyncUsersTables(user);
 			if(statements.Count == 0)
 				return true;
 			connection.Execute(string.Join(";", statements));
@@ -514,6 +515,32 @@ namespace QS.DbManagement
 			}
 		}
 
+		private void SyncUsersTables(DbUserInfo user) {
+			try {
+				List<string> changeStatement = new List<string>();
+				if(user.DirtyFields.HasFlag(DbUserFields.Name)) {
+					changeStatement.Add("name = COALESCE(NULLIF(@name, ''), name)");
+				}
+				if(user.DirtyFields.HasFlag(DbUserFields.Email)) {
+					changeStatement.Add("email = COALESCE(NULLIF(@email, ''), email)");
+				}
+				if(changeStatement.Count == 0)
+					return;
+
+				IEnumerable<string> tables = DbsOf(user.Login).Select(x => x + ".users");
+				StringBuilder statement = new StringBuilder();
+				foreach(var table in tables) {
+					var existingId = connection.QueryFirstOrDefault<int?>($"SELECT id FROM {table} WHERE login = @login", new { user.Login });
+					if(existingId != null)
+						statement.Append($"UPDATE {table} SET " + string.Join(" , ", changeStatement) +
+							" WHERE login = @login;");
+				}
+				if(statement.Length > 0)
+					connection.Execute(statement.ToString(), new { login = user.Login, name = user.Name, email = user.Email });
+			}
+			catch(MySqlException ex) {
+				logger.Debug(ex, "Не удалось синхронизировать users для пользователя {0}", user.Login);
+			}
 		}
 
 		private Dictionary<string, List<string>> ReadGrantsByHost(string login) {
@@ -545,6 +572,8 @@ namespace QS.DbManagement
 			userHosts.TryGetValue(login, out var hosts) && hosts.Count > 0
 				? (IReadOnlyList<string>)hosts
 				: new[] { "%" };
+		private IEnumerable<string> DbsOf(string login) =>
+			connection.Query<string>("SELECT table_schema FROM information_schema.tables WHERE table_name = 'users'");
 
 		private static void ValidateLogin(string login) {
 			if(string.IsNullOrWhiteSpace(login))
