@@ -165,8 +165,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 				return;
 
 			try {
-				foreach(var user in provider.GetUsers())
-					Users.Add(user);
+				Users.AddRange(provider.GetUsers());
 			}
 			catch(Exception ex) {
 				logger.Error(ex, "Не удалось получить список пользователей");
