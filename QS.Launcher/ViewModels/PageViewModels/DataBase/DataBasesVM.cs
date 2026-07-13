@@ -33,6 +33,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 				this.RaisePropertyChanged(nameof(CanDropDatabase));
 				this.RaisePropertyChanged(nameof(CanBackupDatabase));
 				this.RaisePropertyChanged(nameof(CanManageDatabases));
+				this.RaisePropertyChanged(nameof(CanOpenChangePassword));
 				this.RaisePropertyChanged(nameof(CanOpenUserManagement));
 
 				LoadLastSelectedDatabase();
@@ -50,7 +51,8 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		public bool CanManageDatabases =>
 			CanDropDatabase || CanBackupDatabase;
 
-		public bool CanOpenUserManagement => capabilities.CanChangeOwnPassword(provider);
+		public bool CanOpenChangePassword => capabilities.CanChangeOwnPassword(provider);
+		public bool CanOpenUserManagement => capabilities.CanManageUsers(provider);
 
 		public Connection CurrentConnection => currentConnection;
 
@@ -86,6 +88,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		public ICommand BackupDatabaseCommand { get; }
 		public ICommand DeleteDatabaseCommand { get; }
 		public ReactiveCommand<Unit, Unit> OpenUserManagementCommand { get; }
+		public ReactiveCommand<Unit, Unit> OpenChangePasswordCommand { get; }
 
 		public event Action<bool> StartLaunchProgram;
 
@@ -123,14 +126,24 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			OpenImportDatabaseCommand = ReactiveCommand.Create(OpenImportDatabase);
 			BackupDatabaseCommand = ReactiveCommand.Create<DbInfo>(OpenBackup);
 			DeleteDatabaseCommand = ReactiveCommand.CreateFromTask<DbInfo>(DeleteDatabaseAsync);
-			OpenUserManagementCommand = ReactiveCommand.Create(OpenUserManagement);
+			OpenUserManagementCommand = ReactiveCommand.Create(OpenUsers);
+			OpenChangePasswordCommand = ReactiveCommand.Create(ChangePassword);
 		}
 
-		private void OpenUserManagement() {
+		private void ChangePassword() {
 			if(provider == null)
 				return;
 
-			var vm = serviceProvider.GetRequiredService<UserManagementVM>();
+			var vm = serviceProvider.GetRequiredService<ChangePasswordVM>();
+			vm.SetProvider(provider);
+			PushPageCommand?.Execute(vm);
+		}
+
+		private void OpenUsers() {
+			if(provider == null)
+				return;
+
+			var vm = serviceProvider.GetRequiredService<UsersVM>();
 			vm.SetProvider(provider);
 			PushPageCommand?.Execute(vm);
 		}

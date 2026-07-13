@@ -1,16 +1,16 @@
-using System;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Reactive;
-using System.Reactive.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
 using DynamicData;
 using QS.DbManagement;
 using QS.DbManagement.Entities;
 using QS.Dialog;
 using QS.Project.Versioning;
 using ReactiveUI;
+using System;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Reactive;
+using System.Reactive.Linq;
+using System.Security.Policy;
+using System.Threading.Tasks;
 
 namespace QS.Launcher.ViewModels.PageViewModels {
 	public class UserManagementVM : CarouselPageVM {
@@ -19,6 +19,8 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		private readonly IInteractiveMessage interactiveMessage;
 		private readonly IInteractiveQuestion interactiveQuestion;
 		private readonly IApplicationInfo applicationInfo;
+
+		private readonly string messageTitle = "Управление пользователями";
 
 		private IDbUserManager provider;
 
@@ -30,25 +32,13 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			this.interactiveQuestion = interactiveQuestion ?? throw new ArgumentNullException(nameof(interactiveQuestion));
 			this.applicationInfo = applicationInfo;
 
-			Users = new ObservableCollection<DbUserInfo>();
 			BaseAccesses = new ObservableCollection<BaseAccessRowVM>();
-
-			var canChangeOwnPassword = this.WhenAnyValue(x => x.OwnNewPassword, x => x.OwnConfirmPassword,
-				(pass, confirm) => !string.IsNullOrEmpty(pass) && pass == confirm);
-			ChangeOwnPasswordCommand = ReactiveCommand.CreateFromTask(ChangeOwnPasswordAsync, canChangeOwnPassword);
 
 			var canSaveUser = this.WhenAnyValue(x => x.EditLogin, x => x.EditNewPassword, x => x.IsNewUser,
 				(login, pass, isNew) => !string.IsNullOrWhiteSpace(login) && (!isNew || !string.IsNullOrEmpty(pass)));
-			SaveUserCommand = ReactiveCommand.CreateFromTask(SaveUserAsync, canSaveUser);
+			SaveCommand = ReactiveCommand.CreateFromTask(Save, canSaveUser);
 
-			var hasSelectedUser = this.WhenAnyValue(x => x.SelectedUser).Select(u => u != null);
-			var canSaveAccess = this.WhenAnyValue(x => x.SelectedUser, x => x.CanManageBaseAccess, x => x.BaseAccessLocked,
-				(user, canManage, locked) => user != null && canManage && !locked);
-			NewUserCommand = ReactiveCommand.Create(StartNewUser);
-			DeleteUserCommand = ReactiveCommand.CreateFromTask(DeleteUserAsync, hasSelectedUser);
-			SaveAccessCommand = ReactiveCommand.CreateFromTask(SaveAccessAsync, canSaveAccess);
-			RefreshUsersCommand = ReactiveCommand.Create(RefreshUsers);
-			BackCommand = ReactiveCommand.Create(() => PopPageCommand?.Execute(null));
+			BackCommand = ReactiveCommand.CreateFromTask(GoBack);
 
 			this.WhenAnyValue(x => x.SelectedUser)
 				.Subscribe(_ => OnSelectedUserChanged());
@@ -60,12 +50,8 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 				});
 		}
 
-		/// <summary>Задаёт провайдера подключения и обновляет состояние страницы.</summary>
-		public void SetProvider(IDbUserManager userManager) {
+		public void SetContext(IDbUserManager userManager, DbUserInfo user, bool isCreating) {
 			provider = userManager ?? throw new ArgumentNullException(nameof(userManager));
-
-			OwnNewPassword = null;
-			OwnConfirmPassword = null;
 
 			this.RaisePropertyChanged(nameof(CanManageUsers));
 			this.RaisePropertyChanged(nameof(CanManageBaseAccess));
@@ -79,44 +65,10 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			this.RaisePropertyChanged(nameof(ShowReadOnly));
 			this.RaisePropertyChanged(nameof(ShowAppPermissions));
 
-			RefreshUsers();
+			SelectedUser = user;
+			IsNewUser = isCreating;
+			ClearEditBuffer();
 		}
-
-		#region Смена своего пароля
-
-		private string ownNewPassword;
-		public string OwnNewPassword {
-			get => ownNewPassword;
-			set => this.RaiseAndSetIfChanged(ref ownNewPassword, value);
-		}
-
-		private string ownConfirmPassword;
-		public string OwnConfirmPassword {
-			get => ownConfirmPassword;
-			set => this.RaiseAndSetIfChanged(ref ownConfirmPassword, value);
-		}
-
-		public ReactiveCommand<Unit, Unit> ChangeOwnPasswordCommand { get; }
-
-		private async Task ChangeOwnPasswordAsync() {
-			try {
-				string newPassword = OwnNewPassword;
-				bool ok = await Task.Run(() => provider.ChangeOwnPassword(newPassword));
-				if(ok) {
-					OwnNewPassword = null;
-					OwnConfirmPassword = null;
-					interactiveMessage.ShowMessage(ImportanceLevel.Success, "Пароль изменён.", "Смена пароля");
-				}
-				else
-					interactiveMessage.ShowMessage(ImportanceLevel.Error, "Не удалось изменить пароль.", "Смена пароля");
-			}
-			catch(Exception ex) {
-				logger.Error(ex, "Не удалось сменить собственный пароль");
-				interactiveMessage.ShowMessage(ImportanceLevel.Error, ex.Message, "Смена пароля");
-			}
-		}
-
-		#endregion
 
 		#region Управление пользователями
 
@@ -134,8 +86,6 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		public bool ShowDisabling => (provider?.SupportedUserFields.HasFlag(DbUserFields.Disabling)) == true;
 		public bool ShowReadOnly => (provider?.SupportedUserFields.HasFlag(DbUserFields.BaseReadOnly)) == true;
 		public bool ShowAppPermissions => (provider?.SupportedUserFields.HasFlag(DbUserFields.BaseAppPermissions)) == true;
-
-		public ObservableCollection<DbUserInfo> Users { get; }
 
 		private DbUserInfo selectedUser;
 		public DbUserInfo SelectedUser {
@@ -156,27 +106,8 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			? "задайте пароль нового пользователя"
 			: "оставьте пустым, чтобы не менять";
 
-		public ReactiveCommand<Unit, Unit> NewUserCommand { get; }
-		public ReactiveCommand<Unit, Unit> SaveUserCommand { get; }
-		public ReactiveCommand<Unit, Unit> DeleteUserCommand { get; }
-		public ReactiveCommand<Unit, Unit> SaveAccessCommand { get; }
-		public ReactiveCommand<Unit, Unit> RefreshUsersCommand { get; }
+		public ReactiveCommand<Unit, Unit> SaveCommand { get; }
 		public ReactiveCommand<Unit, Unit> BackCommand { get; }
-
-		public void RefreshUsers() {
-			Users.Clear();
-			SelectedUser = null;
-			if(!CanManageUsers)
-				return;
-
-			try {
-				Users.AddRange(provider.GetUsers());
-			}
-			catch(Exception ex) {
-				logger.Error(ex, "Не удалось получить список пользователей");
-				interactiveMessage.ShowMessage(ImportanceLevel.Error, ex.Message, "Управление пользователями");
-			}
-		}
 
 		private void OnSelectedUserChanged() {
 			this.RaisePropertyChanged(nameof(HasSelectedUser));
@@ -189,16 +120,11 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			LoadEditBuffer(SelectedUser);
 			IsNewUser = false;
 			LoadBaseAccess(SelectedUser.Login);
-		}
-
-		private void StartNewUser() {
-			SelectedUser = null;
 			ClearEditBuffer();
-			IsNewUser = true;
 		}
 
-		private async Task SaveUserAsync() {
-			var user = new DbUserInfo {
+		private async Task<bool> SaveUserAsync() {
+			var newUser = new DbUserInfo {
 				Login = EditLogin,
 				Name = EditName,
 				Email = EditEmail,
@@ -208,7 +134,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 				Disabled = EditDisabled,
 				IsAdmin = EditIsAdmin
 			};
-			user.DirtyFields = editedDirtyFields;
+			newUser.DirtyFields = editedDirtyFields;
 
 			bool creating = IsNewUser;
 			string password = EditNewPassword;
@@ -216,46 +142,20 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			try {
 				await Task.Run(() => {
 					if(creating)
-						provider.CreateUser(user, password);
+						provider.CreateUser(newUser, password);
 					else
-						provider.UpdateUser(user, password);
+						provider.UpdateUser(newUser, password);
 				});
 				interactiveMessage.ShowMessage(ImportanceLevel.Success,
-					creating ? "Пользователь создан." : "Изменения сохранены.", "Управление пользователями");
-				RefreshUsers();
-				SelectedUser = Users.FirstOrDefault(u => string.Equals(u.Login, user.Login, StringComparison.OrdinalIgnoreCase));
+					creating ? "Пользователь создан." : "Изменения сохранены.", messageTitle);
 			}
 			catch(Exception ex) {
-				logger.Error(ex, "Не удалось сохранить пользователя {0}", user.Login);
-				interactiveMessage.ShowMessage(ImportanceLevel.Error, ex.Message, "Управление пользователями");
+				logger.Error(ex, "Не удалось сохранить пользователя {0}", newUser.Login);
+				interactiveMessage.ShowMessage(ImportanceLevel.Error, ex.Message, messageTitle);
+				return false;
 			}
+			return true;
 		}
-
-		private async Task DeleteUserAsync() {
-			var user = SelectedUser;
-			if(user == null)
-				return;
-			if(user.IsCurrentUser) {
-				interactiveMessage.ShowMessage(ImportanceLevel.Warning, "Нельзя удалить собственного пользователя.", "Управление пользователями");
-				return;
-			}
-
-			bool confirmed = await Task.Run(() => interactiveQuestion.Question(
-				$"Удалить пользователя «{user.Login}»?", "Управление пользователями"));
-			if(!confirmed)
-				return;
-
-			try {
-				await Task.Run(() => provider.DeleteUser(user.Login));
-				interactiveMessage.ShowMessage(ImportanceLevel.Success, "Пользователь удалён.", "Управление пользователями");
-				RefreshUsers();
-			}
-			catch(Exception ex) {
-				logger.Error(ex, "Не удалось удалить пользователя {0}", user.Login);
-				interactiveMessage.ShowMessage(ImportanceLevel.Error, ex.Message, "Управление пользователями");
-			}
-		}
-
 		#endregion
 
 		#region Редактируемые поля пользователя
@@ -370,6 +270,8 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			EditDisabled = false;
 			EditIsAdmin = false;
 			EditNewPassword = null;
+
+			editedDirtyFields = DbUserFields.None;
 		}
 
 		#endregion
@@ -404,14 +306,14 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			this.RaisePropertyChanged(nameof(BaseAccessLocked));
 		}
 
-		private async Task SaveAccessAsync() {
+		private async Task<bool> SaveAccessAsync() {
 			var user = SelectedUser;
 			if(user == null)
-				return;
+				return true;
 			// Сохраняем только изменённые строки - каждая строка это отдельный запрос к серверу
 			var changedRows = BaseAccesses.Where(r => r.IsDirty).ToList();
 			if(changedRows.Count == 0)
-				return;
+				return true;
 			try {
 				string name = EditName;
 				string email = EditEmail;
@@ -431,9 +333,40 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			catch(Exception ex) {
 				logger.Error(ex, "Не удалось сохранить доступы пользователя {0}", user.Login);
 				interactiveMessage.ShowMessage(ImportanceLevel.Error, ex.Message, "Доступ к базам");
+				return false;
+			}
+			return true;
+		}
+		#endregion
+
+		private async Task Save() {
+			bool isUserSavedSuccessfully = await SaveUserAsync();
+			bool isBaseAccessSavedSuccessfully = true;
+			if(SelectedUser != null && CanManageBaseAccess && !BaseAccessLocked) {
+				isBaseAccessSavedSuccessfully = await SaveAccessAsync();
+			}
+
+			if(isUserSavedSuccessfully && isBaseAccessSavedSuccessfully) {
+				PopPageCommand?.Execute(null);
+				ClearEditBuffer();
 			}
 		}
 
-		#endregion
+		private async Task GoBack() {
+			bool hasChanges = editedDirtyFields != DbUserFields.None
+				|| !string.IsNullOrEmpty(EditNewPassword)
+				|| BaseAccesses.Any(r => r.IsDirty);
+			if(!hasChanges) {
+				PopPageCommand?.Execute(null);
+				return;
+			}
+
+			bool confirmed = await Task.Run(() =>
+				interactiveQuestion.Question("Вы утратите изменения, если выйдете?", messageTitle));
+			if(!confirmed) return;
+
+			PopPageCommand?.Execute(null);
+			ClearEditBuffer();
+		}
 	}
 }
