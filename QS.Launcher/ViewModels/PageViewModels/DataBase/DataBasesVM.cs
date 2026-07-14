@@ -33,6 +33,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 				this.RaisePropertyChanged(nameof(CanDropDatabase));
 				this.RaisePropertyChanged(nameof(CanBackupDatabase));
 				this.RaisePropertyChanged(nameof(CanManageDatabases));
+				this.RaisePropertyChanged(nameof(CanOpenDbOperations));
 				this.RaisePropertyChanged(nameof(CanOpenChangePassword));
 				this.RaisePropertyChanged(nameof(CanOpenUserManagement));
 
@@ -50,6 +51,8 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 
 		public bool CanManageDatabases =>
 			CanDropDatabase || CanBackupDatabase;
+
+		public bool CanOpenDbOperations => CanCreateDatabase || CanImportDatabase;
 
 		public bool CanOpenChangePassword => capabilities.CanChangeOwnPassword(provider);
 		public bool CanOpenUserManagement => capabilities.CanManageUsers(provider);

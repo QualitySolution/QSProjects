@@ -14,14 +14,10 @@
         x:DataType="vm:MainWindowVM"
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d">
-    <ScrollViewer>
-        <Panel>
-            <Carousel x:Name="carousel"
-                      SelectedIndex="{Binding SelectedPageIndex}">
-                <Carousel.PageTransition>
-                    <PageSlide Orientation="Horizontal" Duration="0.25" />
-                </Carousel.PageTransition>
-            </Carousel>
-        </Panel>
-    </ScrollViewer>
+    <Carousel x:Name="carousel"
+              SelectedIndex="{Binding SelectedPageIndex}">
+        <Carousel.PageTransition>
+            <PageSlide Orientation="Horizontal" Duration="0.25" />
+        </Carousel.PageTransition>
+    </Carousel>
 </Window>
