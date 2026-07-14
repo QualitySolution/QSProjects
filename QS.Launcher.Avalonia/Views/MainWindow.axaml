@@ -14,6 +14,9 @@
         x:DataType="vm:MainWindowVM"
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d">
+    <Carousel x:Name="carousel"
+              SelectedIndex="{Binding SelectedPageIndex}">
+        <Carousel.PageTransition>
             <PageSlide Orientation="Horizontal" Duration="0.25" />
         </Carousel.PageTransition>
     </Carousel>
