@@ -1,8 +1,8 @@
 using MySqlConnector;
 using QS.DBScripts.Controllers;
+using QS.DBScripts.Models;
 using QS.Dialog;
 using System;
-using System.Resources;
 using System.Threading;
 
 namespace QS.DbManagement.Creation {
@@ -10,29 +10,37 @@ namespace QS.DbManagement.Creation {
 	/// Наполнение MariaDB базы пользовательским дампом.
 	/// Метод блокирует вызывающий поток — выносить в фон ответственность вызывающего кода.
 	/// </summary>
-	public class MariaDbImportModel : IDbCreatorModel {
-		private readonly string connectionString;
-		private readonly string dumpFilePath;
-		private readonly IProgressBarDisplayable progress;
-		private readonly CancellationToken cancellation;
+	public class MariaDbImportModel : BaseMySqlDbLoader {
+		protected override Action<MySqlCommand> ExecutScript { get; set; }
 
 		public MariaDbImportModel(
-			DbDumpResources resources) {
-			this.connectionString = resources.ConnectionString
-				?? throw new ArgumentNullException(nameof(connectionString));
-			this.dumpFilePath = resources.DumpFilePath;
-			this.progress = resources.Progress;
-			this.cancellation = resources.CancellationToken;
-		}
+			DbDumpResources resources)
+			: base(resources)
+		{
+			ExecutScript = (cmd) => {
+				cmd.CommandTimeout = 0;
+				using(var backup = new MySqlBackup(cmd)) {
+					// ускоряет дамп
+					backup.Command.CommandText = "SET SESSION foreign_key_checks = 0, unique_checks = 0;";
+					backup.Command.ExecuteNonQuery();
 
-		public bool RunCreation(string dbName, string dbTitle) {
-			if(string.IsNullOrWhiteSpace(dumpFilePath))
-				throw new ArgumentException("Не задан путь к дампу", nameof(dumpFilePath));
+					bool started = false;
+					backup.ImportProgressChanged += (sender, args) => {
+						if(cancellationToken.IsCancellationRequested) {
+							((MySqlBackup)sender).StopAllProcess();
+							return;
+						}
+						if(!started) {
 
-			var connectionStringBuilder = new MySqlConnectionStringBuilder(connectionString);
-			new MariaDbDumpService().Import(connectionStringBuilder, dbName, dumpFilePath, progress, cancellation, dbTitle);
-			cancellation.ThrowIfCancellationRequested();
-			return true;
+							logger.Debug("Предполагаем наличие {0} команд в скрипте.", args.TotalBytes);
+							progress?.Start(maxValue: args.TotalBytes, text: "Импорт дампа в базу данных");
+							started = true;
+						}
+						progress?.Update(args.CurrentBytes);
+					};
+					backup.ImportFromFile(resources.DumpFilePath);
+				}
+			};
 		}
 	}
 }
