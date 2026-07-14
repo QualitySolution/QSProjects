@@ -1,11 +1,9 @@
-using FluentNHibernate.Cfg.Db;
 using Grpc.Core;
 using MySqlConnector;
 using QS.Cloud.Client.Clients;
 using QS.Cloud.Core;
 using QS.DbManagement;
 using QS.DbManagement.Entities;
-using QS.DBScripts.Controllers;
 using QS.Dialog;
 using QS.Project.Versioning;
 using System;
@@ -13,7 +11,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace QS.Cloud.Client.DataBase
 {
@@ -180,6 +177,7 @@ namespace QS.Cloud.Client.DataBase
 				}
 
 				request.CreationResources.ConnectionString = session.ConnectionStringBuilder.ConnectionString;
+				request.CreationResources.JustCreated = true;
 				var creationModel = request.CreationFactory.Create(request.CreationResources);
 				return creationModel.RunCreation(session.Db.BaseName, request.DbTitle);
 			}
@@ -203,7 +201,7 @@ namespace QS.Cloud.Client.DataBase
 			using(var session = CloudDbSession.Open(loginClient, database.BaseId)) {
 				if(!session.Success)
 					throw new InvalidOperationException("Не удалось открыть сессию к облачной базе: " + session.Description);
-				new MariaDbDumpService().Export(session.ConnectionStringBuilder, session.Db.BaseName, filePath, progress, cancellation);
+				new MariaDbExportService().Export(session.ConnectionStringBuilder, session.Db.BaseName, filePath, progress, cancellation);
 			}
 		}
 

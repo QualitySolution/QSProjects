@@ -178,6 +178,7 @@ namespace QS.DbManagement
 				Database = request.DbName
 			};
 			request.CreationResources.ConnectionString = connectionStringBuilder.ConnectionString;
+			request.CreationResources.JustCreated = true;
 			var creationModel = request.CreationFactory.Create(request.CreationResources);
 			return creationModel.RunCreation(request.DbName, request.DbTitle);
 		}
@@ -195,7 +196,7 @@ namespace QS.DbManagement
 		/// Метод блокирующий - вызывать из фонового потока
 		/// </summary>
 		public void BackupDatabase(DbInfo database, string filePath, IProgressBarDisplayable progress, CancellationToken cancellation) {
-			new MariaDbDumpService().Export(ConnectionStringBuilder, database.BaseName, filePath, progress, cancellation);
+			new MariaDbExportService().Export(ConnectionStringBuilder, database.BaseName, filePath, progress, cancellation);
 		}
 
 		#endregion
