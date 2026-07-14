@@ -1,4 +1,3 @@
-using DynamicData;
 using QS.DbManagement;
 using QS.DbManagement.Entities;
 using QS.Dialog;
@@ -9,7 +8,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
-using System.Security.Policy;
 using System.Threading.Tasks;
 
 namespace QS.Launcher.ViewModels.PageViewModels {
@@ -65,9 +63,13 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			this.RaisePropertyChanged(nameof(ShowReadOnly));
 			this.RaisePropertyChanged(nameof(ShowAppPermissions));
 
-			SelectedUser = user;
-			IsNewUser = isCreating;
-			ClearEditBuffer();
+			SelectedUser = null;
+			if(isCreating) {
+				ClearEditBuffer();
+				IsNewUser = true;
+			}
+			else
+				SelectedUser = user;
 		}
 
 		#region Управление пользователями
@@ -120,7 +122,6 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			LoadEditBuffer(SelectedUser);
 			IsNewUser = false;
 			LoadBaseAccess(SelectedUser.Login);
-			ClearEditBuffer();
 		}
 
 		private async Task<bool> SaveUserAsync() {
@@ -171,10 +172,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		private string editLogin;
 		public string EditLogin {
 			get => editLogin;
-			set
-			{
-				this.RaiseAndSetIfChanged(ref editLogin, value);
-			}
+			set => this.RaiseAndSetIfChanged(ref editLogin, value);
 		}
 
 		private string editName;
@@ -339,6 +337,8 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		}
 		#endregion
 
+		public event Action OperationCompleted;
+
 		private async Task Save() {
 			bool isUserSavedSuccessfully = await SaveUserAsync();
 			bool isBaseAccessSavedSuccessfully = true;
@@ -349,6 +349,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			if(isUserSavedSuccessfully && isBaseAccessSavedSuccessfully) {
 				PopPageCommand?.Execute(null);
 				ClearEditBuffer();
+				OperationCompleted?.Invoke();
 			}
 		}
 
@@ -362,7 +363,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			}
 
 			bool confirmed = await Task.Run(() =>
-				interactiveQuestion.Question("Вы утратите изменения, если выйдете?", messageTitle));
+				interactiveQuestion.Question("Есть несохранённые изменения. Выйти без сохранения?", messageTitle));
 			if(!confirmed) return;
 
 			PopPageCommand?.Execute(null);
