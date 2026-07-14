@@ -1,9 +1,11 @@
+using FluentNHibernate.Cfg.Db;
 using Grpc.Core;
 using MySqlConnector;
 using QS.Cloud.Client.Clients;
 using QS.Cloud.Core;
 using QS.DbManagement;
 using QS.DbManagement.Entities;
+using QS.DBScripts.Controllers;
 using QS.Dialog;
 using QS.Project.Versioning;
 using System;
@@ -33,6 +35,7 @@ namespace QS.Cloud.Client.DataBase
 		private LoginManagementCloudClient loginClient;
 		private DataBaseManagementCloudClient dbClient;
 		private UserManagementCloudClient userClient;
+
 
 		public QSCloudProvider(IList<ConnectionParameterValue> parameters, string password = null) {
 			Account = parameters.First(p => p.Name == "Account").Value;
@@ -176,34 +179,9 @@ namespace QS.Cloud.Client.DataBase
 					return false;
 				}
 
-				return request.CreationModel.RunCreation(
-					session.ConnectionStringBuilder.ConnectionString,
-					session.Db.BaseName, request.DbTitle,
-					request.Progress, request.CancellationToken);
-			}
-		}
-
-		public bool ImportDatabase(DbImportRequest request) {
-			if(request == null)
-				throw new ArgumentNullException(nameof(request));
-
-			var response = dbClient.CreateDataBase(request.DbName, request.DbTitle, request.ApplicationInfo);
-
-			using(var session = CloudDbSession.Open(loginClient, response.BaseId)) {
-				if(!session.Success) {
-					request.Interaction.ReportError("Не удалось открыть сессию к созданной базе: " + session.Description, "Импорт базы в облако");
-					return false;
-				}
-				if(!session.IsAdmin) {
-					request.Interaction.ReportError("Вы не имеете прав администратора для наполнения базы", "Импорт базы в облако");
-					return false;
-				}
-
-				request.DumpService.Import(
-					session.ConnectionStringBuilder.ConnectionString, session.Db.BaseName, request.DumpFilePath,
-					request.Progress, request.CancellationToken, request.DbTitle);
-				request.CancellationToken.ThrowIfCancellationRequested();
-				return true;
+				request.CreationResources.ConnectionString = session.ConnectionStringBuilder.ConnectionString;
+				var creationModel = request.CreationFactory.Create(request.CreationResources);
+				return creationModel.RunCreation(session.Db.BaseName, request.DbTitle);
 			}
 		}
 	
@@ -220,12 +198,12 @@ namespace QS.Cloud.Client.DataBase
 			return response.Success;
 		}
 
-		public void BackupDatabase(DbInfo database, string filePath, IDbDumpService dumpService, IProgressBarDisplayable progress, CancellationToken cancellation)
+		public void BackupDatabase(DbInfo database, string filePath, IProgressBarDisplayable progress, CancellationToken cancellation)
 		{
 			using(var session = CloudDbSession.Open(loginClient, database.BaseId)) {
 				if(!session.Success)
 					throw new InvalidOperationException("Не удалось открыть сессию к облачной базе: " + session.Description);
-				dumpService.Export(session.ConnectionStringBuilder.ConnectionString, session.Db.BaseName, filePath, progress, cancellation);
+				new MariaDbDumpService().Export(session.ConnectionStringBuilder, session.Db.BaseName, filePath, progress, cancellation);
 			}
 		}
 

@@ -24,18 +24,13 @@ namespace QS.DbManagement
 		LoginToDatabaseResponse LoginToDatabase(DbInfo dbInfo);
 
 		/// <summary>
-		/// Создаёт базу и наполняет её скриптом создания
+		/// Создаёт базу и сразу наполняет её
 		/// </summary>
 		bool CreateDatabase(DbCreationRequest request);
 
-		/// <summary>
-		/// Создаёт базу и наполняет её пользовательским дампом
-		/// </summary>
-		bool ImportDatabase(DbImportRequest request);
-
 		bool DropDatabase(DbInfo database, IApplicationInfo applicationInfo);
 
-		void BackupDatabase(DbInfo database, string filePath, IDbDumpService dumpService, IProgressBarDisplayable progress, CancellationToken cancellation);
+		void BackupDatabase(DbInfo database, string filePath, IProgressBarDisplayable progress, CancellationToken cancellation);
 	}
 
 	/// <summary>
