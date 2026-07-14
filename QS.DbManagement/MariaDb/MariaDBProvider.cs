@@ -224,7 +224,6 @@ namespace QS.DbManagement
 		public DbUserFields SupportedUserFields =>
 			DbUserFields.BaseReadOnly
 			| DbUserFields.Name | DbUserFields.Email
-			| DbUserFields.BaseAppPermissions
 			| (CanManageUsers && SupportsAccountLock ? DbUserFields.Disabling : DbUserFields.None)
 			| (SupportsAdminFlag ? DbUserFields.AdminFlag : DbUserFields.None);
 
@@ -395,30 +394,17 @@ namespace QS.DbManagement
 
 		private void FillUsersProfile(DbUserBaseAccess access, string login) {
 			try {
-				var row = connection.QueryFirstOrDefault<UsersTableRow>(
-					"SELECT name AS Name, email AS Email, can_delete AS CanDelete, " +
-					"can_accounting_settings AS CanAccountingSettings, can_change_document_date AS CanChangeDocumentDate " +
-					$"FROM `{EscapeIdentifier(access.BaseName)}`.users WHERE login = @login",
+				var row = connection.QueryFirstOrDefault(
+					$"SELECT name AS Name, email AS Email FROM `{EscapeIdentifier(access.BaseName)}`.users WHERE login = @login",
 					new { login });
 				if(row != null) {
 					access.Name = row.Name;
 					access.Email = row.Email;
-					access.CanDelete = row.CanDelete;
-					access.CanAccountingSettings = row.CanAccountingSettings;
-					access.CanChangeDocumentDate = row.CanChangeDocumentDate;
 				}
 			}
 			catch(MySqlException ex) {
 				logger.Debug(ex, "Не удалось прочитать users в базе {0}", access.BaseName);
 			}
-		}
-
-		private class UsersTableRow {
-			public string Name { get; set; }
-			public string Email { get; set; }
-			public bool CanDelete { get; set; }
-			public bool CanAccountingSettings { get; set; }
-			public bool CanChangeDocumentDate { get; set; }
 		}
 
 		public bool SetUserBaseAccess(string login, DbUserBaseAccess access, IApplicationInfo applicationInfo) {
@@ -489,26 +475,15 @@ namespace QS.DbManagement
 					return;
 				}
 
-				var p = new {
-					login,
-					name = access.Name,
-					email = access.Email,
-					admin = access.IsAdmin,
-					canDelete = access.CanDelete,
-					canAccounting = access.CanAccountingSettings,
-					canDocDate = access.CanChangeDocumentDate
-				};
+				var p = new { login, name = access.Name, email = access.Email, admin = access.IsAdmin };
 				var existingId = connection.QueryFirstOrDefault<int?>($"SELECT id FROM {table} WHERE login = @login", new { login });
 				if(existingId != null)
 					// пустые поля формы не затирают уже заполненное приложением значение (COALESCE/NULLIF)
 					connection.Execute($"UPDATE {table} SET name = COALESCE(NULLIF(@name, ''), name), " +
-						"email = COALESCE(NULLIF(@email, ''), email), admin = @admin, " +
-						"can_delete = @canDelete, can_accounting_settings = @canAccounting, can_change_document_date = @canDocDate, " +
-						"deactivated = FALSE WHERE login = @login", p);
+						"email = COALESCE(NULLIF(@email, ''), email), admin = @admin, deactivated = FALSE WHERE login = @login", p);
 				else
-					connection.Execute($"INSERT INTO {table} " +
-						"(name, login, email, admin, can_delete, can_accounting_settings, can_change_document_date, deactivated) " +
-						"VALUES (COALESCE(NULLIF(@name, ''), @login), @login, NULLIF(@email, ''), @admin, @canDelete, @canAccounting, @canDocDate, FALSE)", p);
+					connection.Execute($"INSERT INTO {table} (name, login, email, admin, deactivated) " +
+						"VALUES (COALESCE(NULLIF(@name, ''), @login), @login, NULLIF(@email, ''), @admin, FALSE)", p);
 			}
 			catch(MySqlException ex) {
 				logger.Debug(ex, "Не удалось синхронизировать users в базе {0} для пользователя {1}", access.BaseName, login);

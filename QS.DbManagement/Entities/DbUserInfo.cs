@@ -31,7 +31,6 @@ namespace QS.DbManagement.Entities {
 		Comment = 16,
 		AdminFlag = 32,
 		Disabling = 64,
-		BaseReadOnly = 128,
-		BaseAppPermissions = 256
+		BaseReadOnly = 128
 	}
 }
