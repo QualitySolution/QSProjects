@@ -9,8 +9,18 @@
              d:DesignWidth="450"
              x:DataType="vm:UserManagementVM"
              mc:Ignorable="d">
-    <ScrollViewer>
-        <StackPanel Margin="20">
+    <DockPanel>
+        <Border DockPanel.Dock="Bottom" BorderThickness="0,1,0,0" BorderBrush="#30808080">
+            <Grid Margin="15,10" ColumnDefinitions="*,*">
+                <Button Grid.Column="0" Margin="5,0" HorizontalAlignment="Stretch"
+                        Command="{Binding BackCommand}" Content="Назад" />
+                <Button Grid.Column="1" Margin="5,0" HorizontalAlignment="Stretch" Classes="accent"
+                        Command="{Binding SaveCommand}" Content="Сохранить изменения" />
+            </Grid>
+        </Border>
+
+        <ScrollViewer>
+        <StackPanel Margin="20,20,20,10" VerticalAlignment="Center">
             <Label Margin="5" FontSize="16" FontWeight="Bold" Content="Управление пользователями" />
 
             <!-- Управление другими пользователями - только при наличии прав -->
@@ -101,14 +111,9 @@
                                    Text="Недостаточно прав для изменения доступов"
                                    IsVisible="{Binding !CanManageBaseAccess}" />
                     </StackPanel>
-
-                    <Button Margin="5" HorizontalAlignment="Stretch" Command="{Binding SaveCommand}" Content="Сохранить измененния" />
                 </StackPanel>
             </StackPanel>
-
-            <Grid Margin="0,15,0,0" ColumnDefinitions="*,*">
-                <Button Grid.Column="0" Margin="5" HorizontalAlignment="Stretch" Command="{Binding BackCommand}" Content="Назад" />
-            </Grid>
         </StackPanel>
-    </ScrollViewer>
+        </ScrollViewer>
+    </DockPanel>
 </UserControl>

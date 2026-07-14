@@ -53,11 +53,6 @@ public partial class DataBasesView : UserControl {
 		}
 	}
 
-	public void Label_PointerPressed(object? sender, PointerPressedEventArgs e) {
-		if(!adminPanel.Classes.Remove("invisible"))
-			adminPanel.Classes.Add("invisible");
-	}
-
 	private void Databases_OnDoubleTapped(object? sender, TappedEventArgs e) {
 		if(databases.SelectedItem is not null)
 			ViewModel.ConnectCommand.Execute(null);

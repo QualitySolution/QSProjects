@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using QS.DbManagement;
 using QS.DbManagement.Entities;
 using QS.Dialog;
-using QS.Project.Versioning;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
