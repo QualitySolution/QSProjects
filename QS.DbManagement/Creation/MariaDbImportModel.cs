@@ -1,9 +1,5 @@
 using MySqlConnector;
-using QS.DBScripts.Controllers;
 using QS.DBScripts.Models;
-using QS.Dialog;
-using System;
-using System.Threading;
 
 namespace QS.DbManagement.Creation {
 	/// <summary>
@@ -11,36 +7,37 @@ namespace QS.DbManagement.Creation {
 	/// Метод блокирует вызывающий поток — выносить в фон ответственность вызывающего кода.
 	/// </summary>
 	public class MariaDbImportModel : BaseMySqlDbLoader {
-		protected override Action<MySqlCommand> ExecutScript { get; set; }
+		private string DumpFilePath { get; }
 
 		public MariaDbImportModel(
 			DbDumpResources resources)
-			: base(resources)
-		{
-			ExecutScript = (cmd) => {
-				cmd.CommandTimeout = 0;
-				using(var backup = new MySqlBackup(cmd)) {
-					// ускоряет дамп
-					backup.Command.CommandText = "SET SESSION foreign_key_checks = 0, unique_checks = 0;";
-					backup.Command.ExecuteNonQuery();
+			: base(resources) {
+			DumpFilePath = resources.DumpFilePath;
+		}
 
-					bool started = false;
-					backup.ImportProgressChanged += (sender, args) => {
-						if(cancellationToken.IsCancellationRequested) {
-							((MySqlBackup)sender).StopAllProcess();
-							return;
-						}
-						if(!started) {
+		protected override void ExecutScript(MySqlCommand cmd) {
+			cmd.CommandTimeout = 0;
+			using(var backup = new MySqlBackup(cmd)) {
+				// ускоряет дамп
+				backup.Command.CommandText = "SET SESSION foreign_key_checks = 0, unique_checks = 0;";
+				backup.Command.ExecuteNonQuery();
 
-							logger.Debug("Предполагаем наличие {0} команд в скрипте.", args.TotalBytes);
-							progress?.Start(maxValue: args.TotalBytes, text: "Импорт дампа в базу данных");
-							started = true;
-						}
-						progress?.Update(args.CurrentBytes);
-					};
-					backup.ImportFromFile(resources.DumpFilePath);
-				}
-			};
+				bool started = false;
+				backup.ImportProgressChanged += (sender, args) => {
+					if(cancellationToken.IsCancellationRequested) {
+						((MySqlBackup)sender).StopAllProcess();
+						return;
+					}
+					if(!started) {
+
+						logger.Debug("Предполагаем наличие {0} команд в скрипте.", args.TotalBytes);
+						progress?.Start(maxValue: args.TotalBytes, text: "Импорт дампа в базу данных");
+						started = true;
+					}
+					progress?.Update(args.CurrentBytes);
+				};
+				backup.ImportFromFile(DumpFilePath);
+			}
 		}
 	}
 }

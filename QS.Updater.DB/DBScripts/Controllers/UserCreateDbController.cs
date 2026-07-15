@@ -52,7 +52,7 @@ namespace QS.DBScripts.Controllers
 					interaction: this,
 					cancellationToken: CancellationToken.None);
 
-				bool success = createModel.RunCreation(dbname);
+				bool success = createModel.RunCreation(dbname, null);
 				if(success)
 					interactive.ShowMessage(ImportanceLevel.Info, "Создание базы успешно завершено.\nЗайдите в программу под администратором для добавления пользователей.");
 			}

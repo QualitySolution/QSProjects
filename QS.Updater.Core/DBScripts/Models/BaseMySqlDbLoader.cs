@@ -26,12 +26,12 @@ namespace QS.DBScripts.Models {
 			this.progress = resources.Progress ?? throw new ArgumentNullException(nameof(resources.Progress));
 			this.interaction = resources.Interactions ?? throw new ArgumentNullException(nameof(resources.Interactions));
 			this.cancellationToken = resources.CancellationToken;
-
+			this.justCreated = resources.JustCreated;
 		}
 
 		/// <summary>
 		/// Метод блокирует вызывающий поток на время работы с базой
-		// Вынесение в фоновый поток — ответственность вызывающего кода
+		/// Вынесение в фоновый поток — ответственность вызывающего кода
 		/// </summary>
 		public bool RunCreation(string dbName, string dbTitle) {
 			using(var connectionDB = new MySqlConnection(connectionString)) {
@@ -82,7 +82,8 @@ namespace QS.DBScripts.Models {
 					if(FillBaseGuid) {
 						logger.Info("Генерируем BaseGuid");
 						cmd.CommandText =
-							"INSERT INTO base_parameters (name, str_value) VALUES ('BaseGuid', @guid)";
+							"INSERT INTO base_parameters (name, str_value) VALUES ('BaseGuid', @guid) " +
+							"ON DUPLICATE KEY UPDATE str_value = VALUES(str_value)";
 						cmd.Parameters.Clear();
 						cmd.Parameters.AddWithValue("@guid", Guid.NewGuid().ToString());
 						cmd.ExecuteNonQuery();
@@ -92,7 +93,8 @@ namespace QS.DBScripts.Models {
 					if(dbTitle != null) {
 						logger.Info("Генерируем BaseTitle");
 						cmd.CommandText =
-							"INSERT INTO base_parameters (name, str_value) VALUES ('BaseTitle', @title)";
+							"INSERT INTO base_parameters (name, str_value) VALUES ('BaseTitle', @title) " +
+							"ON DUPLICATE KEY UPDATE str_value = VALUES(str_value)";
 						cmd.Parameters.Clear();
 						cmd.Parameters.AddWithValue("@title", dbTitle);
 						cmd.ExecuteNonQuery();
@@ -129,6 +131,6 @@ namespace QS.DBScripts.Models {
 			return true;
 		}
 
-		protected abstract Action<MySqlCommand> ExecutScript { get; set; }
+		protected abstract void ExecutScript(MySqlCommand cmd);
 	}
 }

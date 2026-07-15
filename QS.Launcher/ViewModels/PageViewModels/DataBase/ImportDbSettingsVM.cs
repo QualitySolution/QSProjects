@@ -53,6 +53,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 						// строку подключения заполнит провайдер
 						CreationResources = new DbDumpResources {
 							Progress = args.Progress,
+							Interactions = args.ServiceProvider.GetRequiredService<IDbCreatorInteraction>(),
 							DumpFilePath = ImportDumpFilePath,
 							CancellationToken = args.CancellationToken }
 					};
