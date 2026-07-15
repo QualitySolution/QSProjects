@@ -1,23 +1,17 @@
 using MySqlConnector;
 using QS.DBScripts.Controllers;
 using QS.Dialog;
-using System;
-using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Xml.Linq;
 
 namespace QS.DBScripts.Models
 {
 	public class MySqlDbCreateModel : BaseMySqlDbLoader {
 		private readonly CreationScript script;
 
-		public bool FillBaseGuid { get; set; } = true;
-		protected override Action<MySqlCommand> ExecutScript { get; set; }
-
 		public MySqlDbCreateModel(MySqlCreationResources resources) : base(resources)
 		{
-			ExecutScript = GetExecuter();
+			script = resources.Script;
 		}
 
 		public MySqlDbCreateModel(
@@ -41,26 +35,23 @@ namespace QS.DBScripts.Models
 				  }
 			)
 		{
-			ExecutScript = GetExecuter();
+			this.script = script;
 		}
 
-		Action<MySqlCommand> GetExecuter() {
-			return (MySqlCommand cmd) => {
-				progress.Start(text: "Получаем скрипт создания базы");
+		protected override void ExecutScript(MySqlCommand cmd) {
+			progress.Start(text: "Получаем скрипт создания базы");
 
-				string sqlScript = script.GetSqlScript();
-				int predictedCount = Regex.Matches(sqlScript, ";").Count;
-				logger.Debug("Предполагаем наличие {0} команд в скрипте.", predictedCount);
-				progress.Start(maxValue: predictedCount);
-				cmd.CommandText = String.Format("USE `{0}` ;", dbName);
+			string sqlScript = script.GetSqlScript();
+			int predictedCount = Regex.Matches(sqlScript, ";").Count;
+			logger.Debug("Предполагаем наличие {0} команд в скрипте.", predictedCount);
+			progress.Start(maxValue: predictedCount);
 
-				var myscript = new MySqlScript(cmd.Connection, sqlScript);
-				myscript.StatementExecuted += Myscript_StatementExecuted;
+			var myscript = new MySqlScript(cmd.Connection, sqlScript);
+			myscript.StatementExecuted += Myscript_StatementExecuted;
 
-				progress.Add(text: $"Создаем таблицы");
-				var commands = myscript.Execute();
-				logger.Debug("Выполнено {0} SQL-команд.", commands);
-			};
+			progress.Add(text: $"Создаем таблицы");
+			var commands = myscript.Execute();
+			logger.Debug("Выполнено {0} SQL-команд.", commands);
 		}
 
 		private void Myscript_StatementExecuted(object sender, MySqlScriptEventArgs args)
