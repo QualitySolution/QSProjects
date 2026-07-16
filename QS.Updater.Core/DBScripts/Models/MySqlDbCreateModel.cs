@@ -9,7 +9,7 @@ namespace QS.DBScripts.Models
 	public class MySqlDbCreateModel : BaseMySqlDbLoader {
 		private readonly CreationScript script;
 
-		public MySqlDbCreateModel(MySqlCreationResources resources) : base(resources)
+		public MySqlDbCreateModel(EmbeddedCreationResources resources) : base(resources)
 		{
 			script = resources.Script;
 		}
@@ -21,7 +21,7 @@ namespace QS.DBScripts.Models
 			IDbCreatorInteraction interaction,
 			CancellationToken cancellationToken)
 			: base(
-				  new MySqlCreationResources {
+				  new EmbeddedCreationResources {
 					  Progress = progress,
 					  Interactions = interaction,
 					  CancellationToken = cancellationToken,

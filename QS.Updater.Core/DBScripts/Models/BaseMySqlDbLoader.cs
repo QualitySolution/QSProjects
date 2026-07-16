@@ -49,7 +49,7 @@ namespace QS.DBScripts.Models {
 						using(var rdr = cmd.ExecuteReader()) {
 							while(rdr.Read()) {
 								if(rdr[0].ToString() == dbName) {
-									if(interaction.AskDropExistingDatabase(dbName)) {
+									if(interaction.AskDropExistingDatabase(dbName) == ToDoWithExistingDatabase.Recreate) {
 										needDropBase = true;
 									}
 									hasBase = true;

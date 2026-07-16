@@ -44,7 +44,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 						ApplicationInfo = args.ServiceProvider.GetService<IApplicationInfo>(),
 						Interaction = args.ServiceProvider.GetRequiredService<IDbCreatorInteraction>(),
 						// строку подключения заполнит провайдер
-						CreationResources = new MySqlCreationResources {
+						CreationResources = new EmbeddedCreationResources {
 							Progress = args.Progress,
 							Interactions = args.ServiceProvider.GetRequiredService<IDbCreatorInteraction>(),
 							Script = args.ServiceProvider.GetRequiredService<IDbScriptsConfiguration>().MakeCreationScript(),

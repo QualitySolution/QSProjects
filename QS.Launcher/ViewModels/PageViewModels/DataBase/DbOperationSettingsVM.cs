@@ -37,7 +37,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		}
 
 		private void GoToProgress() {
-			var progress = ActivatorUtilities.GetServiceOrCreateInstance<CreateDataBaseProgressVM>(Services);
+			var progress = Services.GetService<CreateDataBaseProgressVM>();
 			progress.OperationTitle = Title;
 			progress.SetPipeline(Provider, Connection, BuildPipeline());
 			progress.OperationCompleted += () => OperationCompleted?.Invoke();
