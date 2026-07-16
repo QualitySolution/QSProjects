@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace QS.DBScripts.Controllers
 {
 	/// <summary>
@@ -5,8 +7,18 @@ namespace QS.DBScripts.Controllers
 	/// </summary>
 	public interface IDbCreatorInteraction
 	{
-		bool AskDropExistingDatabase(string dbName);
+		ToDoWithExistingDatabase AskDropExistingDatabase(string dbName);
 
 		void ReportError(string text, string lastExecutedStatement);
+	}
+
+	public enum ToDoWithExistingDatabase
+	{
+		[Display(Name = "Ничего не делать")]
+		Nothing,
+		[Display(Name = "Перезаписать")]
+		Rewrite,
+		[Display(Name = "Пересоздать")]
+		Recreate
 	}
 }

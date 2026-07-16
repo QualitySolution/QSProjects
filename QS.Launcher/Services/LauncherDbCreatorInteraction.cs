@@ -1,6 +1,8 @@
-using System;
+using Gamma.Utilities;
 using QS.DBScripts.Controllers;
 using QS.Dialog;
+using System;
+using System.Linq;
 
 namespace QS.Launcher.Services {
 	public class LauncherDbCreatorInteraction : IDbCreatorInteraction {
@@ -15,10 +17,13 @@ namespace QS.Launcher.Services {
 			this.message = message ?? throw new ArgumentNullException(nameof(message));
 		}
 
-		public bool AskDropExistingDatabase(string dbName) {
-			return question.Question(
-				$"База с именем `{dbName}` уже существует на сервере. Удалить существующую базу перед созданием новой?",
-				"Создание базы данных");
+		public ToDoWithExistingDatabase AskDropExistingDatabase(string dbName)
+		{
+			ToDoWithExistingDatabase[] options = new ToDoWithExistingDatabase[] { ToDoWithExistingDatabase.Rewrite, ToDoWithExistingDatabase.Recreate, ToDoWithExistingDatabase.Nothing };
+			var buttons = options.Select(o => o.GetEnumTitle()).ToArray();
+			string response = question.Question(buttons, $"База с именем `{dbName}` уже существует...", "Создание базы данных");
+			int idx = Array.IndexOf(buttons, response);
+			return idx >= 0 ? options[idx] : ToDoWithExistingDatabase.Nothing; // null при закрытии крестиком → Nothing
 		}
 
 		public void ReportError(string text, string lastExecutedStatement) {

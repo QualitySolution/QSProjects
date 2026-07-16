@@ -4,6 +4,7 @@ using QS.Cloud.Client.Clients;
 using QS.Cloud.Core;
 using QS.DbManagement;
 using QS.DbManagement.Entities;
+using QS.DBScripts.Controllers;
 using QS.Dialog;
 using QS.Project.Versioning;
 using System;
@@ -28,6 +29,7 @@ namespace QS.Cloud.Client.DataBase
 
 		public bool CanCreateDatabase => dbClient.CanConnect && IsAdmin;
 		public bool CanDropDatabase => CanCreateDatabase;
+		private const string MessageTittle = "Создание базы в облаке";
 
 		private LoginManagementCloudClient loginClient;
 		private DataBaseManagementCloudClient dbClient;
@@ -159,20 +161,43 @@ namespace QS.Cloud.Client.DataBase
 			new InvalidOperationException(string.IsNullOrEmpty(ex.Status.Detail) ? ex.Message : ex.Status.Detail);
 
 		#endregion
-	
+
+		#region Управление базами
 		public bool CreateDatabase(DbCreationRequest request) {
 			if(request == null)
 				throw new ArgumentNullException(nameof(request));
+			int BaseId;
+			var dbExistsResponse = dbClient.CheckDataBaseExists(request.DbName, request.ApplicationInfo);
+			if(dbExistsResponse.Exists) {
+				switch(request.Interaction.AskDropExistingDatabase(request.DbName)) {
+					case ToDoWithExistingDatabase.Nothing:
+						return false;
+					case ToDoWithExistingDatabase.Recreate:
+						if(!dbClient.DropDataBase(dbExistsResponse.BaseId, request.ApplicationInfo).Success) {
+							request.Interaction.ReportError("Не удалось удалить существующую базу: " + dbExistsResponse.BaseId, MessageTittle);
+							return false;
+						}
+						break;
+					case ToDoWithExistingDatabase.Rewrite:
+						if(!dbClient.ClearDataBase(dbExistsResponse.BaseId, request.ApplicationInfo).Success) {
+							request.Interaction.ReportError("Не удалось очистить существующую базу: " + dbExistsResponse.BaseId, MessageTittle);
+							return false;
+						}
+						break;
+				}
+				BaseId = dbExistsResponse.BaseId;
+			}
+			else {
+				BaseId = dbClient.CreateDataBase(request.DbName, request.DbTitle, request.ApplicationInfo).BaseId;
+			}
 
-			var response = dbClient.CreateDataBase(request.DbName, request.DbTitle, request.ApplicationInfo);
-
-			using(var session = CloudDbSession.Open(loginClient, response.BaseId)) {
+			using(var session = CloudDbSession.Open(loginClient, BaseId)) {
 				if(!session.Success) {
-					request.Interaction.ReportError("Не удалось открыть сессию к созданной базе: " + session.Description, "Создание базы в облаке");
+					request.Interaction.ReportError("Не удалось открыть сессию к созданной базе: " + session.Description, MessageTittle);
 					return false;
 				}
 				if(!session.IsAdmin) {
-					request.Interaction.ReportError("Вы не имеете прав администратора для наполнения базы", "Создание базы в облаке");
+					request.Interaction.ReportError("Вы не имеете прав администратора для наполнения базы", MessageTittle);
 					return false;
 				}
 
@@ -182,7 +207,7 @@ namespace QS.Cloud.Client.DataBase
 				return creationModel.RunCreation(session.Db.BaseName, request.DbTitle);
 			}
 		}
-	
+
 		public void Dispose()
 		{
 			loginClient.Dispose();
@@ -275,6 +300,7 @@ namespace QS.Cloud.Client.DataBase
 
 			return resp;
 		}
+		#endregion
 	}
 }
 
