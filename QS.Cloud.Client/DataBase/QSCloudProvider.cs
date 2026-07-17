@@ -29,7 +29,7 @@ namespace QS.Cloud.Client.DataBase
 
 		public bool CanCreateDatabase => dbClient.CanConnect && IsAdmin;
 		public bool CanDropDatabase => CanCreateDatabase;
-		private const string MessageTittle = "Создание базы в облаке";
+		private const string MessageTitle = "Создание базы в облаке";
 
 		private LoginManagementCloudClient loginClient;
 		private DataBaseManagementCloudClient dbClient;
@@ -166,45 +166,48 @@ namespace QS.Cloud.Client.DataBase
 		public bool CreateDatabase(DbCreationRequest request) {
 			if(request == null)
 				throw new ArgumentNullException(nameof(request));
-			int BaseId;
-			var dbExistsResponse = dbClient.CheckDataBaseExists(request.DbName, request.ApplicationInfo);
-			if(dbExistsResponse.Exists) {
-				switch(request.Interaction.AskDropExistingDatabase(request.DbName)) {
-					case ToDoWithExistingDatabase.Nothing:
+			try {
+				int baseId;
+				var dbExistsResponse = dbClient.CheckDataBaseExists(request.DbName, request.ApplicationInfo);
+				if(dbExistsResponse.Exists) {
+					switch(request.Interaction.AskDropExistingDatabase(request.DbName)) {
+						case ToDoWithExistingDatabase.Recreate:
+							if(!dbClient.DropDataBase(dbExistsResponse.BaseId, request.ApplicationInfo).Success) {
+								request.Interaction.ReportError("Не удалось удалить существующую базу: " + dbExistsResponse.BaseId, null, MessageTitle);
+								return false;
+							}
+							baseId = dbClient.CreateDataBase(request.DbName, request.DbTitle, request.ApplicationInfo).BaseId;
+							break;
+						case ToDoWithExistingDatabase.Rewrite:
+							request.CreationResources.PreserveUsers = true;
+							baseId = dbExistsResponse.BaseId;
+							break;
+						default: // Nothing
+							return false;
+					}
+				}
+				else {
+					baseId = dbClient.CreateDataBase(request.DbName, request.DbTitle, request.ApplicationInfo).BaseId;
+				}
+
+				using(var session = CloudDbSession.Open(loginClient, baseId)) {
+					if(!session.Success) {
+						request.Interaction.ReportError("Не удалось открыть сессию к созданной базе: " + session.Description, null, MessageTitle);
 						return false;
-					case ToDoWithExistingDatabase.Recreate:
-						if(!dbClient.DropDataBase(dbExistsResponse.BaseId, request.ApplicationInfo).Success) {
-							request.Interaction.ReportError("Не удалось удалить существующую базу: " + dbExistsResponse.BaseId, MessageTittle);
-							return false;
-						}
-						break;
-					case ToDoWithExistingDatabase.Rewrite:
-						if(!dbClient.ClearDataBase(dbExistsResponse.BaseId, request.ApplicationInfo).Success) {
-							request.Interaction.ReportError("Не удалось очистить существующую базу: " + dbExistsResponse.BaseId, MessageTittle);
-							return false;
-						}
-						break;
-				}
-				BaseId = dbExistsResponse.BaseId;
-			}
-			else {
-				BaseId = dbClient.CreateDataBase(request.DbName, request.DbTitle, request.ApplicationInfo).BaseId;
-			}
+					}
+					if(!session.IsAdmin) {
+						request.Interaction.ReportError("Вы не имеете прав администратора для наполнения базы", null, MessageTitle);
+						return false;
+					}
 
-			using(var session = CloudDbSession.Open(loginClient, BaseId)) {
-				if(!session.Success) {
-					request.Interaction.ReportError("Не удалось открыть сессию к созданной базе: " + session.Description, MessageTittle);
-					return false;
+					request.CreationResources.ConnectionString = session.ConnectionStringBuilder.ConnectionString;
+					request.CreationResources.JustCreated = true;
+					var creationModel = request.CreationFactory.Create(request.CreationResources);
+					return creationModel.RunCreation(session.Db.BaseName, request.DbTitle);
 				}
-				if(!session.IsAdmin) {
-					request.Interaction.ReportError("Вы не имеете прав администратора для наполнения базы", MessageTittle);
-					return false;
-				}
-
-				request.CreationResources.ConnectionString = session.ConnectionStringBuilder.ConnectionString;
-				request.CreationResources.JustCreated = true;
-				var creationModel = request.CreationFactory.Create(request.CreationResources);
-				return creationModel.RunCreation(session.Db.BaseName, request.DbTitle);
+			}
+			catch(RpcException ex) {
+				throw CloudError(ex);
 			}
 		}
 

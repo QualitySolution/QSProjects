@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Xml.Linq;
 
 namespace QS.DbManagement
 {
@@ -18,6 +19,8 @@ namespace QS.DbManagement
 		private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 		private static readonly string[] SystemDatabases = { "information_schema", "mysql", "performance_schema", "sys" };
+
+		private const string MessageTitle = "Создание базы данных";
 
 		readonly MySqlConnection connection;
 
@@ -169,10 +172,27 @@ namespace QS.DbManagement
 		public bool CreateDatabase(DbCreationRequest request)
 		{
 			EnsureOpen();
-
 			if(request == null)
 				throw new ArgumentNullException(nameof(request));
-			connection.Execute($"CREATE DATABASE IF NOT EXISTS `{request.DbName}`");
+
+			if(DoesDataBaseExist(request.DbName)) {
+				switch(request.Interaction.AskDropExistingDatabase(request.DbName)) {
+					case ToDoWithExistingDatabase.Recreate:
+						if(!DropDatabase(new DbInfo { BaseName = request.DbName }, request.ApplicationInfo)) {
+							request.Interaction.ReportError("Не удалось удалить существующую базу: " + request.DbName, null, MessageTitle);
+							return false;
+						}
+						connection.Execute($"CREATE DATABASE IF NOT EXISTS `{request.DbName}`");
+						break;
+					case ToDoWithExistingDatabase.Rewrite:
+						request.CreationResources.PreserveUsers = true;
+						break;
+					default: // Nothing
+						return false;
+				}
+			}
+			else
+				connection.Execute($"CREATE DATABASE IF NOT EXISTS `{request.DbName}`");
 
 			var connectionStringBuilder = new MySqlConnectionStringBuilder(ConnectionStringBuilder.ConnectionString) {
 				Database = request.DbName
@@ -183,12 +203,21 @@ namespace QS.DbManagement
 			return creationModel.RunCreation(request.DbName, request.DbTitle);
 		}
 
+		private bool DoesDataBaseExist(string dbName) {
+			int exists = connection.ExecuteScalar<int>(
+				"SELECT COUNT(*) FROM information_schema.SCHEMATA WHERE SCHEMA_NAME = @name;",
+				new { name = dbName });
+			if(exists > 0)
+				return true;
+			return false;
+		}
+
 		public bool DropDatabase(DbInfo database, IApplicationInfo applicationInfo)
 		{
 			EnsureOpen();
 
-			string sql = $"DROP DATABASE IF EXISTS `{database.BaseName}`";
-			return connection.Execute(sql) != 0;
+			connection.Execute($"DROP DATABASE IF EXISTS `{EscapeIdentifier(database.BaseName)}`");
+			return true;
 		}
 
 		/// <summary>
