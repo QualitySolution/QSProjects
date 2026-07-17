@@ -4,20 +4,10 @@ package QS.Cloud.Core;
 
 service DataBaseManagement{
 	rpc CheckDataBaseExists (CheckDataBaseExistsRequest) returns (CheckDataBaseExistsResponse);
-	rpc ClearDataBase (ClearDataBaseRequest) returns (ClearDataBaseResponse);
 	// Создать пустую базу
 	rpc CreateDataBase (CreateDataBaseRequest) returns (CreateDataBaseResponse);
 	// Удалить базу и очистить реестр
 	rpc DropDataBase (DropDataBaseRequest) returns (DropDataBaseResponse);
-}
-
-message ClearDataBaseRequest{
-	int32 base_id = 1;
-	uint32 product_id = 2;
-}
-
-message ClearDataBaseResponse{
-	bool success = 1;
 }
 
 message CheckDataBaseExistsRequest{

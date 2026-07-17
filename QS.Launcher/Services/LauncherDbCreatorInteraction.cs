@@ -21,7 +21,11 @@ namespace QS.Launcher.Services {
 		{
 			ToDoWithExistingDatabase[] options = new ToDoWithExistingDatabase[] { ToDoWithExistingDatabase.Rewrite, ToDoWithExistingDatabase.Recreate, ToDoWithExistingDatabase.Nothing };
 			var buttons = options.Select(o => o.GetEnumTitle()).ToArray();
-			string response = question.Question(buttons, $"База с именем `{dbName}` уже существует...", "Создание базы данных");
+			string response = question.Question(buttons,
+				$"База с именем `{dbName}` уже существует на сервере.\n" +
+				"Перезаписать - заменить содержимое базы, сохранив пользователей.\n" +
+				"Пересоздать - полностью удалить базу и создать заново.",
+				"Создание базы данных");
 			int idx = Array.IndexOf(buttons, response);
 			return idx >= 0 ? options[idx] : ToDoWithExistingDatabase.Nothing; // null при закрытии крестиком → Nothing
 		}

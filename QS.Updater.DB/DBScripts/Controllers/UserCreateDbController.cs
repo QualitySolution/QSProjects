@@ -1,4 +1,6 @@
+using Gamma.Utilities;
 using System;
+using System.Linq;
 using System.Threading;
 using QS.DBScripts.Models;
 using QS.DBScripts.ViewModels;
@@ -80,9 +82,18 @@ namespace QS.DBScripts.Controllers
 		//Создание идет в GUI-потоке (как и раньше), прогресс сам прокачивает событийный цикл,
 		//поэтому диалоги показываем напрямую.
 
-		public bool AskDropExistingDatabase(string dbName)
+		public ToDoWithExistingDatabase AskDropExistingDatabase(string dbName)
 		{
-			return interactive.Question($"База с именем `{dbName}` уже существует на сервере. Удалить существующую базу перед созданием новой?");
+			var options = new[] { ToDoWithExistingDatabase.Rewrite, ToDoWithExistingDatabase.Recreate, ToDoWithExistingDatabase.Nothing };
+			var buttons = options.Select(o => o.GetEnumTitle()).ToArray();
+			string response = interactive.Question(buttons,
+				$"База с именем `{dbName}` уже существует на сервере.\n" +
+				"Перезаписать - заменить содержимое базы, сохранив пользователей.\n" +
+				"Пересоздать - полностью удалить базу и создать заново.",
+				"Создание базы данных");
+			int idx = Array.IndexOf(buttons, response);
+			// null при закрытии окна крестиком
+			return idx >= 0 ? options[idx] : ToDoWithExistingDatabase.Nothing;
 		}
 
 		public void ReportError(string text, string lastExecutedStatement)

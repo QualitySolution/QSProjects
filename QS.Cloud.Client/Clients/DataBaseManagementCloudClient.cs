@@ -10,12 +10,6 @@ namespace QS.Cloud.Client.Clients {
 		{
 		}
 
-		public ClearDataBaseResponse ClearDataBase(int baseId, IApplicationInfo applicationInfo) {
-			var client = new DataBaseManagement.DataBaseManagementClient(Channel);
-			var request = new ClearDataBaseRequest { BaseId = baseId, ProductId = applicationInfo.ProductCode };
-			return client.ClearDataBase(request, headers);
-		}
-
 		public CheckDataBaseExistsResponse CheckDataBaseExists(string dbName, IApplicationInfo applicationInfo) {
 			var client = new DataBaseManagement.DataBaseManagementClient(Channel);
 			var request = new CheckDataBaseExistsRequest { Name = dbName, ProductId = applicationInfo.ProductCode };

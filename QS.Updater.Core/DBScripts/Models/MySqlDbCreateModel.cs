@@ -1,6 +1,7 @@
 using MySqlConnector;
 using QS.DBScripts.Controllers;
 using QS.Dialog;
+using System;
 using System.Text.RegularExpressions;
 using System.Threading;
 
@@ -37,6 +38,8 @@ namespace QS.DBScripts.Models
 		{
 			this.script = script;
 		}
+
+		protected override Version NewBaseVersion => script.Version;
 
 		protected override void ExecutScript(MySqlCommand cmd) {
 			progress.Start(text: "Получаем скрипт создания базы");

@@ -9,7 +9,7 @@ namespace QS.DBScripts.Controllers
 	{
 		ToDoWithExistingDatabase AskDropExistingDatabase(string dbName);
 
-		void ReportError(string text, string lastExecutedStatement);
+		void ReportError(string text, string message);
 	}
 
 	public enum ToDoWithExistingDatabase
