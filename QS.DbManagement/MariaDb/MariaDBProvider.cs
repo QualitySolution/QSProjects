@@ -185,7 +185,8 @@ namespace QS.DbManagement
 						connection.Execute($"CREATE DATABASE IF NOT EXISTS `{request.DbName}`");
 						break;
 					case ToDoWithExistingDatabase.Rewrite:
-						request.CreationResources.PreserveUsers = true;
+						// схему не трогаем: модель наполнения сама сохранит нужные данные, пересоздаст объекты и вернёт их
+						request.CreationResources.RewriteExisting = true;
 						break;
 					default: // Nothing
 						return false;

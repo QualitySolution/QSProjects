@@ -179,7 +179,8 @@ namespace QS.Cloud.Client.DataBase
 							baseId = dbClient.CreateDataBase(request.DbName, request.DbTitle, request.ApplicationInfo).BaseId;
 							break;
 						case ToDoWithExistingDatabase.Rewrite:
-							request.CreationResources.PreserveUsers = true;
+							// схему не трогаем: модель наполнения сама сохранит нужные данные, пересоздаст объекты и вернёт их
+							request.CreationResources.RewriteExisting = true;
 							baseId = dbExistsResponse.BaseId;
 							break;
 						default: // Nothing

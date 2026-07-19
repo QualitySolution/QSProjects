@@ -20,12 +20,14 @@ namespace QS.DBScripts.Models
 			CreationScript script,
 			IProgressBarDisplayable progress,
 			IDbCreatorInteraction interaction,
-			CancellationToken cancellationToken)
+			CancellationToken cancellationToken,
+			IDbRewriteModel rewriteModel = null)
 			: base(
 				  new EmbeddedCreationResources {
 					  Progress = progress,
 					  Interactions = interaction,
 					  CancellationToken = cancellationToken,
+					  RewriteModel = rewriteModel,
 					  ConnectionString = new MySqlConnectionStringBuilder {
 						  Server = server,
 						  Port = port,
