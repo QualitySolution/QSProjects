@@ -52,7 +52,8 @@ namespace QS.DBScripts.Controllers
 					creationScript,
 					Progress,
 					interaction: this,
-					cancellationToken: CancellationToken.None);
+					cancellationToken: CancellationToken.None,
+					rewriteModel: new TablePreservingRewriteModel(new[] { new PreservedTable("users", keyColumn: "login", "id") }));
 
 				bool success = createModel.RunCreation(dbname, null);
 				if(success)

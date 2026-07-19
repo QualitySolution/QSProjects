@@ -48,6 +48,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 							Progress = args.Progress,
 							Interactions = args.ServiceProvider.GetRequiredService<IDbCreatorInteraction>(),
 							Script = args.ServiceProvider.GetRequiredService<IDbScriptsConfiguration>().MakeCreationScript(),
+							RewriteModel = args.ServiceProvider.GetService<IDbRewriteModel>(),
 							CancellationToken = args.CancellationToken }
 					};
 					return args.Provider.CreateDatabase(request);
