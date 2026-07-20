@@ -14,8 +14,6 @@ namespace QS.DbManagement.Entities {
 
 		/// <summary>Чем наполнять созданную базу</summary>
 		public DbCreationFactory CreationFactory { get; set; }
-
-		public DbRewriteFactory RewriteFactory { get; set; }
 		public IApplicationInfo ApplicationInfo { get; set; }
 
 		public DbCreationResources CreationResources { get; set; }

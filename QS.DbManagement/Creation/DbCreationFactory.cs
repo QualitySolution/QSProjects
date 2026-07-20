@@ -5,16 +5,16 @@ using System.Reflection;
 namespace QS.DbManagement.Creation {
 	public class DbCreationFactory
 	{
-		private readonly DbResourcesModelMap<IDbCreatorModel> map;
+		private readonly DbResourcesCreationMap map;
 
-		public DbCreationFactory(DbResourcesModelMap<IDbCreatorModel> map) {
+		public DbCreationFactory(DbResourcesCreationMap map) {
 			this.map = map ?? throw new ArgumentNullException(nameof(map));
 		}
 
 		public IDbCreatorModel Create(DbCreationResources resources)
 		{
 			try {
-				return map.Resolve(resources);
+				return (IDbCreatorModel)map.Resolve(resources);
 			}
 			catch(TargetInvocationException ex) when(ex.InnerException != null) {
 				throw ex.InnerException;
