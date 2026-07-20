@@ -75,7 +75,7 @@
                 DoubleTapped="Databases_OnDoubleTapped">
                 <ListBox.ItemTemplate>
                     <DataTemplate x:DataType="dbme:DbInfo">
-                        <DockPanel MaxHeight="30" HorizontalAlignment="Stretch">
+                        <DockPanel HorizontalAlignment="Stretch">
                             <Button DockPanel.Dock="Right" Margin="4,0,0,0" Padding="8,0" VerticalAlignment="Center"
                                     Background="Transparent" BorderThickness="0" FontWeight="Bold" Content="⋮"
                                     IsVisible="{Binding $parent[ListBox].((vmdb:DataBasesVM)DataContext).CanManageDatabases}">
@@ -89,7 +89,11 @@
                                 </Button.Flyout>
                             </Button>
                             <Label DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" Content="{Binding Version}" />
-                            <Label Content="{Binding Title}" />
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Title}" />
+                                <TextBlock Text="{Binding BaseName}" FontSize="10" Foreground="Gray"
+                                    IsVisible="{Binding BaseName, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                            </StackPanel>
                         </DockPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

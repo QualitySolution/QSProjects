@@ -242,6 +242,7 @@ namespace QS.Cloud.Client.DataBase
 			{
 				Title = bi.BaseTitle,
 				BaseId = bi.BaseId,
+				BaseName = bi.BaseName,
 				Version = bi.BaseVersion
 			}).ToList();
 		}
