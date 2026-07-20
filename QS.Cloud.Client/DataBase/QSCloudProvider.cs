@@ -173,13 +173,17 @@ namespace QS.Cloud.Client.DataBase
 					switch(request.Interaction.AskDropExistingDatabase(request.DbName)) {
 						case ToDoWithExistingDatabase.Recreate:
 							if(!dbClient.DropDataBase(dbExistsResponse.BaseId, request.ApplicationInfo).Success) {
-								request.Interaction.ReportError("Не удалось удалить существующую базу: " + dbExistsResponse.BaseId, null, MessageTitle);
+								request.Interaction.ReportError("Не удалось удалить существующую базу: " + dbExistsResponse.BaseId, MessageTitle);
 								return false;
 							}
 							baseId = dbClient.CreateDataBase(request.DbName, request.DbTitle, request.ApplicationInfo).BaseId;
 							break;
 						case ToDoWithExistingDatabase.Rewrite:
-							request.CreationResources.PreserveUsers = true;
+							// облако пересоздаст пустую базу, сохранив записи реестра и права доступа
+							if(!dbClient.ClearDataBase(dbExistsResponse.BaseId, request.ApplicationInfo).Success) {
+								request.Interaction.ReportError("Не удалось очистить существующую базу: " + dbExistsResponse.BaseId, MessageTitle);
+								return false;
+							}
 							baseId = dbExistsResponse.BaseId;
 							break;
 						default: // Nothing
@@ -192,11 +196,11 @@ namespace QS.Cloud.Client.DataBase
 
 				using(var session = CloudDbSession.Open(loginClient, baseId)) {
 					if(!session.Success) {
-						request.Interaction.ReportError("Не удалось открыть сессию к созданной базе: " + session.Description, null, MessageTitle);
+						request.Interaction.ReportError("Не удалось открыть сессию к созданной базе: " + session.Description, MessageTitle);
 						return false;
 					}
 					if(!session.IsAdmin) {
-						request.Interaction.ReportError("Вы не имеете прав администратора для наполнения базы", null, MessageTitle);
+						request.Interaction.ReportError("Вы не имеете прав администратора для наполнения базы", MessageTitle);
 						return false;
 					}
 

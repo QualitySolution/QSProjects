@@ -9,6 +9,11 @@ namespace QS.Cloud.Client.Clients {
 						: base(basicAuthInfoProvider, "core.cloud.qsolution.ru", 443)
 		{
 		}
+		public ClearDataBaseResponse ClearDataBase(int baseId, IApplicationInfo applicationInfo) {
+			var client = new DataBaseManagement.DataBaseManagementClient(Channel);
+			var request = new ClearDataBaseRequest { BaseId = baseId, ProductId = applicationInfo.ProductCode };
+			return client.ClearDataBase(request, headers);
+		}
 
 		public CheckDataBaseExistsResponse CheckDataBaseExists(string dbName, IApplicationInfo applicationInfo) {
 			var client = new DataBaseManagement.DataBaseManagementClient(Channel);

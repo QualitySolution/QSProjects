@@ -179,20 +179,21 @@ namespace QS.DbManagement
 				switch(request.Interaction.AskDropExistingDatabase(request.DbName)) {
 					case ToDoWithExistingDatabase.Recreate:
 						if(!DropDatabase(new DbInfo { BaseName = request.DbName }, request.ApplicationInfo)) {
-							request.Interaction.ReportError("Не удалось удалить существующую базу: " + request.DbName, null, MessageTitle);
+							request.Interaction.ReportError("Не удалось удалить существующую базу: " + request.DbName, MessageTitle);
 							return false;
 						}
-						connection.Execute($"CREATE DATABASE IF NOT EXISTS `{request.DbName}`");
+						connection.Execute($"CREATE DATABASE `{EscapeIdentifier(request.DbName)}`");
 						break;
 					case ToDoWithExistingDatabase.Rewrite:
-						request.CreationResources.PreserveUsers = true;
+						connection.Execute($"DROP DATABASE IF EXISTS `{EscapeIdentifier(request.DbName)}`");
+						connection.Execute($"CREATE DATABASE `{EscapeIdentifier(request.DbName)}`");
 						break;
 					default: // Nothing
 						return false;
 				}
 			}
 			else
-				connection.Execute($"CREATE DATABASE IF NOT EXISTS `{request.DbName}`");
+				connection.Execute($"CREATE DATABASE `{EscapeIdentifier(request.DbName)}`");
 
 			var connectionStringBuilder = new MySqlConnectionStringBuilder(ConnectionStringBuilder.ConnectionString) {
 				Database = request.DbName
@@ -217,7 +218,26 @@ namespace QS.DbManagement
 			EnsureOpen();
 
 			connection.Execute($"DROP DATABASE IF EXISTS `{EscapeIdentifier(database.BaseName)}`");
+			CleanDatabasePrivileges(database.BaseName);
 			return true;
+		}
+
+		private void CleanDatabasePrivileges(string dbName) {
+			// в mysql.db имя может храниться с экранированными шаблонными символами (foo\_bar)
+			var names = new[] { dbName, dbName.Replace("_", "\\_").Replace("%", "\\%") }.Distinct().ToArray();
+			try {
+				connection.Execute(
+					"DELETE FROM mysql.db WHERE Db IN @names;" +
+					"DELETE FROM mysql.tables_priv WHERE Db IN @names;" +
+					"DELETE FROM mysql.columns_priv WHERE Db IN @names;" +
+					"DELETE FROM mysql.procs_priv WHERE Db IN @names;" +
+					"FLUSH PRIVILEGES;",
+					new { names });
+			}
+			catch(MySqlException ex) {
+				// у текущего пользователя может не быть прав на mysql.* - база уже удалена, не валим операцию
+				logger.Warn(ex, "Не удалось вычистить права удалённой базы {0}.", dbName);
+			}
 		}
 
 		/// <summary>
