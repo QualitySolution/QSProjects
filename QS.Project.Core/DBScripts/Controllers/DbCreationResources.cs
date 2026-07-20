@@ -8,6 +8,5 @@ namespace QS.DBScripts.Controllers {
 		public string ConnectionString { get; set; }
 		public CancellationToken CancellationToken { get; set; }
 		public bool JustCreated { get; set; } = false;
-		public bool PreserveUsers { get; set; } = false;
 	}
 }
