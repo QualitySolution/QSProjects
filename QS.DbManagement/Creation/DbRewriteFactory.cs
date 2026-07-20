@@ -3,15 +3,15 @@ using System;
 using System.Reflection;
 
 namespace QS.DbManagement.Creation {
-	public class DbCreationFactory
+	public class DbRewriteFactory
 	{
-		private readonly DbResourcesModelMap<IDbCreatorModel> map;
+		private readonly DbResourcesModelMap<IDbRewriteModel> map;
 
-		public DbCreationFactory(DbResourcesModelMap<IDbCreatorModel> map) {
+		public DbRewriteFactory(DbResourcesModelMap<IDbRewriteModel> map) {
 			this.map = map ?? throw new ArgumentNullException(nameof(map));
 		}
 
-		public IDbCreatorModel Create(DbCreationResources resources)
+		public IDbRewriteModel Create(DbCreationResources resources)
 		{
 			try {
 				return map.Resolve(resources);

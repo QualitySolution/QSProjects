@@ -13,16 +13,26 @@ using System.Collections.Generic;
 
 namespace QS.Launcher {
 	public static partial class DependencyInjection {
-		public static IServiceCollection AddLauncherDataBaseCreation(this IServiceCollection services, List<(Type res,Type creator)> resourceCratorMap)
+		public static IServiceCollection AddLauncherDataBaseCreation(
+			this IServiceCollection services,
+			Action<DbResourcesModelMap<IDbCreatorModel>> configureCreation,
+			Action<DbResourcesModelMap<IDbRewriteModel>> configureRewrite = null)
 		{
-			var map = new DbResourcesCreationMap();
-			foreach(var resourceCrator in resourceCratorMap) {
-				map.Register(resourceCrator.res, resourceCrator.creator);
-			}
+			if(configureCreation == null)
+				throw new ArgumentNullException(nameof(configureCreation));
+
+			var creationMap = new DbResourcesModelMap<IDbCreatorModel>();
+			configureCreation(creationMap);
+
+			// пустая мапа допустима: у приложения может не быть перезаписи с сохранением данных
+			var rewriteMap = new DbResourcesModelMap<IDbRewriteModel>();
+			configureRewrite?.Invoke(rewriteMap);
 
 			return services
-				.AddSingleton(map)
-				.AddSingleton<DbCreationFactory>();
+				.AddSingleton(creationMap)
+				.AddSingleton(rewriteMap)
+				.AddSingleton<DbCreationFactory>()
+				.AddSingleton<DbRewriteFactory>();
 		}
 
 		public static IServiceCollection AddLauncherViewModels(this IServiceCollection services) {

@@ -1,4 +1,5 @@
 using Gamma.Utilities;
+using MySqlConnector;
 using System;
 using System.Linq;
 using System.Threading;
@@ -46,16 +47,61 @@ namespace QS.DBScripts.Controllers
 		{
 			try {
 				ParseServer(server, out string host, out uint port);
+				var connectionStringBuilder = new MySqlConnectionStringBuilder {
+					Server = host,
+					Port = port,
+					UserID = login,
+					Password = password,
+					AllowUserVariables = true
+				};
 
-				var createModel = new MySqlDbCreateModel(
-					host, port, login, password,
-					creationScript,
-					Progress,
-					interaction: this,
-					cancellationToken: CancellationToken.None,
-					rewriteModel: new TablePreservingRewriteModel(new[] { new PreservedTable("users", keyColumn: "login", "id") }));
+				bool rewrite = false;
+				string escapedDb = dbname.Replace("`", "``");
+				using(var connection = new MySqlConnection(connectionStringBuilder.ConnectionString)) {
+					connection.Open();
+					using(var cmd = connection.CreateCommand()) {
+						cmd.CommandText = "SELECT COUNT(*) FROM information_schema.SCHEMATA WHERE SCHEMA_NAME = @name";
+						cmd.Parameters.AddWithValue("@name", dbname);
+						bool exists = Convert.ToInt32(cmd.ExecuteScalar()) > 0;
+						cmd.Parameters.Clear();
 
-				bool success = createModel.RunCreation(dbname, null);
+						if(exists) {
+							switch(AskDropExistingDatabase(dbname)) {
+								case ToDoWithExistingDatabase.Nothing:
+									return;
+								case ToDoWithExistingDatabase.Recreate:
+									cmd.CommandText = $"DROP DATABASE `{escapedDb}`";
+									cmd.ExecuteNonQuery();
+									cmd.CommandText = $"CREATE SCHEMA `{escapedDb}` DEFAULT CHARACTER SET utf8mb4";
+									cmd.ExecuteNonQuery();
+									break;
+								case ToDoWithExistingDatabase.Rewrite:
+									rewrite = true;
+									break;
+							}
+						}
+						else {
+							cmd.CommandText = $"CREATE SCHEMA `{escapedDb}` DEFAULT CHARACTER SET utf8mb4";
+							cmd.ExecuteNonQuery();
+						}
+					}
+				}
+
+				connectionStringBuilder.Database = dbname;
+				var resources = new EmbeddedCreationResources {
+					ConnectionString = connectionStringBuilder.ConnectionString,
+					Progress = Progress,
+					Interactions = this,
+					CancellationToken = CancellationToken.None,
+					Script = creationScript
+				};
+				var createModel = new MySqlDbCreateModel(resources);
+
+				bool success = rewrite
+					// легаси-путь без DI: диалог обещает сохранение пользователей при перезаписи
+					? new MySqlDbRewriteModel(resources, new[] { new PreservedTable("users", keyColumn: "login", "id") })
+						.RunRewrite(createModel, dbname, null)
+					: createModel.RunCreation(dbname, null);
 				if(success)
 					interactive.ShowMessage(ImportanceLevel.Info, "Создание базы успешно завершено.\nЗайдите в программу под администратором для добавления пользователей.");
 			}

@@ -35,12 +35,11 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		public override IEnumerable<DbCreationPhase> BuildPipeline() {
 			return new[] {
 				new DbCreationPhase("Создание базы данных", args => {
-					var factory = args.ServiceProvider.GetRequiredService<DbCreationFactory>();
-
 					var request = new DbCreationRequest {
 						DbName = DbName,
 						DbTitle = DbTitle,
-						CreationFactory = factory,
+						CreationFactory = args.ServiceProvider.GetRequiredService<DbCreationFactory>(),
+						RewriteFactory = args.ServiceProvider.GetRequiredService<DbRewriteFactory>(),
 						ApplicationInfo = args.ServiceProvider.GetService<IApplicationInfo>(),
 						Interaction = args.ServiceProvider.GetRequiredService<IDbCreatorInteraction>(),
 						// строку подключения заполнит провайдер
@@ -48,7 +47,6 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 							Progress = args.Progress,
 							Interactions = args.ServiceProvider.GetRequiredService<IDbCreatorInteraction>(),
 							Script = args.ServiceProvider.GetRequiredService<IDbScriptsConfiguration>().MakeCreationScript(),
-							RewriteModel = args.ServiceProvider.GetService<IDbRewriteModel>(),
 							CancellationToken = args.CancellationToken }
 					};
 					return args.Provider.CreateDatabase(request);
