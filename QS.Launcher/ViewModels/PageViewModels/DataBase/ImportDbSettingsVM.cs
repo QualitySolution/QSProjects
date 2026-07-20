@@ -42,11 +42,12 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			// Наполнение из дампа.
 			return new[] {
 				new DbCreationPhase("Импорт базы данных из дампа", args => {
+					var factory = args.ServiceProvider.GetRequiredService<DbCreationFactory>();
+
 					var request = new DbCreationRequest {
 						DbName = DbName,
 						DbTitle = DbTitle,
-						CreationFactory = args.ServiceProvider.GetRequiredService<DbCreationFactory>(),
-						RewriteFactory = args.ServiceProvider.GetRequiredService<DbRewriteFactory>(),
+						CreationFactory = factory,
 						ApplicationInfo = args.ServiceProvider.GetService<IApplicationInfo>(),
 						Interaction = args.ServiceProvider.GetRequiredService<IDbCreatorInteraction>(),
 						// строку подключения заполнит провайдер
@@ -54,6 +55,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 							Progress = args.Progress,
 							Interactions = args.ServiceProvider.GetRequiredService<IDbCreatorInteraction>(),
 							DumpFilePath = ImportDumpFilePath,
+							RewriteModel = args.ServiceProvider.GetService<IDbRewriteModel>(),
 							CancellationToken = args.CancellationToken }
 					};
 					return args.Provider.CreateDatabase(request);

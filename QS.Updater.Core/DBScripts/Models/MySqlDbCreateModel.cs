@@ -1,7 +1,9 @@
 using MySqlConnector;
 using QS.DBScripts.Controllers;
+using QS.Dialog;
 using System;
 using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace QS.DBScripts.Models
 {
@@ -13,7 +15,33 @@ namespace QS.DBScripts.Models
 			script = resources.Script;
 		}
 
-		public override Version NewBaseVersion => script.Version;
+		public MySqlDbCreateModel(
+			string server, uint port, string login, string password,
+			CreationScript script,
+			IProgressBarDisplayable progress,
+			IDbCreatorInteraction interaction,
+			CancellationToken cancellationToken,
+			IDbRewriteModel rewriteModel = null)
+			: base(
+				  new EmbeddedCreationResources {
+					  Progress = progress,
+					  Interactions = interaction,
+					  CancellationToken = cancellationToken,
+					  RewriteModel = rewriteModel,
+					  ConnectionString = new MySqlConnectionStringBuilder {
+						  Server = server,
+						  Port = port,
+						  UserID = login,
+						  Password = password,
+						  AllowUserVariables = true
+					  }.ConnectionString
+				  }
+			)
+		{
+			this.script = script;
+		}
+
+		protected override Version NewBaseVersion => script.Version;
 
 		protected override void ExecutScript(MySqlCommand cmd) {
 			progress.Start(text: "Получаем скрипт создания базы");

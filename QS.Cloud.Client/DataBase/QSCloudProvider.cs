@@ -168,7 +168,6 @@ namespace QS.Cloud.Client.DataBase
 				throw new ArgumentNullException(nameof(request));
 			try {
 				int baseId;
-				bool rewrite = false;
 				var dbExistsResponse = dbClient.CheckDataBaseExists(request.DbName, request.ApplicationInfo);
 				if(dbExistsResponse.Exists) {
 					switch(request.Interaction.AskDropExistingDatabase(request.DbName)) {
@@ -180,8 +179,8 @@ namespace QS.Cloud.Client.DataBase
 							baseId = dbClient.CreateDataBase(request.DbName, request.DbTitle, request.ApplicationInfo).BaseId;
 							break;
 						case ToDoWithExistingDatabase.Rewrite:
-							// схему не трогаем: модель перезаписи сама сохранит нужные данные, пересоздаст объекты и вернёт их
-							rewrite = true;
+							// схему не трогаем: модель наполнения сама сохранит нужные данные, пересоздаст объекты и вернёт их
+							request.CreationResources.RewriteExisting = true;
 							baseId = dbExistsResponse.BaseId;
 							break;
 						default: // Nothing
@@ -203,9 +202,8 @@ namespace QS.Cloud.Client.DataBase
 					}
 
 					request.CreationResources.ConnectionString = session.ConnectionStringBuilder.ConnectionString;
+					request.CreationResources.JustCreated = true;
 					var creationModel = request.CreationFactory.Create(request.CreationResources);
-					if(rewrite)
-						return request.RewriteFactory.Create(request.CreationResources).RunRewrite(creationModel, session.Db.BaseName, request.DbTitle);
 					return creationModel.RunCreation(session.Db.BaseName, request.DbTitle);
 				}
 			}

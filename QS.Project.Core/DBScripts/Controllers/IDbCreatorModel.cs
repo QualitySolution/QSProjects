@@ -1,5 +1,3 @@
-using System;
-
 namespace QS.DBScripts.Controllers
 {
 	/// <summary>
@@ -8,8 +6,5 @@ namespace QS.DBScripts.Controllers
 	public interface IDbCreatorModel
 	{
 		bool RunCreation(string dbName, string dbTitle);
-
-		/// <summary>Версия базы, которую даст наполнение. null - наполнителю версия неизвестна (например дамп)</summary>
-		Version NewBaseVersion { get; }
 	}
 }
