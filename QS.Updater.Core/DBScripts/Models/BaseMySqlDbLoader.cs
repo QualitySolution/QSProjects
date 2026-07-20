@@ -15,8 +15,7 @@ namespace QS.DBScripts.Models {
 		protected readonly IDbCreatorInteraction interaction;
 		protected readonly CancellationToken cancellationToken;
 		private readonly bool justCreated;
-		private readonly bool rewriteExisting;
-		private readonly IDbRewriteModel rewriteModel;
+		private readonly bool preserveUsers;
 
 		public bool FillBaseGuid { get; set; } = true;
 		protected string lastExecutedStatement = "";
@@ -31,8 +30,7 @@ namespace QS.DBScripts.Models {
 			this.interaction = resources.Interactions ?? throw new ArgumentNullException(nameof(resources.Interactions));
 			this.cancellationToken = resources.CancellationToken;
 			this.justCreated = resources.JustCreated;
-			this.rewriteExisting = resources.RewriteExisting;
-			this.rewriteModel = resources.RewriteModel;
+			this.preserveUsers = resources.PreserveUsers;
 		}
 
 		protected virtual Version NewBaseVersion => null;
@@ -42,7 +40,7 @@ namespace QS.DBScripts.Models {
 		/// Вынесение в фоновый поток — ответственность вызывающего кода
 		/// </summary>
 		public bool RunCreation(string dbName, string dbTitle) {
-			bool needRewrite = rewriteExisting;
+			bool needPreserveUsers = preserveUsers;
 			using(var connectionDB = new MySqlConnection(connectionString)) {
 				try {
 					logger.Info("Connecting to MySQL...");
@@ -73,7 +71,7 @@ namespace QS.DBScripts.Models {
 									needDropBase = true;
 									break;
 								case ToDoWithExistingDatabase.Rewrite:
-									needRewrite = true;
+									needPreserveUsers = true;
 									break;
 							}
 						}
@@ -96,14 +94,11 @@ namespace QS.DBScripts.Models {
 
 					cmd.ExecuteNonQuery();
 
-					bool hasPreservedData = false;
-					if(needRewrite) {
-						if(rewriteModel != null) {
-							progress.Add(text: "Сохраняем данные существующей базы");
-							hasPreservedData = rewriteModel.Backup(cmd);
-						}
-						// если сохранять нечего, перезапись эквивалентна пересозданию и версия не важна
-						if(hasPreservedData && !VersionMatches(cmd, out string versionError)) {
+					List<Dictionary<string, object>> savedUsers = null;
+					if(needPreserveUsers) {
+						savedUsers = ReadUsersTable(cmd);
+						// если users нет - сохранять нечего, перезапись эквивалентна пересозданию и версия не важна
+						if(savedUsers != null && !VersionMatches(cmd, out string versionError)) {
 							interaction.ReportError(versionError, lastExecutedStatement);
 							return false;
 						}
@@ -112,10 +107,8 @@ namespace QS.DBScripts.Models {
 
 					ExecutScript(cmd);
 
-					if(hasPreservedData) {
-						progress.Add(text: "Восстанавливаем сохранённые данные");
-						rewriteModel.Restore(cmd);
-					}
+					if(savedUsers != null && savedUsers.Count > 0)
+						RestoreUsers(cmd, savedUsers);
 
 					if(FillBaseGuid) {
 						logger.Info("Генерируем BaseGuid");
@@ -146,7 +139,7 @@ namespace QS.DBScripts.Models {
 				}
 				catch(InvalidCastException ex) {
 					logger.Error(ex, "Ошибка подключения к серверу.");
-					interaction.ReportError("Ошибка в работе с MariaDB 10.10", lastExecutedStatement);
+					interaction.ReportError("Ощибка в работе с MariaDB 10.10", lastExecutedStatement);
 					return false;
 				}
 				catch(MySqlException ex) {
@@ -171,7 +164,28 @@ namespace QS.DBScripts.Models {
 
 		protected abstract void ExecutScript(MySqlCommand cmd);
 
-		#region Перезапись существующей базы
+		#region Перезапись с сохранением пользователей
+
+		/// <returns>null - таблицы users в базе нет</returns>
+		private List<Dictionary<string, object>> ReadUsersTable(MySqlCommand cmd) {
+			cmd.Parameters.Clear();
+			cmd.CommandText = "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = 'users'";
+			if(Convert.ToInt32(cmd.ExecuteScalar()) == 0)
+				return null;
+
+			logger.Info("Сохраняем пользователей существующей базы.");
+			var rows = new List<Dictionary<string, object>>();
+			cmd.CommandText = "SELECT * FROM users";
+			using(var rdr = cmd.ExecuteReader()) {
+				while(rdr.Read()) {
+					var row = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+					for(int i = 0; i < rdr.FieldCount; i++)
+						row[rdr.GetName(i)] = rdr.IsDBNull(i) ? null : rdr.GetValue(i);
+					rows.Add(row);
+				}
+			}
+			return rows;
+		}
 
 		/// <summary>
 		/// Схема другой версии после перезаписи получила бы номер версии нового наполнения без прогона миграций,
@@ -194,7 +208,7 @@ namespace QS.DBScripts.Models {
 			}
 
 			if(current == null || !Version.TryParse(current, out var currentVersion)) {
-				error = "Не удалось определить версию существующей базы.\nПерезапись с сохранением данных невозможна.";
+				error = "Не удалось определить версию существующей базы.\nПерезапись с сохранением пользователей невозможна.";
 				return false;
 			}
 			if(currentVersion.Major != newVersion.Major || currentVersion.Minor != newVersion.Minor) {
@@ -247,6 +261,54 @@ namespace QS.DBScripts.Models {
 			}
 			cmd.CommandText = "SET FOREIGN_KEY_CHECKS = 1";
 			cmd.ExecuteNonQuery();
+		}
+
+		private void RestoreUsers(MySqlCommand cmd, List<Dictionary<string, object>> savedUsers) {
+			logger.Info("Восстанавливаем {0} пользователей.", savedUsers.Count);
+			progress.Add(text: "Восстанавливаем пользователей");
+			cmd.Parameters.Clear();
+
+			var newColumns = new List<string>();
+			cmd.CommandText = "SELECT column_name FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'users'";
+			using(var rdr = cmd.ExecuteReader()) {
+				while(rdr.Read())
+					newColumns.Add(rdr.GetString(0));
+			}
+			if(newColumns.Count == 0) {
+				logger.Warn("Наполнение не создало таблицу users - восстанавливать пользователей некуда.");
+				return;
+			}
+
+			// пересечение колонок переживает изменение схемы users между наполнениями;
+			// id не переносим - автоинкремент выдаст новые, чтобы не столкнуться с id пользователей из наполнения
+			var columns = savedUsers[0].Keys
+				.Intersect(newColumns, StringComparer.OrdinalIgnoreCase)
+				.Where(c => !string.Equals(c, "id", StringComparison.OrdinalIgnoreCase))
+				.ToList();
+			if(columns.Count == 0)
+				return;
+			bool hasLogin = columns.Contains("login", StringComparer.OrdinalIgnoreCase);
+
+			string columnList = string.Join(", ", columns.Select(c => $"`{c}`"));
+			string valueList = string.Join(", ", columns.Select((c, i) => $"@p{i}"));
+
+			foreach(var row in savedUsers) {
+				cmd.Parameters.Clear();
+				for(int i = 0; i < columns.Count; i++)
+					cmd.Parameters.AddWithValue($"@p{i}", row.TryGetValue(columns[i], out var value) ? value ?? DBNull.Value : DBNull.Value);
+
+				if(hasLogin) {
+					// пользователи с тем же login уже пришли из наполнения (например из дампа) - их не перезаписываем
+					cmd.Parameters.AddWithValue("@login", row["login"] ?? DBNull.Value);
+					cmd.CommandText = $"INSERT INTO users ({columnList}) " +
+						$"SELECT {valueList} FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM users WHERE login = @login)";
+				}
+				else {
+					cmd.CommandText = $"INSERT INTO users ({columnList}) VALUES ({valueList})";
+				}
+				cmd.ExecuteNonQuery();
+			}
+			cmd.Parameters.Clear();
 		}
 
 		#endregion
