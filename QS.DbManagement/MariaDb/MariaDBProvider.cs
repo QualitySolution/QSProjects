@@ -175,6 +175,7 @@ namespace QS.DbManagement
 			if(request == null)
 				throw new ArgumentNullException(nameof(request));
 
+			bool rewrite = false;
 			if(DoesDataBaseExist(request.DbName)) {
 				switch(request.Interaction.AskDropExistingDatabase(request.DbName)) {
 					case ToDoWithExistingDatabase.Recreate:
@@ -185,8 +186,8 @@ namespace QS.DbManagement
 						connection.Execute($"CREATE DATABASE IF NOT EXISTS `{request.DbName}`");
 						break;
 					case ToDoWithExistingDatabase.Rewrite:
-						// схему не трогаем: модель наполнения сама сохранит нужные данные, пересоздаст объекты и вернёт их
-						request.CreationResources.RewriteExisting = true;
+						// схему не трогаем: модель перезаписи сама сохранит нужные данные, пересоздаст объекты и вернёт их
+						rewrite = true;
 						break;
 					default: // Nothing
 						return false;
@@ -199,8 +200,9 @@ namespace QS.DbManagement
 				Database = request.DbName
 			};
 			request.CreationResources.ConnectionString = connectionStringBuilder.ConnectionString;
-			request.CreationResources.JustCreated = true;
 			var creationModel = request.CreationFactory.Create(request.CreationResources);
+			if(rewrite)
+				return request.RewriteFactory.Create(request.CreationResources).RunRewrite(creationModel, request.DbName, request.DbTitle);
 			return creationModel.RunCreation(request.DbName, request.DbTitle);
 		}
 

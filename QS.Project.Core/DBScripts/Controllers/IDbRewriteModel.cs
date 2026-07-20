@@ -1,19 +1,10 @@
-using System.Data;
-
 namespace QS.DBScripts.Controllers {
 	/// <summary>
-	/// Что из существующей базы должно пережить перезапись и как это вернуть после наполнения
+	/// Перезапись существующей базы: сохраняет данные, которые должны пережить перезапись,
+	/// пересоздаёт содержимое базы переданной моделью наполнения и возвращает сохранённое обратно
 	/// </summary>
 	public interface IDbRewriteModel {
-		/// <summary>
-		/// Прочитать сохраняемые данные, вызывается до удаления объектов схемы
-		/// </summary>
-		/// <returns>true - есть что вернуть после наполнения</returns>
-		bool Backup(IDbCommand cmd);
-
-		/// <summary>
-		/// Вернуть сохранённые данные в базу
-		/// </summary>
-		void Restore(IDbCommand cmd);
+		/// <returns>false - перезапись прервана (ошибка или несовпадение версий)</returns>
+		bool RunRewrite(IDbCreatorModel creationModel, string dbName, string dbTitle);
 	}
 }

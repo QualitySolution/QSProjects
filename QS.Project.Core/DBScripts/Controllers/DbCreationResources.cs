@@ -7,8 +7,5 @@ namespace QS.DBScripts.Controllers {
 		public IDbCreatorInteraction Interactions { get; set; }
 		public string ConnectionString { get; set; }
 		public CancellationToken CancellationToken { get; set; }
-		public bool JustCreated { get; set; } = false;
-		public bool RewriteExisting { get; set; } = false;
-		public IDbRewriteModel RewriteModel { get; set; }
 	}
 }
