@@ -35,37 +35,31 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			if(!CanWrite)
 				throw new UnauthorizedAccessException($"У пользователя нет прав на запись в базу {LauncherBaseName}");
 
-			var items = new DataTable();
-
-			using(MySqlConnection connection = new MySqlConnection(ConnectionString)) {
+			using(var connection = new MySqlConnection(ConnectionString)) {
 				connection.Open();
 
-				var databases = connection.Query<string>("SHOW DATABASES").ToList();
+				var databases = connection.Query<string>("SHOW DATABASES")
+					.Except(SystemDatabases, StringComparer.OrdinalIgnoreCase)
+					.ToList();
 
-				connection.Execute(@"
-				 CREATE TEMPORARY TABLE bases_stage (
-				     account_id INT,
-				     product_id INT,
-				     base_title VARCHAR(255),
-				     base_name  VARCHAR(255),
-				     version    VARCHAR(255)
-				 )");
+				var rows = new List<BaseRow>();
 
-				(MySqlBulkCopy basesBulk, DataTable table) = GetBasesBulk(connection, "bases_stage");
-				foreach(var dbName in databases.Except(SystemDatabases, StringComparer.OrdinalIgnoreCase)) {
+				foreach(var dbName in databases) {
 					byte? productCode = null;
 					string version = null;
 					string title = null;
 					try {
-						var rows = connection.Query<(string name, string str_value)>(
-							$"SELECT name, str_value FROM `{dbName}`.base_parameters WHERE name IN ('ProductCode', 'version', 'BaseTitle')").ToList();
-						foreach(var row in rows) {
-							if(string.Equals(row.name, "ProductCode", StringComparison.OrdinalIgnoreCase))
-								productCode = Convert.ToByte(row.str_value);
-							else if(string.Equals(row.name, "version", StringComparison.OrdinalIgnoreCase))
-								version = row.str_value;
-							else if(string.Equals(row.name, "BaseTitle", StringComparison.OrdinalIgnoreCase))
-								title = row.str_value;
+						var parameters = connection.Query(
+							$"SELECT name, str_value FROM `{dbName}`.base_parameters WHERE name IN ('ProductCode', 'version', 'BaseTitle')");
+						foreach(var row in parameters) {
+							string name = row.name;
+							string value = row.str_value;
+							if(string.Equals(name, "ProductCode", StringComparison.OrdinalIgnoreCase))
+								productCode = Convert.ToByte(value);
+							else if(string.Equals(name, "version", StringComparison.OrdinalIgnoreCase))
+								version = value;
+							else if(string.Equals(name, "BaseTitle", StringComparison.OrdinalIgnoreCase))
+								title = value;
 						}
 					}
 					catch(MySqlException ex) {
@@ -73,45 +67,48 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 						continue;
 					}
 
-					if((productCode != expectedProductCode))
+					if(productCode != expectedProductCode)
 						continue;
 
-					table.Rows.Add(0, productCode, title, dbName, version);
-				}
-				using(var reader = table.CreateDataReader()) {
-					var result = basesBulk.WriteToServer(reader);
-					if(result.Warnings.Count > 0)
-						throw new InvalidOperationException($"bulk copy warnings: {result.Warnings.Count}");
+					rows.Add(new BaseRow(0, productCode.Value, title, dbName, version));
 				}
 
-				connection.Execute(@"
-					INSERT INTO bases (account_id, product_id, base_title, base_name, version)
-					SELECT account_id, product_id, base_title, base_name, version
-					FROM bases_stage
-					ON DUPLICATE KEY UPDATE
-					    base_title = VALUES(base_title),
-					    base_name  = VALUES(base_name),
-					    version    = VALUES(version)");
+				if(rows.Count == 0)
+					return;
+
+				UpsertBases(connection, rows);
 			}
 		}
-		private (MySqlBulkCopy, DataTable) GetBasesBulk(MySqlConnection connection, string baseName)
-		{
-			var basesBulk = new MySqlBulkCopy(connection) { DestinationTableName = baseName };
+		private void UpsertBases(MySqlConnection connection, IList<BaseRow> rows, MySqlTransaction tx = null) {
+			const int chunkSize = 500;
 
-			basesBulk.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(0, "account_id"));
-			basesBulk.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(1, "product_id"));
-			basesBulk.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(2, "base_title"));
-			basesBulk.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(3, "base_name"));
-			basesBulk.ColumnMappings.Add(new MySqlBulkCopyColumnMapping(4, "version"));
+			for(int offset = 0; offset < rows.Count; offset += chunkSize) {
+				var chunk = rows.Skip(offset).Take(chunkSize).ToList();
 
-			var table = new DataTable();
-			table.Columns.Add("account_id", typeof(int));
-			table.Columns.Add("product_id", typeof(int));
-			table.Columns.Add("base_title", typeof(string));
-			table.Columns.Add("base_name", typeof(string));
-			table.Columns.Add("version", typeof(string));
+				var sb = new StringBuilder(
+					"INSERT INTO bases (account_id, product_id, base_title, base_name, version) VALUES ");
+				var p = new DynamicParameters();
 
-			return (basesBulk, table);
+				for(int i = 0; i < chunk.Count; i++) {
+					object[] values = { chunk[i].AccountId, chunk[i].ProductId, chunk[i].Title, chunk[i].Name, chunk[i].Version };
+
+					sb.Append(i > 0 ? ",(" : "(");
+					for(int c = 0; c < values.Length; c++) {
+						string key = $"p{i}_{c}";
+						if(c > 0) sb.Append(',');
+						sb.Append('@').Append(key);
+						p.Add(key, values[c]);
+					}
+					sb.Append(')');
+				}
+
+				sb.Append(@" ON DUPLICATE KEY UPDATE
+					base_title = VALUES(base_title),
+					base_name  = VALUES(base_name),
+					version    = VALUES(version)");
+
+				connection.Execute(sb.ToString(), p, tx);
+			}
 		}
 
 		public IEnumerable<DbInfo> GetBases(string login) {
