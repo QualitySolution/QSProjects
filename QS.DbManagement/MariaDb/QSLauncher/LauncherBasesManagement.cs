@@ -1,4 +1,5 @@
 using Dapper;
+using DynamicData.Aggregation;
 using MySqlConnector;
 using QS.DbManagement.Entities;
 using QS.Project.Versioning;
@@ -20,13 +21,16 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 		private bool CanWrite;
 		private bool GlobalAdmin;
 		private string ConnectionString;
+		private int ProductId;
 
-		public LauncherBasesManagement(MySqlConnectionStringBuilder connectionBuilder, bool canWrite) {
+		public LauncherBasesManagement(MySqlConnectionStringBuilder connectionBuilder, bool canWrite, string login, int productId) {
 			connectionBuilder.Database = LauncherBaseName;
 			connectionBuilder.AllowLoadLocalInfile = true;
 			ConnectionString = connectionBuilder.ConnectionString;
 
 			CanWrite = canWrite;
+
+			ProductId = productId;
 		}
 
 		public void SyncBases(byte expectedProductCode) {
@@ -46,7 +50,7 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 				     product_id INT,
 				     base_title VARCHAR(255),
 				     base_name  VARCHAR(255),
-				     version    INT
+				     version    VARCHAR(255)
 				 )");
 
 				(MySqlBulkCopy basesBulk, DataTable table) = GetBasesBulk(connection, "bases_stage");
@@ -77,7 +81,7 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 					table.Rows.Add(0, productCode, title, dbName, version);
 				}
 				using(var reader = table.CreateDataReader()) {
-					var result = basesBulk.WriteToServer(items);
+					var result = basesBulk.WriteToServer(reader);
 					if(result.Warnings.Count > 0)
 						throw new InvalidOperationException($"bulk copy warnings: {result.Warnings.Count}");
 				}
@@ -112,7 +116,7 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			return (basesBulk, table);
 		}
 
-		public IEnumerable<DbInfo> GetBases(string login, int productId) {
+		public IEnumerable<DbInfo> GetBases(string login) {
 			using(MySqlConnection connection = new MySqlConnection(ConnectionString)) {
 				connection.Open();
 				var sql = @"
@@ -122,7 +126,7 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 					JOIN `server_users` ON `base_access`.`user_id` = `server_users`.`id`
 					WHERE `server_users`.`login`= @login
 						AND `bases`.`product_id` = @productId;";
-				return connection.Query<DbInfo>(sql, new { login, productId });
+				return connection.Query<DbInfo>(sql, new { login, ProductId });
 			}
 		}
 	}
