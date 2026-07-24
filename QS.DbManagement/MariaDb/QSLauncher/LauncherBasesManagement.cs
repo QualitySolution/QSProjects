@@ -1,27 +1,24 @@
 using Dapper;
-using DynamicData.Aggregation;
 using MySqlConnector;
 using QS.DbManagement.Entities;
-using QS.Project.Versioning;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace QS.DbManagement.MariaDb.QSLauncher {
-	internal class LauncherBasesManagement
-	{
+	internal class LauncherBasesManagement {
 		private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 		private const string LauncherBaseName = "QSLauncher";
 		private static readonly string[] SystemDatabases = { "information_schema", "mysql", "performance_schema", "sys" };
+		static readonly string[] BaseColumns = { "account_id", "product_id", "base_title", "base_name", "version" };
+		static readonly string[] BaseDependencies = { "sessions", "api_tokens", "base_access", "bases" }; // базы последнии
 
 		private bool CanWrite;
-		private bool GlobalAdmin;
 		private string ConnectionString;
 		private int ProductId;
+		private LauncherUserInfo UserInfo;
 
 		public LauncherBasesManagement(MySqlConnectionStringBuilder connectionBuilder, bool canWrite, string login, int productId) {
 			connectionBuilder.Database = LauncherBaseName;
@@ -29,6 +26,7 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			ConnectionString = connectionBuilder.ConnectionString;
 
 			CanWrite = canWrite;
+			UserInfo = GeLauncherUserInfo(login);
 
 			ProductId = productId;
 		}
@@ -127,6 +125,70 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 					WHERE `server_users`.`login`= @login
 						AND `bases`.`product_id` = @productId;";
 				return connection.Query<DbInfo>(sql, new { login, ProductId });
+			}
+		}
+
+		public (int, string) SyncWithCreation(DbInfo dbInfo) {
+			using(var connection = new MySqlConnection(ConnectionString)) {
+				connection.Open();
+				var baseGuid = Guid.NewGuid().ToString();
+
+				using(var transaction = connection.BeginTransaction()) {
+
+					var insertBaseSql =
+						"INSERT INTO bases (account_id, base_title, base_name, product_id, real_name, base_guid) " +
+						"VALUES (@account_id, @base_title, @base_name, @product_id, @real_name, @base_guid);";
+					connection.Execute(insertBaseSql, new {
+						account_id = UserInfo.AccountId,
+						base_title = dbInfo.Title,
+						base_name = dbInfo.BaseName,
+						product_id = ProductId,
+						real_name = dbInfo.BaseName,
+						base_guid = baseGuid,
+					}, transaction);
+
+					var baseId = connection.ExecuteScalar<int>(
+						"SELECT LAST_INSERT_ID();", transaction: transaction);
+
+					connection.Execute(
+						"INSERT INTO base_access (user_id, base_id, admin) " +
+						"VALUES (@user_id, @base_id, 1);",
+						new { user_id = UserInfo.Id, base_id = baseId }, transaction); //может вынести в LauncherUsersManagement
+
+					transaction.Commit();
+					return (baseId, baseGuid);
+				}
+			}
+		}
+
+		public bool SyncWithDelete(DbInfo dbInfo) {
+			using(var connection = new MySqlConnection(ConnectionString)) {
+				connection.Open();
+				var sb = new StringBuilder();
+				foreach(var dependency in BaseDependencies)
+					sb.Append($"DELETE FROM {dependency} WHERE base_id = @id; ");
+
+				connection.Execute(sb.ToString(), new { id = dbInfo.BaseId });
+
+				logger.Info(
+					"Удалена база {RealName} на сервере {Server} пользователем {UserId}",
+					dbInfo.BaseName, UserInfo.Id);
+
+				return true;
+			}
+		}
+
+		private LauncherUserInfo GeLauncherUserInfo(string login) {
+			using(var connection = new MySqlConnection(ConnectionString)) {
+				var query = $@"SELECT `cloud_users`.`id` as Id, `cloud_users`.`login` as Login, `cloud_users`.`password` as PasswordHash, 
+       				`accounts`.`id` as AccountId, accounts.login as AccountName, cloud_users.is_account_admin as IsAccountAdmin
+					FROM `cloud_users` JOIN accounts ON accounts.id = `cloud_users`.`account_id` 
+					WHERE `cloud_users`.`login` = @login;";
+				var userInfo = connection.QueryFirstOrDefault<LauncherUserInfo>(query, new { login = login });
+				if(userInfo == null)
+					return null;
+
+				return userInfo;
 			}
 		}
 	}
