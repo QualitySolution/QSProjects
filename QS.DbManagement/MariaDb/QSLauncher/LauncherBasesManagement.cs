@@ -18,16 +18,15 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 		private bool CanWrite;
 		private string ConnectionString;
 		private int ProductId;
-		private LauncherUserInfo UserInfo;
+		private string AccountId;
 
-		public LauncherBasesManagement(MySqlConnectionStringBuilder connectionBuilder, bool canWrite, string login, int productId) {
+		public LauncherBasesManagement(MySqlConnectionStringBuilder connectionBuilder, bool canWrite, string accountId, int productId) {
 			connectionBuilder.Database = LauncherBaseName;
 			connectionBuilder.AllowLoadLocalInfile = true;
 			ConnectionString = connectionBuilder.ConnectionString;
 
 			CanWrite = canWrite;
-			UserInfo = GeLauncherUserInfo(login);
-
+			AccountId = accountId;
 			ProductId = productId;
 		}
 
@@ -90,7 +89,7 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 				var p = new DynamicParameters();
 
 				for(int i = 0; i < chunk.Count; i++) {
-					object[] values = { chunk[i].AccountId, chunk[i].ProductId, chunk[i].Title, chunk[i].Name, chunk[i].Version };
+					object[] values = { chunk[i].AccountId, chunk[i].ProductId, chunk[i].Title, chunk[i].Name, chunk[i].Version }; // для расширения и универсальности надо этот массив определять вне
 
 					sb.Append(i > 0 ? ",(" : "(");
 					for(int c = 0; c < values.Length; c++) {
@@ -136,7 +135,7 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 						"INSERT INTO bases (account_id, base_title, base_name, product_id, real_name, base_guid) " +
 						"VALUES (@account_id, @base_title, @base_name, @product_id, @real_name, @base_guid);";
 					connection.Execute(insertBaseSql, new {
-						account_id = UserInfo.AccountId,
+						account_id = AccountId,
 						base_title = dbInfo.Title,
 						base_name = dbInfo.BaseName,
 						product_id = ProductId,
@@ -168,24 +167,10 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 				connection.Execute(sb.ToString(), new { id = dbInfo.BaseId });
 
 				logger.Info(
-					"Удалена база {RealName} на сервере {Server} пользователем {UserId}",
-					dbInfo.BaseName, UserInfo.Id);
+					"Удалена база {RealName} аккаунтом {UserId}",
+					dbInfo.BaseName, AccountId);
 
 				return true;
-			}
-		}
-
-		private LauncherUserInfo GeLauncherUserInfo(string login) {
-			using(var connection = new MySqlConnection(ConnectionString)) {
-				var query = $@"SELECT `cloud_users`.`id` as Id, `cloud_users`.`login` as Login, `cloud_users`.`password` as PasswordHash, 
-       				`accounts`.`id` as AccountId, accounts.login as AccountName, cloud_users.is_account_admin as IsAccountAdmin
-					FROM `cloud_users` JOIN accounts ON accounts.id = `cloud_users`.`account_id` 
-					WHERE `cloud_users`.`login` = @login;";
-				var userInfo = connection.QueryFirstOrDefault<LauncherUserInfo>(query, new { login = login });
-				if(userInfo == null)
-					return null;
-
-				return userInfo;
 			}
 		}
 	}
