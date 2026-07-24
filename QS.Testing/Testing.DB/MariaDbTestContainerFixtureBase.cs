@@ -46,6 +46,7 @@ namespace QS.Testing.DB
 
 			// Полный сброс глобального состояния OrmConfig для изоляции от предыдущих тестов
 			OrmConfig.ResetForTesting();
+			ConfigureOrmBeforeConfigure();
 			
 			// Конфигурация NHibernate для работы с MariaDB
 			var dbConfig = MySQLConfiguration.Standard
@@ -61,6 +62,9 @@ namespace QS.Testing.DB
 
 			// Создание фабрики UnitOfWork
 			UnitOfWorkFactory = new DefaultUnitOfWorkFactory(new DefaultSessionProvider());
+		}
+
+		protected virtual void ConfigureOrmBeforeConfigure() {
 		}
 
 		/// <summary>
