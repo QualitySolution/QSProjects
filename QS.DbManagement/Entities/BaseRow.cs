@@ -1,8 +1,3 @@
-using Dapper;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace QS.DbManagement.Entities {
 	internal struct BaseRow {
 		public int AccountId;
