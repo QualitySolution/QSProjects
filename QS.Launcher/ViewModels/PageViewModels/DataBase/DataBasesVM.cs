@@ -17,7 +17,7 @@ using ReactiveUI;
 
 namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 	public class DataBasesVM : CarouselPageVM {
-		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+		private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 		private Connection currentConnection;
 		private Action saveConnectionsAction;
@@ -26,19 +26,26 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			get => provider;
 			set {
 				this.RaiseAndSetIfChanged(ref provider, value);
-				Databases = provider.GetUserDatabases(applicationInfo).AsList();
-				this.RaisePropertyChanged(nameof(Databases));
-				this.RaisePropertyChanged(nameof(CanCreateDatabase));
-				this.RaisePropertyChanged(nameof(CanImportDatabase));
-				this.RaisePropertyChanged(nameof(CanDropDatabase));
-				this.RaisePropertyChanged(nameof(CanBackupDatabase));
-				this.RaisePropertyChanged(nameof(CanManageDatabases));
-				this.RaisePropertyChanged(nameof(CanOpenDbOperations));
-				this.RaisePropertyChanged(nameof(CanOpenChangePassword));
-				this.RaisePropertyChanged(nameof(CanOpenUserManagement));
-
+				ReloadDatabases();
+				RaiseCapabilitiesChanged();
 				LoadLastSelectedDatabase();
 			}
+		}
+
+		/// <summary>
+		/// Что доступно пользователю, знает провайдер, поэтому после его смены пересчитываем
+		/// видимость всех кнопок разом.
+		/// </summary>
+		private void RaiseCapabilitiesChanged() {
+			this.RaisePropertyChanged(nameof(CanCreateDatabase));
+			this.RaisePropertyChanged(nameof(CanImportDatabase));
+			this.RaisePropertyChanged(nameof(CanDropDatabase));
+			this.RaisePropertyChanged(nameof(CanBackupDatabase));
+			this.RaisePropertyChanged(nameof(CanManageDatabases));
+			this.RaisePropertyChanged(nameof(CanOpenDbOperations));
+			this.RaisePropertyChanged(nameof(CanRefreshMetadata));
+			this.RaisePropertyChanged(nameof(CanOpenChangePassword));
+			this.RaisePropertyChanged(nameof(CanOpenUserManagement));
 		}
 
 		public bool CanCreateDatabase => capabilities.CanCreate(provider);
@@ -95,7 +102,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 
 		public event Action<bool> StartLaunchProgram;
 
-		IInteractiveMessage interactiveMessage;
+		private readonly IInteractiveMessage interactiveMessage;
 		private readonly IInteractiveQuestion interactiveQuestion;
 		private readonly IServiceProvider serviceProvider;
 
@@ -221,9 +228,8 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		}
 
 		public void RefreshDatabases() {
-			if(provider == null) return;
-			Databases = provider.GetUserDatabases(applicationInfo).AsList();
-			this.RaisePropertyChanged(nameof(Databases));
+			if(provider == null)
+				return;
 			SelectedDatabase = Databases.FirstOrDefault();
 			this.RaisePropertyChanged(nameof(SelectedDatabase));
 		}
@@ -241,9 +247,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		}
 
 		public void Connect() {
-
 			var resp = provider.LoginToDatabase(SelectedDatabase);
-
 			if(!resp.Success) {
 				interactiveMessage.ShowMessage(ImportanceLevel.Error, resp.ErrorMessage, "Ошибка подключения к базе данных");
 				return;

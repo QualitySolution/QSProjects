@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
 using QS.DbManagement;
+using QS.DbManagement.Entities;
 using QS.Dialog;
 using QS.Launcher;
 

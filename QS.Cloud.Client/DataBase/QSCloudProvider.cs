@@ -1,4 +1,4 @@
-using Grpc.Core;
+﻿using Grpc.Core;
 using MySqlConnector;
 using QS.Cloud.Client.Clients;
 using QS.Cloud.Core;
@@ -13,28 +13,20 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 
-namespace QS.Cloud.Client.DataBase
-{
+namespace QS.Cloud.Client.DataBase {
 	public class QSCloudProvider : IDbProvider {
 
-		public bool IsConnected { get; private set; }
-
 		public bool IsAdmin { get; protected set; }
-
-		#region Параметры подключени
 		public string Account { get; private set; }
-
-		#endregion
 		public string UserName { get; private set; }
 
 		public bool CanCreateDatabase => dbClient.CanConnect && IsAdmin;
 		public bool CanDropDatabase => CanCreateDatabase;
 		private const string MessageTitle = "Создание базы в облаке";
 
-		private LoginManagementCloudClient loginClient;
-		private DataBaseManagementCloudClient dbClient;
-		private UserManagementCloudClient userClient;
-
+		private readonly LoginManagementCloudClient loginClient;
+		private readonly DataBaseManagementCloudClient dbClient;
+		private readonly UserManagementCloudClient userClient;
 
 		public QSCloudProvider(IList<ConnectionParameterValue> parameters, string password = null) {
 			Account = parameters.First(p => p.Name == "Account").Value;
@@ -55,98 +47,71 @@ namespace QS.Cloud.Client.DataBase
 			DbUserFields.Name | DbUserFields.Email | DbUserFields.Phone | DbUserFields.Post
 			| DbUserFields.Comment | DbUserFields.AdminFlag | DbUserFields.Disabling | DbUserFields.BaseReadOnly;
 
-		public bool ChangeOwnPassword(string newPassword) {
-			try {
-				return loginClient.ChangePassword(newPassword).Success;
-			}
-			catch(RpcException ex) {
-				throw CloudError(ex);
-			}
-		}
+		public bool ChangeOwnPassword(string newPassword) => Call(() =>
+			loginClient.ChangePassword(newPassword).Success);
 
-		public List<DbUserInfo> GetUsers() {
-			try {
-				return userClient.GetUsers().Select(u => new DbUserInfo {
-					Login = u.Login,
-					Name = u.Name,
-					Email = u.Email,
-					Phone = u.Phone,
-					Post = u.Post,
-					Comment = u.Comment,
-					Disabled = u.Disabled,
-					IsAdmin = u.IsAccountAdmin,
-					IsCurrentUser = string.Equals(u.Login, UserName, StringComparison.OrdinalIgnoreCase)
-				}).ToList();
-			}
-			catch(RpcException ex) {
-				throw CloudError(ex);
-			}
-		}
+		public List<DbUserInfo> GetUsers() => Call(() =>
+			userClient.GetUsers().Select(ToDbUserInfo).ToList());
 
-		public bool CreateUser(DbUserInfo user, string password) {
-			try {
+		public bool CreateUser(DbUserInfo user, string password) => Call(() => {
 				var response = userClient.CreateUser(ToCloudUser(user), password);
-				if(!response.Success)
-					throw new InvalidOperationException(response.Message);
-				return true;
-			}
-			catch(RpcException ex) {
-				throw CloudError(ex);
-			}
-		}
+				return EnsureSuccess(response.Success, response.Message);
+			});
 
-		public bool UpdateUser(DbUserInfo user, string newPassword = null) {
-			try {
+		public bool UpdateUser(DbUserInfo user, string newPassword = null) => Call(() => {
 				var response = userClient.UpdateUser(ToCloudUser(user), newPassword);
-				if(!response.Success)
-					throw new InvalidOperationException(response.Message);
-				return true;
-			}
-			catch(RpcException ex) {
-				throw CloudError(ex);
-			}
-		}
+				return EnsureSuccess(response.Success, response.Message);
+			});
 
-		public bool DeleteUser(string login) {
-			try {
+		public bool DeleteUser(string login) =>
+			Call(() => {
 				var response = userClient.DeleteUser(login);
-				if(!response.Success)
-					throw new InvalidOperationException(response.Message);
-				return true;
-			}
-			catch(RpcException ex) {
-				throw CloudError(ex);
-			}
-		}
+				return EnsureSuccess(response.Success, response.Message);
+			});
 
-		public List<DbUserBaseAccess> GetUserBaseAccess(string login, IApplicationInfo applicationInfo) {
-			try {
-				return userClient.GetUserBaseAccess(login, applicationInfo.ProductCode).Select(b => new DbUserBaseAccess {
+		public List<DbUserBaseAccess> GetUserBaseAccess(string login, IApplicationInfo applicationInfo) => Call(() =>
+			userClient.GetUserBaseAccess(login, applicationInfo.ProductCode)
+				.Select(b => new DbUserBaseAccess {
 					BaseId = b.BaseId,
 					Title = b.BaseTitle,
 					HasAccess = b.HasAccess,
 					IsAdmin = b.Admin,
 					ReadOnly = b.ReadOnly
-				}).ToList();
-			}
-			catch(RpcException ex) {
-				throw CloudError(ex);
-			}
-		}
+				}).ToList());
 
-		public bool SetUserBaseAccess(string login, DbUserBaseAccess access, IApplicationInfo applicationInfo) {
+		public bool SetUserBaseAccess(string login, DbUserBaseAccess access, IApplicationInfo applicationInfo) =>
+			Call(() => EnsureSuccess(
+				userClient.ChangeBaseAccess(login, access.BaseId, access.HasAccess, access.IsAdmin, access.ReadOnly, applicationInfo.ProductCode),
+				"Не удалось изменить доступ к базе"));
+
+		private static T Call<T>(Func<T> operation) {
 			try {
-				bool ok = userClient.ChangeBaseAccess(login, access.BaseId, access.HasAccess, access.IsAdmin, access.ReadOnly, applicationInfo.ProductCode);
-				if(!ok)
-					throw new InvalidOperationException("Не удалось изменить доступ к базе");
-				return true;
+				return operation();
 			}
 			catch(RpcException ex) {
 				throw CloudError(ex);
 			}
 		}
 
-		private static QS.Cloud.Core.UserInfo ToCloudUser(DbUserInfo user) => new QS.Cloud.Core.UserInfo {
+		private static bool EnsureSuccess(bool success, string message) {
+			if(!success)
+				throw new InvalidOperationException(message);
+			return true;
+		}
+
+		private DbUserInfo ToDbUserInfo(UserInfo user) => new DbUserInfo {
+			Login = user.Login,
+			Name = user.Name,
+			Email = user.Email,
+			Phone = user.Phone,
+			Post = user.Post,
+			Comment = user.Comment,
+			Disabled = user.Disabled,
+			IsAdmin = user.IsAccountAdmin,
+			IsCurrentUser = string.Equals(user.Login, UserName, StringComparison.OrdinalIgnoreCase)
+		};
+
+		private static UserInfo ToCloudUser(DbUserInfo user) => new UserInfo {
 			Login = user.Login ?? "",
 			Name = user.Name ?? "",
 			Email = user.Email ?? "",
@@ -157,8 +122,7 @@ namespace QS.Cloud.Client.DataBase
 			IsAccountAdmin = user.IsAdmin
 		};
 
-		private static Exception CloudError(RpcException ex) =>
-			new InvalidOperationException(string.IsNullOrEmpty(ex.Status.Detail) ? ex.Message : ex.Status.Detail);
+		private static Exception CloudError(RpcException ex) => new InvalidOperationException(Describe(ex));
 
 		#endregion
 
@@ -167,34 +131,11 @@ namespace QS.Cloud.Client.DataBase
 			if(request == null)
 				throw new ArgumentNullException(nameof(request));
 			try {
-				int baseId;
-				var dbExistsResponse = dbClient.CheckDataBaseExists(request.DbName, request.ApplicationInfo);
-				if(dbExistsResponse.Exists) {
-					switch(request.Interaction.AskDropExistingDatabase(request.DbName)) {
-						case ToDoWithExistingDatabase.Recreate:
-							if(!dbClient.DropDataBase(dbExistsResponse.BaseId, request.ApplicationInfo).Success) {
-								request.Interaction.ReportError("Не удалось удалить существующую базу: " + dbExistsResponse.BaseId, MessageTitle);
-								return false;
-							}
-							baseId = dbClient.CreateDataBase(request.DbName, request.DbTitle, request.ApplicationInfo).BaseId;
-							break;
-						case ToDoWithExistingDatabase.Rewrite:
-							// облако пересоздаст пустую базу, сохранив записи реестра и права доступа
-							if(!dbClient.ClearDataBase(dbExistsResponse.BaseId, request.ApplicationInfo).Success) {
-								request.Interaction.ReportError("Не удалось очистить существующую базу: " + dbExistsResponse.BaseId, MessageTitle);
-								return false;
-							}
-							baseId = dbExistsResponse.BaseId;
-							break;
-						default: // Nothing
-							return false;
-					}
-				}
-				else {
-					baseId = dbClient.CreateDataBase(request.DbName, request.DbTitle, request.ApplicationInfo).BaseId;
-				}
+				int? baseId = PrepareEmptyDatabase(request);
+				if(baseId == null)
+					return false;
 
-				using(var session = CloudDbSession.Open(loginClient, baseId)) {
+				using(var session = CloudDbSession.Open(loginClient, baseId.Value)) {
 					if(!session.Success) {
 						request.Interaction.ReportError("Не удалось открыть сессию к созданной базе: " + session.Description, MessageTitle);
 						return false;
@@ -215,21 +156,44 @@ namespace QS.Cloud.Client.DataBase
 			}
 		}
 
-		public void Dispose()
-		{
+		private int? PrepareEmptyDatabase(DbCreationRequest request) {
+			var existing = dbClient.CheckDataBaseExists(request.DbName, request.ApplicationInfo);
+			if(!existing.Exists)
+				return dbClient.CreateDataBase(request.DbName, request.DbTitle, request.ApplicationInfo).BaseId;
+
+			switch(request.Interaction.AskDropExistingDatabase(request.DbName)) {
+				case ToDoWithExistingDatabase.Recreate:
+					if(!dbClient.DropDataBase(existing.BaseId, request.ApplicationInfo).Success) {
+						request.Interaction.ReportError("Не удалось удалить существующую базу: " + existing.BaseId, MessageTitle);
+						return null;
+					}
+					return dbClient.CreateDataBase(request.DbName, request.DbTitle, request.ApplicationInfo).BaseId;
+
+				case ToDoWithExistingDatabase.Rewrite:
+					// облако пересоздаст пустую базу, сохранив записи реестра и права доступа
+					if(!dbClient.ClearDataBase(existing.BaseId, request.ApplicationInfo).Success) {
+						request.Interaction.ReportError("Не удалось очистить существующую базу: " + existing.BaseId, MessageTitle);
+						return null;
+					}
+					return existing.BaseId;
+
+				default: // Nothing
+					return null;
+			}
+		}
+
+		public void Dispose() {
 			loginClient.Dispose();
 			dbClient.Dispose();
 			userClient.Dispose();
 		}
-	
-		public bool DropDatabase(DbInfo database, IApplicationInfo applicationInfo)
-		{
+
+		public bool DropDatabase(DbInfo database, IApplicationInfo applicationInfo) {
 			var response = dbClient.DropDataBase(database.BaseId, applicationInfo);
 			return response.Success;
 		}
 
-		public void BackupDatabase(DbInfo database, string filePath, IProgressBarDisplayable progress, CancellationToken cancellation)
-		{
+		public void BackupDatabase(DbInfo database, string filePath, IProgressBarDisplayable progress, CancellationToken cancellation) {
 			using(var session = CloudDbSession.Open(loginClient, database.BaseId)) {
 				if(!session.Success)
 					throw new InvalidOperationException("Не удалось открыть сессию к облачной базе: " + session.Description);
@@ -237,15 +201,13 @@ namespace QS.Cloud.Client.DataBase
 			}
 		}
 
-		public List<DbInfo> GetUserDatabases(IApplicationInfo applicationInfo) {
-			return loginClient.GetBasesForUser(applicationInfo.ProductCode).Select(bi => new DbInfo
-			{
+		public List<DbInfo> GetUserDatabases(IApplicationInfo applicationInfo) =>
+			loginClient.GetBasesForUser(applicationInfo.ProductCode).Select(bi => new DbInfo {
 				Title = bi.BaseTitle,
 				BaseId = bi.BaseId,
 				BaseName = bi.BaseName,
 				Version = bi.BaseVersion
 			}).ToList();
-		}
 
 		public LoginToDatabaseResponse LoginToDatabase(DbInfo dbInfo) {
 			LoginToDatabaseResponse resp;
@@ -263,7 +225,7 @@ namespace QS.Cloud.Client.DataBase
 					Success = cloudResponse.Success,
 					ConnectionString = builder.ConnectionString,
 					Login = UserName,
-					Parameters = new Dictionary<string, string>() { 
+					Parameters = new Dictionary<string, string>(StringComparer.Ordinal) {
 						{"SessionId", cloudResponse.SessionId},
 						{"BaseTitle", dbInfo.Title}
 					}
@@ -280,34 +242,34 @@ namespace QS.Cloud.Client.DataBase
 		}
 
 		public LoginToServerResponse LoginToServer() {
-			LoginToServerResponse resp;
-
-			StartResponse cloudResponce;
+			// вход - ожидаемая точка отказа, поэтому не исключение, а Response с текстом для пользователя
 			try {
-				cloudResponce = loginClient.Start(Assembly.GetExecutingAssembly().GetName().Version.ToString());
+				var cloudResponce = loginClient.Start(Assembly.GetExecutingAssembly().GetName().Version.ToString());
 
 				IsAdmin = cloudResponce.YouAccountAdmin;
-				resp = new LoginToServerResponse {
+				return new LoginToServerResponse {
 					Success = true,
 					IsAdmin = cloudResponce.YouAccountAdmin,
 					NeedToUpdateLauncher = cloudResponce.NeedUpdateLauncher
 				};
 			}
-			catch(RpcException ex) when(ex.StatusCode == Grpc.Core.StatusCode.Unauthenticated || ex.StatusCode == Grpc.Core.StatusCode.PermissionDenied) {
-				resp = new LoginToServerResponse {
+			catch(RpcException ex) when(ex.StatusCode == StatusCode.Unauthenticated || ex.StatusCode == StatusCode.PermissionDenied) {
+				return new LoginToServerResponse {
 					Success = false,
-					ErrorMessage = "Неверные данные для входа: " + (string.IsNullOrEmpty(ex.Status.Detail) ? ex.Message : ex.Status.Detail)
+					ErrorMessage = "Неверные данные для входа: " + Describe(ex)
 				};
 			}
 			catch(RpcException ex) {
-				resp = new LoginToServerResponse {
+				return new LoginToServerResponse {
 					Success = false,
-					ErrorMessage = "Не удалось подключиться к облаку QS: " + (string.IsNullOrEmpty(ex.Status.Detail) ? ex.Message : ex.Status.Detail)
+					ErrorMessage = "Не удалось подключиться к облаку QS: " + Describe(ex)
 				};
 			}
-
-			return resp;
 		}
+
+		/// <summary>Пояснение от сервера, если оно есть - оно понятнее сообщения самого gRPC.</summary>
+		private static string Describe(RpcException ex) =>
+			string.IsNullOrEmpty(ex.Status.Detail) ? ex.Message : ex.Status.Detail;
 		#endregion
 	}
 }
