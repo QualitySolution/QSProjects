@@ -11,13 +11,15 @@ namespace QS.DbManagement
 	{
 		string UserName { get; }
 
-		bool IsConnected { get; }
-
 		bool IsAdmin { get; }
 		bool CanCreateDatabase { get; }
 		bool CanDropDatabase { get; }
 
+		bool CanRefreshMetadata { get; }
+
 		LoginToServerResponse LoginToServer();
+
+		void RefreshMetadata(IApplicationInfo applicationInfo);
 
 		List<DbInfo> GetUserDatabases(IApplicationInfo applicationInfo);
 

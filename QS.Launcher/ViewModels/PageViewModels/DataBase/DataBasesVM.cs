@@ -59,7 +59,9 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		public bool CanManageDatabases =>
 			CanDropDatabase || CanBackupDatabase;
 
-		public bool CanOpenDbOperations => CanCreateDatabase || CanImportDatabase;
+		public bool CanOpenDbOperations => CanCreateDatabase || CanImportDatabase || CanRefreshMetadata;
+
+		public bool CanRefreshMetadata => capabilities.CanRefreshMetadata(provider);
 
 		public bool CanOpenChangePassword => capabilities.CanChangeOwnPassword(provider);
 		public bool CanOpenUserManagement => capabilities.CanManageUsers(provider);
@@ -99,6 +101,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		public ICommand DeleteDatabaseCommand { get; }
 		public ReactiveCommand<Unit, Unit> OpenUserManagementCommand { get; }
 		public ReactiveCommand<Unit, Unit> OpenChangePasswordCommand { get; }
+		public ReactiveCommand<Unit, Unit> RefreshMetadataCommand { get; }
 
 		public event Action<bool> StartLaunchProgram;
 
@@ -138,6 +141,24 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			DeleteDatabaseCommand = ReactiveCommand.CreateFromTask<DbInfo>(DeleteDatabaseAsync);
 			OpenUserManagementCommand = ReactiveCommand.Create(OpenUsers);
 			OpenChangePasswordCommand = ReactiveCommand.Create(ChangePassword);
+			RefreshMetadataCommand = ReactiveCommand.CreateFromTask(RefreshMetadataAsync);
+		}
+
+		/// <summary>Пересобирает локальную метаинформацию из реального состояния сервера и обновляет список баз.</summary>
+		private async Task RefreshMetadataAsync() {
+			if(provider == null || !CanRefreshMetadata)
+				return;
+
+			try {
+				await Task.Run(() => provider.RefreshMetadata(applicationInfo));
+				RefreshDatabases();
+				interactiveMessage.ShowMessage(ImportanceLevel.Success,
+					"Метаинформация обновлена.", "Синхронизация метаинформации");
+			}
+			catch(Exception ex) {
+				logger.Error(ex, "Не удалось обновить метаинформацию");
+				interactiveMessage.ShowMessage(ImportanceLevel.Error, ex.Message, "Синхронизация метаинформации");
+			}
 		}
 
 		private void ChangePassword() {
@@ -230,8 +251,15 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		public void RefreshDatabases() {
 			if(provider == null)
 				return;
+
+			ReloadDatabases();
 			SelectedDatabase = Databases.FirstOrDefault();
 			this.RaisePropertyChanged(nameof(SelectedDatabase));
+		}
+
+		private void ReloadDatabases() {
+			Databases = provider.GetUserDatabases(applicationInfo).AsList();
+			this.RaisePropertyChanged(nameof(Databases));
 		}
 
 		private void LoadLastSelectedDatabase() {

@@ -127,6 +127,11 @@ namespace QS.Cloud.Client.DataBase {
 		#endregion
 
 		#region Управление базами
+
+		public bool CanRefreshMetadata => false;
+
+		public void RefreshMetadata(IApplicationInfo applicationInfo) { }
+
 		public bool CreateDatabase(DbCreationRequest request) {
 			if(request == null)
 				throw new ArgumentNullException(nameof(request));

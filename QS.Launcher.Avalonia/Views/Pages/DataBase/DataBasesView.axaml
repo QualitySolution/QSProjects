@@ -46,6 +46,7 @@
                             <MenuFlyout Placement="BottomEdgeAlignedRight">
                                 <MenuItem Header="Создать базу данных" Command="{Binding OpenCreateDatabaseCommand}" IsVisible="{Binding CanCreateDatabase}" />
                                 <MenuItem Header="Импортировать базу" Command="{Binding OpenImportDatabaseCommand}" IsVisible="{Binding CanImportDatabase}" />
+                                <MenuItem Header="Обновить метаинформацию" Command="{Binding RefreshMetadataCommand}" IsVisible="{Binding CanRefreshMetadata}" />
                             </MenuFlyout>
                         </Button.Flyout>
                     </Button>

@@ -1,0 +1,68 @@
+﻿using Dapper;
+using MySqlConnector;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+
+namespace QS.DbManagement.MariaDb.QSLauncher {
+	internal static class LauncherColumnMapper
+	{
+		public static List<string> TableColumns(MySqlConnection connection, string schema, string table, MySqlTransaction tx = null)
+		{
+			return connection.Query<string>(
+				"SELECT COLUMN_NAME FROM information_schema.COLUMNS " +
+				"WHERE TABLE_SCHEMA = @schema AND TABLE_NAME = @table ORDER BY ORDINAL_POSITION",
+				new { schema, table }, tx).ToList();
+		}
+
+		public static HashSet<string> KeyColumns(MySqlConnection connection, string schema, string table, MySqlTransaction tx = null)
+		{
+			return new HashSet<string>(
+				connection.Query<string>(
+					"SELECT DISTINCT COLUMN_NAME FROM information_schema.STATISTICS " +
+					"WHERE TABLE_SCHEMA = @schema AND TABLE_NAME = @table",
+					new { schema, table }, tx),
+				StringComparer.OrdinalIgnoreCase);
+		}
+
+		/// <summary>
+		/// список колонок, у которых есть одноимённое свойство сущности
+		/// </summary>
+		public static string SelectList(IEnumerable<string> tableColumns, Type entityType)
+		{
+			var props = Properties(entityType); //?
+			return string.Join(", ", tableColumns
+				.Where(c => props.ContainsKey(Normalize(c)))
+				.Select(c => $"`{c}` AS `{props[Normalize(c)].Name}`"));
+		}
+
+		public static (List<string> columns, DynamicParameters parameters) MapForWrite(IEnumerable<string> tableColumns, object entity, ISet<string> exclude = null)
+		{
+			var props = Properties(entity.GetType());
+			var columns = new List<string>();
+			var parameters = new DynamicParameters();
+			foreach(var column in tableColumns) {
+				if(exclude != null && exclude.Contains(column))
+					continue;
+				if(!props.TryGetValue(Normalize(column), out var prop))
+					continue;
+				object value = prop.GetValue(entity);
+				if(value is string s && s.Length == 0)
+					value = null;
+				columns.Add(column);
+				parameters.Add(column, value);
+			}
+			return (columns, parameters);
+		}
+
+		private static string Normalize(string name)
+			=> name.Replace("_", "").ToLowerInvariant();
+
+		private static Dictionary<string, PropertyInfo> Properties(Type type)
+			=> type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+				.Where(p => p.CanRead)
+				.GroupBy(p => Normalize(p.Name), StringComparer.Ordinal)
+				.ToDictionary(g => g.Key, g => g.First(), StringComparer.OrdinalIgnoreCase);
+	}
+}
