@@ -45,5 +45,9 @@ namespace QS.DbManagement {
 		public bool CanManageUsers(IDbUserManager userManager) {
 			return userManager?.CanManageUsers == true;
 		}
+
+		public bool CanRefreshMetadata(IDbManager manager) {
+			return manager?.CanRefreshMetadata == true;
+		}
 	}
 }
