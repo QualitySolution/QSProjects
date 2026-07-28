@@ -12,7 +12,7 @@ namespace QS.Attachments.HibernateMapping
 			Id(x => x.Id).Column("id").GeneratedBy.Native();
 
 			Map(x => x.FileName).Column("file_name");
-			Map(x => x.ByteFile).Column("file").CustomSqlType("BinaryBlob").LazyLoad();
+			Map(x => x.ByteFile).Column("file").CustomSqlType("LONGBLOB").LazyLoad();
 		}
 	}
 }
