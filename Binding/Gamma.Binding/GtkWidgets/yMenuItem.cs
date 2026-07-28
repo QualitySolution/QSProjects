@@ -1,6 +1,7 @@
-using System;
-using Gtk;
 using Gamma.Binding.Core;
+using Gtk;
+using System;
+using System.ComponentModel;
 using System.Windows.Input;
 
 namespace Gamma.GtkWidgets {
@@ -9,8 +10,8 @@ namespace Gamma.GtkWidgets {
 
 	public class yMenuItem : MenuItem 
 	{
-		private ICommand _command;
-		private object _commandArgument;
+		private ICommand command;
+		private object commandArgument;
 
 		public BindingControler<yMenuItem> Binding { get; private set;}
 		
@@ -34,29 +35,46 @@ namespace Gamma.GtkWidgets {
 		}
 		
 		public void BindCommand(ICommand command, object commandArgument = null) {
-			if(_command != null) {
+			if(this.command != null) {
 				throw new InvalidOperationException("Биндинг можно настроить только для одной команды");
 			}
 
-			_command = command;
-			_commandArgument = commandArgument;
+			this.command = command;
+			this.commandArgument = commandArgument;
 			command.CanExecuteChanged += CommandCanExecuteChanged;
 			Sensitive = command.CanExecute(commandArgument);
+
+			if(command is BusyCommand busyCommand) {
+				Label = busyCommand.Text;
+				busyCommand.PropertyChanged += BusyCommandPropertyChanged;
+			}
+		}
+
+		private void BusyCommandPropertyChanged(object sender, PropertyChangedEventArgs e) {
+			if(e.PropertyName == nameof(BusyCommand.Text)) {
+				Label = (sender as BusyCommand).Text;
+				while(Application.EventsPending()) {
+					Gtk.Main.Iteration();
+				}
+			}
 		}
 
 		protected override void OnActivated() {
 			base.OnActivated();
-			_command?.Execute(_commandArgument);
+			command?.Execute(commandArgument);
 		}
 
 		private void CommandCanExecuteChanged(object sender, EventArgs e) {
-			Sensitive = _command.CanExecute(_commandArgument);
+			Sensitive = command.CanExecute(commandArgument);
 		}
 
 		protected override void OnDestroyed() {
-			if(_command != null) {
-				_command.CanExecuteChanged -= CommandCanExecuteChanged;
-				_command = null;
+			if(command != null) {
+				command.CanExecuteChanged -= CommandCanExecuteChanged;
+				if(command is BusyCommand busyCommand) {
+					busyCommand.PropertyChanged -= BusyCommandPropertyChanged;
+				}
+				command = null;
 			}
 			
 			base.OnDestroyed();

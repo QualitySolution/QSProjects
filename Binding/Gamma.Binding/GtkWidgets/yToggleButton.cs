@@ -1,8 +1,9 @@
-using System;
-using System.Linq.Expressions;
-using System.Windows.Input;
 using Gamma.Binding.Core;
 using Gtk;
+using System;
+using System.ComponentModel;
+using System.Linq.Expressions;
+using System.Windows.Input;
 
 namespace Gamma.GtkWidgets
 {
@@ -36,6 +37,20 @@ namespace Gamma.GtkWidgets
 			this.commandArgument = commandArgument;
 			command.CanExecuteChanged += CommandCanExecuteChanged;
 			Sensitive = command.CanExecute(commandArgument);
+
+			if(command is BusyCommand busyCommand) {
+				Label = busyCommand.Text;
+				busyCommand.PropertyChanged += BusyCommandPropertyChanged;
+			}
+		}
+
+		private void BusyCommandPropertyChanged(object sender, PropertyChangedEventArgs e) {
+			if(e.PropertyName == nameof(BusyCommand.Text)) {
+				Label = (sender as BusyCommand).Text;
+				while(Application.EventsPending()) {
+					Gtk.Main.Iteration();
+				}
+			}
 		}
 
 		protected override void OnClicked() {
@@ -51,7 +66,12 @@ namespace Gamma.GtkWidgets
 		}
 
 		public override void Destroy() {
-			command.CanExecuteChanged -= CommandCanExecuteChanged;
+			if(command != null) {
+				command.CanExecuteChanged -= CommandCanExecuteChanged;
+				if(command is BusyCommand busyCommand) {
+					busyCommand.PropertyChanged -= BusyCommandPropertyChanged;
+				}
+			}
 			base.Destroy();
 		}
 	}
