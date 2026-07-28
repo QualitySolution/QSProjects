@@ -1,4 +1,4 @@
-using QS.DbManagement;
+﻿using QS.DbManagement;
 using QS.DbManagement.Entities;
 using QS.Dialog;
 using QS.Project.Versioning;
@@ -283,7 +283,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			if(applicationInfo == null)
 				return;
 			try {
-				var rows = provider.GetUserBaseAccess(login, applicationInfo);
+				var rows = provider.GetUserBaseAccess(login);
 				foreach(var row in rows)
 					BaseAccesses.Add(new BaseAccessRowVM(row, ShowReadOnly));
 
@@ -319,7 +319,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 						// профиль пишется в таблицу users каждой базы, куда выдаём доступ
 						access.Name = name;
 						access.Email = email;
-						provider.SetUserBaseAccess(user.Login, access, applicationInfo);
+						provider.SetUserBaseAccess(user.Login, access);
 					}
 				});
 				foreach(var row in changedRows)

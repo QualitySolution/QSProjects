@@ -18,7 +18,6 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			connectionString = connectionBuilder.ConnectionString;
 		}
 
-		/// <summary>Создаёт запись о базе и сразу выдаёт создателю полный доступ - в одной транзакции.</summary>
 		public (int baseId, string baseGuid) CreateBaseWithCreatorAccess(DbInfo dbInfo) {
 			using(var connection = new MySqlConnection(connectionString)) {
 				connection.Open();

@@ -1,8 +1,9 @@
+﻿using QS.DbManagement.Entities;
+using QS.Project.Versioning;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using QS.DbManagement.Entities;
-using ReactiveUI;
 
 namespace QS.DbManagement {
 	public class Connection : ReactiveObject, ICloneable {
@@ -63,7 +64,7 @@ namespace QS.DbManagement {
 
 		public bool CanConnect() => ConnectionType.CanConnect(CustomParameters);
 
-		public IDbProvider CreateProvider(string password) => ConnectionType.CreateProvider(CustomParameters, password);
+		public IDbProvider CreateProvider(string password, int productCode) => ConnectionType.CreateProvider(CustomParameters, productCode, password);
 		public Dictionary<string, string> GetConfigDefinitions() {
 			var config = new Dictionary<string, string> {
 				{"Type", ConnectionType.ConnectionTypeName},

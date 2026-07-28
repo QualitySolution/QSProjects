@@ -1,4 +1,4 @@
-using QS.DbManagement.Entities;
+﻿using QS.DbManagement.Entities;
 using System.Collections.Generic;
 
 namespace QS.DbManagement {
@@ -16,6 +16,6 @@ namespace QS.DbManagement {
 
 		public abstract bool CanConnect(IEnumerable<ConnectionParameterValue> parameters);
 
-		public abstract IDbProvider CreateProvider(IList<ConnectionParameterValue> parameters, string password = null);
+		public abstract IDbProvider CreateProvider(IList<ConnectionParameterValue> parameters, int productCode, string password = null);
 	}
 }

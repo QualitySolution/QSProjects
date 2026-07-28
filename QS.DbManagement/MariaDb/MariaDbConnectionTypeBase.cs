@@ -1,4 +1,4 @@
-using QS.DbManagement.Entities;
+﻿using QS.DbManagement.Entities;
 using QS.Utilities.Extensions;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +21,7 @@ namespace QS.DbManagement
 				parameters.Any(p => p.Name == "Login" && !string.IsNullOrEmpty(p.Value));
 		}
 
-		public override IDbProvider CreateProvider(IList<ConnectionParameterValue> parameters, string password = null)
-			=> new MariaDBProvider(parameters, password);
+		public override IDbProvider CreateProvider(IList<ConnectionParameterValue> parameters, int productCode, string password = null)
+			=> new MariaDBProvider(parameters, productCode, password);
 	}
 }

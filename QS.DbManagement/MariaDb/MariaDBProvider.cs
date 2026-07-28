@@ -14,6 +14,7 @@ using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
+using static NHibernate.Loader.Custom.CustomLoader;
 
 namespace QS.DbManagement {
 	public class MariaDBProvider : IDbProvider {
@@ -41,14 +42,16 @@ namespace QS.DbManagement {
 		#region Параметры подключения
 		public string Server { get; }
 		public string UserName { get; }
+		public int ProductCode { get; }
 		#endregion
 
-		public MariaDBProvider(IList<ConnectionParameterValue> parameters, string password = null) {
+		public MariaDBProvider(IList<ConnectionParameterValue> parameters, int productCode, string password = null) {
 			if(parameters == null)
 				throw new ArgumentNullException(nameof(parameters));
 
 			Server = parameters.First(p => p.Name == "Server").Value;
 			UserName = parameters.First(p => p.Name == "Login").Value;
+			ProductCode = productCode;
 
 			var address = Server.Split(':');
 			ConnectionStringBuilder = new MySqlConnectionStringBuilder {
@@ -61,6 +64,15 @@ namespace QS.DbManagement {
 				ConnectionStringBuilder.Port = port;
 
 			connection = new MySqlConnection(ConnectionStringBuilder.ConnectionString);
+
+			try {
+				Metadata = new LauncherMetadataManagement(ConnectionStringBuilder, CanCreateDatabase, UserName, productCode);
+				HasQSLauncherAccess = true;
+			}
+			catch(Exception ex) {
+				HasQSLauncherAccess = false;
+				logger.Debug(ex, "QSLauncher база недоступна, используем прямой доступ к серверу");
+			}
 		}
 
 		#region Управление базами
@@ -99,24 +111,24 @@ namespace QS.DbManagement {
 		private static bool HasPrivilege(ICollection<string> privileges, string privilege)
 			=> privileges.Contains(AllPrivileges) || privileges.Contains(privilege);
 
-		public List<DbInfo> GetUserDatabases(IApplicationInfo applicationInfo) {
-			return FromMetadataOrDirect(applicationInfo.ProductCode,
+		public List<DbInfo> GetUserDatabases() {
+			return FromMetadataOrDirect(ProductCode,
 				metadata => metadata.Bases.GetBases(UserName).ToList(),
-				() => GetUserDatabasesDirect(applicationInfo));
+				() => GetUserDatabasesDirect());
 		}
 
-		private List<DbInfo> GetUserDatabasesDirect(IApplicationInfo applicationInfo) {
+		private List<DbInfo> GetUserDatabasesDirect() {
 			EnsureOpen();
 
 			return connection.Query<string>("SHOW DATABASES")
 				.Except(SystemDatabases, StringComparer.OrdinalIgnoreCase)
 				.Select(dbName =>
-					ReadDbInfo(dbName, applicationInfo.ProductCode))
+					ReadDbInfo(dbName))
 				.Where(db => db != null)
 				.ToList();
 		}
 
-		private DbInfo ReadDbInfo(string dbName, byte productCode) { //? поторение LauncherBasesManagement.ReadBaseParameters но надо подумать как ответственность не нарушать
+		private DbInfo ReadDbInfo(string dbName) { //? поторение LauncherBasesManagement.ReadBaseParameters но надо подумать как ответственность не нарушать
 			Dictionary<string, string> parameters;
 			try {
 				var toBase = new MySqlConnectionStringBuilder(ConnectionStringBuilder.ConnectionString) { Database = dbName };
@@ -128,7 +140,7 @@ namespace QS.DbManagement {
 			}
 
 			if(!parameters.TryGetValue("ProductCode", out var code) || !byte.TryParse(code, out var baseProduct)
-				|| baseProduct != productCode)
+				|| baseProduct != ProductCode)
 				return null;
 
 			return new DbInfo {
@@ -192,7 +204,7 @@ namespace QS.DbManagement {
 
 			switch(request.Interaction.AskDropExistingDatabase(request.DbName)) {
 				case ToDoWithExistingDatabase.Recreate:
-					if(!DropDatabase(new DbInfo { BaseName = request.DbName }, request.ApplicationInfo)) {
+					if(!DropDatabase(new DbInfo { BaseName = request.DbName })) {
 						request.Interaction.ReportError("Не удалось удалить существующую базу: " + request.DbName, MessageTitle);
 						return false;
 					}
@@ -216,35 +228,12 @@ namespace QS.DbManagement {
 		private bool HasQSLauncherAccess = true;
 		public bool CanRefreshMetadata => CanCreateDatabase;
 
-		private LauncherMetadataManagement LMM;
-		private LauncherMetadataManagement CreateLauncherMetadata(int productCode) {
-			HasQSLauncherAccess = true;
-			if(LMM == null) {
-				var builder = new MySqlConnectionStringBuilder(ConnectionStringBuilder.ConnectionString);
-				LMM = new LauncherMetadataManagement(builder, CanCreateDatabase, UserName, productCode);
-			}
-			return LMM;
-		}
-
-		private bool TryCreateMetadata(int productCode, out LauncherMetadataManagement metadata) {
-			metadata = null;
-			if(!HasQSLauncherAccess)
-				return false;
-			try {
-				metadata = CreateLauncherMetadata(productCode);
-				return true;
-			}
-			catch(Exception ex) {
-				HasQSLauncherAccess = false;
-				logger.Debug(ex, "QSLauncher база недоступна, используем прямой доступ к серверу");
-				return false;
-			}
-		}
+		private LauncherMetadataManagement Metadata;
 
 		private T FromMetadataOrDirect<T>(int productCode, Func<LauncherMetadataManagement, T> fromMetadata, Func<T> direct) {
-			if(TryCreateMetadata(productCode, out var metadata)) {
+			if(HasQSLauncherAccess) {
 				try {
-					return fromMetadata(metadata);
+					return fromMetadata(Metadata);
 				}
 				catch(Exception ex) {
 					logger.Debug(ex, "Не удалось прочитать из метабазы, работаем напрямую с сервером.");
@@ -258,16 +247,14 @@ namespace QS.DbManagement {
 		private BaseUsersManagement BaseUsers =>
 			baseUsers ?? (baseUsers = new BaseUsersManagement(new MySqlConnectionStringBuilder(ConnectionStringBuilder.ConnectionString)));
 
-		public void RefreshMetadata(IApplicationInfo applicationInfo) {
-			var metadata = CreateLauncherMetadata(applicationInfo.ProductCode);
-			metadata.Bases.SyncBases();
-			metadata.Users.SyncUsers(GetUsersDirect().Select(u => u.Login));
+		public void RefreshMetadata() {
+			Metadata.Bases.SyncBases();
+			Metadata.Users.SyncUsers(GetUsersDirect().Select(u => u.Login));
 		}
 
 		private void RegisterInLauncherMetadata(DbCreationRequest request) {
 			try {
-				CreateLauncherMetadata(request.ApplicationInfo.ProductCode)
-					.CreateBaseWithCreatorAccess(new DbInfo { Title = request.DbTitle, BaseName = request.DbName });
+				Metadata.CreateBaseWithCreatorAccess(new DbInfo { Title = request.DbTitle, BaseName = request.DbName });
 			}
 			catch(Exception ex) {
 				logger.Warn(ex, "Не удалось зарегистрировать базу {0} в метабазе QSLauncher.", request.DbName);
@@ -276,7 +263,7 @@ namespace QS.DbManagement {
 
 		#region Отображение сущностей метабазы в публичные
 
-		private DbUserInfo ToDbUserInfo(Entities.LauncherUserInfo u) => new DbUserInfo {
+		private DbUserInfo ToDbUserInfo(LauncherUserInfo u) => new DbUserInfo {
 			Login = u.Login,
 			Name = u.Name,
 			Email = u.Email,
@@ -288,7 +275,7 @@ namespace QS.DbManagement {
 			IsCurrentUser = string.Equals(u.Login, UserName, StringComparison.OrdinalIgnoreCase)
 		};
 
-		private static Entities.LauncherUserInfo ToLauncherUser(DbUserInfo u) => new Entities.LauncherUserInfo {
+		private static LauncherUserInfo ToLauncherUser(DbUserInfo u) => new LauncherUserInfo {
 			Login = u.Login,
 			Name = u.Name,
 			Email = u.Email,
@@ -299,7 +286,7 @@ namespace QS.DbManagement {
 			IsAccountAdmin = u.IsAdmin
 		};
 
-		private static DbUserBaseAccess ToDbUserBaseAccess(Entities.BaseAccessRow r) => new DbUserBaseAccess {
+		private static DbUserBaseAccess ToDbUserBaseAccess(BaseAccessRow r) => new DbUserBaseAccess {
 			BaseId = r.BaseId,
 			BaseName = r.BaseName,
 			Title = r.BaseTitle,
@@ -309,10 +296,10 @@ namespace QS.DbManagement {
 		};
 
 		private void ReflectInMetadata(Action<LauncherMetadataManagement> action, string operation, string subject) {
-			if(!TryCreateMetadata(0, out var metadata))
+			if(HasQSLauncherAccess)
 				return;
 			try {
-				action(metadata);
+				action(Metadata);
 			}
 			catch(Exception ex) {
 				logger.Warn(ex, "Не удалось отразить {0} ({1}) в метабазе.", operation, subject);
@@ -332,9 +319,9 @@ namespace QS.DbManagement {
 
 		#endregion
 
-		private void TryRefreshMetadata(IApplicationInfo applicationInfo) {
+		private void TryRefreshMetadata() {
 			try {
-				RefreshMetadata(applicationInfo);
+				RefreshMetadata();
 			}
 			catch(Exception ex) {
 				logger.Warn(ex, "Не удалось синхронизировать метабазу QSLauncher.");
@@ -352,12 +339,12 @@ namespace QS.DbManagement {
 			return false;
 		}
 
-		public bool DropDatabase(DbInfo database, IApplicationInfo applicationInfo) {
+		public bool DropDatabase(DbInfo database) {
 			EnsureOpen();
 
 			connection.Execute($"DROP DATABASE IF EXISTS `{MySqlEscape.Identifier(database.BaseName)}`");
 			CleanDatabasePrivileges(database.BaseName);
-			TryRefreshMetadata(applicationInfo);
+			TryRefreshMetadata();
 			return true;
 		}
 
@@ -547,8 +534,8 @@ namespace QS.DbManagement {
 			return true;
 		}
 
-		public List<DbUserBaseAccess> GetUserBaseAccess(string login, IApplicationInfo applicationInfo) {
-			return FromMetadataOrDirect(applicationInfo.ProductCode,
+		public List<DbUserBaseAccess> GetUserBaseAccess(string login) {
+			return FromMetadataOrDirect(ProductCode,
 				metadata => {
 					var user = metadata.Users.GetUserByLogin(login)
 						?? throw new InvalidOperationException($"Пользователь {login} не найден в метабазе.");
@@ -556,16 +543,16 @@ namespace QS.DbManagement {
 					FillUsersProfiles(list, login);
 					return list;
 				},
-				() => GetUserBaseAccessDirect(login, applicationInfo));
+				() => GetUserBaseAccessDirect(login));
 		}
 
-		private List<DbUserBaseAccess> GetUserBaseAccessDirect(string login, IApplicationInfo applicationInfo) {
+		private List<DbUserBaseAccess> GetUserBaseAccessDirect(string login) {
 			EnsureOpen();
 
 			var grants = ReadGrantsByHost(login).Values.SelectMany(g => g).ToList();
 			bool globalAdmin = MySqlGrants.HasGlobalAdmin(grants);
 
-			var result = GetUserDatabasesDirect(applicationInfo)
+			var result = GetUserDatabasesDirect()
 				.Select(db => globalAdmin ? FullAccessByGlobalGrant(db) : AccessFromGrants(db, grants))
 				.ToList();
 
@@ -626,7 +613,7 @@ namespace QS.DbManagement {
 			}
 		}
 
-		public bool SetUserBaseAccess(string login, DbUserBaseAccess access, IApplicationInfo applicationInfo) {
+		public bool SetUserBaseAccess(string login, DbUserBaseAccess access) {
 			ValidateLogin(login);
 			if(string.IsNullOrWhiteSpace(access?.BaseName))
 				throw new ArgumentException("Не указано имя базы", nameof(access));
