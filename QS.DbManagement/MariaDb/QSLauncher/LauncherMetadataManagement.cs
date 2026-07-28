@@ -3,7 +3,7 @@ using QS.DbManagement.Entities;
 
 namespace QS.DbManagement.MariaDb.QSLauncher {
 	internal class LauncherMetadataManagement {
-		private const string LauncherBaseName = "QSLauncher";
+		public const string LauncherBaseName = LauncherBasesManagement.LauncherBaseName;
 
 		private readonly string connectionString;
 		public LauncherBasesManagement Bases { get; }

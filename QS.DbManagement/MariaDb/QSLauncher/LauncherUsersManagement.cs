@@ -9,7 +9,7 @@ using System.Linq;
 namespace QS.DbManagement.MariaDb.QSLauncher {
 	internal class LauncherUsersManagement
 	{
-		private const string LauncherBaseName = "QSLauncher";
+		public const string LauncherBaseName = "QSLauncher";
 		private const string UsersTable = "server_users";
 		private const int ER_DUP_ENTRY = 1062;
 
@@ -77,9 +77,17 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 					var tableColumns = LauncherColumnMapper.TableColumns(connection, LauncherBaseName, UsersTable);
 					var (columns, parameters) = LauncherColumnMapper.MapForWrite(tableColumns, user, StructuralUserColumns);
 
-					columns.Insert(0, "account_id"); parameters.Add("account_id", userInfo.AccountId);
-					columns.Insert(0, "password"); parameters.Add("password", Cryptography.ComputeHash(password)); //?
-					columns.Insert(0, "login"); parameters.Add("login", user.Login);
+					columns.Insert(0, "account_id");
+					parameters.Add("account_id", userInfo.AccountId);
+
+					columns.Insert(0, "product_id");
+					parameters.Add("product_id", productId);
+
+					columns.Insert(0, "password");
+					parameters.Add("password", Cryptography.ComputeHash(password)); //?
+
+					columns.Insert(0, "login");
+					parameters.Add("login", user.Login);
 
 					string query = $"INSERT INTO `{UsersTable}` ({string.Join(", ", columns.Select(c => $"`{c}`"))}) " +
 						$"VALUES ({string.Join(", ", columns.Select(c => "@" + c))});";
@@ -101,13 +109,13 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 
 				var tableColumns = LauncherColumnMapper.TableColumns(connection, LauncherBaseName, UsersTable);
 				var (columns, parameters) = LauncherColumnMapper.MapForWrite(tableColumns, user, StructuralUserColumns);
-				var setParts = columns.Select(c => $"`{c}` = @{c}").ToList();
+				var setParts = columns.ConvertAll(c => $"`{c}` = @{c}");
 
 				if(!string.IsNullOrEmpty(password)) {
 					setParts.Add("`password` = @password");
 					parameters.Add("password", Cryptography.ComputeHash(password)); //?
 				}
-				if(setParts.Count == 0)
+				if(!setParts.Any())
 					return true;
 
 				parameters.Add("id", user.Id);
@@ -117,32 +125,51 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			return true;
 		}
 
-		public bool DeleteUser(LauncherUserInfo user) {
-			RequireAdminFor("управления пользователями");
-			if(user.Id <= 0)
-				throw new ArgumentException(UserNotFound, nameof(user));
-
+		public bool SyncWithChangeOwnPassword(string login, string newPassword) {
+			int rowAffected = 0;
 			using(var connection = new MySqlConnection(connectionString)) {
 				connection.Open();
 
-				// Доступы и сам пользователь удаляются атомарно
-				int rowsAffected;
-				using(var transaction = connection.BeginTransaction()) {
-					connection.Execute("DELETE FROM `base_access` WHERE `user_id` = @userId", new { userId = user.Id }, transaction);
-					rowsAffected = connection.Execute($"DELETE FROM `{UsersTable}` WHERE `id` = @userId", new { userId = user.Id }, transaction);
-					transaction.Commit();
+				if(!string.IsNullOrEmpty(newPassword)) {
+					rowAffected = connection.Execute($"UPDATE `{UsersTable}` SET `password` = @password WHERE id = @login;",
+						new {login = login, password = Cryptography.ComputeHash(newPassword) });
 				}
-				return rowsAffected > 0;
 			}
+			if(rowAffected > 0)
+				return true;
+			return false;
+		}
+
+		public bool DeleteUser(LauncherUserInfo user) {
+			using(var connection = new MySqlConnection(connectionString)) {
+				connection.Open();
+				using(var transaction = connection.BeginTransaction()) {
+					return DeleteUser(user, transaction);
+				}
+			}
+		}
+
+		public bool DeleteUser(LauncherUserInfo user, MySqlTransaction transaction) {
+			RequireAdminFor("управления пользователями");
+			int rowsAffected;
+			if(user.Id <= 0)
+				throw new ArgumentException(UserNotFound, nameof(user));
+
+			transaction.Connection.Execute("DELETE FROM `base_access` WHERE `user_id` = @userId", new { userId = user.Id }, transaction);
+			rowsAffected = transaction.Connection.Execute($"DELETE FROM `{UsersTable}` WHERE `id` = @userId", new { userId = user.Id }, transaction);
+			transaction.Commit();
+
+			return rowsAffected > 0;
 		}
 
 		public void SyncUsers(IEnumerable<string> realLogins) {
 			RequireAdminFor("синхронизации пользователей");
 
-			var present = (realLogins ?? Enumerable.Empty<string>())
-				.Where(l => !string.IsNullOrEmpty(l))
-				.Distinct(StringComparer.OrdinalIgnoreCase)
-				.ToList();
+			var present = (realLogins
+				?? Enumerable.Empty<string>())
+					.Where(l => !string.IsNullOrEmpty(l))
+					.Distinct(StringComparer.OrdinalIgnoreCase)
+					.ToList();
 
 			using(var connection = new MySqlConnection(connectionString)) {
 				connection.Open();
@@ -152,7 +179,7 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 				if(!columns.Contains("disabled", StringComparer.OrdinalIgnoreCase))
 					return;
 
-				if(present.Count == 0) {
+				if(!present.Any()) {
 					connection.Execute(
 						$"UPDATE `{UsersTable}` SET disabled = TRUE WHERE account_id = @acc;",
 						new { acc = userInfo.AccountId });
@@ -160,7 +187,7 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 				}
 
 				connection.Execute(
-					$"UPDATE `{UsersTable}` SET disabled = TRUE WHERE account_id = @acc AND login NOT IN @present;", //?
+					$"UPDATE `{UsersTable}` SET disabled = TRUE WHERE account_id = @acc AND login NOT IN @present;",
 					new { acc = userInfo.AccountId, present });
 			}
 		}
@@ -195,8 +222,8 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 				connection.Open();
 
 				var baseId = connection.QueryFirstOrDefault<int?>(
-					"SELECT id FROM bases WHERE id = @bid AND account_id = @account AND product_id = @productId;",
-					new { bid = access.BaseId, account = userInfo.AccountId, productId });
+					"SELECT id FROM bases WHERE real_name = @name AND account_id = @account AND product_id = @productId;",
+					new { name = access.BaseName, account = userInfo.AccountId, productId });
 				if(baseId == null)
 					throw new ArgumentException("База не найдена", nameof(access));
 

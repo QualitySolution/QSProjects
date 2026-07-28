@@ -25,6 +25,7 @@ namespace QS.DbManagement {
 		private const string MessageTitle = "Создание базы данных";
 		private const string AllPrivileges = "ALL PRIVILEGES";
 		private const string AnyHost = "%";
+		private const string LocalHost = "localhost";
 
 		private readonly MySqlConnection connection;
 
@@ -112,7 +113,7 @@ namespace QS.DbManagement {
 			=> privileges.Contains(AllPrivileges) || privileges.Contains(privilege);
 
 		public List<DbInfo> GetUserDatabases() {
-			return FromMetadataOrDirect(ProductCode,
+			return FromMetadataOrDirect(
 				metadata => metadata.Bases.GetBases(UserName).ToList(),
 				() => GetUserDatabasesDirect());
 		}
@@ -230,7 +231,7 @@ namespace QS.DbManagement {
 
 		private LauncherMetadataManagement Metadata;
 
-		private T FromMetadataOrDirect<T>(int productCode, Func<LauncherMetadataManagement, T> fromMetadata, Func<T> direct) {
+		private T FromMetadataOrDirect<T>(Func<LauncherMetadataManagement, T> fromMetadata, Func<T> direct) {
 			if(HasQSLauncherAccess) {
 				try {
 					return fromMetadata(Metadata);
@@ -244,12 +245,15 @@ namespace QS.DbManagement {
 
 		// Синхронизация таблицы users без привязки к базе
 		private BaseUsersManagement baseUsers;
-		private BaseUsersManagement BaseUsers =>
-			baseUsers ?? (baseUsers = new BaseUsersManagement(new MySqlConnectionStringBuilder(ConnectionStringBuilder.ConnectionString)));
+		private BaseUsersManagement BaseUsers
+			=> baseUsers ?? (baseUsers = new BaseUsersManagement(new MySqlConnectionStringBuilder(ConnectionStringBuilder.ConnectionString)));
 
-		public void RefreshMetadata() {
+		public void RefreshMetadata()
+		{
 			Metadata.Bases.SyncBases();
-			Metadata.Users.SyncUsers(GetUsersDirect().Select(u => u.Login));
+
+			var users = GetUsersDirect().Select(u => u.Login);
+			Metadata.Users.SyncUsers(users);
 		}
 
 		private void RegisterInLauncherMetadata(DbCreationRequest request) {
@@ -319,15 +323,6 @@ namespace QS.DbManagement {
 
 		#endregion
 
-		private void TryRefreshMetadata() {
-			try {
-				RefreshMetadata();
-			}
-			catch(Exception ex) {
-				logger.Warn(ex, "Не удалось синхронизировать метабазу QSLauncher.");
-			}
-		}
-
 		#endregion
 
 		private bool DoesDataBaseExist(string dbName) {
@@ -344,12 +339,13 @@ namespace QS.DbManagement {
 
 			connection.Execute($"DROP DATABASE IF EXISTS `{MySqlEscape.Identifier(database.BaseName)}`");
 			CleanDatabasePrivileges(database.BaseName);
-			TryRefreshMetadata();
+
+			Metadata.Bases.SyncWithDelete(database); //base_access там удаляется как зависимая
+
 			return true;
 		}
 
 		private void CleanDatabasePrivileges(string dbName) {
-			// в mysql.db имя может храниться с экранированными шаблонными символами (foo\_bar)
 			var names = new[] { dbName, dbName.Replace("_", "\\_").Replace("%", "\\%") }
 				.Distinct(StringComparer.Ordinal).ToArray();
 			try {
@@ -362,7 +358,7 @@ namespace QS.DbManagement {
 					new { names });
 			}
 			catch(MySqlException ex) {
-				// у текущего пользователя может не быть прав на mysql.* - база уже удалена, не валим операцию
+				// у текущего пользователя может не быть прав на mysql.*
 				logger.Warn(ex, "Не удалось вычистить права удалённой базы {0}.", dbName);
 			}
 		}
@@ -412,13 +408,14 @@ namespace QS.DbManagement {
 			EnsureOpen();
 
 			connection.Execute($"ALTER USER CURRENT_USER() IDENTIFIED BY '{MySqlHelper.EscapeString(newPassword)}'");
+			Metadata.Users.SyncWithChangeOwnPassword(UserName, newPassword);
 			return true;
 		}
 
 		public List<DbUserInfo> GetUsers() {
 			// пользователей показываем из метабазы
 			// при её отсутствии - реальные учётки сервера
-			return FromMetadataOrDirect(0,
+			return FromMetadataOrDirect(
 				metadata => metadata.Users.GetUsers().Select(ToDbUserInfo).ToList(),
 				GetUsersDirect);
 		}
@@ -463,8 +460,8 @@ namespace QS.DbManagement {
 			EnsureOpen();
 
 			string lockOption = user.Disabled && SupportsAccountLock ? " ACCOUNT LOCK" : string.Empty;
-			string userSql = AccountOf(user.Login, AnyHost);
-			string userlocalSql = AccountOf(user.Login, "localhost"); //?
+			string userSql = UserOf(user.Login, AnyHost);
+			string userlocalSql = UserOf(user.Login, LocalHost);
 			var statements = new List<string> {
 				$"CREATE USER {userSql} IDENTIFIED BY '{MySqlHelper.EscapeString(password)}'{lockOption}; " +
 				$"CREATE USER {userlocalSql} IDENTIFIED BY '{MySqlHelper.EscapeString(password)}'{lockOption}; "
@@ -473,9 +470,10 @@ namespace QS.DbManagement {
 				statements.Add(GrantAdmin(userSql));
 				statements.Add(GrantAdmin(userlocalSql));
 			}
-
+			statements.Add(AccessStatements(user.Login, AnyHost, null, new DbUserBaseAccess { BaseName = LauncherMetadataManagement.LauncherBaseName, ReadOnly = true, HasAccess = true }).FirstOrDefault());
+			statements.Add(AccessStatements(user.Login, LocalHost, null, new DbUserBaseAccess { BaseName = LauncherMetadataManagement.LauncherBaseName, ReadOnly = true, HasAccess = true }).FirstOrDefault());
 			connection.Execute(string.Join(";", statements));
-			userHosts[user.Login] = new List<string> { AnyHost };
+			userHosts[user.Login] = new List<string> { AnyHost, LocalHost };
 
 			ReflectInMetadata(m => m.Users.CreateUser(ToLauncherUser(user), password), "создание", user.Login);
 			return true;
@@ -485,22 +483,19 @@ namespace QS.DbManagement {
 			ValidateLogin(user?.Login);
 			EnsureOpen();
 
-			// одним батчем по всем хостам логина
 			var statements = HostsOf(user.Login)
 				.SelectMany(host => UserChangeStatements(user, host, newPassword))
 				.ToList();
 
-			// реальные учётные операции - только если есть что менять; профиль отражаем в метабазу всегда
-			if(statements.Count > 0)
+			if(statements.Any())
 				connection.Execute(string.Join(";", statements));
 
 			ReflectUserUpdateInMetadata(user, newPassword);
 			return true;
 		}
 
-		/// <summary>Что нужно выполнить на сервере для одного аккаунта «логин@хост».</summary>
 		private IEnumerable<string> UserChangeStatements(DbUserInfo user, string host, string newPassword) {
-			string account = AccountOf(user.Login, host);
+			string account = UserOf(user.Login, host);
 
 			string options = string.Join(" ", AlterUserOptions(user, newPassword));
 			if(options.Length > 0)
@@ -523,7 +518,7 @@ namespace QS.DbManagement {
 			EnsureOpen();
 
 			connection.Execute(string.Join(";", HostsOf(login)
-				.Select(host => $"DROP USER IF EXISTS {AccountOf(login, host)}")));
+				.Select(host => $"DROP USER IF EXISTS {UserOf(login, host)}")));
 			userHosts.Remove(login);
 
 			ReflectInMetadata(m => {
@@ -531,11 +526,15 @@ namespace QS.DbManagement {
 				if(target != null)
 					m.Users.DeleteUser(target);
 			}, "удаление", login);
+
+			BaseUsers.SyncWithDeletingUser(login,
+				GetUserDatabases().ConvertAll(b => b.BaseName));
+
 			return true;
 		}
 
 		public List<DbUserBaseAccess> GetUserBaseAccess(string login) {
-			return FromMetadataOrDirect(ProductCode,
+			return FromMetadataOrDirect(
 				metadata => {
 					var user = metadata.Users.GetUserByLogin(login)
 						?? throw new InvalidOperationException($"Пользователь {login} не найден в метабазе.");
@@ -560,7 +559,8 @@ namespace QS.DbManagement {
 			return result;
 		}
 
-		private static DbUserBaseAccess FullAccessByGlobalGrant(DbInfo db) => new DbUserBaseAccess {
+		private static DbUserBaseAccess FullAccessByGlobalGrant(DbInfo db)
+		=> new DbUserBaseAccess {
 			BaseName = db.BaseName,
 			Title = db.Title,
 			HasAccess = true,
@@ -568,7 +568,8 @@ namespace QS.DbManagement {
 			CanEdit = false
 		};
 
-		private static DbUserBaseAccess AccessFromGrants(DbInfo db, IEnumerable<string> grants) {
+		private static DbUserBaseAccess AccessFromGrants(DbInfo db, IEnumerable<string> grants) 
+		{
 			var access = new DbUserBaseAccess { BaseName = db.BaseName, Title = db.Title };
 
 			var privileges = grants
@@ -576,7 +577,7 @@ namespace QS.DbManagement {
 				.SelectMany(MySqlGrants.Privileges)
 				.Where(p => p != "USAGE")
 				.ToList();
-			if(privileges.Count == 0)
+			if(!privileges.Any())
 				return access;
 
 			access.HasAccess = true;
@@ -620,7 +621,7 @@ namespace QS.DbManagement {
 			EnsureOpen();
 
 			var grantsByHost = ReadGrantsByHost(login);
-			if(grantsByHost.Count == 0)
+			if(!grantsByHost.Any())
 				throw new InvalidOperationException($"Пользователь {login} не найден на сервере.");
 
 			if(MySqlGrants.HasGlobalAdmin(grantsByHost.Values.SelectMany(g => g)))
@@ -630,29 +631,36 @@ namespace QS.DbManagement {
 			var statements = grantsByHost
 				.SelectMany(hostGrants => AccessStatements(login, hostGrants.Key, hostGrants.Value, access))
 				.ToList();
-			if(statements.Count > 0)
+			if(statements.Any())
 				connection.Execute(string.Join(";", statements));
 
-			ReflectAccessInBase(login, access);
-			ReflectAccessInMetadata(login, access);
+			ReflectInMetadata(m => {
+				var target = m.Users.GetUserByLogin(login);
+				if(target != null)
+					m.Users.ChangeBaseAccess(
+						new BaseAccessRow { BaseId = access.BaseId, HasAccess = access.HasAccess, Admin = access.IsAdmin,ReadOnly = access.ReadOnly
+						}, target);
+			}, "изменение доступа", login);
+			BaseUsers.SyncWithUserTable(access.BaseName, new BaseUserRow { Admin = access.IsAdmin, Deactivated = !access.HasAccess, Email = access.Email, Login = login, Name = access.Name}, access.HasAccess);
+
 			return true;
 		}
 
 		private static IEnumerable<string> AccessStatements(string login, string host, IEnumerable<string> grants, DbUserBaseAccess access) {
-			string account = AccountOf(login, host);
+			string user = UserOf(login, host);
 
 			foreach(var grant in grants.Where(g => GrantedOnDatabase(g, access.BaseName))) {
 				string pattern = $"`{MySqlEscape.Identifier(MySqlGrants.Scope(grant))}`.*";
 				if(MySqlGrants.IsMeaningful(grant))
-					yield return $"REVOKE {AllPrivileges} ON {pattern} FROM {account}";
+					yield return $"REVOKE {AllPrivileges} ON {pattern} FROM {user}";
 				// ALL PRIVILEGES не включает право раздачи грантов
 				if(MySqlGrants.HasGrantOption(grant))
-					yield return $"REVOKE GRANT OPTION ON {pattern} FROM {account}";
+					yield return $"REVOKE GRANT OPTION ON {pattern} FROM {user}";
 			}
 
 			string privileges = PrivilegesFor(access);
 			if(privileges != null)
-				yield return $"GRANT {privileges} ON `{MySqlEscape.Pattern(access.BaseName)}`.* TO {account}";
+				yield return $"GRANT {privileges} ON `{MySqlEscape.Pattern(access.BaseName)}`.* TO {user}";
 		}
 
 		/// <summary>null - доступа нет</summary>
@@ -666,38 +674,12 @@ namespace QS.DbManagement {
 			return "SELECT, INSERT, UPDATE, DELETE, EXECUTE, CREATE TEMPORARY TABLES, LOCK TABLES, SHOW VIEW";
 		}
 
-		private void ReflectAccessInBase(string login, DbUserBaseAccess access) {
-			BaseUsers.Sync(access.BaseName, new BaseUserRow {
-				Login = login,
-				Name = access.Name,
-				Email = access.Email,
-				Admin = access.IsAdmin,
-				Deactivated = !access.HasAccess
-			}, access.HasAccess);
-		}
-
-		// в base_access метабазы - только если доступ пришёл оттуда и у базы известен её идентификатор
-		private void ReflectAccessInMetadata(string login, DbUserBaseAccess access) {
-			if(access.BaseId <= 0)
-				return;
-
-			ReflectInMetadata(m => {
-				var target = m.Users.GetUserByLogin(login);
-				if(target != null)
-					m.Users.ChangeBaseAccess(new Entities.BaseAccessRow {
-						BaseId = access.BaseId,
-						HasAccess = access.HasAccess,
-						Admin = access.IsAdmin,
-						ReadOnly = access.ReadOnly
-					}, target);
-			}, "изменение доступа", login);
-		}
-
-		private Dictionary<string, List<string>> ReadGrantsByHost(string login) {
+		private Dictionary<string, List<string>> ReadGrantsByHost(string login)
+		{
 			var hosts = HostsOf(login).ToList();
 			var result = new Dictionary<string, List<string>>(StringComparer.Ordinal);
 			string sql = string.Join(";", hosts
-				.Select(host => $"SHOW GRANTS FOR {AccountOf(login, host)}"));
+				.Select(host => $"SHOW GRANTS FOR {UserOf(login, host)}"));
 			try {
 				using(var multi = connection.QueryMultiple(sql)) {
 					foreach(var host in hosts)
@@ -710,10 +692,6 @@ namespace QS.DbManagement {
 			return result;
 		}
 
-		// строка mysql.user - её заполняет Dapper, поэтому свойства выглядят «неиспользуемыми»
-		// сеттеры зовёт Dapper через рефлексию, поэтому "не используется" тут неверно
-		[SuppressMessage("Major Code Smell", "S1144:Unused private types or members should be removed",
-			Justification = "Строку заполняет Dapper")]
 		private sealed class MySqlUserRow {
 			public string Login { get; set; }
 			public string Host { get; set; }
@@ -722,21 +700,26 @@ namespace QS.DbManagement {
 			public string CreateUserPriv { get; set; }
 		}
 
-		private IReadOnlyList<string> HostsOf(string login) =>
-			userHosts.TryGetValue(login, out var hosts) && hosts.Count > 0
+		private IReadOnlyList<string> HostsOf(string login)
+		{
+			if(!userHosts.Any())
+				GetUsersDirect(); //обновим хосты
+			return userHosts.TryGetValue(login, out var hosts) && hosts.Any()
 				? (IReadOnlyList<string>)hosts
 				: new[] { AnyHost };
+		}
 
-		private static string AccountOf(string login, string host) =>
-			$"'{MySqlHelper.EscapeString(login)}'@'{MySqlHelper.EscapeString(host)}'";
+		private static string UserOf(string login, string host)
+			=> $"'{MySqlHelper.EscapeString(login)}'@'{MySqlHelper.EscapeString(host)}'";
 
-		private static string GrantAdmin(string account) =>
-			$"GRANT {AllPrivileges} ON *.* TO {account} WITH GRANT OPTION";
+		private static string GrantAdmin(string account)
+			=> $"GRANT {AllPrivileges} ON *.* TO {account} WITH GRANT OPTION";
 
-		private static string RevokeAdmin(string account) =>
-			$"REVOKE {AllPrivileges}, GRANT OPTION ON *.* FROM {account}";
+		private static string RevokeAdmin(string account)
+			=> $"REVOKE {AllPrivileges}, GRANT OPTION ON *.* FROM {account}";
 
-		private static void ValidateLogin(string login) {
+		private static void ValidateLogin(string login)
+		{
 			if(string.IsNullOrWhiteSpace(login))
 				throw new ArgumentException("Логин пользователя не может быть пустым", nameof(login));
 			if(login.Length > 80)
@@ -745,12 +728,14 @@ namespace QS.DbManagement {
 
 		#endregion
 
-		private void EnsureOpen() {
+		private void EnsureOpen()
+		{
 			if(connection.State != ConnectionState.Open)
 				connection.Open();
 		}
 
-		public void Dispose() {
+		public void Dispose()
+		{
 			connection?.Dispose();
 		}
 	}
