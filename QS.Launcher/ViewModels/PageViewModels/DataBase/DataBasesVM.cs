@@ -150,7 +150,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 				return;
 
 			try {
-				await Task.Run(() => provider.RefreshMetadata(applicationInfo));
+				await Task.Run(() => provider.RefreshMetadata());
 				RefreshDatabases();
 				interactiveMessage.ShowMessage(ImportanceLevel.Success,
 					"Метаинформация обновлена.", "Синхронизация метаинформации");
@@ -237,7 +237,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 				return;
 
 			try {
-				await Task.Run(() => provider.DropDatabase(database, applicationInfo));
+				await Task.Run(() => provider.DropDatabase(database));
 				RefreshDatabases();
 				interactiveMessage.ShowMessage(ImportanceLevel.Success,
 					$"База данных {database.Title} удалена.", "Удаление базы данных");
@@ -258,7 +258,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		}
 
 		private void ReloadDatabases() {
-			Databases = provider.GetUserDatabases(applicationInfo).AsList();
+			Databases = provider.GetUserDatabases().AsList();
 			this.RaisePropertyChanged(nameof(Databases));
 		}
 

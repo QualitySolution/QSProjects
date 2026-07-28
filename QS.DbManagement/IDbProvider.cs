@@ -1,4 +1,4 @@
-using QS.Dialog;
+﻿using QS.Dialog;
 using QS.Project.Versioning;
 using System.Collections.Generic;
 using System.Threading;
@@ -19,9 +19,9 @@ namespace QS.DbManagement
 
 		LoginToServerResponse LoginToServer();
 
-		void RefreshMetadata(IApplicationInfo applicationInfo);
+		void RefreshMetadata();
 
-		List<DbInfo> GetUserDatabases(IApplicationInfo applicationInfo);
+		List<DbInfo> GetUserDatabases();
 
 		LoginToDatabaseResponse LoginToDatabase(DbInfo dbInfo);
 
@@ -30,7 +30,7 @@ namespace QS.DbManagement
 		/// </summary>
 		bool CreateDatabase(DbCreationRequest request);
 
-		bool DropDatabase(DbInfo database, IApplicationInfo applicationInfo);
+		bool DropDatabase(DbInfo database);
 
 		void BackupDatabase(DbInfo database, string filePath, IProgressBarDisplayable progress, CancellationToken cancellation);
 	}
@@ -62,12 +62,12 @@ namespace QS.DbManagement
 		/// <summary>
 		/// Список баз продукта с текущим доступом указанного пользователя
 		/// </summary>
-		List<DbUserBaseAccess> GetUserBaseAccess(string login, IApplicationInfo applicationInfo);
+		List<DbUserBaseAccess> GetUserBaseAccess(string login);
 
 		/// <summary>
 		/// меняет доступ пользователя к базе согласно флагам <paramref name="access"/>
 		/// </summary>
-		bool SetUserBaseAccess(string login, DbUserBaseAccess access, IApplicationInfo applicationInfo);
+		bool SetUserBaseAccess(string login, DbUserBaseAccess access);
 	}
 
 	public interface IDbProvider : IDbManager, IDbUserManager, IDisposable {}

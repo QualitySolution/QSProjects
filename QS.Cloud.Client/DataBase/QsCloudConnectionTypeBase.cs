@@ -1,4 +1,4 @@
-using QS.DbManagement;
+﻿using QS.DbManagement;
 using QS.DbManagement.Entities;
 using QS.Utilities.Extensions;
 using System.Collections.Generic;
@@ -23,8 +23,8 @@ namespace QS.Cloud.Client.DataBase {
 				parameters.Any(p => p.Name == "Login" && !string.IsNullOrEmpty(p.Value));
 		}
 
-		public override IDbProvider CreateProvider(IList<ConnectionParameterValue> parameters, string password = null) {
-			return new QSCloudProvider(parameters, password);
+		public override IDbProvider CreateProvider(IList<ConnectionParameterValue> parameters, int productCode, string password = null) {
+			return new QSCloudProvider(parameters, productCode, password);
 		}
 	}
 }

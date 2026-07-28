@@ -1,13 +1,14 @@
-using System;
-using QS.DbManagement;
+﻿using QS.DbManagement;
 using QS.Dialog;
+using QS.Launcher.ViewModels.PageViewModels.DataBase;
+using QS.Project.Versioning;
 using ReactiveUI;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using QS.Launcher.ViewModels.PageViewModels.DataBase;
 
 namespace QS.Launcher.ViewModels.PageViewModels {
 	public class LoginVM : CarouselPageVM {
@@ -50,6 +51,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			Password.Where(c => char.IsLetter(c)).All(c => c <= '~');
 
 		protected IDbProvider dbProvider;
+		private readonly IApplicationInfo applicationInfo;
 
 		public ICommand LoginCommand { get; }
 		public ICommand AddCommand { get; }
@@ -67,6 +69,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			IEnumerable<ConnectionTypeBase> connectionTypes,
 			LauncherOptions options,
 			Configurator configurator,
+			IApplicationInfo applicationInfo,
 			DataBasesVM dbVM,
 			IInteractiveMessage interactiveMessage) : base()
 		{
@@ -76,6 +79,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			CompanyImage = options.LogoImage;
 			AppTitle = options.AppTitle;
 
+			this.applicationInfo = applicationInfo;
 			ConnectionTypes = connectionTypes.ToList();
 			Connections = new ObservableCollection<Connection>(configurator.ReadConnections()); 
 			SelectedConnection = Connections.FirstOrDefault(c => c.Last);
@@ -112,7 +116,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 				return;
 
 			try {
-				dbProvider = SelectedConnection.CreateProvider(Password);
+				dbProvider = SelectedConnection.CreateProvider(Password, applicationInfo.ProductCode);
 				var resp = dbProvider.LoginToServer();
 
 				Task.Run(() => SaveCommand.Execute(null));

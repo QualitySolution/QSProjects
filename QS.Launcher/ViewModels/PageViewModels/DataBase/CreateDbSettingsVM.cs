@@ -41,7 +41,6 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 						DbName = DbName,
 						DbTitle = DbTitle,
 						CreationFactory = factory,
-						ApplicationInfo = args.ServiceProvider.GetService<IApplicationInfo>(),
 						Interaction = args.ServiceProvider.GetRequiredService<IDbCreatorInteraction>(),
 						// строку подключения заполнит провайдер
 						CreationResources = new EmbeddedCreationResources {

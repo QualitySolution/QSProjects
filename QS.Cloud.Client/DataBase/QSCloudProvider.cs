@@ -19,6 +19,7 @@ namespace QS.Cloud.Client.DataBase {
 		public bool IsAdmin { get; protected set; }
 		public string Account { get; private set; }
 		public string UserName { get; private set; }
+		public uint ProductCode { get; private set; }
 
 		public bool CanCreateDatabase => dbClient.CanConnect && IsAdmin;
 		public bool CanDropDatabase => CanCreateDatabase;
@@ -28,13 +29,14 @@ namespace QS.Cloud.Client.DataBase {
 		private readonly DataBaseManagementCloudClient dbClient;
 		private readonly UserManagementCloudClient userClient;
 
-		public QSCloudProvider(IList<ConnectionParameterValue> parameters, string password = null) {
+		public QSCloudProvider(IList<ConnectionParameterValue> parameters, int productCode, string password = null) {
 			Account = parameters.First(p => p.Name == "Account").Value;
 			UserName = parameters.First(p => p.Name == "Login").Value;
+			ProductCode = Convert.ToUInt32(productCode);
 			var authInfo = new BasicAuthInfoProvider($@"{Account}\{UserName}", password);
 
 			loginClient = new LoginManagementCloudClient(authInfo);
-			dbClient = new DataBaseManagementCloudClient(authInfo);
+			dbClient = new DataBaseManagementCloudClient(authInfo, ProductCode);
 			userClient = new UserManagementCloudClient(authInfo);
 		}
 
@@ -69,8 +71,8 @@ namespace QS.Cloud.Client.DataBase {
 				return EnsureSuccess(response.Success, response.Message);
 			});
 
-		public List<DbUserBaseAccess> GetUserBaseAccess(string login, IApplicationInfo applicationInfo) => Call(() =>
-			userClient.GetUserBaseAccess(login, applicationInfo.ProductCode)
+		public List<DbUserBaseAccess> GetUserBaseAccess(string login) => Call(() =>
+			userClient.GetUserBaseAccess(login, ProductCode)
 				.Select(b => new DbUserBaseAccess {
 					BaseId = b.BaseId,
 					Title = b.BaseTitle,
@@ -79,9 +81,9 @@ namespace QS.Cloud.Client.DataBase {
 					ReadOnly = b.ReadOnly
 				}).ToList());
 
-		public bool SetUserBaseAccess(string login, DbUserBaseAccess access, IApplicationInfo applicationInfo) =>
+		public bool SetUserBaseAccess(string login, DbUserBaseAccess access) =>
 			Call(() => EnsureSuccess(
-				userClient.ChangeBaseAccess(login, access.BaseId, access.HasAccess, access.IsAdmin, access.ReadOnly, applicationInfo.ProductCode),
+				userClient.ChangeBaseAccess(login, access.BaseId, access.HasAccess, access.IsAdmin, access.ReadOnly, ProductCode),
 				"Не удалось изменить доступ к базе"));
 
 		private static T Call<T>(Func<T> operation) {
@@ -130,7 +132,7 @@ namespace QS.Cloud.Client.DataBase {
 
 		public bool CanRefreshMetadata => false;
 
-		public void RefreshMetadata(IApplicationInfo applicationInfo) { }
+		public void RefreshMetadata() { }
 
 		public bool CreateDatabase(DbCreationRequest request) {
 			if(request == null)
@@ -162,21 +164,21 @@ namespace QS.Cloud.Client.DataBase {
 		}
 
 		private int? PrepareEmptyDatabase(DbCreationRequest request) {
-			var existing = dbClient.CheckDataBaseExists(request.DbName, request.ApplicationInfo);
+			var existing = dbClient.CheckDataBaseExists(request.DbName);
 			if(!existing.Exists)
-				return dbClient.CreateDataBase(request.DbName, request.DbTitle, request.ApplicationInfo).BaseId;
+				return dbClient.CreateDataBase(request.DbName, request.DbTitle).BaseId;
 
 			switch(request.Interaction.AskDropExistingDatabase(request.DbName)) {
 				case ToDoWithExistingDatabase.Recreate:
-					if(!dbClient.DropDataBase(existing.BaseId, request.ApplicationInfo).Success) {
+					if(!dbClient.DropDataBase(existing.BaseId).Success) {
 						request.Interaction.ReportError("Не удалось удалить существующую базу: " + existing.BaseId, MessageTitle);
 						return null;
 					}
-					return dbClient.CreateDataBase(request.DbName, request.DbTitle, request.ApplicationInfo).BaseId;
+					return dbClient.CreateDataBase(request.DbName, request.DbTitle).BaseId;
 
 				case ToDoWithExistingDatabase.Rewrite:
 					// облако пересоздаст пустую базу, сохранив записи реестра и права доступа
-					if(!dbClient.ClearDataBase(existing.BaseId, request.ApplicationInfo).Success) {
+					if(!dbClient.ClearDataBase(existing.BaseId).Success) {
 						request.Interaction.ReportError("Не удалось очистить существующую базу: " + existing.BaseId, MessageTitle);
 						return null;
 					}
@@ -193,8 +195,8 @@ namespace QS.Cloud.Client.DataBase {
 			userClient.Dispose();
 		}
 
-		public bool DropDatabase(DbInfo database, IApplicationInfo applicationInfo) {
-			var response = dbClient.DropDataBase(database.BaseId, applicationInfo);
+		public bool DropDatabase(DbInfo database) {
+			var response = dbClient.DropDataBase(database.BaseId);
 			return response.Success;
 		}
 
@@ -206,8 +208,8 @@ namespace QS.Cloud.Client.DataBase {
 			}
 		}
 
-		public List<DbInfo> GetUserDatabases(IApplicationInfo applicationInfo) =>
-			loginClient.GetBasesForUser(applicationInfo.ProductCode).Select(bi => new DbInfo {
+		public List<DbInfo> GetUserDatabases() =>
+			loginClient.GetBasesForUser(ProductCode).Select(bi => new DbInfo {
 				Title = bi.BaseTitle,
 				BaseId = bi.BaseId,
 				BaseName = bi.BaseName,
