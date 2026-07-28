@@ -4,6 +4,7 @@ using QS.DbManagement.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace QS.DbManagement.MariaDb.QSLauncher {
 	internal class BaseUsersManagement {
@@ -20,12 +21,12 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 		}
 
 		/// <summary>Заводит, обновляет пользователя в базе при доступе, снимает доступ через deactivated</summary>
-		public void Sync(string baseName, BaseUserRow user, bool hasAccess) {
+		public void SyncWithUserTable(string baseName, BaseUserRow user, bool hasAccess) {
 			try {
 				using(var connection = new MySqlConnection(connectionString)) {
 					connection.Open();
 					var columns = LauncherColumnMapper.TableColumns(connection, baseName, UsersTable);
-					if(columns.Count == 0)
+					if(!columns.Any())
 						return; // таблицы users в этой базе нет
 
 					string table = $"`{MySqlEscape.Identifier(baseName)}`.`{UsersTable}`";
@@ -34,6 +35,9 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 						if(columns.Contains("deactivated", StringComparer.OrdinalIgnoreCase))
 						{
 							connection.Execute($"UPDATE {table} SET deactivated = TRUE WHERE login = @login", new { login = user.Login });
+						}
+						else {
+							logger.Warn("в базе {0} нет таблицы {1}", baseName, UsersTable);
 						}
 						return;
 					}
@@ -49,7 +53,7 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 
 					if(exists) {
 						// пустые поля формы не затирают существующее
-						var setParts = cols.Select(c => $"`{c}` = COALESCE(@{c}, `{c}`)");										//?
+						var setParts = cols.Select(c => $"`{c}` = COALESCE(@{c}, `{c}`)");
 						connection.Execute($"UPDATE {table} SET {string.Join(", ", setParts)} WHERE login = @login", parameters);
 					}
 					else {
@@ -61,7 +65,38 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 				}
 			}
 			catch(MySqlException ex) {
-				logger.Debug(ex, "Не удалось синхронизировать users в базе {0} для {1}", baseName, user.Login);
+				logger.Warn(ex, "не удалось синхронизировать users в базе {0} для {1}", baseName, user.Login);
+			}
+		}
+
+		public void SyncWithDeletingUser(string login, List<string> baseNames)
+		{
+			try {
+				using(var connection = new MySqlConnection(connectionString)) {
+					connection.Open();
+					List<string> sqls = new List<string>(baseNames.Count);
+					foreach(string baseName in baseNames) {
+						List<string> columns = LauncherColumnMapper.TableColumns(connection, baseName, UsersTable);
+						if(!columns.Any())
+							continue; // таблицы users в этой базе нет
+
+						string table = $"`{MySqlEscape.Identifier(baseName)}`.`{UsersTable}`";
+
+						if(columns.Contains("deactivated", StringComparer.OrdinalIgnoreCase)) {
+							sqls.Add($"UPDATE {table} SET deactivated = TRUE WHERE login = @login");
+						}
+						else {
+							logger.Warn("в базе {0} нет таблицы {1}", baseName, UsersTable);
+						}
+						return;
+					}
+					if(!sqls.Any())
+						return;
+					connection.Execute(string.Join("; ", sqls), new { login = login });
+				}
+			}
+			catch(MySqlException ex) {
+				logger.Warn(ex, "не удалось синхронизировать отключение пользователя {0} из всех таблиц users", login);
 			}
 		}
 
@@ -71,7 +106,7 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 				using(var connection = new MySqlConnection(connectionString)) {
 					connection.Open();
 					var columns = LauncherColumnMapper.TableColumns(connection, baseName, UsersTable);
-					if(columns.Count == 0)
+					if(!columns.Any())
 						return null;
 					string select = LauncherColumnMapper.SelectList(columns, typeof(BaseUserRow));
 					return connection.QueryFirstOrDefault<BaseUserRow>(
@@ -79,7 +114,7 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 				}
 			}
 			catch(MySqlException ex) {
-				logger.Debug(ex, "Не удалось прочитать users в базе {0}", baseName);
+				logger.Warn(ex, "Не удалось прочитать users в базе {0}", baseName);
 				return null;
 			}
 		}

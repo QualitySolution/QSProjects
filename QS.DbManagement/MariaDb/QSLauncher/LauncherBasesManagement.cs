@@ -12,9 +12,9 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 	internal class LauncherBasesManagement {
 		private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-		private const string LauncherBaseName = "QSLauncher";
+		public const string LauncherBaseName = "QSLauncher";
 		private const string BasesTable = "bases";
-		private static readonly string[] SystemDatabases = { "information_schema", "mysql", "performance_schema", "sys" };
+		public static readonly string[] SystemDatabases = { "information_schema", "mysql", "performance_schema", "sys" };
 		private static readonly string[] BaseDependencies = { "sessions", "api_tokens", "base_access" };
 
 		private readonly bool canWrite;
@@ -41,15 +41,14 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			using(var connection = new MySqlConnection(connectionString)) {
 				connection.Open();
 
-				var databases = connection.Query<string>("SHOW DATABASES")
-					.Except(SystemDatabases, StringComparer.OrdinalIgnoreCase)
-					.ToList();
+				var bases = connection.Query<string>("SHOW DATABASES")
+					.Except(SystemDatabases, StringComparer.OrdinalIgnoreCase);
 
 				var tableColumns = LauncherColumnMapper.TableColumns(connection, LauncherBaseName, BasesTable);
 				var keyColumns = LauncherColumnMapper.KeyColumns(connection, LauncherBaseName, BasesTable);
 
 				var rows = new List<Dictionary<string, object>>();
-				foreach(var dbName in databases) {
+				foreach(var dbName in bases) {
 					var meta = ReadBaseParameters(dbName);
 					if(meta == null || meta.ProductCode != expectedProductCode)
 						continue;
@@ -67,11 +66,11 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 					});
 				}
 
-				if(rows.Count > 0)
+				if(rows.Any())
 					UpsertBases(connection, tableColumns, keyColumns, rows);
 
 				// пропавшие с сервера базы помечаем disabled (мягкое удаление при синхронизации)
-				MarkMissingBasesDisabled(connection, tableColumns, databases);
+				MarkMissingBasesDisabled(connection, tableColumns, bases);
 			}
 		}
 
@@ -118,12 +117,12 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 
 		private static string ParameterName(int row, int column) => $"p{row}_{column}";
 
-		private void MarkMissingBasesDisabled(MySqlConnection connection, ICollection<string> tableColumns, IReadOnlyCollection<string> presentDatabases)
+		private void MarkMissingBasesDisabled(MySqlConnection connection, ICollection<string> tableColumns, IEnumerable<string> presentDatabases)
 		{
 			if(!tableColumns.Contains("disabled", StringComparer.OrdinalIgnoreCase))
 				return;
 
-			if(presentDatabases.Count == 0) {
+			if(!presentDatabases.Any()) {
 				connection.Execute(
 					$"UPDATE `{BasesTable}` SET disabled = TRUE WHERE account_id = @acc AND product_id = @pid;",
 					new { acc = accountId, pid = productId });
@@ -176,16 +175,20 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			using(var connection = new MySqlConnection(connectionString)) {
 				connection.Open();
 				using(var transaction = connection.BeginTransaction()) {
-					foreach(var dependency in BaseDependencies)
-						connection.Execute($"DELETE FROM `{dependency}` WHERE base_id = @id;",
-							new { id = dbInfo.BaseId }, transaction);
-					connection.Execute($"DELETE FROM `{BasesTable}` WHERE id = @id;", new { id = dbInfo.BaseId }, transaction);
-					transaction.Commit();
+					return SyncWithDelete(dbInfo, transaction);
 				}
-
-				logger.Info("Удалена база {0} аккаунтом {1}", dbInfo.BaseName, accountId);
-				return true;
 			}
+		}
+
+		public bool SyncWithDelete(DbInfo dbInfo, MySqlTransaction transaction)
+		{
+			foreach(var dependency in BaseDependencies)
+				transaction.Connection.Execute($"DELETE FROM `{dependency}` WHERE base_id = @id;",
+					new { id = dbInfo.BaseId }, transaction);
+			transaction.Connection.Execute($"DELETE FROM `{BasesTable}` WHERE id = @id;", new { id = dbInfo.BaseId }, transaction);
+			transaction.Commit();
+			logger.Info("Удалена база {0} аккаунтом {1}", dbInfo.BaseName, accountId);
+			return true;
 		}
 
 		private BaseMeta ReadBaseParameters(string dbName) {

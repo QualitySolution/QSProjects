@@ -280,5 +280,3 @@ namespace QS.Cloud.Client.DataBase {
 		#endregion
 	}
 }
-
-
