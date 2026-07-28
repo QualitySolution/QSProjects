@@ -12,11 +12,7 @@ namespace QS.Dialog.GtkUI
 
 		public static bool RunQuestionDialog(string question)
 		{
-			MessageDialog md = new MessageDialog(null,
-								   DialogFlags.Modal,
-								   MessageType.Question,
-								   ButtonsType.YesNo,
-								   question);
+			MessageDialog md = CreateMessageDialog(MessageType.Question, ButtonsType.YesNo, question);
 
 			md.SetPosition(WindowPosition.Center);
 			md.ShowAll();
@@ -27,11 +23,7 @@ namespace QS.Dialog.GtkUI
 
 		public static bool RunQuestionWithTitleDialog(string title, string question)
 		{
-			MessageDialog md = new MessageDialog(null,
-								   DialogFlags.Modal,
-								   MessageType.Question,
-								   ButtonsType.YesNo,
-								   question);
+			MessageDialog md = CreateMessageDialog(MessageType.Question, ButtonsType.YesNo, question);
 
 			md.SetPosition(WindowPosition.Center);
 			md.Title = title;
@@ -40,14 +32,10 @@ namespace QS.Dialog.GtkUI
 			md.Destroy();
 			return result;
 		}
-		
+
 		public static int RunQuestionYesNoCancelDialog(string question, string title = null)
 		{
-			MessageDialog md = new MessageDialog(null,
-				DialogFlags.Modal,
-				MessageType.Question,
-				ButtonsType.None,
-				question);
+			MessageDialog md = CreateMessageDialog(MessageType.Question, ButtonsType.None, question);
 
 			md.AddButton("Да", ResponseType.Yes);
 			md.AddButton("Нет", ResponseType.No);
@@ -62,11 +50,7 @@ namespace QS.Dialog.GtkUI
 
 		public static void RunWarningDialog(string warning, string title = null)
 		{
-			MessageDialog md = new MessageDialog(null,
-								   DialogFlags.Modal,
-								   MessageType.Warning,
-								   ButtonsType.Ok,
-								   warning);
+			MessageDialog md = CreateMessageDialog(MessageType.Warning, ButtonsType.Ok, warning);
 
 			md.SetPosition(WindowPosition.Center);
 			md.Title = title ?? "Предупреждение";
@@ -77,11 +61,7 @@ namespace QS.Dialog.GtkUI
 
 		public static bool RunWarningDialog(string title, string warning, ButtonsType buttons = ButtonsType.YesNo)
 		{
-			MessageDialog md = new MessageDialog(null,
-								   DialogFlags.Modal,
-								   MessageType.Warning,
-								   buttons,
-								   warning);
+			MessageDialog md = CreateMessageDialog(MessageType.Warning, buttons, warning);
 
 			md.SetPosition(WindowPosition.Center);
 			md.Title = title;
@@ -91,7 +71,8 @@ namespace QS.Dialog.GtkUI
 			return result;
 		}
 
-		public static void RunErrorDialog(string formattedError, params object[] args){
+		public static void RunErrorDialog(string formattedError, params object[] args)
+		{
 			RunErrorDialog(string.Format(formattedError, args));
 		}
 
@@ -102,12 +83,7 @@ namespace QS.Dialog.GtkUI
 
 		public static void RunErrorDialog(bool useMarkup, string error, string title = null)
 		{
-			MessageDialog md = new MessageDialog (null,
-				DialogFlags.Modal,
-				MessageType.Error,
-				ButtonsType.Ok,
-				useMarkup,
-				error);
+			MessageDialog md = CreateMessageDialog(MessageType.Error, ButtonsType.Ok, useMarkup, error);
 
 			md.SetPosition(WindowPosition.Center);
 			md.Title = title ?? "Ошибка";
@@ -118,11 +94,7 @@ namespace QS.Dialog.GtkUI
 
 		public static void RunErrorWithSecondaryTextDialog(string error, string secondaryText)
 		{
-			MessageDialog md = new MessageDialog(null,
-				DialogFlags.Modal,
-				MessageType.Error,
-				ButtonsType.Ok,
-				error);
+			MessageDialog md = CreateMessageDialog(MessageType.Error, ButtonsType.Ok, error);
 
 			md.SetPosition(WindowPosition.Center);
 
@@ -143,11 +115,7 @@ namespace QS.Dialog.GtkUI
 
 		public static void RunInfoDialog(string message, string title = null)
 		{
-			MessageDialog md = new MessageDialog(null,
-				DialogFlags.Modal,
-				MessageType.Info,
-				ButtonsType.Ok,
-				message);
+			MessageDialog md = CreateMessageDialog(MessageType.Info, ButtonsType.Ok, message);
 
 			var messageLabel = GetMessageLabel(md);
 
@@ -167,6 +135,30 @@ namespace QS.Dialog.GtkUI
 		{
 			return ((messageDialog.VBox.Children[0] as HBox)?.Children[1] as VBox)?.Children[0] as Label;
 		}
+
+		private static MessageDialog CreateMessageDialog(MessageType messageType, ButtonsType buttonsType, string message)
+		{
+			return new MessageDialog(
+				null,
+				DialogFlags.Modal,
+				messageType,
+				buttonsType,
+				"{0}",
+				message ?? string.Empty
+			);
+		}
+
+		private static MessageDialog CreateMessageDialog(MessageType messageType, ButtonsType buttonsType, bool useMarkup, string message)
+		{
+			return new MessageDialog(
+				null,
+				DialogFlags.Modal,
+				messageType,
+				buttonsType,
+				useMarkup,
+				"{0}",
+				message ?? string.Empty
+			);
+		}
 	}
 }
-
