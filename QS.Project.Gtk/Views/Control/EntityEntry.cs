@@ -141,6 +141,9 @@ namespace QS.Views.Control
 
 		void OnCellLayoutDataFunc(CellLayout cell_layout, CellRenderer cell, TreeModel tree_model, TreeIter iter)
 		{
+			if(viewModel == null)
+				return;
+
 			var title =  viewModel.GetAutocompleteTitle(tree_model.GetValue(iter, 0)) ?? String.Empty;
 			var words = entryObject.Text.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 			foreach(var word in words) {
@@ -240,6 +243,7 @@ namespace QS.Views.Control
 					viewModel = null;
 				}
 			}
+			entryObject.Completion.Model = null;
 
 			Binding.CleanSources();
 			var viewImage = buttonViewEntity.Image as Gtk.Image;
