@@ -1,16 +1,40 @@
-using Autofac;
+﻿using Autofac;
 using QS.ViewModels.Dialog;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace QS.Navigation;
 
-public class AvaloniaPageWindowFactory : IViewModelsPageFactory {
-	public IPage<TViewModel> CreateViewModelNamedArgs<TViewModel>(IDialogViewModel master, IDictionary<string, object> ctorArgs, string hash, Action<ContainerBuilder> addingRegistrations, Action<TViewModel> configureViewModel = null) where TViewModel : IDialogViewModel {
-		throw new NotImplementedException();
+public class AvaloniaPageWindowFactory(ILifetimeScope container) : IViewModelsPageFactory {
+	public IPage<TViewModel> CreateViewModelNamedArgs<TViewModel>(
+		IDialogViewModel master,
+		IDictionary<string, object> ctorArgs,
+		string hash,
+		Action<ContainerBuilder> addingRegistrations,
+		Action<TViewModel>? configureViewModel = null) where TViewModel : IDialogViewModel {
+		var scope = addingRegistrations == null ? container.BeginLifetimeScope() : container.BeginLifetimeScope(addingRegistrations);
+		var viewmodel = scope.Resolve<TViewModel>(ctorArgs.Select(pair => new NamedParameter(pair.Key, pair.Value)));
+		configureViewModel?.Invoke(viewmodel);
+
+		var page = new AvaloniaWindowPage<TViewModel>(viewmodel, hash);
+		page.PageClosed += (sender, e) => scope.Dispose();
+		return page;
 	}
 
-	public IPage<TViewModel> CreateViewModelTypedArgs<TViewModel>(IDialogViewModel master, Type[] ctorTypes, object[] ctorValues, string hash, Action<ContainerBuilder> addingRegistrations, Action<TViewModel> configureViewModel = null) where TViewModel : IDialogViewModel {
-		throw new NotImplementedException();
+	public IPage<TViewModel> CreateViewModelTypedArgs<TViewModel>(
+		IDialogViewModel master,
+		Type[] ctorTypes,
+		object[] ctorValues,
+		string hash,
+		Action<ContainerBuilder> addingRegistrations,
+		Action<TViewModel>? configureViewModel = null) where TViewModel : IDialogViewModel {
+		var scope = addingRegistrations == null ? container.BeginLifetimeScope() : container.BeginLifetimeScope(addingRegistrations);
+		var viewmodel = scope.Resolve<TViewModel>(ctorTypes.Zip(ctorValues, (type, val) => new TypedParameter(type, val)));
+		configureViewModel?.Invoke(viewmodel);
+
+		var page = new AvaloniaWindowPage<TViewModel>(viewmodel, hash);
+		page.PageClosed += (sender, e) => scope.Dispose();
+		return page;
 	}
 }
