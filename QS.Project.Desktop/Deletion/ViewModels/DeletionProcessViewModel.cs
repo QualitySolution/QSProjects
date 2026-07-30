@@ -6,6 +6,7 @@ using QS.ViewModels.Dialog;
 using QS.ViewModels.Extension;
 
 [assembly:InternalsVisibleTo("QS.Project.Gtk")]
+[assembly:InternalsVisibleTo("QS.Project.Avalonia")]
 namespace QS.Deletion.ViewModels
 {
 	public class DeletionProcessViewModel : WindowDialogViewModelBase, IOnCloseActionViewModel
