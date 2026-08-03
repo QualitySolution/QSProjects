@@ -32,7 +32,7 @@ namespace QS.Cloud.Client.DataBase {
 		public QSCloudProvider(IList<ConnectionParameterValue> parameters, int productCode, string password = null) {
 			Account = parameters.First(p => p.Name == "Account").Value;
 			UserName = parameters.First(p => p.Name == "Login").Value;
-			ProductCode = Convert.ToUInt32(productCode);
+			ProductCode = productCode;
 			var authInfo = new BasicAuthInfoProvider($@"{Account}\{UserName}", password);
 
 			loginClient = new LoginManagementCloudClient(authInfo);
@@ -82,9 +82,13 @@ namespace QS.Cloud.Client.DataBase {
 				}).ToList());
 
 		public bool SetUserBaseAccess(string login, DbUserBaseAccess access) =>
-			Call(() => EnsureSuccess(
-				userClient.ChangeBaseAccess(login, access.BaseId, access.HasAccess, access.IsAdmin, access.ReadOnly, ProductCode),
-				"Не удалось изменить доступ к базе"));
+			Call(() => {
+				var response = userClient.ChangeBaseAccess(
+					login, access.BaseId, access.HasAccess, access.IsAdmin, access.ReadOnly, ProductCode);
+				return EnsureSuccess(response.Success, string.IsNullOrEmpty(response.Message)
+					? "Не удалось изменить доступ к базе"
+					: response.Message);
+			});
 
 		private static T Call<T>(Func<T> operation) {
 			try {
@@ -132,7 +136,7 @@ namespace QS.Cloud.Client.DataBase {
 
 		public bool CanRefreshMetadata => false;
 
-		public void RefreshMetadata() { }
+		public RefreshMetadataResponse RefreshMetadata() => throw new NotImplementedException();
 
 		public bool CreateDatabase(DbCreationRequest request) {
 			if(request == null)
@@ -189,10 +193,26 @@ namespace QS.Cloud.Client.DataBase {
 			}
 		}
 
-		public void Dispose() {
-			loginClient.Dispose();
-			dbClient.Dispose();
-			userClient.Dispose();
+		private bool disposed;
+
+		protected virtual void Dispose(bool disposing)
+		{
+			if(disposed)
+				return;
+
+			if(disposing) {
+				loginClient.Dispose();
+				dbClient.Dispose();
+				userClient.Dispose();
+			}
+
+			disposed = true;
+		}
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
 		}
 
 		public bool DropDatabase(DbInfo database) {
