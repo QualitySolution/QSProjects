@@ -136,7 +136,8 @@ namespace QS.Cloud.Client.DataBase {
 
 		public bool CanRefreshMetadata => false;
 
-		public RefreshMetadataResponse RefreshMetadata() => throw new NotImplementedException();
+		public RefreshMetadataResponse RefreshMetadata() =>
+			throw new InvalidOperationException("Облако ведёт список баз само, синхронизация метаинформации ему не нужна.");
 
 		public bool CreateDatabase(DbCreationRequest request) {
 			if(request == null)
