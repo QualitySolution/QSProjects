@@ -2,7 +2,6 @@
 using MySqlConnector;
 using QS.BaseParameters;
 using QS.DbManagement.Entities;
-using QS.Project.DB;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,14 +40,17 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 				connection.Open();
 
 				var bases = connection.Query<string>("SHOW DATABASES")
-					.Except(MySqlSystemObjects.Databases, StringComparer.OrdinalIgnoreCase);
+					.Except(MySqlSystemObjects.Databases, StringComparer.OrdinalIgnoreCase)
+					.ToList();
 
 				var tableColumns = LauncherColumnMapper.TableColumns(connection, LauncherBaseName, BasesTable);
 				var keyColumns = LauncherColumnMapper.KeyColumns(connection, LauncherBaseName, BasesTable);
 
+				var parameters = BaseParametersReader.ReadMany(connection, bases, BaseMetaParameters);
+
 				var rows = new List<Dictionary<string, object>>();
 				foreach(var dbName in bases) {
-					var meta = ReadBaseParameters(dbName);
+					var meta = ToBaseMeta(dbName, parameters);
 					if(meta == null || meta.ProductCode != productId)
 						continue;
 
@@ -207,16 +209,12 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			return true;
 		}
 
-		private BaseMeta ReadBaseParameters(string dbName) {
-			Dictionary<string, string> parameters;
-			try {
-				var toBase = new MySqlConnectionStringBuilder(connectionString) { Database = dbName };
-				parameters = new ParametersService(new MySqlConnectionFactory(toBase.ConnectionString).OpenConnection).All;
-			}
-			catch(MySqlException ex) {
-				logger.Debug(ex, "Не удалось прочитать base_parameters в базе {0}", dbName);
+		private static readonly string[] BaseMetaParameters = { "ProductCode", "version", "BaseTitle", "BaseGuid" };
+
+		/// <summary>null - параметров базы нет либо в них нет кода продукта</summary>
+		private static BaseMeta ToBaseMeta(string dbName, IReadOnlyDictionary<string, Dictionary<string, string>> byDatabase) {
+			if(!byDatabase.TryGetValue(dbName, out var parameters))
 				return null;
-			}
 
 			if(!parameters.TryGetValue("ProductCode", out var code) || !byte.TryParse(code, out var productCode))
 				return null;

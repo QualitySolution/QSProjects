@@ -98,23 +98,51 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			}
 		}
 
-		/// <summary>Профиль пользователя из таблицы базы</summary>
-		public BaseUserRow TryGetProfile(string baseName, string login) {
+		public Dictionary<string, BaseUserRow> TryGetProfiles(IEnumerable<string> baseNames, string login) {
+			var result = new Dictionary<string, BaseUserRow>(StringComparer.OrdinalIgnoreCase);
+			var wanted = baseNames?.Where(b => !string.IsNullOrEmpty(b)).ToList();
+			if(wanted == null || !wanted.Any())
+				return result;
+
 			try {
 				using(var connection = new MySqlConnection(connectionString)) {
 					connection.Open();
-					var columns = LauncherColumnMapper.TableColumns(connection, baseName, UsersTable);
-					if(!columns.Any())
-						return null;
-					string select = LauncherColumnMapper.SelectList(columns, typeof(BaseUserRow));
-					return connection.QueryFirstOrDefault<BaseUserRow>(
-						$"SELECT {select} FROM `{MySqlEscape.Identifier(baseName)}`.`{UsersTable}` WHERE login = @login", new { login });
+					var columnsByBase = LauncherColumnMapper.TableColumnsMany(connection, wanted, UsersTable);
+					if(!columnsByBase.Any())
+						return result;
+
+					ReadProfiles(connection, columnsByBase, login, result);
 				}
 			}
 			catch(MySqlException ex) {
-				logger.Warn(ex, "Не удалось прочитать users в базе {0}", baseName);
-				return null;
+				logger.Warn(ex, "Не удалось прочитать {0} по базам пользователя {1}", UsersTable, login);
 			}
+			return result;
 		}
+
+		private static void ReadProfiles(MySqlConnection connection, Dictionary<string, List<string>> columnsByBase,
+			string login, IDictionary<string, BaseUserRow> result) {
+			var parameters = new DynamicParameters();
+			parameters.Add("login", login);
+
+			var selects = new List<string>(columnsByBase.Count);
+			int index = 0;
+			foreach(var pair in columnsByBase) {
+				string label = "b" + index.ToString();
+				parameters.Add(label, pair.Key);
+				selects.Add($"SELECT @{label} AS BaseName, {LauncherColumnMapper.SelectListAligned(pair.Value, typeof(BaseUserRow))} "
+					+ $"FROM `{MySqlEscape.Identifier(pair.Key)}`.`{UsersTable}` WHERE login = @login");
+				index++;
+			}
+
+			IEnumerable<BaseProfileRow> response = connection.Query<BaseProfileRow>(string.Join(" UNION ALL ", selects), parameters);
+			foreach(BaseProfileRow row in response)
+				result[row.BaseName] = row;
+		}
+
+		private sealed class BaseProfileRow : BaseUserRow {
+			public string BaseName { get; set; }
+		}
+
 	}
 }

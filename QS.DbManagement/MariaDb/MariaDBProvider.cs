@@ -68,7 +68,7 @@ namespace QS.DbManagement {
 
 		private LauncherMetadataManagement metadata;
 		/// <summary>null - собрать метабазу ещё не пробовали</summary>
-		private bool? metadataAvailable;
+		private bool metadataMade;
 		private bool serverLoggedIn;
 
 		private LauncherMetadataManagement Metadata
@@ -79,8 +79,8 @@ namespace QS.DbManagement {
 				if(!serverLoggedIn)
 					return null;
 
-				// один раз не собралась - больше не пробуем, иначе каждое обращение ждёт неудачного подключения
-				if(metadataAvailable != null)
+				// один раз не собралась - больше не пробуем
+				if(metadataMade)
 					return metadata;
 
 				try
@@ -88,14 +88,16 @@ namespace QS.DbManagement {
 					metadata = new LauncherMetadataManagement(
 						new MySqlConnectionStringBuilder(ConnectionStringBuilder.ConnectionString),
 						CanCreateDatabase, UserName, ProductCode);
-					metadataAvailable = true;
 				}
-				catch(Exception ex) when(ex is MySqlException || ex is InvalidOperationException
-					|| ex is KeyNotFoundException || ex is ArgumentException)
+				catch(Exception ex) when(
+					ex is MySqlException //базы нет, нет прав, сервер недоступен
+					|| ex is InvalidOperationException|| ex is KeyNotFoundException //схема не та, что можно читать
+					|| ex is ArgumentException //текущего пользователя в метабазе нет
+					)
 				{
-					metadataAvailable = false;
 					logger.Debug(ex, "QSLauncher база недоступна, используем прямой доступ к серверу");
 				}
+				metadataMade = true;
 				return metadata;
 			}
 		}
@@ -244,7 +246,7 @@ namespace QS.DbManagement {
 
 				// права пересчитаны - метабазу, если её уже собирали, пересоберём с новыми
 				metadata = null;
-				metadataAvailable = null;
+				metadataMade = false;
 				serverLoggedIn = true;
 
 				return new LoginToServerResponse {
@@ -271,26 +273,26 @@ namespace QS.DbManagement {
 				() => GetUserDatabasesDirect());
 		}
 
+		private static readonly string[] DbInfoParameters = { "ProductCode", "BaseTitle", "version" };
+
 		private List<DbInfo> GetUserDatabasesDirect() {
 			var names = OnConnection(c => c.Query<string>("SHOW DATABASES").ToList())
-				.Except(MySqlSystemObjects.Databases, StringComparer.OrdinalIgnoreCase);
+				.Except(MySqlSystemObjects.Databases, StringComparer.OrdinalIgnoreCase)
+				.ToList();
+
+			// одним запросом по серверному соединению: подключение к каждой базе - это ещё один пул
+			var parameters = OnConnection(c => BaseParametersReader.ReadMany(c, names, DbInfoParameters));
 
 			return names
-				.Select(ReadDbInfo)
+				.Select(dbName => ToDbInfo(dbName, parameters))
 				.Where(db => db != null)
 				.ToList();
 		}
 
-		private DbInfo ReadDbInfo(string dbName) { //? поторение LauncherBasesManagement.ReadBaseParameters но надо подумать как ответственность не нарушать
-			Dictionary<string, string> parameters;
-			try {
-				var toBase = new MySqlConnectionStringBuilder(ConnectionStringBuilder.ConnectionString) { Database = dbName };
-				parameters = new ParametersService(new MySqlConnectionFactory(toBase.ConnectionString).OpenConnection).All;
-			}
-			catch(MySqlException ex) {
-				logger.Debug(ex, "Не удалось прочитать base_parameters в базе {0}", dbName);
+		/// <summary>null - база не от нашего продукта либо её параметры прочитать не вышло</summary>
+		private DbInfo ToDbInfo(string dbName, IReadOnlyDictionary<string, Dictionary<string, string>> byDatabase) {
+			if(!byDatabase.TryGetValue(dbName, out var parameters))
 				return null;
-			}
 
 			if(!parameters.TryGetValue("ProductCode", out var code) || !byte.TryParse(code, out var baseProduct)
 				|| baseProduct != ProductCode)
