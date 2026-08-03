@@ -107,7 +107,7 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			try {
 				using(var connection = new MySqlConnection(connectionString)) {
 					connection.Open();
-					var columnsByBase = LauncherColumnMapper.TableColumnsMany(connection, wanted, UsersTable);
+					var columnsByBase = MySqlMultiBase.TableColumns(connection, wanted, UsersTable);
 					if(!columnsByBase.Any())
 						return result;
 
@@ -125,17 +125,14 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			var parameters = new DynamicParameters();
 			parameters.Add("login", login);
 
-			var selects = new List<string>(columnsByBase.Count);
-			int index = 0;
-			foreach(var pair in columnsByBase) {
-				string label = "b" + index.ToString();
-				parameters.Add(label, pair.Key);
-				selects.Add($"SELECT @{label} AS BaseName, {LauncherColumnMapper.SelectListAligned(pair.Value, typeof(BaseUserRow))} "
-					+ $"FROM `{MySqlEscape.Identifier(pair.Key)}`.`{UsersTable}` WHERE login = @login");
-				index++;
-			}
+			// набор колонок в каждой базе свой, поэтому проекция считается для каждой отдельно:
+			// выровненная, иначе ветки UNION не соединить
+			var projections = columnsByBase.Select(pair => new KeyValuePair<string, string>(
+				pair.Key, LauncherColumnMapper.SelectListAligned(pair.Value, typeof(BaseUserRow))));
+			string sql = MySqlMultiBase.UnionAll(projections, UsersTable,
+				nameof(BaseProfileRow.BaseName), "login = @login", parameters);
 
-			IEnumerable<BaseProfileRow> response = connection.Query<BaseProfileRow>(string.Join(" UNION ALL ", selects), parameters);
+			IEnumerable<BaseProfileRow> response = connection.Query<BaseProfileRow>(sql, parameters);
 			foreach(BaseProfileRow row in response)
 				result[row.BaseName] = row;
 		}

@@ -16,28 +16,6 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 				new { schema, table }, tx).ToList();
 		}
 
-		public static Dictionary<string, List<string>> TableColumnsMany(MySqlConnection connection, IEnumerable<string> schemas, string table)
-		{
-			var wanted = schemas.Distinct(StringComparer.OrdinalIgnoreCase).ToList();
-			var result = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
-			if(!wanted.Any())
-				return result;
-
-			var rows = connection.Query<(string Schema, string Column)>(
-				"SELECT TABLE_SCHEMA, COLUMN_NAME FROM information_schema.COLUMNS " +
-				"WHERE TABLE_NAME = @table AND TABLE_SCHEMA IN @schemas ORDER BY TABLE_SCHEMA, ORDINAL_POSITION",
-				new { table, schemas = wanted });
-
-			foreach(var row in rows) {
-				if(!result.TryGetValue(row.Schema, out var columns)) {
-					columns = new List<string>();
-					result[row.Schema] = columns;
-				}
-				columns.Add(row.Column);
-			}
-			return result;
-		}
-
 		public static HashSet<string> KeyColumns(MySqlConnection connection, string schema, string table, MySqlTransaction tx = null)
 		{
 			return new HashSet<string>(

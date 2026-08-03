@@ -1,6 +1,5 @@
 ﻿using Dapper;
 using MySqlConnector;
-using QS.BaseParameters;
 using QS.DbManagement.Entities;
 using System;
 using System.Collections.Generic;
