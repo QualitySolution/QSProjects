@@ -4,7 +4,6 @@ using QS.DbManagement.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace QS.DbManagement.MariaDb.QSLauncher {
 	internal class BaseUsersManagement {
@@ -37,7 +36,7 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 							connection.Execute($"UPDATE {table} SET deactivated = TRUE WHERE login = @login", new { login = user.Login });
 						}
 						else {
-							logger.Warn("в базе {0} нет таблицы {1}", baseName, UsersTable);
+							logger.Warn("в базе {0} у таблицы {1} нет столбца deactivated", baseName, UsersTable);
 						}
 						return;
 					}
@@ -86,9 +85,8 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 							sqls.Add($"UPDATE {table} SET deactivated = TRUE WHERE login = @login");
 						}
 						else {
-							logger.Warn("в базе {0} нет таблицы {1}", baseName, UsersTable);
+							logger.Warn("в базе {0} у таблицы {1} нет столбца deactivated", baseName, UsersTable);
 						}
-						return;
 					}
 					if(!sqls.Any())
 						return;

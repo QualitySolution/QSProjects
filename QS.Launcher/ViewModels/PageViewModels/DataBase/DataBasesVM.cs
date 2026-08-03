@@ -150,10 +150,18 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 				return;
 
 			try {
-				await Task.Run(() => provider.RefreshMetadata());
+				var response = await Task.Run(() => provider.RefreshMetadata());
 				RefreshDatabases();
+
+				if(!response.Success) {
+					interactiveMessage.ShowMessage(ImportanceLevel.Warning,
+						response.ErrorMessage, "Синхронизация метаинформации");
+					return;
+				}
+
 				interactiveMessage.ShowMessage(ImportanceLevel.Success,
-					"Метаинформация обновлена.", "Синхронизация метаинформации");
+					$"Метаинформация обновлена.\nБаз: {response.SyncedBases}, пользователей: {response.SyncedUsers}.",
+					"Синхронизация метаинформации");
 			}
 			catch(Exception ex) {
 				logger.Error(ex, "Не удалось обновить метаинформацию");

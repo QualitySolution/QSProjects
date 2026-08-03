@@ -25,33 +25,43 @@ public class AvaloniaInteractiveQuestion : IInteractiveQuestion {
 		return Ask(buttons, message, title).GetAwaiter().GetResult();
 	}
 
-	static Task<string?> Ask(string[] buttons, string message, string? title) {
+	private static Task<string?> Ask(string[] buttons, string message, string? title) {
 		var tcs = new TaskCompletionSource<string?>();
 
 		Dispatcher.UIThread.InvokeAsync(() =>
 		{
-			var dialogButtons = buttons.Select(label => new Button { Content = label }).ToArray();
-			var window = new DialogWindow(message, title ?? "Вопрос", ImportanceLevel.Info, dialogButtons);
-			window.closeButton.IsVisible = false;
-
-			foreach(var button in dialogButtons)
-				button.Click += (_, _) =>
-				{
-					tcs.TrySetResult((string?)button.Content);
-					window.Close();
-				};
-
-			window.Closed += (_, _) => tcs.TrySetResult(null);
-
-			var lifetime = Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
-			var owner = lifetime?.Windows.FirstOrDefault(w => w.IsActive) ?? lifetime?.MainWindow;
-
-			if(owner != null)
-				_ = window.ShowDialog(owner);
-			else
-				window.Show();
+			try {
+				ShowQuestion(buttons, message, title, tcs);
+			}
+			catch(Exception ex) {
+				tcs.TrySetException(ex);
+			}
 		});
 
 		return tcs.Task;
+	}
+
+	private static void ShowQuestion(string[] buttons, string message, string? title, TaskCompletionSource<string?> tcs)
+	{
+		var dialogButtons = buttons.Select(label => new Button { Content = label }).ToArray();
+		var window = new DialogWindow(message, title ?? "Вопрос", ImportanceLevel.Info, dialogButtons);
+		window.HideCloseButton();
+
+		foreach(var button in dialogButtons)
+			button.Click += (_, _) =>
+			{
+				tcs.TrySetResult((string?)button.Content);
+				window.Close();
+			};
+
+		window.Closed += (_, _) => tcs.TrySetResult(null);
+
+		var lifetime = Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
+		var owner = lifetime?.Windows.FirstOrDefault(w => w.IsActive && w.IsVisible) ?? lifetime?.MainWindow;
+
+		if(owner != null && owner.IsVisible)
+			_ = window.ShowDialog(owner);
+		else
+			window.Show();
 	}
 }
