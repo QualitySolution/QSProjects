@@ -21,10 +21,12 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 		private readonly int productId;
 		private readonly int accountId;
 
-		public LauncherBasesManagement(MySqlConnectionStringBuilder connectionBuilder, bool canWrite, int accountId, int productId) {
-			connectionBuilder.Database = LauncherBaseName;
-			connectionBuilder.AllowLoadLocalInfile = true;
-			connectionString = connectionBuilder.ConnectionString;
+		public LauncherBasesManagement(MySqlConnectionStringBuilder connectionBuilder, bool canWrite, int accountId, byte productId) {
+			var toLauncher = new MySqlConnectionStringBuilder(connectionBuilder.ConnectionString) {
+				Database = LauncherBaseName,
+				AllowLoadLocalInfile = true
+			};
+			connectionString = toLauncher.ConnectionString;
 
 			this.canWrite = canWrite;
 			this.accountId = accountId;

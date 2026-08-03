@@ -24,10 +24,13 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 		private readonly LauncherUserInfo userInfo;
 		private bool? isAdminCached;
 
-		public LauncherUsersManagement(MySqlConnectionStringBuilder connectionBuilder, string login, int productId) {
-			connectionBuilder.Database = LauncherBaseName;
-			connectionBuilder.AllowLoadLocalInfile = true;
-			connectionString = connectionBuilder.ConnectionString;
+		public LauncherUsersManagement(MySqlConnectionStringBuilder connectionBuilder, string login, byte productId) {
+			// строку правим на копии: builder принадлежит вызывающему
+			var toLauncher = new MySqlConnectionStringBuilder(connectionBuilder.ConnectionString) {
+				Database = LauncherBaseName,
+				AllowLoadLocalInfile = true
+			};
+			connectionString = toLauncher.ConnectionString;
 			this.productId = productId;
 
 			userInfo = GetLauncherUserInfo(login)
