@@ -1,6 +1,5 @@
 ﻿using Dapper;
 using MySqlConnector;
-using QS.BaseParameters;
 using QS.DbManagement.Entities;
 using QS.DbManagement.MariaDb;
 using QS.DbManagement.MariaDb.QSLauncher;
