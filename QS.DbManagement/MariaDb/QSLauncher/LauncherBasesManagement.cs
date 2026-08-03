@@ -39,7 +39,7 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 				connection.Open();
 
 				var bases = connection.Query<string>("SHOW DATABASES")
-					.Except(SystemDatabases, StringComparer.OrdinalIgnoreCase);
+					.Except(MySqlSystemObjects.Databases, StringComparer.OrdinalIgnoreCase);
 
 				var tableColumns = LauncherColumnMapper.TableColumns(connection, LauncherBaseName, BasesTable);
 				var keyColumns = LauncherColumnMapper.KeyColumns(connection, LauncherBaseName, BasesTable);
