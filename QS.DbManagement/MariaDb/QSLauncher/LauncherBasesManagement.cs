@@ -12,9 +12,8 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 	internal class LauncherBasesManagement {
 		private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-		public const string LauncherBaseName = "QSLauncher";
+		private const string LauncherBaseName = LauncherMetadataManagement.LauncherBaseName;
 		private const string BasesTable = "bases";
-		public static readonly string[] SystemDatabases = { "information_schema", "mysql", "performance_schema", "sys" };
 		private static readonly string[] BaseDependencies = { "sessions", "api_tokens", "base_access" };
 
 		private readonly bool canWrite;
@@ -32,11 +31,9 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			this.productId = productId;
 		}
 
-		public void SyncBases() {
+		public int SyncBases() {
 			if(!canWrite)
 				throw new UnauthorizedAccessException($"У пользователя нет прав на запись в базу {LauncherBaseName}");
-
-			byte expectedProductCode = (byte)productId;
 
 			using(var connection = new MySqlConnection(connectionString)) {
 				connection.Open();
@@ -50,35 +47,35 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 				var rows = new List<Dictionary<string, object>>();
 				foreach(var dbName in bases) {
 					var meta = ReadBaseParameters(dbName);
-					if(meta == null || meta.ProductCode != expectedProductCode)
+					if(meta == null || meta.ProductCode != productId)
 						continue;
 
-					// значения, которые синхронизация умеет отдать; в UpsertBases пойдут только те,
-					// что реально есть среди колонок таблицы
-					rows.Add(new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase) { //?
+					// значения, которые синхронизация умеет отдать, но в UpsertBases пойдут только те, что реально есть среди колонок таблицы
+					rows.Add(new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase) {
 						["account_id"] = accountId,
 						["product_id"] = meta.ProductCode,
 						["base_name"] = dbName,
-						["real_name"] = dbName,
+						["real_name"] = dbName, //?
 						["base_title"] = meta.Title,
 						["version"] = meta.Version,
 						["base_guid"] = meta.Guid,
 					});
 				}
 
-				if(rows.Any())
-					UpsertBases(connection, tableColumns, keyColumns, rows);
+				int written = rows.Any() ? UpsertBases(connection, tableColumns, keyColumns, rows) : 0;
 
-				// пропавшие с сервера базы помечаем disabled (мягкое удаление при синхронизации)
+				// пропавшие с сервера базы помечаем disabled
 				MarkMissingBasesDisabled(connection, tableColumns, bases);
+
+				return written;
 			}
 		}
 
-		private static void UpsertBases(MySqlConnection connection, IReadOnlyList<string> tableColumns, ICollection<string> keyColumns, IList<Dictionary<string, object>> rows, MySqlTransaction tx = null)
+		private static int UpsertBases(MySqlConnection connection, IReadOnlyList<string> tableColumns, ICollection<string> keyColumns, IList<Dictionary<string, object>> rows, MySqlTransaction tx = null)
 		{
 			var columns = tableColumns.Where(rows[0].ContainsKey).ToList();
-			if(columns.Count == 0)
-				return;
+			if(!columns.Any())
+				return 0;
 			var updatable = columns.Where(c => !keyColumns.Contains(c)).ToList();
 
 			const int chunkSize = 500;
@@ -87,6 +84,8 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 				string sql = BuildUpsert(columns, updatable, chunk, out var parameters);
 				connection.Execute(sql, parameters, tx);
 			}
+
+			return rows.Count;
 		}
 
 		/// <summary>Один INSERT со всеми строками пачки: VALUES (…),(…) плюс ON DUPLICATE KEY UPDATE.</summary>
@@ -108,7 +107,7 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 					parameters.Add(ParameterName(row, i), chunk[row].TryGetValue(columns[i], out var value) ? value : null);
 			}
 
-			if(updatable.Count > 0)
+			if(updatable.Any())
 				sql.Append(" ON DUPLICATE KEY UPDATE ")
 					.Append(string.Join(", ", updatable.Select(c => $"`{c}` = VALUES(`{c}`)")));
 
@@ -175,18 +174,33 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			using(var connection = new MySqlConnection(connectionString)) {
 				connection.Open();
 				using(var transaction = connection.BeginTransaction()) {
-					return SyncWithDelete(dbInfo, transaction);
+					bool deleted = SyncWithDelete(dbInfo, transaction);
+					transaction.Commit();
+					return deleted;
 				}
 			}
 		}
 
+		/// <summary>Транзакцию коммитит вызывающий</summary>
 		public bool SyncWithDelete(DbInfo dbInfo, MySqlTransaction transaction)
 		{
+			// в удаление приходит и база, созданная только что при пересоздании: у неё известно лишь имя
+			int baseId = dbInfo.BaseId > 0
+				? dbInfo.BaseId
+				: transaction.Connection.ExecuteScalar<int?>(
+					$"SELECT id FROM `{BasesTable}` WHERE real_name = @name AND account_id = @acc AND product_id = @pid;",
+					new { name = dbInfo.BaseName, acc = accountId, pid = productId }, transaction) ?? 0;
+
+			if(baseId <= 0) {
+				logger.Debug("База {0} в метабазе не значится, удалять нечего", dbInfo.BaseName);
+				return false;
+			}
+
 			foreach(var dependency in BaseDependencies)
 				transaction.Connection.Execute($"DELETE FROM `{dependency}` WHERE base_id = @id;",
-					new { id = dbInfo.BaseId }, transaction);
-			transaction.Connection.Execute($"DELETE FROM `{BasesTable}` WHERE id = @id;", new { id = dbInfo.BaseId }, transaction);
-			transaction.Commit();
+					new { id = baseId }, transaction);
+			transaction.Connection.Execute($"DELETE FROM `{BasesTable}` WHERE id = @id;", new { id = baseId }, transaction);
+
 			logger.Info("Удалена база {0} аккаунтом {1}", dbInfo.BaseName, accountId);
 			return true;
 		}

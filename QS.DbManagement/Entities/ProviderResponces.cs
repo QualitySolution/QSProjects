@@ -27,6 +27,12 @@ namespace QS.DbManagement.Entities
 		public List<DbInfo> Bases { get; set; }
 	}
 
+	/// <summary>счётчики синхронизированных</summary>
+	public class RefreshMetadataResponse : Response {
+		public int SyncedBases { get; set; }
+		public int SyncedUsers { get; set; }
+	}
+
 	public class LoginToDatabaseResponse : Response {
 		public string ConnectionString { get; set; }
 		public string Login { get; set; }

@@ -19,7 +19,7 @@ namespace QS.DbManagement
 
 		LoginToServerResponse LoginToServer();
 
-		void RefreshMetadata();
+		RefreshMetadataResponse RefreshMetadata();
 
 		List<DbInfo> GetUserDatabases();
 

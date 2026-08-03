@@ -66,6 +66,11 @@ public partial class DialogWindow : Window
 		buttonContainer.Children.Add(button);
 	}
 
+	public void HideCloseButton()
+	{
+		closeButton.IsVisible = false;
+	}
+
 	private void OnCloseClick(object sender, RoutedEventArgs e)
 	{
 		Close();

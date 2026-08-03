@@ -9,7 +9,7 @@ using System.Linq;
 namespace QS.DbManagement.MariaDb.QSLauncher {
 	internal class LauncherUsersManagement
 	{
-		public const string LauncherBaseName = "QSLauncher";
+		private const string LauncherBaseName = LauncherMetadataManagement.LauncherBaseName;
 		private const string UsersTable = "server_users";
 		private const int ER_DUP_ENTRY = 1062;
 
@@ -126,43 +126,45 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 		}
 
 		public bool SyncWithChangeOwnPassword(string login, string newPassword) {
-			int rowAffected = 0;
+			if(string.IsNullOrEmpty(newPassword))
+				return false;
+
 			using(var connection = new MySqlConnection(connectionString)) {
 				connection.Open();
 
-				if(!string.IsNullOrEmpty(newPassword)) {
-					rowAffected = connection.Execute($"UPDATE `{UsersTable}` SET `password` = @password WHERE id = @login;",
-						new {login = login, password = Cryptography.ComputeHash(newPassword) });
-				}
+				int rowsAffected = connection.Execute(
+					$"UPDATE `{UsersTable}` SET `password` = @password WHERE login = @login AND account_id = @acc;",
+					new { login, password = Cryptography.ComputeHash(newPassword), acc = userInfo.AccountId });
+
+				return rowsAffected > 0;
 			}
-			if(rowAffected > 0)
-				return true;
-			return false;
 		}
 
 		public bool DeleteUser(LauncherUserInfo user) {
 			using(var connection = new MySqlConnection(connectionString)) {
 				connection.Open();
 				using(var transaction = connection.BeginTransaction()) {
-					return DeleteUser(user, transaction);
+					bool deleted = DeleteUser(user, transaction);
+					transaction.Commit();
+					return deleted;
 				}
 			}
 		}
 
+		/// <summary>Транзакцию коммитит вызывающий</summary>
 		public bool DeleteUser(LauncherUserInfo user, MySqlTransaction transaction) {
 			RequireAdminFor("управления пользователями");
-			int rowsAffected;
 			if(user.Id <= 0)
 				throw new ArgumentException(UserNotFound, nameof(user));
 
 			transaction.Connection.Execute("DELETE FROM `base_access` WHERE `user_id` = @userId", new { userId = user.Id }, transaction);
-			rowsAffected = transaction.Connection.Execute($"DELETE FROM `{UsersTable}` WHERE `id` = @userId", new { userId = user.Id }, transaction);
-			transaction.Commit();
+			int rowsAffected = transaction.Connection.Execute($"DELETE FROM `{UsersTable}` WHERE `id` = @userId", new { userId = user.Id }, transaction);
 
 			return rowsAffected > 0;
 		}
 
-		public void SyncUsers(IEnumerable<string> realLogins) {
+		/// <summary>Возвращает число сопоставленных учёток</summary>
+		public int SyncUsers(IEnumerable<string> realLogins) {
 			RequireAdminFor("синхронизации пользователей");
 
 			var present = (realLogins
@@ -174,21 +176,22 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			using(var connection = new MySqlConnection(connectionString)) {
 				connection.Open();
 
-				// колонки disabled может ещё не быть - тогда мягкое удаление неприменимо
 				var columns = LauncherColumnMapper.TableColumns(connection, LauncherBaseName, UsersTable);
 				if(!columns.Contains("disabled", StringComparer.OrdinalIgnoreCase))
-					return;
+					return 0;
 
 				if(!present.Any()) {
 					connection.Execute(
 						$"UPDATE `{UsersTable}` SET disabled = TRUE WHERE account_id = @acc;",
 						new { acc = userInfo.AccountId });
-					return;
+					return 0;
 				}
 
 				connection.Execute(
 					$"UPDATE `{UsersTable}` SET disabled = TRUE WHERE account_id = @acc AND login NOT IN @present;",
 					new { acc = userInfo.AccountId, present });
+
+				return present.Count;
 			}
 		}
 
@@ -229,7 +232,7 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 
 				if(!access.HasAccess) {
 					connection.Execute("DELETE FROM base_access WHERE user_id = @uid AND base_id = @bid;",
-						new { uid = user.Id, bid = access.BaseId });
+						new { uid = user.Id, bid = baseId });
 				}
 				else {
 					bool readOnly = !access.Admin && access.ReadOnly;
@@ -237,7 +240,7 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 						"INSERT INTO base_access (user_id, base_id, admin, read_only) " +
 						"VALUES (@uid, @bid, @admin, @readOnly) " +
 						"ON DUPLICATE KEY UPDATE admin = VALUES(admin), read_only = VALUES(read_only);",
-						new { uid = user.Id, bid = access.BaseId, access.Admin, readOnly });
+						new { uid = user.Id, bid = baseId, access.Admin, readOnly });
 					if(affected == 0)
 						return false;
 				}
