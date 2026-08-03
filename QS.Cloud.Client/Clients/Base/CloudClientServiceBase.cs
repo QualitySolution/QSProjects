@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Grpc.Core;
 
 namespace QS.Cloud.Client
@@ -39,9 +39,11 @@ namespace QS.Cloud.Client
 		
 		public abstract bool CanConnect { get; }
 		
-		public virtual async void Dispose()
+		public virtual void Dispose()
 		{
-			await channel?.ShutdownAsync();
+			var opened = channel;
+			channel = null;
+			opened?.ShutdownAsync().GetAwaiter().GetResult();
 		}
 	}
 }
