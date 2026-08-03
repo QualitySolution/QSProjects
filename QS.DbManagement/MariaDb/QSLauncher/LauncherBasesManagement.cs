@@ -18,7 +18,7 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 
 		private readonly bool canWrite;
 		private readonly string connectionString;
-		private readonly int productId;
+		private readonly byte productId;
 		private readonly int accountId;
 
 		public LauncherBasesManagement(MySqlConnectionStringBuilder connectionBuilder, bool canWrite, int accountId, byte productId) {

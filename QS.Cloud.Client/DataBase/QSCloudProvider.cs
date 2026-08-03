@@ -29,7 +29,7 @@ namespace QS.Cloud.Client.DataBase {
 		private readonly DataBaseManagementCloudClient dbClient;
 		private readonly UserManagementCloudClient userClient;
 
-		public QSCloudProvider(IList<ConnectionParameterValue> parameters, int productCode, string password = null) {
+		public QSCloudProvider(IList<ConnectionParameterValue> parameters, byte productCode, string password = null) {
 			Account = parameters.First(p => p.Name == "Account").Value;
 			UserName = parameters.First(p => p.Name == "Login").Value;
 			ProductCode = productCode;

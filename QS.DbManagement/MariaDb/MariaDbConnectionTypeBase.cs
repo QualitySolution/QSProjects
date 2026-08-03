@@ -21,7 +21,7 @@ namespace QS.DbManagement
 				parameters.Any(p => p.Name == "Login" && !string.IsNullOrEmpty(p.Value));
 		}
 
-		public override IDbProvider CreateProvider(IList<ConnectionParameterValue> parameters, int productCode, string password = null)
+		public override IDbProvider CreateProvider(IList<ConnectionParameterValue> parameters, byte productCode, string password = null)
 			=> new MariaDBProvider(parameters, productCode, password);
 	}
 }

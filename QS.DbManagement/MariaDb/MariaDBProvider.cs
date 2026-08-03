@@ -39,10 +39,10 @@ namespace QS.DbManagement {
 		#region Параметры подключения
 		public string Server { get; }
 		public string UserName { get; }
-		public int ProductCode { get; }
+		public byte ProductCode { get; }
 		#endregion
 
-		public MariaDBProvider(IList<ConnectionParameterValue> parameters, int productCode, string password = null) {
+		public MariaDBProvider(IList<ConnectionParameterValue> parameters, byte productCode, string password = null) {
 			if(parameters == null)
 				throw new ArgumentNullException(nameof(parameters));
 
