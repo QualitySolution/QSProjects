@@ -36,7 +36,7 @@ namespace QS.DbManagement.MariaDb {
 			var access = new DbUserBaseAccess { BaseName = db.BaseName, Title = db.Title };
 
 			var privileges = grants
-				.Where(g => CoversDatabase(g, db.BaseName))
+				.Where(g => CoversDatabase(g, db.BaseName) && MySqlGrants.IsMeaningful(g))
 				.SelectMany(MySqlGrants.Privileges)
 				.ToList();
 			if(!privileges.Any())

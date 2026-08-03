@@ -6,7 +6,6 @@ using QS.DbManagement.MariaDb;
 using QS.DbManagement.MariaDb.QSLauncher;
 using QS.DBScripts.Controllers;
 using QS.Dialog;
-using QS.Project.DB;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -68,17 +67,20 @@ namespace QS.DbManagement {
 		public bool CanRefreshMetadata => CanCreateDatabase;
 
 		private LauncherMetadataManagement metadata;
-		private bool metadataAvailable;
+		/// <summary>null - собрать метабазу ещё не пробовали</summary>
+		private bool? metadataAvailable;
 		private bool serverLoggedIn;
 
 		private LauncherMetadataManagement Metadata
 		{
 			get
 			{
+				// до логина права ещё не посчитаны - собранная сейчас метабаза запомнила бы их заниженными
 				if(!serverLoggedIn)
 					return null;
 
-				if(metadata != null && metadataAvailable)
+				// один раз не собралась - больше не пробуем, иначе каждое обращение ждёт неудачного подключения
+				if(metadataAvailable != null)
 					return metadata;
 
 				try
@@ -88,12 +90,11 @@ namespace QS.DbManagement {
 						CanCreateDatabase, UserName, ProductCode);
 					metadataAvailable = true;
 				}
-				catch(MySqlException ex)
+				catch(Exception ex) when(ex is MySqlException || ex is InvalidOperationException
+					|| ex is KeyNotFoundException || ex is ArgumentException)
 				{
 					metadataAvailable = false;
-					metadata = null;
 					logger.Debug(ex, "QSLauncher база недоступна, используем прямой доступ к серверу");
-					return null;
 				}
 				return metadata;
 			}
@@ -101,11 +102,12 @@ namespace QS.DbManagement {
 
 		private T FromMetadataOrDirect<T>(Func<LauncherMetadataManagement, T> fromMetadata, Func<T> direct)
 		{
-			if(metadataAvailable)
+			var launcher = Metadata;
+			if(launcher != null)
 			{
 				try
 				{
-					return fromMetadata(Metadata);
+					return fromMetadata(launcher);
 				}
 				catch(Exception ex)
 				{
@@ -242,7 +244,7 @@ namespace QS.DbManagement {
 
 				// права пересчитаны - метабазу, если её уже собирали, пересоберём с новыми
 				metadata = null;
-				metadataAvailable = false;
+				metadataAvailable = null;
 				serverLoggedIn = true;
 
 				return new LoginToServerResponse {
@@ -431,6 +433,8 @@ namespace QS.DbManagement {
 
 		private bool SupportsAdminFlag => CanManageUsers && CanManageBaseAccess;
 
+		private static readonly string[] NewUserHosts = { AnyHost, LocalHost };
+
 		private readonly Dictionary<string, List<string>> userHosts = new Dictionary<string, List<string>>(StringComparer.Ordinal);
 
 		private enum AccountLockStorage {
@@ -485,21 +489,25 @@ namespace QS.DbManagement {
 		}
 
 		private List<DbUserInfo> GetUsersDirect() {
-			var rows = OnConnection(c => c.Query<MySqlUserRow>(ServerAccountsQuery()).ToList());
+			// чтение и пересборка кеша хостов - одна операция: между ними словарь пуст,
+			// и параллельный HostsOf увидел бы учётку без хостов
+			lock(serverLock) {
+				var rows = OnConnection(c => c.Query<MySqlUserRow>(ServerAccountsQuery()).ToList());
 
-			// один логин заведён на сервере под несколькими хостами
-			userHosts.Clear();
-			var result = new List<DbUserInfo>();
-			foreach(var accounts in rows.Where(IsRealUser).GroupBy(r => r.Login, StringComparer.Ordinal)) {
-				userHosts[accounts.Key] = accounts.Select(r => string.IsNullOrEmpty(r.Host) ? AnyHost : r.Host).ToList();
-				result.Add(new DbUserInfo {
-					Login = accounts.Key,
-					Disabled = accounts.All(r => IsYes(r.AccountLocked)),
-					IsAdmin = accounts.All(r => IsYes(r.SuperPriv) || IsYes(r.CreateUserPriv)),
-					IsCurrentUser = string.Equals(accounts.Key, UserName, StringComparison.OrdinalIgnoreCase)
-				});
+				// один логин заведён на сервере под несколькими хостами
+				userHosts.Clear();
+				var result = new List<DbUserInfo>();
+				foreach(var accounts in rows.Where(IsRealUser).GroupBy(r => r.Login, StringComparer.Ordinal)) {
+					userHosts[accounts.Key] = accounts.Select(r => string.IsNullOrEmpty(r.Host) ? AnyHost : r.Host).ToList();
+					result.Add(new DbUserInfo {
+						Login = accounts.Key,
+						Disabled = accounts.All(r => IsYes(r.AccountLocked)),
+						IsAdmin = accounts.All(r => IsYes(r.SuperPriv) || IsYes(r.CreateUserPriv)),
+						IsCurrentUser = string.Equals(accounts.Key, UserName, StringComparison.OrdinalIgnoreCase)
+					});
+				}
+				return result;
 			}
-			return result;
 		}
 
 		/// <summary>
@@ -542,31 +550,35 @@ namespace QS.DbManagement {
 			if(string.IsNullOrEmpty(password))
 				throw new ArgumentException("Пароль не может быть пустым", nameof(password));
 
-			string lockOption = user.Disabled && SupportsAccountLock ? " ACCOUNT LOCK" : string.Empty;
-			string userSql = MySqlAccess.UserOf(user.Login, AnyHost);
-			string userlocalSql = MySqlAccess.UserOf(user.Login, LocalHost);
-
-			var statements = new List<string> {
-				$"CREATE USER {userSql} IDENTIFIED BY '{MySqlHelper.EscapeString(password)}'{lockOption}",
-				$"CREATE USER {userlocalSql} IDENTIFIED BY '{MySqlHelper.EscapeString(password)}'{lockOption}"
-			};
-			if(SupportsAdminFlag && user.IsAdmin) {
-				statements.Add(MySqlAccess.GrantAdmin(userSql));
-				statements.Add(MySqlAccess.GrantAdmin(userlocalSql));
-			}
 			// без чтения метабазы новый пользователь не увидит список баз
 			var launcherAccess = new DbUserBaseAccess {
 				BaseName = LauncherMetadataManagement.LauncherBaseName, ReadOnly = true, HasAccess = true
 			};
-			statements.AddRange(MySqlAccess.Statements(user.Login, AnyHost, null, launcherAccess));
-			statements.AddRange(MySqlAccess.Statements(user.Login, LocalHost, null, launcherAccess));
+
+			var statements = NewUserHosts
+				.SelectMany(host => NewUserStatements(user, host, password, launcherAccess))
+				.ToList();
 
 			OnConnection(c => c.Execute(string.Join(";", statements)));
-			lock(connectionLock)
-				userHosts[user.Login] = new List<string> { AnyHost, LocalHost };
+			lock(serverLock)
+				userHosts[user.Login] = NewUserHosts.ToList();
 
 			ReflectInMetadata(m => m.Users.CreateUser(ToLauncherUser(user), password), "создание", user.Login);
 			return true;
+		}
+
+		private IEnumerable<string> NewUserStatements(DbUserInfo user, string host, string password,
+			DbUserBaseAccess launcherAccess) {
+			string account = MySqlAccess.UserOf(user.Login, host);
+			string lockOption = user.Disabled && SupportsAccountLock ? " ACCOUNT LOCK" : string.Empty;
+
+			yield return $"CREATE USER {account} IDENTIFIED BY '{MySqlHelper.EscapeString(password)}'{lockOption}";
+
+			if(SupportsAdminFlag && user.IsAdmin)
+				yield return MySqlAccess.GrantAdmin(account);
+
+			foreach(var statement in MySqlAccess.Statements(user.Login, host, null, launcherAccess))
+				yield return statement;
 		}
 
 		public bool UpdateUser(DbUserInfo user, string newPassword = null) {
@@ -609,7 +621,7 @@ namespace QS.DbManagement {
 
 			OnConnection(c => c.Execute(string.Join(";", HostsOf(login)
 				.Select(host => $"DROP USER IF EXISTS {MySqlAccess.UserOf(login, host)}"))));
-			lock(connectionLock)
+			lock(serverLock)
 				userHosts.Remove(login);
 
 			ReflectInMetadata(m => {
@@ -648,12 +660,18 @@ namespace QS.DbManagement {
 		}
 
 		private void FillUsersProfiles(IEnumerable<DbUserBaseAccess> accesses, string login) {
-			foreach(var access in accesses.Where(a => a.HasAccess && !string.IsNullOrEmpty(a.BaseName))) {
-				var profile = BaseUsers.TryGetProfile(access.BaseName, login);
-				if(profile != null) {
-					access.Name = profile.Name;
-					access.Email = profile.Email;
-				}
+			var withAccess = accesses.Where(a => a.HasAccess && !string.IsNullOrEmpty(a.BaseName)).ToList();
+			if(!withAccess.Any())
+				return;
+
+			// один запрос на все базы: поштучно это два запроса на каждую
+			var profiles = BaseUsers.TryGetProfiles(withAccess.Select(a => a.BaseName), login);
+
+			foreach(var access in withAccess) {
+				if(!profiles.TryGetValue(access.BaseName, out var profile))
+					continue;
+				access.Name = profile.Name;
+				access.Email = profile.Email;
 			}
 		}
 
@@ -718,18 +736,20 @@ namespace QS.DbManagement {
 
 		private IReadOnlyList<string> HostsOf(string login)
 		{
-			if(!userHosts.ContainsKey(login)) {
-				try {
-					GetUsersDirect();
+			lock(serverLock) {
+				if(!userHosts.ContainsKey(login)) {
+					try {
+						GetUsersDirect();
+					}
+					catch(MySqlException ex) {
+						logger.Debug(ex, "Не удалось прочитать хосты учётной записи {0}", login);
+					}
 				}
-				catch(MySqlException ex) {
-					logger.Debug(ex, "Не удалось прочитать хосты учётной записи {0}", login);
-				}
-			}
 
-			return userHosts.TryGetValue(login, out var hosts) && hosts.Any()
-				? (IReadOnlyList<string>)hosts
-				: new[] { AnyHost, LocalHost };
+				return userHosts.TryGetValue(login, out var hosts) && hosts.Any()
+					? (IReadOnlyList<string>)hosts.ToList()
+					: NewUserHosts;
+			}
 		}
 
 		private static void ValidateLogin(string login)
@@ -742,17 +762,17 @@ namespace QS.DbManagement {
 
 		#endregion
 
-		private readonly object connectionLock = new object();
+		private readonly object serverLock = new object();
 
 		private T OnConnection<T>(Func<MySqlConnection, T> query) {
-			lock(connectionLock) {
+			lock(serverLock) {
 				EnsureOpen();
 				return query(connection);
 			}
 		}
 
 		private void OnConnection(Action<MySqlConnection> command) {
-			lock(connectionLock) {
+			lock(serverLock) {
 				EnsureOpen();
 				command(connection);
 			}
