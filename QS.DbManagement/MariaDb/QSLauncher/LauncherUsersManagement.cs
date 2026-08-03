@@ -20,7 +20,7 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			{ "id", "login", "password", "account_id" };
 
 		private readonly string connectionString;
-		private readonly int productId;
+		private readonly byte productId;
 		private readonly LauncherUserInfo userInfo;
 		private bool? isAdminCached;
 

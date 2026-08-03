@@ -9,7 +9,7 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 		public LauncherBasesManagement Bases { get; }
 		public LauncherUsersManagement Users { get; }
 
-		public LauncherMetadataManagement(MySqlConnectionStringBuilder connectionBuilder, bool canWrite, string login, int productId) {
+		public LauncherMetadataManagement(MySqlConnectionStringBuilder connectionBuilder, bool canWrite, string login, byte productId) {
 			// пользователь ищется один раз и отдаёт аккаунт менеджеру баз
 			Users = new LauncherUsersManagement(connectionBuilder, login, productId);
 			Bases = new LauncherBasesManagement(connectionBuilder, canWrite, Users.CurrentAccountId, productId);

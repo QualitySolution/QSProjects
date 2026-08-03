@@ -64,7 +64,7 @@ namespace QS.DbManagement {
 
 		public bool CanConnect() => ConnectionType.CanConnect(CustomParameters);
 
-		public IDbProvider CreateProvider(string password, int productCode) => ConnectionType.CreateProvider(CustomParameters, productCode, password);
+		public IDbProvider CreateProvider(string password, byte productCode) => ConnectionType.CreateProvider(CustomParameters, productCode, password);
 		public Dictionary<string, string> GetConfigDefinitions() {
 			var config = new Dictionary<string, string> {
 				{"Type", ConnectionType.ConnectionTypeName},

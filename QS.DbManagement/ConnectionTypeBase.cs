@@ -16,6 +16,6 @@ namespace QS.DbManagement {
 
 		public abstract bool CanConnect(IEnumerable<ConnectionParameterValue> parameters);
 
-		public abstract IDbProvider CreateProvider(IList<ConnectionParameterValue> parameters, int productCode, string password = null);
+		public abstract IDbProvider CreateProvider(IList<ConnectionParameterValue> parameters, byte productCode, string password = null);
 	}
 }

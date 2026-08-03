@@ -23,7 +23,7 @@ namespace QS.Cloud.Client.DataBase {
 				parameters.Any(p => p.Name == "Login" && !string.IsNullOrEmpty(p.Value));
 		}
 
-		public override IDbProvider CreateProvider(IList<ConnectionParameterValue> parameters, int productCode, string password = null) {
+		public override IDbProvider CreateProvider(IList<ConnectionParameterValue> parameters, byte productCode, string password = null) {
 			return new QSCloudProvider(parameters, productCode, password);
 		}
 	}
