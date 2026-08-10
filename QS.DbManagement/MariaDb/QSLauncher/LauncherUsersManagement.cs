@@ -1,7 +1,7 @@
 ﻿using Dapper;
 using MySqlConnector;
-using QS.Cloud;
 using QS.DbManagement.Entities;
+using QS.Utilities.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,10 +21,11 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 
 		private readonly string connectionString;
 		private readonly byte productId;
+		private readonly LauncherSchemaCache schema;
 		private readonly LauncherUserInfo userInfo;
 		private bool? isAdminCached;
 
-		public LauncherUsersManagement(MySqlConnectionStringBuilder connectionBuilder, string login, byte productId) {
+		public LauncherUsersManagement(MySqlConnectionStringBuilder connectionBuilder, string login, byte productId, LauncherSchemaCache schema) {
 			// строку правим на копии: builder принадлежит вызывающему
 			var toLauncher = new MySqlConnectionStringBuilder(connectionBuilder.ConnectionString) {
 				Database = LauncherBaseName,
@@ -32,6 +33,7 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			};
 			connectionString = toLauncher.ConnectionString;
 			this.productId = productId;
+			this.schema = schema ?? throw new ArgumentNullException(nameof(schema));
 
 			userInfo = GetLauncherUserInfo(login)
 				?? throw new ArgumentException("Не удалось получить информацию о текущем пользователе", nameof(login));
@@ -44,7 +46,7 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 
 			using(var connection = new MySqlConnection(connectionString)) {
 				connection.Open();
-				var columns = LauncherColumnMapper.TableColumns(connection, LauncherBaseName, UsersTable);
+				var columns = schema.TableColumns(connection, LauncherBaseName, UsersTable);
 				string select = LauncherColumnMapper.SelectList(columns, typeof(LauncherUserInfo));
 				string query = $"SELECT {select} FROM `{UsersTable}` WHERE account_id = @accountId AND product_id = @productId ORDER BY login;";
 				return connection.Query<LauncherUserInfo>(query, new { accountId = userInfo.AccountId, productId = productId }).ToList();
@@ -56,7 +58,7 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 
 			using(var connection = new MySqlConnection(connectionString)) {
 				connection.Open();
-				var columns = LauncherColumnMapper.TableColumns(connection, LauncherBaseName, UsersTable);
+				var columns = schema.TableColumns(connection, LauncherBaseName, UsersTable);
 				string select = LauncherColumnMapper.SelectList(columns, typeof(LauncherUserInfo));
 				string query = $"SELECT {select} FROM `{UsersTable}` WHERE login = @login AND account_id = @accountId AND product_id = @productId;";
 				return connection.QueryFirstOrDefault<LauncherUserInfo>(query,
@@ -73,11 +75,11 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 
 					int taken = connection.ExecuteScalar<int>(
 						$"SELECT COUNT(*) FROM `{UsersTable}` WHERE login = @login;",
-						new { user.Login});
+						new { user.Login });
 					if(taken != 0)
 						throw new ArgumentException(LoginTaken, nameof(user));
 
-					var tableColumns = LauncherColumnMapper.TableColumns(connection, LauncherBaseName, UsersTable);
+					var tableColumns = schema.TableColumns(connection, LauncherBaseName, UsersTable);
 					var (columns, parameters) = LauncherColumnMapper.MapForWrite(tableColumns, user, StructuralUserColumns);
 
 					columns.Insert(0, "account_id");
@@ -110,7 +112,7 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			using(var connection = new MySqlConnection(connectionString)) {
 				connection.Open();
 
-				var tableColumns = LauncherColumnMapper.TableColumns(connection, LauncherBaseName, UsersTable);
+				var tableColumns = schema.TableColumns(connection, LauncherBaseName, UsersTable);
 				var (columns, parameters) = LauncherColumnMapper.MapForWrite(tableColumns, user, StructuralUserColumns);
 				var setParts = columns.ConvertAll(c => $"`{c}` = @{c}");
 
@@ -179,20 +181,22 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			using(var connection = new MySqlConnection(connectionString)) {
 				connection.Open();
 
-				var columns = LauncherColumnMapper.TableColumns(connection, LauncherBaseName, UsersTable);
+				var columns = schema.TableColumns(connection, LauncherBaseName, UsersTable);
 				if(!columns.Contains("disabled", StringComparer.OrdinalIgnoreCase))
 					return 0;
 
+				// product_id обязателен: список логинов собран для нашего продукта, и без него
+				// синхронизация погасила бы пользователей соседнего продукта на том же сервере
 				if(!present.Any()) {
 					connection.Execute(
-						$"UPDATE `{UsersTable}` SET disabled = TRUE WHERE account_id = @acc;",
-						new { acc = userInfo.AccountId });
+						$"UPDATE `{UsersTable}` SET disabled = TRUE WHERE account_id = @acc AND product_id = @pid;",
+						new { acc = userInfo.AccountId, pid = productId });
 					return 0;
 				}
 
 				connection.Execute(
-					$"UPDATE `{UsersTable}` SET disabled = TRUE WHERE account_id = @acc AND login NOT IN @present;",
-					new { acc = userInfo.AccountId, present });
+					$"UPDATE `{UsersTable}` SET disabled = TRUE WHERE account_id = @acc AND product_id = @pid AND login NOT IN @present;",
+					new { acc = userInfo.AccountId, pid = productId, present });
 
 				return present.Count;
 			}
@@ -239,13 +243,11 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 				}
 				else {
 					bool readOnly = !access.Admin && access.ReadOnly;
-					var affected = connection.Execute(
+					connection.Execute(
 						"INSERT INTO base_access (user_id, base_id, admin, read_only) " +
 						"VALUES (@uid, @bid, @admin, @readOnly) " +
 						"ON DUPLICATE KEY UPDATE admin = VALUES(admin), read_only = VALUES(read_only);",
 						new { uid = user.Id, bid = baseId, access.Admin, readOnly });
-					if(affected == 0)
-						return false;
 				}
 			}
 			return true;
@@ -287,8 +289,8 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 				var query = @"SELECT `server_users`.`id` AS Id, `server_users`.`login` AS Login, `server_users`.`password` AS PasswordHash,
        				`accounts`.`id` AS AccountId, accounts.login AS AccountName, server_users.is_account_admin AS IsAccountAdmin
 					FROM `server_users` JOIN accounts ON accounts.id = `server_users`.`account_id`
-					WHERE `server_users`.`login` = @login;";
-				return connection.QueryFirstOrDefault<LauncherUserInfo>(query, new { login });
+					WHERE `server_users`.`login` = @login AND `server_users`.`product_id` = @productId;";
+				return connection.QueryFirstOrDefault<LauncherUserInfo>(query, new { login, productId });
 			}
 		}
 	}

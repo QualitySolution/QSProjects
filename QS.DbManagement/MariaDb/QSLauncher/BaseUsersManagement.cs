@@ -98,6 +98,51 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			}
 		}
 
+		private static readonly string[] ProfileColumns = { "name", "email" };
+
+		public void SyncProfile(IEnumerable<string> baseNames, string login, string name, string email) {
+			var wanted = baseNames?.Where(b => !string.IsNullOrEmpty(b)).ToList();
+			if(wanted == null || wanted.Count == 0)
+				return;
+			if(string.IsNullOrEmpty(name) && string.IsNullOrEmpty(email))
+				return;
+
+			try {
+				using(var connection = new MySqlConnection(connectionString)) {
+					connection.Open();
+					var sqls = MySqlMultiBase.TableColumns(connection, wanted, UsersTable)
+						.Select(pair => ProfileUpdate(pair.Key, pair.Value))
+						.Where(sql => sql != null)
+						.ToList();
+					if(sqls.Count == 0)
+						return;
+
+					// незаполненное поле формы приходит null и через COALESCE не затирает базу
+					connection.Execute(string.Join("; ", sqls), new {
+						login,
+						name = string.IsNullOrEmpty(name) ? null : name,
+						email = string.IsNullOrEmpty(email) ? null : email
+					});
+				}
+			}
+			catch(MySqlException ex) {
+				logger.Warn(ex, "не удалось обновить профиль пользователя {0} в таблицах {1}", login, UsersTable);
+			}
+		}
+
+		/// <summary>null - в этой базе профильных колонок нет</summary>
+		private static string ProfileUpdate(string baseName, ICollection<string> columns) {
+			var setParts = ProfileColumns
+				.Where(c => columns.Contains(c, StringComparer.OrdinalIgnoreCase))
+				.Select(c => $"`{c}` = COALESCE(@{c}, `{c}`)")
+				.ToList();
+			if(setParts.Count == 0)
+				return null;
+
+			return $"UPDATE `{MySqlEscape.Identifier(baseName)}`.`{UsersTable}` " +
+				$"SET {string.Join(", ", setParts)} WHERE login = @login";
+		}
+
 		public Dictionary<string, BaseUserRow> TryGetProfiles(IEnumerable<string> baseNames, string login) {
 			var result = new Dictionary<string, BaseUserRow>(StringComparer.OrdinalIgnoreCase);
 			var wanted = baseNames?.Where(b => !string.IsNullOrEmpty(b)).ToList();

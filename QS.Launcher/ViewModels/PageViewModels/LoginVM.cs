@@ -1,5 +1,6 @@
 ﻿using QS.DbManagement;
 using QS.Dialog;
+using QS.ErrorReporting;
 using QS.Launcher.ViewModels.PageViewModels.DataBase;
 using QS.Project.Versioning;
 using ReactiveUI;
@@ -30,8 +31,6 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			set {
 				this.RaiseAndSetIfChanged(ref selectedConnection, value);
 				this.RaisePropertyChanged(nameof(CanLogin));
-				this.RaisePropertyChanged(nameof(Connections));
-				this.RaisePropertyChanged(nameof(SelectedConnection.CustomParameters));
 			}
 		}
 
@@ -64,6 +63,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 
 		private readonly Configurator configurator;
 		private readonly DataBasesVM dbVM;
+		private readonly IErrorHandlingService errorHandling;
 
 		public LoginVM(
 			IEnumerable<ConnectionTypeBase> connectionTypes,
@@ -84,7 +84,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			Connections = new ObservableCollection<Connection>(configurator.ReadConnections()); 
 			SelectedConnection = Connections.FirstOrDefault(c => c.Last);
 			
-			LoginCommand = ReactiveCommand.Create(Login);
+			LoginCommand = ReactiveCommand.CreateFromTask(Login);
 			NewCommand = ReactiveCommand.Create(CreateNewConnection);
 			DeleteCommand = ReactiveCommand.Create(DeleteSelectedConnection);
 			CloneCommand = ReactiveCommand.Create(CloneConnection);
@@ -111,7 +111,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			SelectedConnection = newCon;
 		}
 
-		public void Login() {
+		public async Task Login() {
 			if(SelectedConnection is null)
 				return;
 
@@ -122,8 +122,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 				Task.Run(() => SaveCommand.Execute(null));
 
 				if(resp.Success) {
-					dbVM.SetProvider(dbProvider, SelectedConnection, SaveConnections);
-					dbVM.IsAdmin = resp.IsAdmin;
+					await dbVM.SetProviderAsync(dbProvider, SelectedConnection, SaveConnections);
 					NextPageCommand?.Execute(null);
 				}
 				else

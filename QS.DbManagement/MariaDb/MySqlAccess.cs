@@ -15,6 +15,9 @@ namespace QS.DbManagement.MariaDb {
 		public static string UserOf(string login, string host)
 			=> $"'{MySqlHelper.EscapeString(login)}'@'{MySqlHelper.EscapeString(host)}'";
 
+		/// <summary>
+		/// Выдача глобального админа: права на весь сервер плюс право их раздавать.
+		/// </summary>
 		public static string GrantAdmin(string account)
 			=> $"GRANT {AllPrivileges} ON *.* TO {account} WITH GRANT OPTION";
 

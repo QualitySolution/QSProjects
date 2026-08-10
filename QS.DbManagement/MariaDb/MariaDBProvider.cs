@@ -8,10 +8,8 @@ using QS.Dialog;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
-using static NHibernate.Loader.Custom.CustomLoader;
 
 namespace QS.DbManagement {
 	public class MariaDBProvider : IDbProvider {
@@ -64,9 +62,10 @@ namespace QS.DbManagement {
 		#region QSLauncher
 
 		public bool CanRefreshMetadata => CanCreateDatabase;
+		public bool CanBackupDatabase { get; } = true;
 
 		private LauncherMetadataManagement metadata;
-		/// <summary>null - собрать метабазу ещё не пробовали</summary>
+		/// <summary>false - собрать метабазу ещё не пробовали; true - пробовали, и повторять не будем</summary>
 		private bool metadataMade;
 		private bool serverLoggedIn;
 
@@ -227,8 +226,6 @@ namespace QS.DbManagement {
 
 		#endregion
 
-		#region Управление базами
-
 		public LoginToServerResponse LoginToServer() {
 			try {
 				var grants = OnConnection(c => c.Query<string>("SHOW GRANTS FOR CURRENT_USER").ToList());
@@ -250,7 +247,6 @@ namespace QS.DbManagement {
 
 				return new LoginToServerResponse {
 					Success = true,
-					IsAdmin = IsAdmin,
 					NeedToUpdateLauncher = false
 				};
 			}
@@ -265,6 +261,8 @@ namespace QS.DbManagement {
 
 		private static bool HasPrivilege(ICollection<string> privileges, string privilege)
 			=> privileges.Contains(MySqlAccess.AllPrivileges) || privileges.Contains(privilege);
+
+		#region Управление базами
 
 		public List<DbInfo> GetUserDatabases() {
 			return FromMetadataOrDirect(
@@ -306,11 +304,13 @@ namespace QS.DbManagement {
 
 		public LoginToDatabaseResponse LoginToDatabase(DbInfo dbInfo) {
 			try {
-				ConnectionStringBuilder.Database = dbInfo.BaseName;
+				var toDatabase = new MySqlConnectionStringBuilder(ConnectionStringBuilder.ConnectionString) {
+					Database = dbInfo.BaseName
+				};
 
 				return new LoginToDatabaseResponse {
 					Success = true,
-					ConnectionString = ConnectionStringBuilder.ConnectionString,
+					ConnectionString = toDatabase.ConnectionString,
 					Login = UserName,
 					Parameters = new Dictionary<string, string>(StringComparer.Ordinal) {
 						{ "BaseTitle", dbInfo.Title }
@@ -363,6 +363,8 @@ namespace QS.DbManagement {
 					}
 					break;
 				case ToDoWithExistingDatabase.Rewrite:
+					// базу сносимp
+					// записи метабазы и выданные на базу права должны пережить перезапись
 					OnConnection(c => c.Execute($"DROP DATABASE IF EXISTS `{MySqlEscape.Identifier(request.DbName)}`"));
 					break;
 				default: // Nothing
@@ -376,14 +378,10 @@ namespace QS.DbManagement {
 		private void CreateEmptyDatabase(string dbName) =>
 			OnConnection(c => c.Execute($"CREATE DATABASE `{MySqlEscape.Identifier(dbName)}`"));
 
-		private bool DoesDataBaseExist(string dbName) {
-			int exists = OnConnection(c => c.ExecuteScalar<int>(
+		private bool DoesDataBaseExist(string dbName) =>
+			OnConnection(c => c.ExecuteScalar<int>(
 				"SELECT COUNT(*) FROM information_schema.SCHEMATA WHERE SCHEMA_NAME = @name;",
-				new { name = dbName }));
-			if(exists > 0)
-				return true;
-			return false;
-		}
+				new { name = dbName })) > 0;
 
 		public bool DropDatabase(DbInfo database) {
 			OnConnection(c => c.Execute($"DROP DATABASE IF EXISTS `{MySqlEscape.Identifier(database.BaseName)}`"));
@@ -471,6 +469,7 @@ namespace QS.DbManagement {
 		}
 
 		private bool SupportsAccountLock => AccountLocks != AccountLockStorage.Unsupported;
+		public bool CanChangeOwnPassword { get; } = true;
 
 		public bool ChangeOwnPassword(string newPassword) {
 			if(string.IsNullOrEmpty(newPassword))
@@ -489,13 +488,19 @@ namespace QS.DbManagement {
 				GetUsersDirect);
 		}
 
+		private List<MySqlUserRow> ReadServerAccounts()
+			=> OnConnection(c => c.Query<MySqlUserRow>(ServerAccountsQuery()).ToList());
+
+		// один логин заведён на сервере под несколькими хостами - админ он, только если админ везде
+		private static bool IsAccountAdmin(IEnumerable<MySqlUserRow> accounts)
+			=> accounts.All(r => MySqlGrants.IsGlobalAdmin(IsYes(r.SuperPriv), IsYes(r.CreateUserPriv)));
+
 		private List<DbUserInfo> GetUsersDirect() {
 			// чтение и пересборка кеша хостов - одна операция: между ними словарь пуст,
 			// и параллельный HostsOf увидел бы учётку без хостов
 			lock(serverLock) {
-				var rows = OnConnection(c => c.Query<MySqlUserRow>(ServerAccountsQuery()).ToList());
+				var rows = ReadServerAccounts();
 
-				// один логин заведён на сервере под несколькими хостами
 				userHosts.Clear();
 				var result = new List<DbUserInfo>();
 				foreach(var accounts in rows.Where(IsRealUser).GroupBy(r => r.Login, StringComparer.Ordinal)) {
@@ -503,7 +508,7 @@ namespace QS.DbManagement {
 					result.Add(new DbUserInfo {
 						Login = accounts.Key,
 						Disabled = accounts.All(r => IsYes(r.AccountLocked)),
-						IsAdmin = accounts.All(r => IsYes(r.SuperPriv) || IsYes(r.CreateUserPriv)),
+						IsAdmin = IsAccountAdmin(accounts),
 						IsCurrentUser = string.Equals(accounts.Key, UserName, StringComparison.OrdinalIgnoreCase)
 					});
 				}
@@ -585,25 +590,41 @@ namespace QS.DbManagement {
 		public bool UpdateUser(DbUserInfo user, string newPassword = null) {
 			ValidateLogin(user?.Login);
 
+			bool isAdminNow = SupportsAdminFlag
+				&& MySqlGrants.HasGlobalAdmin(ReadGrantsByHost(user.Login).Values.SelectMany(g => g));
+
 			var statements = HostsOf(user.Login)
-				.SelectMany(host => UserChangeStatements(user, host, newPassword))
+				.SelectMany(host => UserChangeStatements(user, host, newPassword, isAdminNow))
 				.ToList();
 
 			if(statements.Any())
 				OnConnection(c => c.Execute(string.Join(";", statements)));
 
 			ReflectUserUpdateInMetadata(user, newPassword);
+			ReflectProfileInBases(user);
 			return true;
 		}
 
-		private IEnumerable<string> UserChangeStatements(DbUserInfo user, string host, string newPassword) {
+		/// <summary>
+		/// Профиль пишется сам по себе, а не попутно с выдачей доступа: правка одного имени
+		/// должна доходить до баз, даже если доступы не трогали. Строку не заводим - обновляем
+		/// там, где пользователь уже есть, остальные базы UPDATE просто не заденет
+		/// </summary>
+		private void ReflectProfileInBases(DbUserInfo user) {
+			if(string.IsNullOrEmpty(user.Name) && string.IsNullOrEmpty(user.Email))
+				return;
+
+			BaseUsers.SyncProfile(GetUserDatabases().Select(db => db.BaseName), user.Login, user.Name, user.Email);
+		}
+
+		private IEnumerable<string> UserChangeStatements(DbUserInfo user, string host, string newPassword, bool isAdminNow) {
 			string account = MySqlAccess.UserOf(user.Login, host);
 
 			string options = string.Join(" ", AlterUserOptions(user, newPassword));
 			if(options.Length > 0)
 				yield return $"ALTER USER {account} {options}";
 
-			if(SupportsAdminFlag && user.DirtyFields.HasFlag(DbUserFields.AdminFlag))
+			if(SupportsAdminFlag && user.IsAdmin != isAdminNow)
 				yield return user.IsAdmin ? MySqlAccess.GrantAdmin(account) : MySqlAccess.RevokeAdmin(account);
 		}
 
@@ -611,7 +632,7 @@ namespace QS.DbManagement {
 		private IEnumerable<string> AlterUserOptions(DbUserInfo user, string newPassword) {
 			if(!string.IsNullOrEmpty(newPassword))
 				yield return $"IDENTIFIED BY '{MySqlHelper.EscapeString(newPassword)}'";
-			if(SupportsAccountLock && user.DirtyFields.HasFlag(DbUserFields.Disabling))
+			if(SupportsAccountLock)
 				yield return user.Disabled ? "ACCOUNT LOCK" : "ACCOUNT UNLOCK";
 		}
 

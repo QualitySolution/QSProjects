@@ -21,7 +21,7 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			return new HashSet<string>(
 				connection.Query<string>(
 					"SELECT DISTINCT COLUMN_NAME FROM information_schema.STATISTICS " +
-					"WHERE TABLE_SCHEMA = @schema AND TABLE_NAME = @table",
+					"WHERE TABLE_SCHEMA = @schema AND TABLE_NAME = @table AND NON_UNIQUE = 0",
 					new { schema, table }, tx),
 				StringComparer.OrdinalIgnoreCase);
 		}
@@ -32,20 +32,21 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 		public static string SelectList(IEnumerable<string> tableColumns, Type entityType)
 		{
 			var props = Properties(entityType); //?
-			return string.Join(", ", tableColumns
-				.Where(c => props.ContainsKey(Normalize(c)))
-				.Select(c => $"`{c}` AS `{props[Normalize(c)].Name}`"));
+			var pairs = new List<string>();
+			foreach(var column in tableColumns) {
+				if(props.TryFind(column, out var property))
+					pairs.Add($"`{column}` AS `{property.Name}`");
+			}
+			return string.Join(", ", pairs);
 		}
 
 		public static string SelectListAligned(IEnumerable<string> tableColumns, Type entityType)
 		{
-			var byName = tableColumns
-				.GroupBy(Normalize, StringComparer.OrdinalIgnoreCase)
-				.ToDictionary(g => g.Key, g => g.First(), StringComparer.OrdinalIgnoreCase);
+			var byName = new NameIndex<string>(tableColumns, c => c);
 
-			return string.Join(", ", Properties(entityType).Values
+			return string.Join(", ", Properties(entityType).Items
 				.OrderBy(p => p.Name, StringComparer.Ordinal)
-				.Select(p => byName.TryGetValue(Normalize(p.Name), out var column)
+				.Select(p => byName.TryFind(p.Name, out var column)
 					? $"`{column}` AS `{p.Name}`"
 					: $"NULL AS `{p.Name}`"));
 		}
@@ -58,7 +59,7 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			foreach(var column in tableColumns) {
 				if(exclude != null && exclude.Contains(column))
 					continue;
-				if(!props.TryGetValue(Normalize(column), out var prop))
+				if(!props.TryFind(column, out var prop))
 					continue;
 				object value = prop.GetValue(entity);
 				if(value is string s && s.Length == 0)
@@ -72,10 +73,31 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 		private static string Normalize(string name)
 			=> name.Replace("_", "").ToLowerInvariant();
 
-		private static Dictionary<string, PropertyInfo> Properties(Type type)
-			=> type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-				.Where(p => p.CanRead)
-				.GroupBy(p => Normalize(p.Name), StringComparer.Ordinal)
-				.ToDictionary(g => g.Key, g => g.First(), StringComparer.OrdinalIgnoreCase);
+		private static NameIndex<PropertyInfo> Properties(Type type)
+			=> new NameIndex<PropertyInfo>(
+				type.GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(p => p.CanRead),
+				p => p.Name);
+
+		private sealed class NameIndex<T> where T : class
+		{
+			private readonly Dictionary<string, T> byExactName;
+			private readonly Dictionary<string, T> byNormalizedName;
+
+			public NameIndex(IEnumerable<T> items, Func<T, string> nameOf) {
+				var list = items.ToList();
+				byExactName = ToDictionary(list, i => nameOf(i));
+				byNormalizedName = ToDictionary(list, i => Normalize(nameOf(i)));
+			}
+
+			public IEnumerable<T> Items => byExactName.Values;
+
+			public bool TryFind(string name, out T item)
+				=> byExactName.TryGetValue(name, out item)
+					|| byNormalizedName.TryGetValue(Normalize(name), out item);
+
+			private static Dictionary<string, T> ToDictionary(IEnumerable<T> items, Func<T, string> keyOf)
+				=> items.GroupBy(keyOf, StringComparer.OrdinalIgnoreCase)
+					.ToDictionary(g => g.Key, g => g.First(), StringComparer.OrdinalIgnoreCase);
+		}
 	}
 }

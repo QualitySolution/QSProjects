@@ -9,7 +9,6 @@ namespace QS.DbManagement.Entities
 
     public class LoginToServerResponse : Response
     {
-		public bool IsAdmin { get; set; }
 		public bool NeedToUpdateLauncher { get; set; }
     }
 
