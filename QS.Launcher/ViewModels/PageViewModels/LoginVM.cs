@@ -117,9 +117,9 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 
 			try {
 				dbProvider = SelectedConnection.CreateProvider(Password, applicationInfo.ProductCode);
-				var resp = dbProvider.LoginToServer();
+				var resp = await Task.Run(() => dbProvider.LoginToServer());
 
-				Task.Run(() => SaveCommand.Execute(null));
+				SaveConnections();
 
 				if(resp.Success) {
 					await dbVM.SetProviderAsync(dbProvider, SelectedConnection, SaveConnections);

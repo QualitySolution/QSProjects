@@ -6,6 +6,8 @@ using System.Linq;
 
 namespace QS.Launcher.Services {
 	public class LauncherDbCreatorInteraction : IDbCreatorInteraction {
+		private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
 		private readonly IInteractiveQuestion question;
 		private readonly IInteractiveMessage message;
 
@@ -31,6 +33,11 @@ namespace QS.Launcher.Services {
 		}
 
 		public void ReportError(string text, string lastExecutedStatement) {
+			if(string.IsNullOrEmpty(lastExecutedStatement))
+				logger.Error("Ошибка создания базы: {0}", text);
+			else
+				logger.Error("Ошибка создания базы: {0}. Последний выполненный запрос: {1}", text, lastExecutedStatement);
+
 			message.ShowMessage(ImportanceLevel.Error, text, "Ошибка создания базы");
 		}
 	}

@@ -5,6 +5,7 @@ using QS.DbManagement.Entities;
 using QS.DBScripts;
 using QS.DBScripts.Controllers;
 using QS.DBScripts.Models;
+using QS.Dialog;
 using QS.Project.Versioning;
 using ReactiveUI;
 using System;
@@ -12,8 +13,9 @@ using System.Collections.Generic;
 
 namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 	public class CreateDbSettingsVM : DbOperationSettingsVM {
-		public CreateDbSettingsVM(IDbManager provider, Connection connection, IServiceProvider services)
-			: base(provider, connection, services) {
+		public CreateDbSettingsVM(IDbManager provider, Connection connection, IServiceProvider services,
+			IInteractiveMessage interactiveMessage)
+			: base(provider, connection, services, interactiveMessage) {
 			SetValidity(this.WhenAnyValue(x => x.DbName, x => x.DbTitle,
 				(name, title) => !string.IsNullOrWhiteSpace(name) && !string.IsNullOrWhiteSpace(title)));
 		}

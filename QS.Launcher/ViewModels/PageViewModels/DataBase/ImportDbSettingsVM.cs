@@ -3,6 +3,7 @@ using QS.DbManagement;
 using QS.DbManagement.Creation;
 using QS.DbManagement.Entities;
 using QS.DBScripts.Controllers;
+using QS.Dialog;
 using QS.Project.Versioning;
 using ReactiveUI;
 using System;
@@ -10,8 +11,9 @@ using System.Collections.Generic;
 
 namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 	public class ImportDbSettingsVM : DbOperationSettingsVM {
-		public ImportDbSettingsVM(IDbManager provider, Connection connection, IServiceProvider services)
-			: base(provider, connection, services) {
+		public ImportDbSettingsVM(IDbManager provider, Connection connection, IServiceProvider services,
+			IInteractiveMessage interactiveMessage)
+			: base(provider, connection, services, interactiveMessage) {
 			SetValidity(this.WhenAnyValue(x => x.DbName, x => x.DbTitle, x => x.ImportDumpFilePath,
 				(name, title, dump) => !string.IsNullOrWhiteSpace(name)
 					&& !string.IsNullOrWhiteSpace(title)
@@ -37,6 +39,8 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			get => importDumpFilePath;
 			set => this.RaiseAndSetIfChanged(ref importDumpFilePath, value);
 		}
+
+		protected override string ValidationError() => SqlDumpFileValidator.Validate(ImportDumpFilePath);
 
 		public override IEnumerable<DbCreationPhase> BuildPipeline() {
 			// Наполнение из дампа.

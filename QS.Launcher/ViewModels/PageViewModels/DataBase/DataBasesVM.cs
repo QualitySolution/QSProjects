@@ -24,12 +24,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		private IDbProvider provider;
 		public IDbProvider Provider {
 			get => provider;
-			set {
-				this.RaiseAndSetIfChanged(ref provider, value);
-				ReloadDatabases();
-				RaiseCapabilitiesChanged();
-				LoadLastSelectedDatabase();
-			}
+			set => this.RaiseAndSetIfChanged(ref provider, value);
 		}
 
 		/// <summary>
@@ -68,10 +63,13 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 
 		public Connection CurrentConnection => currentConnection;
 
-		public void SetProvider(IDbProvider dbProvider, Connection connection, Action saveConnections) {
+		public async Task SetProviderAsync(IDbProvider dbProvider, Connection connection, Action saveConnections) {
 			currentConnection = connection;
 			saveConnectionsAction = saveConnections;
-			Provider = dbProvider;
+			Provider = dbProvider; // подписка в конструкторе разбудит свойства доступности
+
+			await ReloadDatabasesAsync();
+			LoadLastSelectedDatabase();
 		}
 
 		public List<DbInfo> Databases { get; set; }
@@ -81,8 +79,6 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			get => selectedDatabase;
 			set => this.RaiseAndSetIfChanged(ref selectedDatabase, value);
 		}
-
-		public bool IsAdmin { get; set; } = false;
 
 		public bool ShouldCloseLauncherAfterStart { get; set; } = true;
 
@@ -102,6 +98,8 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		public ReactiveCommand<Unit, Unit> OpenUserManagementCommand { get; }
 		public ReactiveCommand<Unit, Unit> OpenChangePasswordCommand { get; }
 		public ReactiveCommand<Unit, Unit> RefreshMetadataCommand { get; }
+
+		public ReactiveCommand<Unit, Unit> RefreshDatabasesCommand { get; }
 
 		public event Action<bool> StartLaunchProgram;
 
@@ -130,6 +128,8 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
 			this.capabilities = capabilities ?? throw new ArgumentNullException(nameof(capabilities));
 
+			this.WhenAnyValue(x => x.Provider).Subscribe(_ => RaiseCapabilitiesChanged());
+
 			IObservable<bool> canExecuteConnection = this
 				.WhenAnyValue(x => x.SelectedDatabase)
 				.Select(x => x != null);
@@ -142,6 +142,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			OpenUserManagementCommand = ReactiveCommand.Create(OpenUsers);
 			OpenChangePasswordCommand = ReactiveCommand.Create(ChangePassword);
 			RefreshMetadataCommand = ReactiveCommand.CreateFromTask(RefreshMetadataAsync);
+			RefreshDatabasesCommand = ReactiveCommand.CreateFromTask(RefreshDatabases);
 		}
 
 		/// <summary>Пересобирает локальную метаинформацию из реального состояния сервера и обновляет список баз.</summary>
@@ -151,7 +152,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 
 			try {
 				var response = await Task.Run(() => provider.RefreshMetadata());
-				RefreshDatabases();
+				await RefreshDatabases();
 
 				if(!response.Success) {
 					interactiveMessage.ShowMessage(ImportanceLevel.Warning,
@@ -194,7 +195,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			if(!CanCreateDatabase)
 				return;
 
-			var settings = new CreateDbSettingsVM(Provider, CurrentConnection, serviceProvider);
+			var settings = new CreateDbSettingsVM(Provider, CurrentConnection, serviceProvider, interactiveMessage);
 			settings.OperationCompleted += () => OnOperationCompleted(settings);
 			PushPageCommand?.Execute(settings);
 		}
@@ -206,7 +207,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			if(!CanImportDatabase)
 				return;
 
-			var settings = new ImportDbSettingsVM(Provider, CurrentConnection, serviceProvider);
+			var settings = new ImportDbSettingsVM(Provider, CurrentConnection, serviceProvider, interactiveMessage);
 			settings.OperationCompleted += () => OnOperationCompleted(settings);
 			PushPageCommand?.Execute(settings);
 		}
@@ -218,7 +219,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			if(database == null || !CanBackupDatabase)
 				return;
 
-			var settings = new BackupDbSettingsVM(database, Provider, CurrentConnection, serviceProvider);
+			var settings = new BackupDbSettingsVM(database, Provider, CurrentConnection, serviceProvider, interactiveMessage);
 			settings.OperationCompleted += () => OnOperationCompleted(settings);
 			PushPageCommand?.Execute(settings);
 		}
@@ -226,7 +227,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		private void OnOperationCompleted(DbOperationSettingsVM operation) {
 			// Закрываем все нерутовые страницы и возвращаемся на DataBasesVM
 			PopToPageCommand?.Execute(GetType());
-			RefreshDatabases();
+			RefreshDatabasesCommand.Execute().Subscribe();
 
 			if(operation is BackupDbSettingsVM backup)
 				interactiveMessage.ShowMessage(ImportanceLevel.Success,
@@ -239,14 +240,14 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 				return;
 
 			// Question кидает исключение на UIпотоке, поэтому диалог и удаление выполняем в фоне
-			bool confirmed = await Task.Run(() => interactiveQuestion.Question(
-				$"Безвозвратно удалить базу данных «{database.Title}»?", "Удаление базы данных"));
+			bool confirmed = await interactiveQuestion.AskInBackground(
+				$"Безвозвратно удалить базу данных «{database.Title}»?", "Удаление базы данных");
 			if(!confirmed)
 				return;
 
 			try {
 				await Task.Run(() => provider.DropDatabase(database));
-				RefreshDatabases();
+				await RefreshDatabases();
 				interactiveMessage.ShowMessage(ImportanceLevel.Success,
 					$"База данных {database.Title} удалена.", "Удаление базы данных");
 			}
@@ -256,17 +257,17 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			}
 		}
 
-		public void RefreshDatabases() {
+		public async Task RefreshDatabases() {
 			if(provider == null)
 				return;
 
-			ReloadDatabases();
+			await ReloadDatabasesAsync();
 			SelectedDatabase = Databases.FirstOrDefault();
 			this.RaisePropertyChanged(nameof(SelectedDatabase));
 		}
 
-		private void ReloadDatabases() {
-			Databases = provider.GetUserDatabases().AsList();
+		private async Task ReloadDatabasesAsync() {
+			Databases = await Task.Run(() => provider.GetUserDatabases().AsList());
 			this.RaisePropertyChanged(nameof(Databases));
 		}
 

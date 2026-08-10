@@ -1,8 +1,9 @@
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media.Transformation;
 using Avalonia.Styling;
+using Avalonia.VisualTree;
 using QS.Launcher.ViewModels.PageViewModels;
 
 namespace QS.Launcher.Views.Pages;
@@ -33,11 +34,13 @@ public partial class LoginView : UserControl
 		};
 
 		KeyDown += (s, e) => {
-			if(e.Key == Key.Enter) {
-				TopLevel.GetTopLevel(this)?.FocusManager?.ClearFocus();
-				if(DataContext is LoginVM vm)
-					vm.LoginCommand.Execute(null);
-			}
+			if(e.Key != Key.Enter || !viewModel.CanLogin)
+				return;
+			if(e.Source is Visual source && createConnection.IsVisualAncestorOf(source))
+				return;
+
+			TopLevel.GetTopLevel(this)?.FocusManager?.ClearFocus();
+			viewModel.LoginCommand.Execute(null);
 		};
 	}
 

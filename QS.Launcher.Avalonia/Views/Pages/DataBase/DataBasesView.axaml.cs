@@ -20,13 +20,9 @@ public partial class DataBasesView : UserControl {
 		DataContext = ViewModel = viewModel;
 
 		ViewModel.StartLaunchProgram += HandleStartMainProgram;
-
-		KeyDown += (s, e) => {
-			if(e.Key == Key.Enter) {
-				TopLevel.GetTopLevel(this)?.FocusManager?.ClearFocus();
-				ViewModel.ConnectCommand.Execute(null);
-			}
-		};
+		// Enter обрабатывают KeyBinding списка и кнопка «Запустить» с IsDefault - обе
+		// смотрят на CanExecute команды. Свой обработчик на всём UserControl запускал
+		// подключение и без выбранной базы
 	}
 
 	public async void HandleStartMainProgram(bool shouldCloseLauncher) {

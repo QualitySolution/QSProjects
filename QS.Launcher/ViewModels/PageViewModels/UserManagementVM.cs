@@ -1,4 +1,4 @@
-﻿using QS.DbManagement;
+using QS.DbManagement;
 using QS.DbManagement.Entities;
 using QS.Dialog;
 using QS.Project.Versioning;
@@ -19,6 +19,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		private readonly IApplicationInfo applicationInfo;
 
 		private readonly string messageTitle = "Управление пользователями";
+		private const string AccessTitle = "Доступ к базам";
 
 		private IDbUserManager provider;
 
@@ -38,8 +39,10 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 
 			BackCommand = ReactiveCommand.CreateFromTask(GoBack);
 
-			this.WhenAnyValue(x => x.SelectedUser)
-				.Subscribe(_ => OnSelectedUserChanged());
+			// загрузка карточки ходит в базу, поэтому она команда, а не обработчик подписки:
+			// команда исполняется асинхронно и сама отдаёт ошибку общему обработчику
+			LoadSelectedUserCommand = ReactiveCommand.CreateFromTask<DbUserInfo>(LoadSelectedUser);
+			this.WhenAnyValue(x => x.SelectedUser).InvokeCommand(LoadSelectedUserCommand);
 
 			this.WhenAnyValue(x => x.SelectedUser, x => x.IsNewUser)
 				.Subscribe(_ => {
@@ -51,22 +54,8 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		public void SetContext(IDbUserManager userManager, DbUserInfo user, bool isCreating) {
 			provider = userManager ?? throw new ArgumentNullException(nameof(userManager));
 
-			this.RaisePropertyChanged(nameof(CanManageUsers));
-			this.RaisePropertyChanged(nameof(CanManageBaseAccess));
-			this.RaisePropertyChanged(nameof(ShowName));
-			this.RaisePropertyChanged(nameof(ShowEmail));
-			this.RaisePropertyChanged(nameof(ShowPhone));
-			this.RaisePropertyChanged(nameof(ShowPost));
-			this.RaisePropertyChanged(nameof(ShowComment));
-			this.RaisePropertyChanged(nameof(ShowAdminFlag));
-			this.RaisePropertyChanged(nameof(ShowDisabling));
-			this.RaisePropertyChanged(nameof(ShowReadOnly));
-
-			SelectedUser = null;
-			if(isCreating) {
-				ClearEditBuffer();
+			if(isCreating)
 				IsNewUser = true;
-			}
 			else
 				SelectedUser = user;
 		}
@@ -109,31 +98,25 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		public ReactiveCommand<Unit, Unit> SaveCommand { get; }
 		public ReactiveCommand<Unit, Unit> BackCommand { get; }
 
-		private void OnSelectedUserChanged() {
+		public ReactiveCommand<DbUserInfo, Unit> LoadSelectedUserCommand { get; }
+
+		private async Task LoadSelectedUser(DbUserInfo user) {
 			this.RaisePropertyChanged(nameof(HasSelectedUser));
 			BaseAccesses.Clear();
 			this.RaisePropertyChanged(nameof(BaseAccessLocked));
-			if(SelectedUser == null) {
-				IsNewUser = false;
-				return;
-			}
-			LoadEditBuffer(SelectedUser);
 			IsNewUser = false;
-			LoadBaseAccess(SelectedUser.Login);
+			if(user == null)
+				return;
+
+			LoadEditBuffer(user);
+			await LoadBaseAccess(user.Login);
+			// снимок снимаем после LoadBaseAccess: он дозаполняет имя и почту из таблицы users,
+			// и эта подстановка правкой пользователя не является
+			AcceptUserChanges();
 		}
 
 		private async Task<bool> SaveUserAsync() {
-			var newUser = new DbUserInfo {
-				Login = EditLogin,
-				Name = EditName,
-				Email = EditEmail,
-				Phone = EditPhone,
-				Post = EditPost,
-				Comment = EditComment,
-				Disabled = EditDisabled,
-				IsAdmin = EditIsAdmin
-			};
-			newUser.DirtyFields = editedDirtyFields;
+			var newUser = EditedUser();
 
 			bool creating = IsNewUser;
 			string password = EditNewPassword;
@@ -149,8 +132,8 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 					creating ? "Пользователь создан." : "Изменения сохранены.", messageTitle);
 			}
 			catch(Exception ex) {
-				logger.Error(ex, "Не удалось сохранить пользователя {0}", newUser.Login);
-				interactiveMessage.ShowMessage(ImportanceLevel.Error, ex.Message, messageTitle);
+				logger.Error("Не удалось сохранить пользователя {0}", newUser.Login);
+				errorHandling.Handle(ex, messageTitle);
 				return false;
 			}
 			return true;
@@ -159,7 +142,29 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 
 		#region Редактируемые поля пользователя
 
-		DbUserFields editedDirtyFields = DbUserFields.None;
+		/// <summary>Собранный из полей формы пользователь - и на сохранение, и для сравнения со снимком</summary>
+		private DbUserInfo EditedUser() => new DbUserInfo {
+			Login = EditLogin,
+			Name = EditName,
+			Email = EditEmail,
+			Phone = EditPhone,
+			Post = EditPost,
+			Comment = EditComment,
+			Disabled = EditDisabled,
+			IsAdmin = EditIsAdmin
+		};
+
+		private const string SignatureSeparator = "\u0001";
+
+		private static string Signature(DbUserInfo user) => string.Join(SignatureSeparator,
+			user.Login, user.Name, user.Email, user.Phone, user.Post, user.Comment,
+			user.Disabled ? "1" : "0", user.IsAdmin ? "1" : "0");
+
+		private string loadedSignature = Signature(new DbUserInfo());
+
+		private bool IsUserDirty => Signature(EditedUser()) != loadedSignature;
+
+		private void AcceptUserChanges() => loadedSignature = Signature(EditedUser());
 
 		private bool isNewUser;
 		public bool IsNewUser {
@@ -176,64 +181,43 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		private string editName;
 		public string EditName {
 			get => editName;
-			set {
-				editedDirtyFields |= DbUserFields.Name;
-				this.RaiseAndSetIfChanged(ref editName, value);
-			}
+			set => this.RaiseAndSetIfChanged(ref editName, value);
 		}
 
 		private string editEmail;
 		public string EditEmail {
 			get => editEmail;
-			set {
-				editedDirtyFields |= DbUserFields.Email;
-				this.RaiseAndSetIfChanged(ref editEmail, value);
-			}
+			set => this.RaiseAndSetIfChanged(ref editEmail, value);
 		}
 
 		private string editPhone;
 		public string EditPhone {
 			get => editPhone;
-			set {
-				editedDirtyFields |= DbUserFields.Phone;
-				this.RaiseAndSetIfChanged(ref editPhone, value);
-			}
+			set => this.RaiseAndSetIfChanged(ref editPhone, value);
 		}
 
 		private string editPost;
 		public string EditPost {
 			get => editPost;
-			set {
-				editedDirtyFields |= DbUserFields.Post;
-				this.RaiseAndSetIfChanged(ref editPost, value);
-			}
+			set => this.RaiseAndSetIfChanged(ref editPost, value);
 		}
 
 		private string editComment;
 		public string EditComment {
 			get => editComment;
-			set {
-				editedDirtyFields |= DbUserFields.Comment;
-				this.RaiseAndSetIfChanged(ref editComment, value);
-			}
+			set => this.RaiseAndSetIfChanged(ref editComment, value);
 		}
 
 		private bool editDisabled;
 		public bool EditDisabled {
 			get => editDisabled;
-			set {
-				editedDirtyFields |= DbUserFields.Disabling;
-				this.RaiseAndSetIfChanged(ref editDisabled, value);
-			}
+			set => this.RaiseAndSetIfChanged(ref editDisabled, value);
 		}
 
 		private bool editIsAdmin;
 		public bool EditIsAdmin {
 			get => editIsAdmin;
-			set {
-				editedDirtyFields |= DbUserFields.AdminFlag;
-				this.RaiseAndSetIfChanged(ref editIsAdmin, value);
-			}
+			set => this.RaiseAndSetIfChanged(ref editIsAdmin, value);
 		}
 
 		private string editNewPassword;
@@ -253,21 +237,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			EditIsAdmin = user.IsAdmin;
 			EditNewPassword = null;
 
-			editedDirtyFields = DbUserFields.None;
-		}
-
-		private void ClearEditBuffer() {
-			EditLogin = null;
-			EditName = null;
-			EditEmail = null;
-			EditPhone = null;
-			EditPost = null;
-			EditComment = null;
-			EditDisabled = false;
-			EditIsAdmin = false;
-			EditNewPassword = null;
-
-			editedDirtyFields = DbUserFields.None;
+			AcceptUserChanges();
 		}
 
 		#endregion
@@ -279,11 +249,10 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		// Доступ пользователя следует из глобальных прав на сервер и точечно не настраивается
 		public bool BaseAccessLocked => BaseAccesses.Count > 0 && BaseAccesses.All(r => !r.CanEdit);
 
-		private void LoadBaseAccess(string login) {
-			if(applicationInfo == null)
-				return;
+		private async Task LoadBaseAccess(string login) {
 			try {
-				var rows = provider.GetUserBaseAccess(login);
+				// чтение блокирующее и срабатывает на каждый выбор в списке - уводим в фон
+				var rows = await Task.Run(() => provider.GetUserBaseAccess(login));
 				foreach(var row in rows)
 					BaseAccesses.Add(new BaseAccessRowVM(row, ShowReadOnly));
 
@@ -296,8 +265,8 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 				}
 			}
 			catch(Exception ex) {
-				logger.Error(ex, "Не удалось получить доступы пользователя {0}", login);
-				interactiveMessage.ShowMessage(ImportanceLevel.Error, ex.Message, "Доступ к базам");
+				logger.Error("Не удалось получить доступы пользователя {0}", login);
+				errorHandling.Handle(ex, AccessTitle);
 			}
 			this.RaisePropertyChanged(nameof(BaseAccessLocked));
 		}
@@ -311,24 +280,17 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			if(changedRows.Count == 0)
 				return true;
 			try {
-				string name = EditName;
-				string email = EditEmail;
 				await Task.Run(() => {
-					foreach(var row in changedRows) {
-						var access = row.ToAccess();
-						// профиль пишется в таблицу users каждой базы, куда выдаём доступ
-						access.Name = name;
-						access.Email = email;
-						provider.SetUserBaseAccess(user.Login, access);
-					}
+					foreach(var row in changedRows)
+						provider.SetUserBaseAccess(user.Login, row.ToAccess());
 				});
 				foreach(var row in changedRows)
 					row.AcceptChanges();
-				interactiveMessage.ShowMessage(ImportanceLevel.Success, "Доступы сохранены", "Доступ к базам");
+				interactiveMessage.ShowMessage(ImportanceLevel.Success, "Доступы сохранены", AccessTitle);
 			}
 			catch(Exception ex) {
-				logger.Error(ex, "Не удалось сохранить доступы пользователя {0}", user.Login);
-				interactiveMessage.ShowMessage(ImportanceLevel.Error, ex.Message, "Доступ к базам");
+				logger.Error("Не удалось сохранить доступы пользователя {0}", user.Login);
+				errorHandling.Handle(ex, AccessTitle);
 				return false;
 			}
 			return true;
@@ -338,21 +300,20 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		public event Action OperationCompleted;
 
 		private async Task Save() {
-			bool isUserSavedSuccessfully = await SaveUserAsync();
 			bool isBaseAccessSavedSuccessfully = true;
 			if(SelectedUser != null && CanManageBaseAccess && !BaseAccessLocked) {
 				isBaseAccessSavedSuccessfully = await SaveAccessAsync();
 			}
+			bool isUserSavedSuccessfully = await SaveUserAsync();
 
 			if(isUserSavedSuccessfully && isBaseAccessSavedSuccessfully) {
 				PopPageCommand?.Execute(null);
-				ClearEditBuffer();
 				OperationCompleted?.Invoke();
 			}
 		}
 
 		private async Task GoBack() {
-			bool hasChanges = editedDirtyFields != DbUserFields.None
+			bool hasChanges = IsUserDirty
 				|| !string.IsNullOrEmpty(EditNewPassword)
 				|| BaseAccesses.Any(r => r.IsDirty);
 			if(!hasChanges) {
@@ -365,7 +326,6 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			if(!confirmed) return;
 
 			PopPageCommand?.Execute(null);
-			ClearEditBuffer();
 		}
 	}
 }
