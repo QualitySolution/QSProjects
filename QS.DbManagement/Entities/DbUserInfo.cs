@@ -16,9 +16,6 @@ namespace QS.DbManagement.Entities {
 		public bool IsAdmin { get; set; }
 		/// <summary>текущий пользователь подключения</summary>
 		public bool IsCurrentUser { get; set; }
-
-		/// <summary>затронутые поля изменениями с вьюхи</summary>
-		public DbUserFields DirtyFields { get; set; } = DbUserFields.None;
 	}
 
 	[Flags]

@@ -28,9 +28,9 @@ namespace QS.DbManagement {
 			return manager?.CanCreateDatabase == true;
 		}
 
-		/// <summary>для любой подключённой базы</summary>
+		/// <summary>по возможности провайдера</summary>
 		public bool CanBackup(IDbManager manager) {
-			return manager != null;
+			return manager?.CanBackupDatabase == true;
 		}
 
 		/// <summary>по праву провайдера</summary>
@@ -39,7 +39,7 @@ namespace QS.DbManagement {
 		}
 
 		public bool CanChangeOwnPassword(IDbUserManager userManager) {
-			return userManager != null;
+			return userManager?.CanChangeOwnPassword == true;
 		}
 
 		public bool CanManageUsers(IDbUserManager userManager) {

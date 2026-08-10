@@ -19,10 +19,11 @@ namespace QS.Cloud.Client.DataBase {
 		public bool IsAdmin { get; protected set; }
 		public string Account { get; private set; }
 		public string UserName { get; private set; }
-		public uint ProductCode { get; private set; }
+		public byte ProductCode { get; private set; }
 
 		public bool CanCreateDatabase => dbClient.CanConnect && IsAdmin;
 		public bool CanDropDatabase => CanCreateDatabase;
+		public bool CanBackupDatabase => true;
 		private const string MessageTitle = "Создание базы в облаке";
 
 		private readonly LoginManagementCloudClient loginClient;
@@ -48,6 +49,8 @@ namespace QS.Cloud.Client.DataBase {
 		public DbUserFields SupportedUserFields =>
 			DbUserFields.Name | DbUserFields.Email | DbUserFields.Phone | DbUserFields.Post
 			| DbUserFields.Comment | DbUserFields.AdminFlag | DbUserFields.Disabling | DbUserFields.BaseReadOnly;
+
+		public bool CanChangeOwnPassword => true;
 
 		public bool ChangeOwnPassword(string newPassword) => Call(() =>
 			loginClient.ChangePassword(newPassword).Success);
@@ -274,10 +277,10 @@ namespace QS.Cloud.Client.DataBase {
 			try {
 				var cloudResponce = loginClient.Start(Assembly.GetExecutingAssembly().GetName().Version.ToString());
 
+				// права вызывающего читаются со свойств провайдера, в ответе их не дублируем
 				IsAdmin = cloudResponce.YouAccountAdmin;
 				return new LoginToServerResponse {
 					Success = true,
-					IsAdmin = cloudResponce.YouAccountAdmin,
 					NeedToUpdateLauncher = cloudResponce.NeedUpdateLauncher
 				};
 			}

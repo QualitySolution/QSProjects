@@ -15,6 +15,9 @@ namespace QS.DbManagement
 		bool CanCreateDatabase { get; }
 		bool CanDropDatabase { get; }
 
+		/// <summary>умеет ли провайдер выгружать базу в файл</summary>
+		bool CanBackupDatabase { get; }
+
 		bool CanRefreshMetadata { get; }
 
 		LoginToServerResponse LoginToServer();
@@ -41,6 +44,9 @@ namespace QS.DbManagement
 	public interface IDbUserManager
 	{
 		bool ChangeOwnPassword(string newPassword);
+
+		/// <summary>может ли пользователь сменить себе пароль средствами провайдера</summary>
+		bool CanChangeOwnPassword { get; }
 
 		bool CanManageUsers { get; }
 

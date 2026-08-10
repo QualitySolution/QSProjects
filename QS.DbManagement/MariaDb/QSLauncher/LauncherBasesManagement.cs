@@ -18,8 +18,9 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 		private readonly string connectionString;
 		private readonly byte productId;
 		private readonly int accountId;
+		private readonly LauncherSchemaCache schema;
 
-		public LauncherBasesManagement(MySqlConnectionStringBuilder connectionBuilder, bool canWrite, int accountId, byte productId) {
+		public LauncherBasesManagement(MySqlConnectionStringBuilder connectionBuilder, bool canWrite, int accountId, byte productId, LauncherSchemaCache schema) {
 			var toLauncher = new MySqlConnectionStringBuilder(connectionBuilder.ConnectionString) {
 				Database = LauncherBaseName,
 				AllowLoadLocalInfile = true
@@ -29,6 +30,7 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			this.canWrite = canWrite;
 			this.accountId = accountId;
 			this.productId = productId;
+			this.schema = schema ?? throw new ArgumentNullException(nameof(schema));
 		}
 
 		public int SyncBases() {
@@ -42,8 +44,8 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 					.Except(MySqlSystemObjects.Databases, StringComparer.OrdinalIgnoreCase)
 					.ToList();
 
-				var tableColumns = LauncherColumnMapper.TableColumns(connection, LauncherBaseName, BasesTable);
-				var keyColumns = LauncherColumnMapper.KeyColumns(connection, LauncherBaseName, BasesTable);
+				var tableColumns = schema.TableColumns(connection, LauncherBaseName, BasesTable);
+				var keyColumns = schema.KeyColumns(connection, LauncherBaseName, BasesTable);
 
 				var parameters = BaseParametersReader.ReadMany(connection, bases, BaseMetaParameters);
 
