@@ -21,11 +21,6 @@ namespace QS.Launcher.ViewModels {
 			set => this.RaiseAndSetIfChanged(ref selectedPageIndex, value);
 		}
 
-		public int PagesCount {
-			get => rootPagesCount;
-			set { }
-		}
-
 		public MainWindowVM(
 			DataBasesVM dataBasesVM,
 			LoginVM loginVM,
@@ -48,13 +43,7 @@ namespace QS.Launcher.ViewModels {
 			page.PushPageCommand = ReactiveCommand.Create<CarouselPageVM>(PushPage);
 			page.PopPageCommand = ReactiveCommand.Create(PopPage);
 			page.PopToRootCommand = ReactiveCommand.Create(PopToRoot);
-			page.PopToPageCommand = ReactiveCommand.Create<Type>(type => {
-				var method = GetType()
-					.GetMethod(nameof(PopToPage))
-					.MakeGenericMethod(type);
-
-				method.Invoke(this, null);
-			});
+			page.PopToPageCommand = ReactiveCommand.Create<Type>(PopToPage);
 		}
 
 		public void SaveConnections() {
@@ -85,26 +74,34 @@ namespace QS.Launcher.ViewModels {
 
 		public void PopPage() {
 			if(Pages.Count <= rootPagesCount) return;
-			int last = Pages.Count - 1;
-			Pages.RemoveAt(last);
+			RemovePagesAbove(Pages.Count - 2);
 			SelectedPageIndex = Pages.Count - 1;
 		}
 
 		public void PopToRoot() {
-			while(Pages.Count > rootPagesCount)
-				Pages.RemoveAt(Pages.Count - 1);
+			RemovePagesAbove(rootPagesCount - 1);
 			if(SelectedPageIndex >= rootPagesCount)
 				SelectedPageIndex = rootPagesCount - 1;
 		}
 
-		public void PopToPage<TPage>() where TPage : CarouselPageVM {
+		private void RemovePagesAbove(int keepIndex) {
+			while(Pages.Count > keepIndex + 1) {
+				int last = Pages.Count - 1;
+				var page = Pages[last];
+				Pages.RemoveAt(last);
+				(page as IDisposable)?.Dispose();
+			}
+		}
+
+		public void PopToPage(Type pageType) {
+			if(pageType == null) return;
+
 			int targetIdx = -1;
 			for(int i = 0; i < Pages.Count; i++) {
-				if(Pages[i] is TPage) { targetIdx = i; break; }
+				if(pageType.IsInstanceOfType(Pages[i])) { targetIdx = i; break; }
 			}
 			if(targetIdx < 0) return;
-			while(Pages.Count > targetIdx + 1)
-				Pages.RemoveAt(Pages.Count - 1);
+			RemovePagesAbove(targetIdx);
 			SelectedPageIndex = targetIdx;
 		}
 	}

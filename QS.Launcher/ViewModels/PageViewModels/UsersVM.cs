@@ -33,7 +33,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			NewUserCommand = ReactiveCommand.Create(StartNewUser);
 			EditUserCommand = ReactiveCommand.Create(EditUser, hasSelectedUser);
 			DeleteUserCommand = ReactiveCommand.CreateFromTask(DeleteUserAsync, hasSelectedUser);
-			RefreshUsersCommand = ReactiveCommand.Create(RefreshUsers);
+			RefreshUsersCommand = ReactiveCommand.CreateFromTask(RefreshUsers);
 			BackCommand = ReactiveCommand.Create(() => PopPageCommand?.Execute(null));
 
 			Users = new ObservableCollection<DbUserInfo>();
@@ -62,21 +62,21 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			provider = userManager ?? throw new ArgumentNullException(nameof(userManager));
 
 			this.RaisePropertyChanged(nameof(CanManageUsers));
-			RefreshUsers();
+			RefreshUsersCommand.Execute().Subscribe();
 		}
 
-		public void RefreshUsers() {
+		public async Task RefreshUsers() {
 			Users.Clear();
 			SelectedUser = null;
 			if(!CanManageUsers)
 				return;
 
 			try {
-				Users.AddRange(provider.GetUsers());
+				var users = await Task.Run(() => provider.GetUsers());
+				Users.AddRange(users);
 			}
 			catch(Exception ex) {
-				logger.Error(ex, "Не удалось получить список пользователей");
-				interactiveMessage.ShowMessage(ImportanceLevel.Error, ex.Message, "Управление пользователями");
+				errorHandling.Handle(ex, "Управление пользователями");
 			}
 		}
 
@@ -92,8 +92,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		private void OpenEditor(DbUserInfo user, bool isCreating) {
 			var vm = serviceProvider.GetRequiredService<UserManagementVM>();
 			vm.SetContext(provider, user, isCreating);
-			vm.OperationCompleted -= RefreshUsers;
-			vm.OperationCompleted += RefreshUsers;
+			vm.OperationCompleted += () => RefreshUsersCommand.Execute().Subscribe();
 			PushPageCommand?.Execute(vm);
 		}
 
@@ -106,19 +105,19 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 				return;
 			}
 
-			bool confirmed = await Task.Run(() => interactiveQuestion.Question(
-				$"Удалить пользователя «{user.Login}»?", "Управление пользователями"));
+			bool confirmed = await interactiveQuestion.AskInBackground(
+				$"Удалить пользователя «{user.Login}»?", "Управление пользователями");
 			if(!confirmed)
 				return;
 
 			try {
 				await Task.Run(() => provider.DeleteUser(user.Login));
 				interactiveMessage.ShowMessage(ImportanceLevel.Success, "Пользователь удалён.", "Управление пользователями");
-				RefreshUsers();
+				await RefreshUsers();
 			}
 			catch(Exception ex) {
-				logger.Error(ex, "Не удалось удалить пользователя {0}", user.Login);
-				interactiveMessage.ShowMessage(ImportanceLevel.Error, ex.Message, "Управление пользователями");
+				logger.Error("Не удалось удалить пользователя {0}", user.Login);
+				errorHandling.Handle(ex, "Управление пользователями");
 			}
 		}
 	}

@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using QS.DbManagement;
 using QS.DbManagement.Entities;
-using QS.DBScripts.Controllers;
 using QS.Dialog;
 using ReactiveUI;
 
@@ -14,7 +13,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 	/// <summary>
 	/// последовательно выполняет пайплайн фаз в одном фоновом потоке
 	/// </summary>
-	public class CreateDataBaseProgressVM : CarouselPageVM, IProgressBarDisplayable {
+	public class CreateDataBaseProgressVM : CarouselPageVM, IProgressBarDisplayable, IDisposable {
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 		public IDbManager Provider { get; private set; }
@@ -28,7 +27,6 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			set => this.RaiseAndSetIfChanged(ref operationTitle, value);
 		}
 
-		private readonly IDbCreatorInteraction interaction;
 		private readonly IServiceProvider services;
 		private readonly IGuiDispatcher guiDispatcher;
 		private readonly CancellationTokenSource cts;
@@ -71,11 +69,9 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		public ReactiveCommand<Unit, Unit> CancelCommand { get; }
 
 		public CreateDataBaseProgressVM(
-			IDbCreatorInteraction interaction,
 			IGuiDispatcher guiDispatcher,
 			IServiceProvider services)
 		{
-			this.interaction = interaction ?? throw new ArgumentNullException(nameof(interaction));
 			this.guiDispatcher = guiDispatcher ?? throw new ArgumentNullException(nameof(guiDispatcher));
 			this.services = services ?? throw new ArgumentNullException(nameof(services));
 			cts = new CancellationTokenSource();
@@ -83,8 +79,13 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			StartCommand = ReactiveCommand.CreateFromTask(RunAsync);
 			CancelCommand = ReactiveCommand.Create(() => {
 				cts.Cancel();
-				PopToRootCommand?.Execute(null);
+				PopPageCommand?.Execute(null);
 			});
+		}
+
+		public void Dispose() {
+			cts.Cancel();
+			cts.Dispose();
 		}
 
 		public void SetPipeline(
@@ -119,7 +120,6 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			}
 			catch(OperationCanceledException) {
 				logger.Info("Операция с базой отменена.");
-				OperationFailed?.Invoke();
 			}
 			catch(Exception ex) {
 				logger.Error(ex, "Сбой в процессе выполнения операции с базой.");

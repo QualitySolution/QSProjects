@@ -43,13 +43,16 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			try {
 				string newPassword = OwnNewPassword;
 				bool ok = await Task.Run(() => provider.ChangeOwnPassword(newPassword));
-				if(ok) {
-					OwnNewPassword = null;
-					OwnConfirmPassword = null;
-					interactiveMessage.ShowMessage(ImportanceLevel.Success, "Пароль изменён.", "Смена пароля");
-				}
-				else
+				// со страницы уходим только когда пароль действительно сменился:
+				// иначе пользователь теряет форму вместе с сообщением об ошибке
+				if(!ok) {
 					interactiveMessage.ShowMessage(ImportanceLevel.Error, "Не удалось изменить пароль.", "Смена пароля");
+					return;
+				}
+
+				OwnNewPassword = null;
+				OwnConfirmPassword = null;
+				interactiveMessage.ShowMessage(ImportanceLevel.Success, "Пароль изменён.", "Смена пароля");
 			}
 			catch(Exception ex) {
 				logger.Error(ex, "Не удалось сменить собственный пароль");

@@ -5,6 +5,7 @@ using System.Reactive.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using QS.DbManagement;
 using QS.DbManagement.Entities;
+using QS.Dialog;
 using ReactiveUI;
 
 namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
@@ -13,10 +14,14 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		protected Connection Connection { get; }
 		protected IServiceProvider Services { get; }
 
-		protected DbOperationSettingsVM(IDbManager provider, Connection connection, IServiceProvider services) {
+		private readonly IInteractiveMessage interactiveMessage;
+
+		protected DbOperationSettingsVM(IDbManager provider, Connection connection, IServiceProvider services,
+			IInteractiveMessage interactiveMessage) {
 			Provider = provider ?? throw new ArgumentNullException(nameof(provider));
 			Connection = connection ?? throw new ArgumentNullException(nameof(connection));
 			Services = services ?? throw new ArgumentNullException(nameof(services));
+			this.interactiveMessage = interactiveMessage ?? throw new ArgumentNullException(nameof(interactiveMessage));
 
 			CancelCommand = ReactiveCommand.Create(() => PopPageCommand?.Execute(null));
 		}
@@ -36,11 +41,20 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			ProceedCommand = ReactiveCommand.Create(GoToProgress, CanProceed);
 		}
 
+		protected virtual string ValidationError() => null;
+
 		private void GoToProgress() {
+			string error = ValidationError();
+			if(error != null) {
+				interactiveMessage.ShowMessage(ImportanceLevel.Warning, error, Title);
+				return;
+			}
+
 			var progress = Services.GetRequiredService<CreateDataBaseProgressVM>();
 			progress.OperationTitle = Title;
 			progress.SetPipeline(Provider, Connection, BuildPipeline());
 			progress.OperationCompleted += () => OperationCompleted?.Invoke();
+			progress.OperationFailed += () => PopPageCommand?.Execute(null);
 			PushPageCommand?.Execute(progress);
 		}
 	}
