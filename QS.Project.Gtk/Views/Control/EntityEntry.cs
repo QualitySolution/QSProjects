@@ -122,6 +122,7 @@ namespace QS.Views.Control
 
 		private bool isInternalTextSet;
 		private ListStore completionListStore;
+		private CellRendererText _entryCompletionCell;
 		uint timerId;
 
 		private void ConfigureEntryComplition()
@@ -129,9 +130,9 @@ namespace QS.Views.Control
 			entryObject.Completion = new EntryCompletion();
 			entryObject.Completion.MatchSelected += Completion_MatchSelected;
 			entryObject.Completion.MatchFunc = Completion_MatchFunc;
-			var cell = new CellRendererText();
-			entryObject.Completion.PackStart(cell, true);
-			entryObject.Completion.SetCellDataFunc(cell, OnCellLayoutDataFunc);
+			_entryCompletionCell = new CellRendererText();
+			entryObject.Completion.PackStart(_entryCompletionCell, true);
+			entryObject.Completion.SetCellDataFunc(_entryCompletionCell, OnCellLayoutDataFunc);
 		}
 
 		bool Completion_MatchFunc(EntryCompletion completion, string key, TreeIter iter)
@@ -231,6 +232,11 @@ namespace QS.Views.Control
 		
 		protected override void OnDestroyed()
 		{
+			if(entryObject?.Completion != null) {
+				entryObject.Completion.MatchFunc = null;
+				entryObject.Completion.SetCellDataFunc(_entryCompletionCell, null);
+			}
+
 			if(viewModel != null) {
 				ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
 				viewModel.AutoCompleteListUpdated -= ViewModel_AutoCompleteListUpdated;

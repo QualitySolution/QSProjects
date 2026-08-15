@@ -28,6 +28,7 @@ namespace QS.Widgets.GtkUI
 		}
 
 		byte autocompleteStep;
+		private bool _destroyed;
 
 		public byte AutocompleteStep {
 			get {
@@ -145,6 +146,17 @@ namespace QS.Widgets.GtkUI
 
 			//Что бы установить ограничения на максимальное количество символов, по умолчанию.
 			ShowSeconds = false; 
+		}
+		
+		protected override void OnDestroyed() {
+			if(_destroyed) {
+				return;
+			}
+
+			Binding.CleanSources();
+			base.OnDestroyed();
+			
+			_destroyed = true;
 		}
 	}
 }

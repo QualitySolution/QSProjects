@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Windows.Input;
 using Gamma.Binding.Core;
+using Gamma.Extensions;
 using Gtk;
 
 namespace Gamma.GtkWidgets
@@ -69,6 +70,11 @@ namespace Gamma.GtkWidgets
 					busyCommand.PropertyChanged -= BusyCommandPropertyChanged;
 				}
 			}
+
+			if(Image is Image image) {
+				image.DisposeImagePixbuf();
+			}
+			
 			Binding.CleanSources();
 			base.OnDestroyed();
 		}

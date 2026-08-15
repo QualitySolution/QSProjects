@@ -33,5 +33,10 @@ namespace Gamma.GtkWidgets
 			Binding.FireChange(w => w.Color);
 			base.OnColorSet();
 		}
+
+		protected override void OnDestroyed() {
+			Binding.CleanSources();
+			base.OnDestroyed();
+		}
 	}
 }

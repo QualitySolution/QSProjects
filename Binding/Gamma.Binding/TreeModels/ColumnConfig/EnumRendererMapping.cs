@@ -8,9 +8,10 @@ using Gamma.Utilities;
 
 namespace Gamma.ColumnConfig
 {
-	public class EnumRendererMapping<TNode, TItem> : RendererMappingBase<NodeCellRendererCombo<TNode, TItem>, TNode> where TItem : struct, IConvertible
+	public class EnumRendererMapping<TNode, TItem> : RendererMappingBase<NodeCellRendererCombo<TNode, TItem>, TNode>
+		where TItem : struct, IConvertible
 	{
-		private NodeCellRendererCombo<TNode, TItem> cellRenderer = new NodeCellRendererCombo<TNode, TItem>();
+		private readonly NodeCellRendererCombo<TNode, TItem> _cellRenderer = new NodeCellRendererCombo<TNode, TItem>();
 
 		public EnumRendererMapping(ColumnMapping<TNode> column, Expression<Func<TNode, TItem>> dataProperty, Enum[] excludeItems)
 			: base(column)
@@ -20,11 +21,11 @@ namespace Gamma.ColumnConfig
 			if(prop == null || !prop.PropertyType.IsEnum)
 				throw new InvalidProgramException();
 
-			cellRenderer.DataPropertyInfo = prop;
+			_cellRenderer.DataPropertyInfo = prop;
 
-			cellRenderer.DisplayFunc = e => (e as Enum).GetEnumTitle();
-			cellRenderer.Items = GetEnumItems(prop.PropertyType, excludeItems);
-			cellRenderer.UpdateComboList(default(TNode));
+			_cellRenderer.DisplayFunc = e => (e as Enum).GetEnumTitle();
+			_cellRenderer.Items = GetEnumItems(prop.PropertyType, excludeItems);
+			_cellRenderer.UpdateComboList(default(TNode));
 		}
 
 		public EnumRendererMapping(ColumnMapping<TNode> column)
@@ -37,12 +38,12 @@ namespace Gamma.ColumnConfig
 
 		public override INodeCellRenderer GetRenderer()
 		{
-			return cellRenderer;
+			return _cellRenderer;
 		}
 
 		protected override void SetSetterSilent(Action<NodeCellRendererCombo<TNode, TItem>, TNode> commonSet)
 		{
-			cellRenderer.LambdaSetters.Insert(0, commonSet);
+			_cellRenderer.LambdaSetters.Insert(0, commonSet);
 		}
 
 		#endregion
@@ -55,31 +56,31 @@ namespace Gamma.ColumnConfig
 
 		public EnumRendererMapping<TNode, TItem> AddSetter(Action<NodeCellRendererCombo<TNode, TItem>, TNode> setter)
 		{
-			cellRenderer.LambdaSetters.Add(setter);
+			_cellRenderer.LambdaSetters.Add(setter);
 			return this;
 		}
 
 		public EnumRendererMapping<TNode, TItem> Editing(bool on = true)
 		{
-			cellRenderer.Editable = on;
+			_cellRenderer.Editable = on;
 			return this;
 		}
 
 		public EnumRendererMapping<TNode, TItem> HasEntry(bool on = true)
 		{
-			cellRenderer.HasEntry = on;
+			_cellRenderer.HasEntry = on;
 			return this;
 		}
 
 		public EnumRendererMapping<TNode, TItem> XAlign(float alignment)
 		{
-			cellRenderer.Xalign = alignment;
+			_cellRenderer.Xalign = alignment;
 			return this;
 		}
 		
 		public EnumRendererMapping<TNode, TItem> YAlign(float alignment)
 		{
-			cellRenderer.Yalign = alignment;
+			_cellRenderer.Yalign = alignment;
 			return this;
 		}
 
@@ -90,7 +91,7 @@ namespace Gamma.ColumnConfig
 		/// <param name="func">Func</param>
 		public EnumRendererMapping<TNode, TItem> HideCondition(Func<TNode, TItem, bool> func)
 		{
-			cellRenderer.HideItemFunc = func;
+			_cellRenderer.HideItemFunc = func;
 			return this;
 		}
 
@@ -106,6 +107,22 @@ namespace Gamma.ColumnConfig
 				list.Add((TItem)info.GetValue(null));
 			}
 			return list;
+		}
+		
+		public override void Dispose() {
+			if(_cellRenderer != null) {
+				_cellRenderer.Dispose();
+				
+				foreach(var eventInfo in _cellRenderer.GetType().GetEvents()) {
+					if(EventHandlers.TryGetValue(eventInfo.EventHandlerType, out var handlers)) {
+						foreach(var handler in handlers) {
+							eventInfo.RemoveEventHandler(_cellRenderer, (Delegate)handler);
+						}
+					}
+				}
+
+				base.Dispose();
+			}
 		}
 	}
 }

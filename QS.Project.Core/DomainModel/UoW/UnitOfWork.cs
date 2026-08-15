@@ -1,3 +1,4 @@
+using System;
 using QS.DomainModel.Entity;
 using QS.DomainModel.Tracking;
 using QS.Project.DB;
@@ -26,8 +27,8 @@ namespace QS.DomainModel.UoW {
 			IsNew = true;
             ActionTitle = title;
 			Root = new TRootEntity();
-			if(Root is IBusinessObject)
-				((IBusinessObject)Root).UoW = this;
+			if(Root is IBusinessObject businessObject)
+				businessObject.UoW = this;
 		}
 
 		internal UnitOfWork(ISessionProvider sessionProvider, TRootEntity root, UnitOfWorkTitle title, SingleUowEventsTracker tracker = null) 
@@ -36,8 +37,8 @@ namespace QS.DomainModel.UoW {
 			IsNew = true;
 			Root = root;
             ActionTitle = title;
-			if(Root is IBusinessObject)
-				((IBusinessObject)Root).UoW = this;
+			if(Root is IBusinessObject businessObject)
+				businessObject.UoW = this;
 		}
 
 		internal UnitOfWork(ISessionProvider sessionProvider, int id, UnitOfWorkTitle title, SingleUowEventsTracker tracker = null) 
@@ -46,6 +47,8 @@ namespace QS.DomainModel.UoW {
 			IsNew = false;
             ActionTitle = title;
 			Root = GetById<TRootEntity>(id);
+			if(Root is IBusinessObject businessObject)
+				businessObject.UoW = this;
 		}
 
 		public override void Save(object entity, bool orUpdate = true)
@@ -67,12 +70,21 @@ namespace QS.DomainModel.UoW {
 			await base.SaveAsync(entity, orUpdate, cancellationToken);
 
 			if(RootObject.Equals(entity)) {
-				await CommitAsync();
+				await CommitAsync(cancellationToken);
 			}
 		}
 
 		public async Task SaveAsync() {
 			await SaveAsync(Root);
+		}
+
+		public override void Dispose() {
+			base.Dispose();
+			
+			if(Root is IBusinessObject obj)
+				obj.UoW = null;
+			
+			Root = null;
 		}
 	}
 }

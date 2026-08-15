@@ -10,19 +10,17 @@ namespace Gamma.Binding.Core
 	public class BindingSource<TSource, TTarget> : BindingSourceBase<TTarget>, IBindingSourceInternal, IBindingSource
 		where TSource : class, INotifyPropertyChanged
 	{
-		TSource dataSource;
+		private TSource _dataSource;
 
 		public TSource DataSource {
-			get {
-				return dataSource;
-			}
-			set {if (dataSource == value)
+			get => _dataSource;
+			set {if (_dataSource == value)
 					return;
-				if (dataSource != null)
-					dataSource.PropertyChanged -= DataSource_PropertyChanged;
-				dataSource = value;
-				if(dataSource != null)
-					dataSource.PropertyChanged += DataSource_PropertyChanged;
+				if (_dataSource != null)
+					_dataSource.PropertyChanged -= DataSource_PropertyChanged;
+				_dataSource = value;
+				if(_dataSource != null)
+					_dataSource.PropertyChanged += DataSource_PropertyChanged;
 			}
 		}
 
@@ -38,7 +36,10 @@ namespace Gamma.Binding.Core
 
 		public override void ClearBindings()
 		{
-			DataSource = null;
+			if(_dataSource is INotifyPropertyChanged value) {
+				value.PropertyChanged -= DataSource_PropertyChanged;
+			}
+			_dataSource = null;
 		}
 
 		#region config

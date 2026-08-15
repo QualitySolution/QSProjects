@@ -125,7 +125,7 @@ namespace QS.DomainModel.UoW {
 		}
 
 		private bool disposed;
-		public void Dispose()
+		public virtual void Dispose()
 		{
 			if(disposed)
 				return;

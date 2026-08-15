@@ -36,6 +36,7 @@ namespace QS.Widgets.GtkUI {
 		public BindingControler<EntityViewModelEntry> Binding { get; private set; }
 		public bool CanEditReference { get; set; } = true;
 		public bool CanDisposeEntitySelectorFactory { get; set; } = true;
+		private CellRendererText _cellRendererEntryCompletion;
 		private ListStore completionListStore;
 		private readonly string _normalEntryToolTipMarkup;
 		private readonly string _dangerEntryToolTipMarkup = "Введён текст для поиска, но не выбрана сущность из справочника или выпадающего списка.";
@@ -127,9 +128,9 @@ namespace QS.Widgets.GtkUI {
 			entryObject.Completion = new EntryCompletion();
 			entryObject.Completion.MatchSelected += Completion_MatchSelected;
 			entryObject.Completion.MatchFunc = Completion_MatchFunc;
-			var cell = new CellRendererText();
-			entryObject.Completion.PackStart(cell, true);
-			entryObject.Completion.SetCellDataFunc(cell, OnCellLayoutDataFunc);
+			_cellRendererEntryCompletion = new CellRendererText();
+			entryObject.Completion.PackStart(_cellRendererEntryCompletion, true);
+			entryObject.Completion.SetCellDataFunc(_cellRendererEntryCompletion, OnCellLayoutDataFunc);
 		}
 
 		void JournalViewModel_OnEntitySelectedResult(object sender, JournalSelectedNodesEventArgs e)
@@ -501,8 +502,8 @@ namespace QS.Widgets.GtkUI {
 				entitySelector.OnEntitySelectedResult -= JournalViewModel_OnEntitySelectedResult;
 			}
 
-			if (subject is INotifyPropertyChanged) {
-				(subject as INotifyPropertyChanged).PropertyChanged -= OnSubjectPropertyChanged;
+			if (subject is INotifyPropertyChanged changed) {
+				changed.PropertyChanged -= OnSubjectPropertyChanged;
 			}
 			cts.Cancel();
 
@@ -519,6 +520,9 @@ namespace QS.Widgets.GtkUI {
 
 				if(entryObject.Completion != null)
 				{
+					//TODO надо освободить ресурсы у _cellRendererEntryCompletion
+					entryObject.Completion.MatchFunc = null;
+					entryObject.Completion.SetCellDataFunc(_cellRendererEntryCompletion, null);
 					entryObject.Completion.MatchSelected -= Completion_MatchSelected;
 				}
 			}

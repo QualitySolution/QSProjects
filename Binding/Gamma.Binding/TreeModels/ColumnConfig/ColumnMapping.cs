@@ -250,9 +250,8 @@ namespace Gamma.ColumnConfig
 
 		#endregion
 
-		public void ClearProperties() {
-			TreeViewColumn = null;
-			BindingController = null;
+		public void Dispose() {
+			BindingController?.CleanSources();
 		}
 	}
 }

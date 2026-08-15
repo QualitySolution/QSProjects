@@ -76,6 +76,10 @@ namespace Gamma.GtkWidgets
 			set { Value = Convert.ToDouble(value); }
 		}
 
+		protected override void OnDestroyed() {
+			Binding.CleanSources();
+			base.OnDestroyed();
+		}
 	}
 }
 
