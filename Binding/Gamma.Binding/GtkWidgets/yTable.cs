@@ -19,5 +19,10 @@ namespace Gamma.GtkWidgets
 		{
 			Binding = new BindingControler<yTable>(this);
 		}
+
+		protected override void OnDestroyed() {
+			Binding.CleanSources();
+			base.OnDestroyed();
+		}
 	}
 }

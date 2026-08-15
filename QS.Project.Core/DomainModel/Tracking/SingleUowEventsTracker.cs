@@ -56,44 +56,44 @@ namespace QS.DomainModel.Tracking
 
 		public void RegisterListener(object listener)
 		{
-			if(listener is IUowPreLoadEventListener)
-				PreLoadListeners.Add(listener as IUowPreLoadEventListener);
+			if(listener is IUowPreLoadEventListener preLoadEventListener)
+				PreLoadListeners.Add(preLoadEventListener);
 
-			if(listener is IUowPostLoadEventListener)
-				PostLoadListeners.Add(listener as IUowPostLoadEventListener);
+			if(listener is IUowPostLoadEventListener postLoadEventListener)
+				PostLoadListeners.Add(postLoadEventListener);
 
-			if(listener is IUowPostInsertEventListener)
-				PostInsertListeners.Add(listener as IUowPostInsertEventListener);
+			if(listener is IUowPostInsertEventListener postInsertEventListener)
+				PostInsertListeners.Add(postInsertEventListener);
 
-			if(listener is IUowPostUpdateEventListener)
-				PostUpdateListeners.Add(listener as IUowPostUpdateEventListener);
+			if(listener is IUowPostUpdateEventListener postUpdateEventListener)
+				PostUpdateListeners.Add(postUpdateEventListener);
 
-			if(listener is IUowPostDeleteEventListener)
-				PostDeleteListeners.Add(listener as IUowPostDeleteEventListener);
+			if(listener is IUowPostDeleteEventListener postDeleteEventListener)
+				PostDeleteListeners.Add(postDeleteEventListener);
 
-			if (listener is IUowPostCommitEventListener)
-				PostCommitListeners.Add(listener as IUowPostCommitEventListener);
+			if(listener is IUowPostCommitEventListener postCommitEventListener)
+				PostCommitListeners.Add(postCommitEventListener);
 		}
 
 		public void UnregisterListener(object listener)
 		{
-			if(listener is IUowPreLoadEventListener)
-				PreLoadListeners.Remove(listener as IUowPreLoadEventListener);
+			if(listener is IUowPreLoadEventListener preLoadEventListener)
+				PreLoadListeners.Remove(preLoadEventListener);
 
-			if(listener is IUowPostLoadEventListener)
-				PostLoadListeners.Remove(listener as IUowPostLoadEventListener);
+			if(listener is IUowPostLoadEventListener postLoadEventListener)
+				PostLoadListeners.Remove(postLoadEventListener);
 
-			if(listener is IUowPostInsertEventListener)
-				PostInsertListeners.Remove(listener as IUowPostInsertEventListener);
+			if(listener is IUowPostInsertEventListener postInsertEventListener)
+				PostInsertListeners.Remove(postInsertEventListener);
 
-			if(listener is IUowPostUpdateEventListener)
-				PostUpdateListeners.Remove(listener as IUowPostUpdateEventListener);
+			if(listener is IUowPostUpdateEventListener postUpdateEventListener)
+				PostUpdateListeners.Remove(postUpdateEventListener);
 
-			if(listener is IUowPostDeleteEventListener)
-				PostDeleteListeners.Remove(listener as IUowPostDeleteEventListener);
+			if(listener is IUowPostDeleteEventListener postDeleteEventListener)
+				PostDeleteListeners.Remove(postDeleteEventListener);
 
-			if (listener is IUowPostCommitEventListener)
-				PostCommitListeners.Remove(listener as IUowPostCommitEventListener);
+			if(listener is IUowPostCommitEventListener postCommitEventListener)
+				PostCommitListeners.Remove(postCommitEventListener);
 		}
 
 		public void OnPreLoad(IUnitOfWorkTracked uow, PreLoadEvent loadEvent)

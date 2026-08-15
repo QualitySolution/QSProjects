@@ -313,9 +313,12 @@ namespace Gamma.Binding {
 
 		public override void Dispose() {
 			sourceList.CollectionChanged -= SourceList_CollectionChanged;
+			sourceList.PropertyOfElementChanged -= SourceList_PropertyOfElementChanged;
 
 			foreach(GCHandle item in node_hash.Values) {
-				item.Free();
+				if(item.IsAllocated) {
+					item.Free();
+				}
 			}
 		}
 	}

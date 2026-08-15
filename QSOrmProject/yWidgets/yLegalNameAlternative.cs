@@ -9,6 +9,8 @@ namespace QSOrmProject
 	[ToolboxItem(true)]
 	public class yLegalNameAlternative : LegalNameAlternative
 	{
+		private bool _destroyed;
+		
 		public BindingControler<yLegalNameAlternative> Binding { get; private set; }
 
 		public yLegalNameAlternative()
@@ -37,6 +39,20 @@ namespace QSOrmProject
 		void DataLegalName_NameChanged(object sender, EventArgs e)
 		{
 			Binding.FireChange(w => w.OwnName);
+		}
+		
+		protected override void OnDestroyed() {
+			if(_destroyed) {
+				return;
+			}
+
+			Binding.CleanSources();
+			NameChanged -= DataLegalName_NameChanged;
+			OwnershipChanged -= DataLegalName_OwnershipChanged;
+			FullNameChanged -= DataLegalName_FullNameChanged;
+			base.OnDestroyed();
+			
+			_destroyed = true;
 		}
 	}
 }

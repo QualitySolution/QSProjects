@@ -28,6 +28,11 @@ namespace Gamma.GtkWidgets
 				}
 			}
 		}
+
+		protected override void OnDestroyed() {
+			Binding.CleanSources();
+			base.OnDestroyed();
+		}
 	}
 }
 
