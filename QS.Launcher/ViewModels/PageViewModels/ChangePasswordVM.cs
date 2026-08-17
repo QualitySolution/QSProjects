@@ -1,6 +1,7 @@
 ﻿using QS.DbManagement;
 using QS.DbManagement.Entities;
 using QS.Dialog;
+using QS.ErrorReporting;
 using ReactiveUI;
 using System;
 using System.Reactive;
@@ -11,10 +12,12 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		private IDbUserManager provider;
 		private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 		private readonly IInteractiveMessage interactiveMessage;
+		private readonly IErrorHandlingService errorHandling;
 		private const string MessageTitle = "Смена пароля";
 
-		public ChangePasswordVM(IInteractiveMessage interactiveMessage) {
+		public ChangePasswordVM(IInteractiveMessage interactiveMessage, IErrorHandlingService errorHandling) {
 			this.interactiveMessage = interactiveMessage ?? throw new ArgumentNullException(nameof(interactiveMessage));
+			this.errorHandling = errorHandling ?? throw new ArgumentNullException(nameof(errorHandling));
 
 			var canChangeOwnPassword = this.WhenAnyValue(x => x.OwnNewPassword, x => x.OwnConfirmPassword,
 				(pass, confirm) => !string.IsNullOrEmpty(pass) && pass == confirm);
@@ -57,8 +60,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 				interactiveMessage.ShowMessage(ImportanceLevel.Success, "Пароль изменён.", MessageTitle);
 			}
 			catch(Exception ex) {
-				logger.Error(ex, "Не удалось сменить собственный пароль");
-				interactiveMessage.ShowMessage(ImportanceLevel.Error, ex.Message, "Смена пароля");
+				errorHandling.Handle(ex, MessageTitle);
 				return;
 			}
 

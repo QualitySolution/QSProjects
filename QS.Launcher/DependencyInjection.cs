@@ -2,6 +2,8 @@ using Autofac;
 using Microsoft.Extensions.DependencyInjection;
 using QS.DBScripts.Controllers;
 using QS.DbManagement;
+using QS.ErrorReporting;
+using QS.ErrorReporting.Handlers;
 using QS.Launcher.AppRunner;
 using QS.Launcher.Services;
 using QS.Launcher.ViewModels;
@@ -31,6 +33,8 @@ namespace QS.Launcher {
 				.AddSingleton<LoginVM>()
 				.AddSingleton<DataBasesVM>()
 				.AddSingleton<UsersVM>()
+				// Страницы разовой операции создаются заново на каждый вызов: иначе состояние
+				// прошлого редактирования приходится вычищать руками, а подписки - накапливаются
 				.AddTransient<UserManagementVM>()
 				.AddTransient<ChangePasswordVM>()
 				.AddTransient<CreateDataBaseProgressVM>()
@@ -45,7 +49,24 @@ namespace QS.Launcher {
 		public static IServiceCollection AddLauncherDependencies(this IServiceCollection services) {
 			return services
 				.AddSingleton<Configurator>();
-		} 
+		}
+
+		/// <summary>
+		/// Разбор ошибок лаунчера. Порядок регистрации обработчиков - это и есть порядок разбора:
+		/// первый, кто узнал ошибку, забирает её себе. Сначала то, в чём разработчики не виноваты
+		/// (нет прав, сервер отказал в доступе), потом сеть, и только остаток идёт в отчёт.
+		///
+		/// <see cref="IErrorReporter"/> не регистрируем: отправлять ли отчёты и куда - решает
+		/// приложение, у библиотеки нет ни кода продукта, ни адреса сервиса.
+		/// </summary>
+		public static IServiceCollection AddLauncherErrorHandling(this IServiceCollection services) {
+			return services
+				.AddSingleton<IErrorHandler, NotEnoughRights>()
+				.AddSingleton<IErrorHandler, MySqlExceptionLoginFailed>()
+				.AddSingleton<IErrorHandler, ConnectionIsLost>()
+				.AddSingleton<IErrorHandler, MySqlExceptionAccessDenied>()
+				.AddSingleton<IErrorHandlingService, ErrorHandlingService>();
+		}
 
 		public static IServiceCollection AddConnectionType(this IServiceCollection services, ConnectionTypeBase connectionType) {
 			services.AddSingleton(connectionType);

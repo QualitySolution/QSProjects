@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using QS.DbManagement;
 using QS.DbManagement.Entities;
 using QS.Dialog;
+using QS.ErrorReporting;
 using QS.Launcher.AppRunner;
 using QS.Launcher.ViewModels.PageViewModels;
 using QS.Project.Versioning;
@@ -116,6 +117,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 
 		private readonly IAppRunner appRunner;
 		private readonly DbCapabilities capabilities;
+		private readonly IErrorHandlingService errorHandling;
 
 		public DataBasesVM(
 			IAppRunner appRunner,
@@ -123,8 +125,10 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			IInteractiveQuestion interactiveQuestion,
 			LauncherOptions launcherOptions,
 			IServiceProvider serviceProvider,
-			DbCapabilities capabilities)
+			DbCapabilities capabilities,
+			IErrorHandlingService errorHandling)
 		{
+			this.errorHandling = errorHandling ?? throw new ArgumentNullException(nameof(errorHandling));
 			this.appRunner = appRunner ?? throw new ArgumentNullException(nameof(appRunner));
 			this.interactiveMessage = interactiveMessage ?? throw new ArgumentNullException(nameof(interactiveMessage));
 			this.interactiveQuestion = interactiveQuestion ?? throw new ArgumentNullException(nameof(interactiveQuestion));
@@ -135,12 +139,10 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			this.WhenAnyValue(x => x.Provider).Subscribe(_ => RaiseCapabilitiesChanged());
 
 			IObservable<bool> canExecuteConnection = this
-				.WhenAnyValue(x => x.SelectedDatabase)
-				.Select(x => x != null);
 				.WhenAnyValue(x => x.SelectedDatabase, x => x.IsBusy,
 					(database, busy) => database != null && !busy);
 
-			ConnectCommand = ReactiveCommand.Create(Connect, canExecuteConnection);
+			ConnectCommand = ReactiveCommand.CreateFromTask(
 				() => RunBusyAsync("Подключение к базе данных", ConnectAsync), canExecuteConnection);
 			OpenCreateDatabaseCommand = ReactiveCommand.Create(OpenCreateDatabase);
 			OpenImportDatabaseCommand = ReactiveCommand.Create(OpenImportDatabase);
@@ -157,9 +159,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			if(provider == null || !CanRefreshMetadata)
 				return;
 
-			try {
-				var response = await Task.Run(() => provider.RefreshMetadata());
-				await RefreshDatabases();
+			int syncedBases = 0;
 			int syncedUsers = 0;
 
 			var phases = new[] {
@@ -277,6 +277,8 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 				try {
 					await Task.Run(() => provider.DropDatabase(database));
 					await RefreshDatabases();
+					interactiveMessage.ShowMessage(ImportanceLevel.Success,
+						$"База данных {database.Title} удалена.", DropDatabaseTitle);
 				}
 				catch(Exception ex) {
 					errorHandling.Handle(ex, DropDatabaseTitle);
@@ -290,8 +292,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 
 			int? selectedBaseId = SelectedDatabase?.BaseId;
 			await ReloadDatabasesAsync();
-			SelectedDatabase = Databases.FirstOrDefault();
-			this.RaisePropertyChanged(nameof(SelectedDatabase));
+
 			// список пересобран, прежний объект в нём уже другой - ищем по идентификатору.
 			// Иначе после каждой операции выбор прыгает на первую строку
 			SelectedDatabase = Databases.FirstOrDefault(db => db.BaseId == selectedBaseId)
@@ -301,6 +302,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		/// <summary>
 		/// Слой доступа к базе синхронный и блокирующий, поэтому чтение уводим в фон;
 		/// список и уведомление обновляем уже после await, на потоке интерфейса
+		/// </summary>
 		private async Task ReloadDatabasesAsync() {
 			Databases = await Task.Run(() => provider.GetUserDatabases().AsList());
 			this.RaisePropertyChanged(nameof(Databases));
