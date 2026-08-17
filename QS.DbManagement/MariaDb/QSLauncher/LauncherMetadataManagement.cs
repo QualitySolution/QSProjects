@@ -10,6 +10,7 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 		public LauncherUsersManagement Users { get; }
 
 		public LauncherMetadataManagement(MySqlConnectionStringBuilder connectionBuilder, bool canWrite, string login, byte productId) {
+			// схему метабазы оба менеджера читают одну и ту же - кэш у них общий
 			var schema = new LauncherSchemaCache();
 
 			// пользователь ищется один раз и отдаёт аккаунт менеджеру баз
