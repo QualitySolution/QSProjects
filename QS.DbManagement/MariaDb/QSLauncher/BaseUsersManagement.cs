@@ -41,19 +41,19 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 						return;
 					}
 
-					// name NOT NULL без дефолта - гарантируем значение на уровне сущности
-					if(string.IsNullOrEmpty(user.Name))
+					bool exists = connection.ExecuteScalar<int>(
+						$"SELECT COUNT(*) FROM {table} WHERE login = @login", new { login = user.Login }) > 0;
+
+					if(!exists && string.IsNullOrEmpty(user.Name))
 						user.Name = user.Login;
 
 					var (cols, parameters) = LauncherColumnMapper.MapForWrite(columns, user, StructuralColumns);
-					bool exists = connection.ExecuteScalar<int>(
-						$"SELECT COUNT(*) FROM {table} WHERE login = @login", new { login = user.Login }) > 0;
 					parameters.Add("login", user.Login);
 
 					if(exists) {
-						// пустые поля формы не затирают существующее
-						var setParts = cols.Select(c => $"`{c}` = COALESCE(@{c}, `{c}`)");
-						connection.Execute($"UPDATE {table} SET {string.Join(", ", setParts)} WHERE login = @login", parameters);
+						connection.Execute(
+							$"UPDATE {table} SET {string.Join(", ", CoalesceAssignments(cols))} WHERE login = @login",
+							parameters);
 					}
 					else {
 						cols.Insert(0, "login");
@@ -98,6 +98,13 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			}
 		}
 
+		/// <summary>
+		/// незаполненное поле формы приходит null
+		/// и оставляет в базе прежнее значение вместо того, чтобы затереть его пустотой
+		/// </summary>
+		private static IEnumerable<string> CoalesceAssignments(IEnumerable<string> columns)
+			=> columns.Select(c => $"`{c}` = COALESCE(@{c}, `{c}`)");
+
 		private static readonly string[] ProfileColumns = { "name", "email" };
 
 		public void SyncProfile(IEnumerable<string> baseNames, string login, string name, string email) {
@@ -132,9 +139,8 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 
 		/// <summary>null - в этой базе профильных колонок нет</summary>
 		private static string ProfileUpdate(string baseName, ICollection<string> columns) {
-			var setParts = ProfileColumns
-				.Where(c => columns.Contains(c, StringComparer.OrdinalIgnoreCase))
-				.Select(c => $"`{c}` = COALESCE(@{c}, `{c}`)")
+			var setParts = CoalesceAssignments(ProfileColumns
+					.Where(c => columns.Contains(c, StringComparer.OrdinalIgnoreCase)))
 				.ToList();
 			if(setParts.Count == 0)
 				return null;
