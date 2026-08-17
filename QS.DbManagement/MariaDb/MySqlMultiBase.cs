@@ -5,16 +5,9 @@ using System.Data;
 using System.Linq;
 
 namespace QS.DbManagement.MariaDb {
-	/// <summary>
-	/// Запросы к одной и той же таблице сразу во многих базах одного сервера.
-	/// Смысл в том, чтобы не подключаться к каждой базе по отдельности: своя база в строке
-	/// подключения - это свой пул, а на сервере с обратным резолвом имён каждое новое
-	/// подключение стоит дорого. Всё делается по уже открытому серверному соединению.
-	/// </summary>
 	internal static class MySqlMultiBase {
 		/// <summary>
-		/// Колонки таблицы в каждой из баз. Базы, где таблицы нет или куда нет доступа,
-		/// в результат не попадают - заодно это и ответ на вопрос, в каких базах она есть.
+		/// базы, где таблицы нет или куда нет доступа, в результат не попадают
 		/// </summary>
 		public static Dictionary<string, List<string>> TableColumns(IDbConnection connection, IEnumerable<string> databases, string table) {
 			var result = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
@@ -38,15 +31,12 @@ namespace QS.DbManagement.MariaDb {
 		}
 
 		/// <summary>
-		/// Один SELECT вместо запроса на каждую базу: ветки склеиваются UNION ALL, и каждая
-		/// помечает свои строки именем своей базы - иначе в общем результате их не различить.
-		/// Число и порядок колонок в ветках обязаны совпадать, за это отвечает вызывающий:
-		/// на разъехавшихся ветках UNION не собирается.
+		/// Число и порядок колонок в ветках обязаны совпадать
 		/// </summary>
 		/// <param name="projections">база -> список колонок её ветки</param>
-		/// <param name="label">имя колонки-метки, в неё уходит имя базы</param>
+		/// <param name="label">base_parameters имя перменной с именем базы</param>
 		/// <param name="where">условие ветки без слова WHERE; null - без условия</param>
-		/// <param name="parameters">сюда добавляются метки баз, значения условия кладёт вызывающий</param>
+		/// <param name="parameters">сюда добавляются метки баз</param>
 		public static string UnionAll(IEnumerable<KeyValuePair<string, string>> projections,
 			string table, string label, string where, DynamicParameters parameters) {
 			if(parameters == null)
