@@ -18,8 +18,16 @@ namespace QS.Launcher.ViewModels {
 		private int selectedPageIndex;
 		public int SelectedPageIndex {
 			get => selectedPageIndex;
-			set => this.RaiseAndSetIfChanged(ref selectedPageIndex, value);
+			set {
+				this.RaiseAndSetIfChanged(ref selectedPageIndex, value);
+				this.RaisePropertyChanged(nameof(CurrentPage));
+			}
 		}
+
+		public CarouselPageVM CurrentPage =>
+			selectedPageIndex >= 0 && selectedPageIndex < Pages.Count
+				? Pages[selectedPageIndex]
+				: null;
 
 		public MainWindowVM(
 			DataBasesVM dataBasesVM,
@@ -34,6 +42,8 @@ namespace QS.Launcher.ViewModels {
 
 			foreach(var page in Pages)
 				WirePage(page);
+
+			Pages.CollectionChanged += (sender, e) => this.RaisePropertyChanged(nameof(CurrentPage));
 		}
 
 		private void WirePage(CarouselPageVM page) {
@@ -85,6 +95,9 @@ namespace QS.Launcher.ViewModels {
 		}
 
 		private void RemovePagesAbove(int keepIndex) {
+			if(SelectedPageIndex > keepIndex)
+				SelectedPageIndex = keepIndex;
+
 			while(Pages.Count > keepIndex + 1) {
 				int last = Pages.Count - 1;
 				var page = Pages[last];
@@ -93,6 +106,7 @@ namespace QS.Launcher.ViewModels {
 			}
 		}
 
+		/// <summary>Снимает всё, что стоит выше первой страницы указанного типа</summary>
 		public void PopToPage(Type pageType) {
 			if(pageType == null) return;
 

@@ -54,7 +54,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			progress.OperationTitle = Title;
 			progress.SetPipeline(Provider, Connection, BuildPipeline());
 			progress.OperationCompleted += () => OperationCompleted?.Invoke();
-			progress.OperationFailed += () => PopPageCommand?.Execute(null);
+			progress.CloseRequested += () => PopPageCommand?.Execute(null);
 			PushPageCommand?.Execute(progress);
 		}
 	}

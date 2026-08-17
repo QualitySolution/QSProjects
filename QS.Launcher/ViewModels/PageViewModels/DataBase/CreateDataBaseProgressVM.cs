@@ -62,11 +62,34 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 
 		#endregion
 
+		#region Отказ
+
+		private string failureMessage;
+		public string FailureMessage {
+			get => failureMessage;
+			private set {
+				this.RaiseAndSetIfChanged(ref failureMessage, value);
+				this.RaisePropertyChanged(nameof(IsFailed));
+			}
+		}
+
+		public bool IsFailed => !string.IsNullOrEmpty(failureMessage);
+
+		private void Fail(string reason) {
+			FailureMessage = string.IsNullOrEmpty(reason)
+				? "Операция не выполнена." : reason;
+		}
+
+		#endregion
+
 		public event Action OperationCompleted;
-		public event Action OperationFailed;
+
+		/// <summary>Пользователь закрыл страницу отказа - можно уводить его дальше</summary>
+		public event Action CloseRequested;
 
 		public ReactiveCommand<Unit, Unit> StartCommand { get; }
 		public ReactiveCommand<Unit, Unit> CancelCommand { get; }
+		public ReactiveCommand<Unit, Unit> CloseCommand { get; }
 
 		public CreateDataBaseProgressVM(
 			IGuiDispatcher guiDispatcher,
@@ -81,6 +104,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 				cts.Cancel();
 				PopPageCommand?.Execute(null);
 			});
+			CloseCommand = ReactiveCommand.Create(() => CloseRequested?.Invoke());
 		}
 
 		public void Dispose() {
@@ -116,7 +140,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 				if(success)
 					OperationCompleted?.Invoke();
 				else
-					OperationFailed?.Invoke();
+					Fail(args.FailureReason);
 			}
 			catch(OperationCanceledException) {
 				logger.Info("Операция с базой отменена.");
@@ -124,7 +148,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			catch(Exception ex) {
 				logger.Error(ex, "Сбой в процессе выполнения операции с базой.");
 				interaction.ReportError(ex.Message, null);
-				OperationFailed?.Invoke();
+				Fail(ex.Message);
 			}
 		}
 		private bool RunPipeline(DbPhaseArgs args) {

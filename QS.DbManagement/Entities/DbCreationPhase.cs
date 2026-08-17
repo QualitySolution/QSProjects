@@ -2,7 +2,7 @@ using System;
 
 namespace QS.DbManagement.Entities {
 	/// <summary>
-	/// Один шаг пайплайна создания базы
+	/// Один шаг пайплайна длительной операции с базами - создания, импорта, синхронизации
 	/// </summary>
 	public sealed class DbCreationPhase {
 		public string Title { get; }

@@ -16,7 +16,6 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 
 		private readonly IInteractiveMessage interactiveMessage;
 		private readonly IInteractiveQuestion interactiveQuestion;
-		private readonly IApplicationInfo applicationInfo;
 
 		private readonly string messageTitle = "Управление пользователями";
 		private const string AccessTitle = "Доступ к базам";
@@ -29,19 +28,20 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			IApplicationInfo applicationInfo = null) {
 			this.interactiveMessage = interactiveMessage ?? throw new ArgumentNullException(nameof(interactiveMessage));
 			this.interactiveQuestion = interactiveQuestion ?? throw new ArgumentNullException(nameof(interactiveQuestion));
-			this.applicationInfo = applicationInfo;
 
 			BaseAccesses = new ObservableCollection<BaseAccessRowVM>();
 
 			var canSaveUser = this.WhenAnyValue(x => x.EditLogin, x => x.EditNewPassword, x => x.IsNewUser,
 				(login, pass, isNew) => !string.IsNullOrWhiteSpace(login) && (!isNew || !string.IsNullOrEmpty(pass)));
-			SaveCommand = ReactiveCommand.CreateFromTask(Save, canSaveUser);
+			SaveCommand = ReactiveCommand.CreateFromTask(
+				() => RunBusyAsync("Сохранение пользователя", Save), canSaveUser);
 
 			BackCommand = ReactiveCommand.CreateFromTask(GoBack);
 
 			// загрузка карточки ходит в базу, поэтому она команда, а не обработчик подписки:
 			// команда исполняется асинхронно и сама отдаёт ошибку общему обработчику
-			LoadSelectedUserCommand = ReactiveCommand.CreateFromTask<DbUserInfo>(LoadSelectedUser);
+			LoadSelectedUserCommand = ReactiveCommand.CreateFromTask<DbUserInfo>(
+				user => RunBusyAsync("Загрузка карточки пользователя", () => LoadSelectedUser(user)));
 			this.WhenAnyValue(x => x.SelectedUser).InvokeCommand(LoadSelectedUserCommand);
 
 			this.WhenAnyValue(x => x.SelectedUser, x => x.IsNewUser)
@@ -79,10 +79,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		private DbUserInfo selectedUser;
 		public DbUserInfo SelectedUser {
 			get => selectedUser;
-			set
-			{
-				this.RaiseAndSetIfChanged(ref selectedUser, value);
-			}
+			set => this.RaiseAndSetIfChanged(ref selectedUser, value);
 		}
 
 		public bool HasSelectedUser => SelectedUser != null;
@@ -132,7 +129,6 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 					creating ? "Пользователь создан." : "Изменения сохранены.", messageTitle);
 			}
 			catch(Exception ex) {
-				logger.Error("Не удалось сохранить пользователя {0}", newUser.Login);
 				errorHandling.Handle(ex, messageTitle);
 				return false;
 			}
@@ -265,7 +261,6 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 				}
 			}
 			catch(Exception ex) {
-				logger.Error("Не удалось получить доступы пользователя {0}", login);
 				errorHandling.Handle(ex, AccessTitle);
 			}
 			this.RaisePropertyChanged(nameof(BaseAccessLocked));
@@ -279,17 +274,18 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			var changedRows = BaseAccesses.Where(r => r.IsDirty).ToList();
 			if(changedRows.Count == 0)
 				return true;
+			string name = EditName;
+			string email = EditEmail;
 			try {
 				await Task.Run(() => {
 					foreach(var row in changedRows)
-						provider.SetUserBaseAccess(user.Login, row.ToAccess());
+						provider.SetUserBaseAccess(user.Login, row.ToAccess(name, email));
 				});
 				foreach(var row in changedRows)
 					row.AcceptChanges();
 				interactiveMessage.ShowMessage(ImportanceLevel.Success, "Доступы сохранены", AccessTitle);
 			}
 			catch(Exception ex) {
-				logger.Error("Не удалось сохранить доступы пользователя {0}", user.Login);
 				errorHandling.Handle(ex, AccessTitle);
 				return false;
 			}
@@ -299,12 +295,16 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 
 		public event Action OperationCompleted;
 
+		/// <summary>Писать пользователя незачем, если карточку не трогали и пароль не задан</summary>
+		private bool NeedSaveUser => IsNewUser || IsUserDirty || !string.IsNullOrEmpty(EditNewPassword);
+
 		private async Task Save() {
 			bool isBaseAccessSavedSuccessfully = true;
 			if(SelectedUser != null && CanManageBaseAccess && !BaseAccessLocked) {
 				isBaseAccessSavedSuccessfully = await SaveAccessAsync();
 			}
-			bool isUserSavedSuccessfully = await SaveUserAsync();
+
+			bool isUserSavedSuccessfully = !NeedSaveUser || await SaveUserAsync();
 
 			if(isUserSavedSuccessfully && isBaseAccessSavedSuccessfully) {
 				PopPageCommand?.Execute(null);
@@ -321,8 +321,8 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 				return;
 			}
 
-			bool confirmed = await Task.Run(() =>
-				interactiveQuestion.Question("Есть несохранённые изменения. Выйти без сохранения?", messageTitle));
+			bool confirmed = await interactiveQuestion.AskInBackground(
+				"Есть несохранённые изменения. Выйти без сохранения?", messageTitle);
 			if(!confirmed) return;
 
 			PopPageCommand?.Execute(null);

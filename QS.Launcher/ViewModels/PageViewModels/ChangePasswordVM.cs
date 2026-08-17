@@ -1,4 +1,4 @@
-using QS.DbManagement;
+﻿using QS.DbManagement;
 using QS.DbManagement.Entities;
 using QS.Dialog;
 using ReactiveUI;
@@ -11,13 +11,15 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		private IDbUserManager provider;
 		private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 		private readonly IInteractiveMessage interactiveMessage;
+		private const string MessageTitle = "Смена пароля";
 
 		public ChangePasswordVM(IInteractiveMessage interactiveMessage) {
 			this.interactiveMessage = interactiveMessage ?? throw new ArgumentNullException(nameof(interactiveMessage));
 
 			var canChangeOwnPassword = this.WhenAnyValue(x => x.OwnNewPassword, x => x.OwnConfirmPassword,
 				(pass, confirm) => !string.IsNullOrEmpty(pass) && pass == confirm);
-			ChangeOwnPasswordCommand = ReactiveCommand.CreateFromTask(ChangeOwnPasswordAsync, canChangeOwnPassword);
+			ChangeOwnPasswordCommand = ReactiveCommand.CreateFromTask(
+				() => RunBusyAsync(MessageTitle, ChangeOwnPasswordAsync), canChangeOwnPassword);
 			BackCommand = ReactiveCommand.Create(() => PopPageCommand?.Execute(null));
 		}
 
@@ -46,13 +48,13 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 				// со страницы уходим только когда пароль действительно сменился:
 				// иначе пользователь теряет форму вместе с сообщением об ошибке
 				if(!ok) {
-					interactiveMessage.ShowMessage(ImportanceLevel.Error, "Не удалось изменить пароль.", "Смена пароля");
+					interactiveMessage.ShowMessage(ImportanceLevel.Error, "Не удалось изменить пароль.", MessageTitle);
 					return;
 				}
 
 				OwnNewPassword = null;
 				OwnConfirmPassword = null;
-				interactiveMessage.ShowMessage(ImportanceLevel.Success, "Пароль изменён.", "Смена пароля");
+				interactiveMessage.ShowMessage(ImportanceLevel.Success, "Пароль изменён.", MessageTitle);
 			}
 			catch(Exception ex) {
 				logger.Error(ex, "Не удалось сменить собственный пароль");
