@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using QS.DbManagement;
 using QS.DbManagement.Entities;
 using QS.Dialog;
+using QS.ErrorReporting;
 using ReactiveUI;
 
 namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
@@ -29,6 +30,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 
 		private readonly IServiceProvider services;
 		private readonly IGuiDispatcher guiDispatcher;
+		private readonly IErrorHandlingService errorHandling;
 		private readonly CancellationTokenSource cts;
 
 		#region IProgressBarDisplayable поля
@@ -93,10 +95,12 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 
 		public CreateDataBaseProgressVM(
 			IGuiDispatcher guiDispatcher,
-			IServiceProvider services)
+			IServiceProvider services,
+			IErrorHandlingService errorHandling)
 		{
 			this.guiDispatcher = guiDispatcher ?? throw new ArgumentNullException(nameof(guiDispatcher));
 			this.services = services ?? throw new ArgumentNullException(nameof(services));
+			this.errorHandling = errorHandling ?? throw new ArgumentNullException(nameof(errorHandling));
 			cts = new CancellationTokenSource();
 
 			StartCommand = ReactiveCommand.CreateFromTask(RunAsync);
@@ -146,8 +150,9 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 				logger.Info("Операция с базой отменена.");
 			}
 			catch(Exception ex) {
-				logger.Error(ex, "Сбой в процессе выполнения операции с базой.");
-				interaction.ReportError(ex.Message, null);
+				// сбои самих запросов создания базы разбирает IDbCreatorInteraction - у него
+				// на руках последний выполненный запрос. Сюда доходит то, что до него не дошло
+				errorHandling.Handle(ex, OperationTitle);
 				Fail(ex.Message);
 			}
 		}

@@ -71,11 +71,13 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			Configurator configurator,
 			IApplicationInfo applicationInfo,
 			DataBasesVM dbVM,
-			IInteractiveMessage interactiveMessage) : base()
+			IInteractiveMessage interactiveMessage,
+			IErrorHandlingService errorHandling) : base()
 		{
 			this.configurator = configurator ?? throw new ArgumentNullException(nameof(configurator));
 			this.dbVM = dbVM;
 			this.interactiveMessage = interactiveMessage;
+			this.errorHandling = errorHandling ?? throw new ArgumentNullException(nameof(errorHandling));
 			CompanyImage = options.LogoImage;
 			AppTitle = options.AppTitle;
 
@@ -134,8 +136,9 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 					interactiveMessage.ShowMessage(ImportanceLevel.Error, resp.ErrorMessage, "Не удалось войти");
 			}
 			catch(Exception ex) {
-				logger.Error(ex, "Ошибка при входе на сервер.");
-				interactiveMessage.ShowMessage(ImportanceLevel.Error, ex.Message, "Не удалось войти");
+				// неверный пароль сюда не приходит - на него сервер отвечает Success = false,
+				// а здесь остаётся то, что пользователь сам не поправит
+				errorHandling.Handle(ex, "Не удалось войти");
 			}
 		}
 

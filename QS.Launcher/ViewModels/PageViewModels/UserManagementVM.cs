@@ -1,6 +1,7 @@
 using QS.DbManagement;
 using QS.DbManagement.Entities;
 using QS.Dialog;
+using QS.ErrorReporting;
 using QS.Project.Versioning;
 using ReactiveUI;
 using System;
@@ -16,6 +17,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 
 		private readonly IInteractiveMessage interactiveMessage;
 		private readonly IInteractiveQuestion interactiveQuestion;
+		private readonly IErrorHandlingService errorHandling;
 
 		private readonly string messageTitle = "Управление пользователями";
 		private const string AccessTitle = "Доступ к базам";
@@ -25,9 +27,10 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		public UserManagementVM(
 			IInteractiveMessage interactiveMessage,
 			IInteractiveQuestion interactiveQuestion,
-			IApplicationInfo applicationInfo = null) {
+			IErrorHandlingService errorHandling) {
 			this.interactiveMessage = interactiveMessage ?? throw new ArgumentNullException(nameof(interactiveMessage));
 			this.interactiveQuestion = interactiveQuestion ?? throw new ArgumentNullException(nameof(interactiveQuestion));
+			this.errorHandling = errorHandling ?? throw new ArgumentNullException(nameof(errorHandling));
 
 			BaseAccesses = new ObservableCollection<BaseAccessRowVM>();
 

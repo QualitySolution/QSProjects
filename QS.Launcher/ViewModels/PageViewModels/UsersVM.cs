@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using QS.DbManagement;
 using QS.DbManagement.Entities;
 using QS.Dialog;
+using QS.ErrorReporting;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
@@ -18,15 +19,18 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		private readonly IInteractiveMessage interactiveMessage;
 		private readonly IInteractiveQuestion interactiveQuestion;
 		private readonly IServiceProvider serviceProvider;
+		private readonly IErrorHandlingService errorHandling;
 
 		private IDbUserManager provider;
 
 		public UsersVM(IInteractiveMessage interactiveMessage,
 			IInteractiveQuestion interactiveQuestion,
-			IServiceProvider serviceProvider) {
+			IServiceProvider serviceProvider,
+			IErrorHandlingService errorHandling) {
 			this.interactiveMessage = interactiveMessage ?? throw new ArgumentNullException(nameof(interactiveMessage));
 			this.interactiveQuestion = interactiveQuestion ?? throw new ArgumentNullException(nameof(interactiveQuestion));
 			this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+			this.errorHandling = errorHandling ?? throw new ArgumentNullException(nameof(errorHandling));
 
 			var hasSelectedUser = this.WhenAnyValue(x => x.SelectedUser).Select(u => u != null);
 
