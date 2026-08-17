@@ -84,7 +84,8 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			Connections = new ObservableCollection<Connection>(configurator.ReadConnections()); 
 			SelectedConnection = Connections.FirstOrDefault(c => c.Last);
 			
-			LoginCommand = ReactiveCommand.CreateFromTask(Login);
+			LoginCommand = ReactiveCommand.CreateFromTask(
+				() => RunBusyAsync("Подключение к серверу", Login));
 			NewCommand = ReactiveCommand.Create(CreateNewConnection);
 			DeleteCommand = ReactiveCommand.Create(DeleteSelectedConnection);
 			CloneCommand = ReactiveCommand.Create(CloneConnection);
@@ -112,17 +113,21 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		}
 
 		public async Task Login() {
-			if(SelectedConnection is null)
+			// подключение запоминаем до первого await: провайдер создан под него, и уехать
+			// на страницу баз должен тот же самый объект, иначе LastBaseId запишется чужому
+			var connection = SelectedConnection;
+			if(connection is null)
 				return;
 
 			try {
-				dbProvider = SelectedConnection.CreateProvider(Password, applicationInfo.ProductCode);
+				dbProvider = connection.CreateProvider(Password, applicationInfo.ProductCode);
 				var resp = await Task.Run(() => dbProvider.LoginToServer());
 
 				SaveConnections();
 
 				if(resp.Success) {
-					await dbVM.SetProviderAsync(dbProvider, SelectedConnection, SaveConnections);
+					BusyText = "Чтение списка баз";
+					await dbVM.SetProviderAsync(dbProvider, connection, SaveConnections);
 					NextPageCommand?.Execute(null);
 				}
 				else

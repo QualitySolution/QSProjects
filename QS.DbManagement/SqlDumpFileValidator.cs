@@ -13,6 +13,20 @@ namespace QS.DbManagement {
 		};
 
 		/// <summary>
+		/// Проверка перед запуском операции: null - файл похож на SQL-дамп,
+		/// иначе готовый текст отказа для пользователя.
+		/// </summary>
+		public static string Validate(string filePath) {
+			try {
+				EnsureLooksLikeSqlDump(filePath);
+				return null;
+			}
+			catch(Exception ex) when(ex is IOException || ex is InvalidDataException || ex is ArgumentException) {
+				return ex.Message;
+			}
+		}
+
+		/// <summary>
 		/// Бросает исключение, если файл отсутствует, пуст, бинарный или не начинается с SQL синтаксиса
 		/// </summary>
 		public static void EnsureLooksLikeSqlDump(string filePath) {

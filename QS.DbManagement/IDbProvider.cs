@@ -24,6 +24,10 @@ namespace QS.DbManagement
 
 		RefreshMetadataResponse RefreshMetadata();
 
+		RefreshMetadataResponse RefreshBases();
+
+		RefreshMetadataResponse RefreshUsers();
+
 		List<DbInfo> GetUserDatabases();
 
 		LoginToDatabaseResponse LoginToDatabase(DbInfo dbInfo);

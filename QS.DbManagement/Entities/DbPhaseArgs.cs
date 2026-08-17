@@ -11,5 +11,6 @@ namespace QS.DbManagement.Entities {
 		public IProgressBarDisplayable Progress { get; set; }
 		public CancellationToken CancellationToken { get; set; }
 		public IServiceProvider ServiceProvider { get; set; }
+		public string FailureReason { get; set; }
 	}
 }

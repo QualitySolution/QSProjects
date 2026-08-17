@@ -19,6 +19,9 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 	public class DataBasesVM : CarouselPageVM {
 		private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
+		private const string DropDatabaseTitle = "Удаление базы данных";
+		private const string RefreshMetadataTitle = "Синхронизация метаинформации";
+
 		private Connection currentConnection;
 		private Action saveConnectionsAction;
 		private IDbProvider provider;
@@ -72,7 +75,11 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			LoadLastSelectedDatabase();
 		}
 
-		public List<DbInfo> Databases { get; set; }
+		private List<DbInfo> databases;
+		public List<DbInfo> Databases {
+			get => databases;
+			set => this.RaiseAndSetIfChanged(ref databases, value);
+		}
 
 		private DbInfo selectedDatabase;
 		public DbInfo SelectedDatabase {
@@ -108,12 +115,10 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		private readonly IServiceProvider serviceProvider;
 
 		private readonly IAppRunner appRunner;
-		private readonly IApplicationInfo applicationInfo;
 		private readonly DbCapabilities capabilities;
 
 		public DataBasesVM(
 			IAppRunner appRunner,
-			IApplicationInfo applicationInfo,
 			IInteractiveMessage interactiveMessage,
 			IInteractiveQuestion interactiveQuestion,
 			LauncherOptions launcherOptions,
@@ -121,7 +126,6 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			DbCapabilities capabilities)
 		{
 			this.appRunner = appRunner ?? throw new ArgumentNullException(nameof(appRunner));
-			this.applicationInfo = applicationInfo ?? throw new ArgumentNullException(nameof(applicationInfo));
 			this.interactiveMessage = interactiveMessage ?? throw new ArgumentNullException(nameof(interactiveMessage));
 			this.interactiveQuestion = interactiveQuestion ?? throw new ArgumentNullException(nameof(interactiveQuestion));
 			this.launcherOptions = launcherOptions;
@@ -133,41 +137,62 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			IObservable<bool> canExecuteConnection = this
 				.WhenAnyValue(x => x.SelectedDatabase)
 				.Select(x => x != null);
+				.WhenAnyValue(x => x.SelectedDatabase, x => x.IsBusy,
+					(database, busy) => database != null && !busy);
 
 			ConnectCommand = ReactiveCommand.Create(Connect, canExecuteConnection);
+				() => RunBusyAsync("Подключение к базе данных", ConnectAsync), canExecuteConnection);
 			OpenCreateDatabaseCommand = ReactiveCommand.Create(OpenCreateDatabase);
 			OpenImportDatabaseCommand = ReactiveCommand.Create(OpenImportDatabase);
 			BackupDatabaseCommand = ReactiveCommand.Create<DbInfo>(OpenBackup);
 			DeleteDatabaseCommand = ReactiveCommand.CreateFromTask<DbInfo>(DeleteDatabaseAsync);
 			OpenUserManagementCommand = ReactiveCommand.Create(OpenUsers);
 			OpenChangePasswordCommand = ReactiveCommand.Create(ChangePassword);
-			RefreshMetadataCommand = ReactiveCommand.CreateFromTask(RefreshMetadataAsync);
-			RefreshDatabasesCommand = ReactiveCommand.CreateFromTask(RefreshDatabases);
+			RefreshMetadataCommand = ReactiveCommand.Create(OpenRefreshMetadata);
+			RefreshDatabasesCommand = ReactiveCommand.CreateFromTask(
+				() => RunBusyAsync("Обновление списка баз", RefreshDatabases));
 		}
 
-		/// <summary>Пересобирает локальную метаинформацию из реального состояния сервера и обновляет список баз.</summary>
-		private async Task RefreshMetadataAsync() {
+		private void OpenRefreshMetadata() {
 			if(provider == null || !CanRefreshMetadata)
 				return;
 
 			try {
 				var response = await Task.Run(() => provider.RefreshMetadata());
 				await RefreshDatabases();
+			int syncedUsers = 0;
 
-				if(!response.Success) {
-					interactiveMessage.ShowMessage(ImportanceLevel.Warning,
-						response.ErrorMessage, "Синхронизация метаинформации");
-					return;
-				}
+			var phases = new[] {
+				new DbCreationPhase("Синхронизация баз данных", args => {
+					var response = args.Provider.RefreshBases();
+					syncedBases = response.SyncedBases;
+					args.FailureReason = response.ErrorMessage;
+					return response.Success;
+				}),
+				new DbCreationPhase("Синхронизация пользователей", args => {
+					var response = args.Provider.RefreshUsers();
+					syncedUsers = response.SyncedUsers;
+					args.FailureReason = response.ErrorMessage;
+					return response.Success;
+				})
+			};
 
-				interactiveMessage.ShowMessage(ImportanceLevel.Success,
-					$"Метаинформация обновлена.\nБаз: {response.SyncedBases}, пользователей: {response.SyncedUsers}.",
-					"Синхронизация метаинформации");
-			}
-			catch(Exception ex) {
-				logger.Error(ex, "Не удалось обновить метаинформацию");
-				interactiveMessage.ShowMessage(ImportanceLevel.Error, ex.Message, "Синхронизация метаинформации");
-			}
+			var progress = serviceProvider.GetRequiredService<CreateDataBaseProgressVM>();
+			progress.OperationTitle = RefreshMetadataTitle;
+			progress.SetPipeline(provider, currentConnection, phases);
+			progress.OperationCompleted += () => CompleteRefreshMetadata(syncedBases, syncedUsers);
+			// причину отказа страница прогресса показывает сама, нам остаётся только увести
+			// пользователя обратно, когда он её прочитал и закрыл
+			progress.CloseRequested += () => ReturnToDatabases(refreshList: syncedBases > 0);
+			PushPageCommand?.Execute(progress);
+		}
+
+		private void CompleteRefreshMetadata(int syncedBases, int syncedUsers) {
+			ReturnToDatabases();
+
+			interactiveMessage.ShowMessage(ImportanceLevel.Success,
+				$"Метаинформация обновлена.\nБаз: {syncedBases}, пользователей: {syncedUsers}.",
+				RefreshMetadataTitle);
 		}
 
 		private void ChangePassword() {
@@ -224,10 +249,14 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			PushPageCommand?.Execute(settings);
 		}
 
-		private void OnOperationCompleted(DbOperationSettingsVM operation) {
-			// Закрываем все нерутовые страницы и возвращаемся на DataBasesVM
+		private void ReturnToDatabases(bool refreshList = true) {
 			PopToPageCommand?.Execute(GetType());
-			RefreshDatabasesCommand.Execute().Subscribe();
+			if(refreshList)
+				RefreshDatabasesCommand.Execute().Subscribe();
+		}
+
+		private void OnOperationCompleted(DbOperationSettingsVM operation) {
+			ReturnToDatabases();
 
 			if(operation is BackupDbSettingsVM backup)
 				interactiveMessage.ShowMessage(ImportanceLevel.Success,
@@ -239,33 +268,39 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			if(database == null || !CanDropDatabase)
 				return;
 
-			// Question кидает исключение на UIпотоке, поэтому диалог и удаление выполняем в фоне
 			bool confirmed = await interactiveQuestion.AskInBackground(
-				$"Безвозвратно удалить базу данных «{database.Title}»?", "Удаление базы данных");
+				$"Безвозвратно удалить базу данных «{database.Title}»?", DropDatabaseTitle);
 			if(!confirmed)
 				return;
 
-			try {
-				await Task.Run(() => provider.DropDatabase(database));
-				await RefreshDatabases();
-				interactiveMessage.ShowMessage(ImportanceLevel.Success,
-					$"База данных {database.Title} удалена.", "Удаление базы данных");
-			}
-			catch(Exception ex) {
-				logger.Error(ex, "Не удалось удалить базу {0}", database.BaseName);
-				interactiveMessage.ShowMessage(ImportanceLevel.Error, ex.Message, "Ошибка удаления базы данных");
-			}
+			await RunBusyAsync(DropDatabaseTitle, async () => {
+				try {
+					await Task.Run(() => provider.DropDatabase(database));
+					await RefreshDatabases();
+				}
+				catch(Exception ex) {
+					errorHandling.Handle(ex, DropDatabaseTitle);
+				}
+			});
 		}
 
 		public async Task RefreshDatabases() {
 			if(provider == null)
 				return;
 
+			int? selectedBaseId = SelectedDatabase?.BaseId;
 			await ReloadDatabasesAsync();
 			SelectedDatabase = Databases.FirstOrDefault();
 			this.RaisePropertyChanged(nameof(SelectedDatabase));
+			// список пересобран, прежний объект в нём уже другой - ищем по идентификатору.
+			// Иначе после каждой операции выбор прыгает на первую строку
+			SelectedDatabase = Databases.FirstOrDefault(db => db.BaseId == selectedBaseId)
+				?? Databases.FirstOrDefault();
 		}
 
+		/// <summary>
+		/// Слой доступа к базе синхронный и блокирующий, поэтому чтение уводим в фон;
+		/// список и уведомление обновляем уже после await, на потоке интерфейса
 		private async Task ReloadDatabasesAsync() {
 			Databases = await Task.Run(() => provider.GetUserDatabases().AsList());
 			this.RaisePropertyChanged(nameof(Databases));
@@ -283,8 +318,13 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 				SelectedDatabase = Databases.FirstOrDefault();
 		}
 
-		public void Connect() {
-			var resp = provider.LoginToDatabase(SelectedDatabase);
+		/// <summary>Синхронный вход для Gtk-представления, у которого обработчики событий не асинхронны</summary>
+		public void Connect() => ConnectCommand.Execute(null);
+
+		public async Task ConnectAsync() {
+			// вход в базу это поход на сервер, а в облаке ещё и запуск сессии - уводим в фон,
+			// иначе интерфейс стоит всё время подключения
+			var resp = await Task.Run(() => provider.LoginToDatabase(SelectedDatabase));
 			if(!resp.Success) {
 				interactiveMessage.ShowMessage(ImportanceLevel.Error, resp.ErrorMessage, "Ошибка подключения к базе данных");
 				return;
@@ -296,11 +336,9 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			// В standalone режиме учитываем галочку ShouldCloseLauncherAfterStart
 			// В in-process режиме НЕ делаем shutdown (возвращаем false)
 			var isStandalone = launcherOptions?.IsStandalone ?? false;
-			logger.Info($">>> Connect: IsStandalone={isStandalone}, ShouldCloseLauncherAfterStart={ShouldCloseLauncherAfterStart}");
-
 			bool shouldCloseLauncher = isStandalone && ShouldCloseLauncherAfterStart;
 
-			logger.Info($">>> Connect: shouldCloseLauncher={shouldCloseLauncher}");
+			logger.Debug("Запуск приложения: standalone {0}, закрывать лаунчер {1}", isStandalone, shouldCloseLauncher);
 
 			StartLaunchProgram?.Invoke(shouldCloseLauncher);
 			appRunner.Run(resp);

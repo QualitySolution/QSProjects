@@ -124,27 +124,56 @@ namespace QS.DbManagement {
 
 		public RefreshMetadataResponse RefreshMetadata()
 		{
-			var launcher = Metadata;
-			if(launcher == null)
-				return new RefreshMetadataResponse
-				{
-					Success = false,
-					ErrorMessage = $"База {LauncherMetadataManagement.LauncherBaseName} недоступна, "
-						+ "синхронизировать метаинформацию некуда."
-				};
+			var bases = RefreshBases();
+			if(!bases.Success)
+				return bases;
 
-			int syncedBases = launcher.Bases.SyncBases();
-
-			var users = GetUsersDirect().Select(u => u.Login).ToList();
-			int syncedUsers = launcher.Users.SyncUsers(users);
+			var users = RefreshUsers();
+			if(!users.Success)
+				return users;
 
 			return new RefreshMetadataResponse
 			{
 				Success = true,
-				SyncedBases = syncedBases,
-				SyncedUsers = syncedUsers
+				SyncedBases = bases.SyncedBases,
+				SyncedUsers = users.SyncedUsers
 			};
 		}
+
+		public RefreshMetadataResponse RefreshBases()
+		{
+			var launcher = Metadata;
+			if(launcher == null)
+				return MetadataUnavailable();
+
+			return new RefreshMetadataResponse
+			{
+				Success = true,
+				SyncedBases = launcher.Bases.SyncBases()
+			};
+		}
+
+		public RefreshMetadataResponse RefreshUsers()
+		{
+			var launcher = Metadata;
+			if(launcher == null)
+				return MetadataUnavailable();
+
+			var users = GetUsersDirect().Select(u => u.Login).ToList();
+			return new RefreshMetadataResponse
+			{
+				Success = true,
+				SyncedUsers = launcher.Users.SyncUsers(users)
+			};
+		}
+
+		private static RefreshMetadataResponse MetadataUnavailable() =>
+			new RefreshMetadataResponse
+			{
+				Success = false,
+				ErrorMessage = $"База {LauncherMetadataManagement.LauncherBaseName} недоступна, "
+					+ "синхронизировать метаинформацию некуда."
+			};
 
 		private void RegisterInLauncherMetadata(DbCreationRequest request)
 		{

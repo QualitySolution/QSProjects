@@ -71,13 +71,15 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			}
 		}
 
-		public DbUserBaseAccess ToAccess() => new DbUserBaseAccess {
+		public DbUserBaseAccess ToAccess(string name, string email) => new DbUserBaseAccess {
 			BaseId = BaseId,
 			BaseName = BaseName,
 			Title = Title,
 			HasAccess = HasAccess,
 			IsAdmin = IsAdmin,
-			ReadOnly = ReadOnly
+			ReadOnly = ReadOnly,
+			Name = name,
+			Email = email
 		};
 	}
 }
