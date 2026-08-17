@@ -1,4 +1,4 @@
-using Dapper;
+﻿using Dapper;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -7,15 +7,12 @@ using System.Data.Common;
 using System.Linq;
 
 namespace QS.DbManagement.MariaDb {
-	/// <summary> Чтение base_parameters сразу из многих баз одного сервера по одному соединению </summary>
 	internal static class BaseParametersReader {
 		private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
 		private const string ParametersTable = "base_parameters";
 		private const string BaseNameColumn = "BaseName";
-		/// <summary>Колонки у base_parameters фиксированные - ветки различаются только базой</summary>
 		private const string Projection = "`name` AS Name, `str_value` AS StrValue";
-		/// <summary>Больше в один запрос класть незачем: дальше растёт только его длина</summary>
 		private const int DefaultBatchSize = 50;
 
 		/// <summary>
@@ -37,8 +34,6 @@ namespace QS.DbManagement.MariaDb {
 				return result;
 
 			var nameFilter = names?.ToList();
-			// в SQL нет «прочитай таблицу, если она есть»: ветка UNION по отсутствующей таблице
-			// уронила бы весь запрос, поэтому сначала спрашиваем, где она вообще есть
 			var withTable = MySqlMultiBase.TableColumns(connection, wanted, ParametersTable).Keys.ToList();
 
 			for(int offset = 0; offset < withTable.Count; offset += batchSize) {
@@ -47,9 +42,7 @@ namespace QS.DbManagement.MariaDb {
 					ReadBatch(connection, batch, nameFilter, result);
 				}
 				catch(DbException ex) {
-					// одна нечитаемая база не должна прятать остальные - дочитываем пачку по одной,
-					// но тем же соединением: новых пулов при этом не появляется
-					logger.Debug(ex, "Пакетное чтение {0} не удалось, читаем базы по одной", ParametersTable);
+					logger.Warn(ex, "Пакетное чтение {0} не удалось, читаем базы по одной", ParametersTable);
 					foreach(var database in batch)
 						ReadOne(connection, database, nameFilter, result);
 				}
