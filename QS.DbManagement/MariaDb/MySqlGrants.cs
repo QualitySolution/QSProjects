@@ -15,16 +15,9 @@ namespace QS.DbManagement.MariaDb {
 		private static readonly Regex ColumnList =
 			new Regex(@"\([^)]*\)", RegexOptions.None, TimeSpan.FromSeconds(5));
 
-		/// <summary>
-		/// Ровно это и выдаёт MySqlAccess.GrantAdmin, поэтому выданное читается обратно.
-		/// </summary>
 		public static bool HasGlobalAdmin(IEnumerable<string> grants)
 			=> grants.Any(g => Scope(g) == "*" && Privileges(g).Contains(AllPrivileges));
 
-		/// <summary>
-		/// То же определение по колонкам mysql.user: отдельной колонки под ALL PRIVILEGES там нет,
-		/// но он ставит 'Y' во все, поэтому читаем две из них.
-		/// </summary>
 		public static bool IsGlobalAdmin(bool superPriv, bool createUserPriv)
 			=> superPriv && createUserPriv;
 

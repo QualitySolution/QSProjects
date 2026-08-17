@@ -73,7 +73,7 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 		private static string Normalize(string name)
 			=> name.Replace("_", "").ToLowerInvariant();
 
-		private static NameIndex<PropertyInfo> Properties(Type type)
+		private static NameIndex<PropertyInfo> Properties(Type type) //?
 			=> new NameIndex<PropertyInfo>(
 				type.GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(p => p.CanRead),
 				p => p.Name);

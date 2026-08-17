@@ -93,7 +93,7 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			return rows.Count;
 		}
 
-		/// <summary>Один INSERT со всеми строками пачки: VALUES (…),(…) плюс ON DUPLICATE KEY UPDATE.</summary>
+		/// <summary>Один INSERT со всеми строками пачки ON DUPLICATE KEY UPDATE</summary>
 		private static string BuildUpsert(IReadOnlyList<string> columns, IReadOnlyList<string> updatable,
 			IReadOnlyList<Dictionary<string, object>> chunk, out DynamicParameters parameters) {
 			var sql = new StringBuilder($"INSERT INTO `{BasesTable}` (")
