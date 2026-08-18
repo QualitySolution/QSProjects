@@ -45,7 +45,6 @@ namespace QS.Journal.GtkUI
 		private Widget FilterView;
 		private void ConfigureJournal()
 		{
-			ViewModel.DataLoader.ItemsListUpdated += ViewModel_ItemsListUpdated;
 			ViewModel.DataLoader.LoadingStateChanged += DataLoader_LoadingStateChanged;
 			ViewModel.DataLoader.TotalCountChanged += DataLoader_TotalCountChanged;
 			if(ThrowExceptionOnDataLoad)
@@ -96,6 +95,7 @@ namespace QS.Journal.GtkUI
 			GtkScrolledWindow.Vadjustment.ValueChanged += Vadjustment_ValueChanged;
 
 			SetItemsSource();
+			ViewModel.DataLoader.ItemsListUpdated += ViewModel_ItemsListUpdated;
 
 			ViewModel.Refresh();
 			UpdateButtonActions();
@@ -190,8 +190,13 @@ namespace QS.Journal.GtkUI
 		}
 
 		private void SetItemsSource() {
-			if(tableview.ColumnsConfig.TreeModelFunc != null) {
-				tableview.YTreeModel = tableview.ColumnsConfig.TreeModelFunc.Invoke();
+			var columnsConfig = tableview.ColumnsConfig;
+			if(columnsConfig == null) {
+				logger.Warn($"Вызов обновления источника журнала {ViewModel.TabName} с ColumnsConfig null");
+			}
+
+			if(columnsConfig?.TreeModelFunc != null) {
+				tableview.YTreeModel = columnsConfig.TreeModelFunc.Invoke();
 			}
 			else {
 				tableview.ItemsDataSource = ViewModel.Items;
