@@ -60,7 +60,15 @@ namespace QS.ViewModels.Dialog
 
 		public bool SaveAndClose()
 		{
-			if (Save()) {
+			if(IsBusy)
+				return false;
+
+			bool saved;
+			using(BeginBusyOperation("Сохранение")) {
+				saved = Save();
+			}
+
+			if(saved) {
 				Close(false, CloseSource.Save);
 				return true;
 			}

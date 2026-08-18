@@ -25,10 +25,22 @@ namespace QS.Navigation
 
 		public bool AskClosePage(IPage page, CloseSource source = CloseSource.External)
 		{
-			throw new  NotImplementedException();
+			if(!CanClosePage(page, source))
+				return false;
+
+			ClosePageInternal(page, source);
+			return true;
 		}
 
 		public void ForceClosePage(IPage page, CloseSource source = CloseSource.External)
+		{
+			if(!CanClosePage(page, source))
+				return;
+
+			ClosePageInternal(page, source);
+		}
+
+		private void ClosePageInternal(IPage page, CloseSource source)
 		{
 			ClosePage(page, source);
 			(page as IGtkWindowPage).GtkDialog.Respond((int)ResponseType.DeleteEvent); 
@@ -88,7 +100,7 @@ namespace QS.Navigation
 		void GtkDialog_DeleteEvent(object o, DeleteEventArgs args)
 		{
 			var page = FindPage(args.Event.Window) ?? throw new InvalidOperationException("Закрыто окно которое не зарегистрировано как страницы в навигаторе");
-			ForceClosePage(page, CloseSource.ClosePage);
+			args.RetVal = !AskClosePage(page, CloseSource.ClosePage);
 		}
 
 		protected override IViewModelsPageFactory GetPageFactory<TViewModel>()
