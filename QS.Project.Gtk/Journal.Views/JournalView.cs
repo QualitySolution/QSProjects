@@ -186,7 +186,7 @@ namespace QS.Journal.Views
 		private void SetItemsSource() {
 			var columnsConfig = tableview.ColumnsConfig;
 			if(columnsConfig == null) {
-				logger.Warn($"Вызов обновления источника журнала {ViewModel.TabName} с ColumnsConfig null");
+				logger.Warn($"Вызов обновления источника журнала {ViewModel.Title} с ColumnsConfig null");
 			}
 
 			if(columnsConfig?.TreeModelFunc != null) {
