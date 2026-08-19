@@ -265,6 +265,34 @@ namespace QS.Navigation {
 			if (page.ViewModel is IDisposable pd)
 				pd.Dispose();
 		}
+
+		/// <summary>
+		/// Проверяет, можно ли закрыть страницу, не прерывая выполняющуюся в ней операцию.
+		/// Для отменяемой операции запрашивает отмену, но оставляет страницу открытой до завершения операции.
+		/// </summary>
+		protected bool CanClosePage(IPage page, CloseSource source)
+		{
+			if(!(page?.ViewModel is IBusyViewModel busyViewModel) || !busyViewModel.IsBusy)
+				return true;
+
+			var operationTitle = String.IsNullOrWhiteSpace(busyViewModel.BusyOperationTitle)
+				? "Длительная операция"
+				: busyViewModel.BusyOperationTitle;
+
+			if(busyViewModel.CanCancelBusyOperation) {
+				busyViewModel.RequestCancelBusyOperation();
+				interactiveMessage.ShowMessage(
+					ImportanceLevel.Info,
+					$"Операция «{operationTitle}» отменяется. Дождитесь её завершения перед закрытием страницы.");
+			}
+			else if(!busyViewModel.IsBusyCancellationRequested) {
+				interactiveMessage.ShowMessage(
+					ImportanceLevel.Warning,
+					$"Нельзя закрыть страницу, пока выполняется операция «{operationTitle}». Дождитесь её завершения.");
+			}
+
+			return false;
+		}
 		#endregion
 
 		#endregion
