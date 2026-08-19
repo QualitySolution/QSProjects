@@ -12,18 +12,19 @@ namespace QSOrmProject
 	[Category ("QS Widgets")]
 	public class EnumListComboBox : ComboBox
 	{
-		Type enumType;
-		ListStore comboListStore;
+		private bool _destroyed;
+		private Type _enumType;
+		private ListStore _comboListStore;
 
 		public event EventHandler<EnumItemClickedEventArgs> EnumItemSelected;
 
 		public void SetEnumItems<T> (IList<T> itemsToShow)
 		{
-			comboListStore.Clear();
-			enumType = typeof(T);
-			if (!enumType.IsEnum)
-				throw new NotSupportedException (string.Format ("EnumItems only supports enum types, specified was {0}", enumType));
-			foreach (FieldInfo fi in enumType.GetFields()) {
+			_comboListStore.Clear();
+			_enumType = typeof(T);
+			if (!_enumType.IsEnum)
+				throw new NotSupportedException (string.Format ("EnumItems only supports enum types, specified was {0}", _enumType));
+			foreach (FieldInfo fi in _enumType.GetFields()) {
 				AppendEnumItem<T> (fi, itemsToShow);
 			}
 		}
@@ -35,7 +36,7 @@ namespace QSOrmProject
 			if (!itemsToShow.Contains ((T)info.GetValue (null)))
 				return;
 			string item = info.GetEnumTitle ();
-			comboListStore.AppendValues (info.GetValue (null), item);
+			_comboListStore.AppendValues (info.GetValue (null), item);
 		}
 
 		void OnEnumItemSelected ()
@@ -73,11 +74,24 @@ namespace QSOrmProject
 
 		public EnumListComboBox ()
 		{
-			comboListStore = new ListStore (typeof(object), typeof(string));
+			_comboListStore = new ListStore (typeof(object), typeof(string));
 			CellRendererText text = new CellRendererText ();
-			Model = comboListStore;
+			Model = _comboListStore;
 			PackStart (text, false);
 			AddAttribute (text, "text", 1);
+		}
+		
+		protected override void OnDestroyed() {
+			if(_destroyed) {
+				return;
+			}
+
+			Model = null;
+			_comboListStore.Clear();
+			_comboListStore.Dispose();
+			base.OnDestroyed();
+			
+			_destroyed = true;
 		}
 	}
 }

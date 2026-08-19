@@ -11,6 +11,8 @@ namespace Gamma.Widgets
 	[Obsolete("Используйте новый виджет QS.Widgets.GtkUI.DatePicker")]
 	public class yDatePicker : DatePicker
 	{
+		private bool _destroyed;
+		
 		public BindingControler<yDatePicker> Binding { get; private set;}
 
 		public yDatePicker ()
@@ -32,6 +34,17 @@ namespace Gamma.Widgets
 				(w => w.IsEmpty)
 			});
 			base.OnDateChanged ();
+		}
+		
+		protected override void OnDestroyed() {
+			if(_destroyed) {
+				return;
+			}
+
+			Binding.CleanSources();
+			base.OnDestroyed();
+			
+			_destroyed = true;
 		}
 	}
 }

@@ -1,7 +1,14 @@
 using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using Gamma.GtkWidgets.Cells;
 using Gamma.Binding;
+using Gtk;
+using Object = GLib.Object;
 
 namespace Gamma.ColumnConfig
 {
@@ -17,8 +24,9 @@ namespace Gamma.ColumnConfig
 		{
 			myColumn = parentColumn;
 		}
-			
-		public abstract INodeCellRenderer GetRenderer ();
+
+		public abstract INodeCellRenderer GetRenderer();
+		protected readonly IDictionary<Type, IList<object>> EventHandlers = new Dictionary<Type, IList<object>>();
 
 		protected abstract void SetSetterSilent(Action<TCellRenderer, TNode> commonSet);
 
@@ -43,6 +51,15 @@ namespace Gamma.ColumnConfig
 		public IColumnsConfig Finish()
 		{
 			return myColumn.Finish ();
+		}
+		
+		protected void AddHandler(object handler) {
+			if(EventHandlers.TryGetValue(handler.GetType(), out IList<object> handlers)) {
+				handlers.Add(handler);
+			}
+			else {
+				EventHandlers.Add(handler.GetType(), new List<object> { handler });
+			}
 		}
 
 		#region Renderers
@@ -110,6 +127,39 @@ namespace Gamma.ColumnConfig
 			return myColumn.AddToggleRenderer (dataProperty, expand);
 		}
 		#endregion
+
+		public virtual void Dispose() {
+			var toggleRefPropertyInfo = typeof(TCellRenderer)
+				.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
+				.SingleOrDefault(p => p.Name == "ToggleRef");
+
+			if(toggleRefPropertyInfo != null) {
+				var renderer = GetRenderer() as CellRenderer;
+				var handle = renderer.Handle;
+				
+				if(handle == IntPtr.Zero) return;
+				
+				//TODO сделать удаление объекта из словаря объектов Glib.Object Objects 
+				var toggleRef = toggleRefPropertyInfo.GetValue(renderer);
+
+				if(toggleRef != null) {
+					
+					var gch = toggleRef.GetType()
+						.GetField("gch", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)?
+						.GetValue(toggleRef);
+
+					if(!(gch is GCHandle gcHandle)) return;
+					if(!gcHandle.IsAllocated) return;
+					
+					var freeMethodInfo = toggleRef.GetType().GetMethod("Free");
+
+					if(freeMethodInfo != null) {
+						freeMethodInfo.Invoke(toggleRef, null);
+						GC.SuppressFinalize(renderer);
+					}
+				}
+			}
+		}
 	}
 }
 

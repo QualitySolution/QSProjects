@@ -58,6 +58,8 @@ namespace Gamma.GtkWidgets {
 				_command = null;
 			}
 			
+			Binding.CleanSources();
+			
 			base.OnDestroyed();
 		}
 	}

@@ -8,12 +8,13 @@ namespace Gamma.ColumnConfig
 {
 	public class TextRendererMapping<TNode> : RendererMappingBase<NodeCellRendererText<TNode>, TNode>
 	{
-		private NodeCellRendererText<TNode> cellRenderer = new NodeCellRendererText<TNode> ();
+		private readonly NodeCellRendererText<TNode> _cellRenderer = new NodeCellRendererText<TNode>();
+		private Func<TNode, string> _getValueFunc;
 
 		public TextRendererMapping (ColumnMapping<TNode> column, Expression<Func<TNode, string>> getDataExp, bool useMarkup = false)
 			: base(column)
 		{
-			cellRenderer.DataPropertyInfo = PropertyUtil.GetPropertyInfo(getDataExp);
+			_cellRenderer.DataPropertyInfo = PropertyUtil.GetPropertyInfo(getDataExp);
 
 			var properties = FetchPropertyInfoFromExpression.Fetch(getDataExp);
 
@@ -27,11 +28,11 @@ namespace Gamma.ColumnConfig
 				}
 			}
 
-			var getter = getDataExp.Compile();
+			_getValueFunc = getDataExp.Compile();
 			if(useMarkup)
-				cellRenderer.LambdaSetters.Add ((c, n) => c.Markup = getter(n));
+				_cellRenderer.LambdaSetters.Add ((c, n) => c.Markup = _getValueFunc(n));
 			else
-				cellRenderer.LambdaSetters.Add ((c, n) => c.Text = getter(n));
+				_cellRenderer.LambdaSetters.Add ((c, n) => c.Text = _getValueFunc(n));
 		}
 
 		public TextRendererMapping (ColumnMapping<TNode> column)
@@ -44,12 +45,12 @@ namespace Gamma.ColumnConfig
 
 		public override INodeCellRenderer GetRenderer ()
 		{
-			return cellRenderer;
+			return _cellRenderer;
 		}
 
 		protected override void SetSetterSilent (Action<NodeCellRendererText<TNode>, TNode> commonSet)
 		{
-			cellRenderer.LambdaSetters.Insert(0, commonSet);
+			_cellRenderer.LambdaSetters.Insert(0, commonSet);
 		}
 
 		#endregion
@@ -64,77 +65,94 @@ namespace Gamma.ColumnConfig
 
 		public TextRendererMapping<TNode> Editable(bool on=true)
 		{
-			cellRenderer.Editable = on;
+			_cellRenderer.Editable = on;
 			return this;
 		}
 
 		public TextRendererMapping<TNode> Background(string color)
 		{
-			cellRenderer.Background = color;
+			_cellRenderer.Background = color;
 			return this;
 		}
 
 		public TextRendererMapping<TNode> WrapMode(Pango.WrapMode mode)
 		{
-			cellRenderer.WrapMode = mode;
+			_cellRenderer.WrapMode = mode;
 			return this;
 		}
 
 		public TextRendererMapping<TNode> WrapWidth(int width)
 		{
-			cellRenderer.WrapWidth = width;
+			_cellRenderer.WrapWidth = width;
 			return this;
 		}
 
 		public TextRendererMapping<TNode> WidthChars(int widthChars)
 		{
-			cellRenderer.WidthChars = widthChars;
+			_cellRenderer.WidthChars = widthChars;
 			return this;
 		}
 
 		public TextRendererMapping<TNode> XAlign(float alignment)
 		{
-			cellRenderer.Xalign = alignment;
+			_cellRenderer.Xalign = alignment;
 			return this;
 		}
 		
 		public TextRendererMapping<TNode> YAlign(float alignment)
 		{
-			cellRenderer.Yalign = alignment;
+			_cellRenderer.Yalign = alignment;
 			return this;
 		}
 
 		public TextRendererMapping<TNode> SearchHighlight(bool on=true)
 		{
-			cellRenderer.SearchHighlight = on;
+			_cellRenderer.SearchHighlight = on;
 			return this;
 		}
 
 		public TextRendererMapping<TNode> Sensitive(bool on=true)
 		{
-			cellRenderer.Sensitive = on;
+			_cellRenderer.Sensitive = on;
 			return this;
 		}
 
 		public TextRendererMapping<TNode> AddSetter(Action<NodeCellRendererText<TNode>, TNode> setter)
 		{
-			cellRenderer.LambdaSetters.Add (setter);
+			_cellRenderer.LambdaSetters.Add (setter);
 			return this;
 		}
 
 		public TextRendererMapping<TNode> EditingStartedEvent (Gtk.EditingStartedHandler handler)
 		{
-			cellRenderer.EditingStarted += handler;
+			_cellRenderer.EditingStarted += handler;
+			AddHandler(handler);
 			return this;
 		}
 
 		public TextRendererMapping<TNode> EditedEvent (Gtk.EditedHandler handler)
 		{
-			cellRenderer.Edited += handler;
+			_cellRenderer.Edited += handler;
+			AddHandler(handler);
 			return this;
 		}
 
 		#endregion
+		
+		public override void Dispose() {
+			if(_cellRenderer != null) {
+				foreach(var eventInfo in _cellRenderer.GetType().GetEvents()) {
+					if(EventHandlers.TryGetValue(eventInfo.EventHandlerType, out var handlers)) {
+						foreach(var handler in handlers) {
+							eventInfo.RemoveEventHandler(_cellRenderer, (Delegate)handler);
+						}
+					}
+				}
+				
+				_getValueFunc = null;
+				base.Dispose();
+			}
+		}
 	}
 }
 

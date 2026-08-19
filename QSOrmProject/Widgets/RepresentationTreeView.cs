@@ -76,11 +76,11 @@ namespace QSOrmProject
 		{
 			logger.Debug("{0} called Destroy()", this.GetType());
 
-			if (RepresentationModel != null)
+			if(RepresentationModel != null)
 			{
 				RepresentationModel.Destroy();
 			}
-			base.Destroy();
+			
 			base.OnDestroyed();
 		}
 	}

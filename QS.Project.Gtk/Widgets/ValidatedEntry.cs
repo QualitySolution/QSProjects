@@ -118,6 +118,12 @@ namespace QS.Widgets
 			Binding.FireChange(w => w.Text);
 			base.OnChanged();
 		}
+
+		protected override void OnDestroyed()
+		{
+			Binding.CleanSources();
+			base.OnDestroyed();
+		}
 	}
 
 	public enum ValidationType {

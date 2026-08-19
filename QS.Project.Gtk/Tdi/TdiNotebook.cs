@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Gtk;
+using NHibernate.Util;
 using NLog;
 using QS.Dialog.GtkUI;
 using QS.Navigation;
@@ -12,6 +13,7 @@ using QS.ViewModels.Extension;
 using QS.Journal.GtkUI;
 using QS.Journal.Views;
 using QS.Views.GtkUI;
+using Gamma.GtkWidgets;
 
 namespace QS.Tdi.Gtk
 {
@@ -616,6 +618,17 @@ namespace QS.Tdi.Gtk
 			if(slider != null)
 				return slider.AskToCloseTab(tab, source);
 
+			// Временный адаптер для ViewModel-страниц, пока приложение работает через TDI-контейнер.
+			// Само состояние длительной операции не зависит от TDI.
+			var viewModelTab = tab as ViewModelTdiTab
+				?? (tab as TdiSliderTab)?.ActiveDialog as ViewModelTdiTab;
+			var busyViewModel = viewModelTab?.ViewModel as IBusyViewModel;
+			if(busyViewModel?.IsBusy == true) {
+				if(busyViewModel.CanCancelBusyOperation)
+					busyViewModel.RequestCancelBusyOperation();
+				return false;
+			}
+
 			if (CheckClosingSlaveTabs(tab))
 				return false;
 			
@@ -786,25 +799,25 @@ namespace QS.Tdi.Gtk
 			if(IsCurrent)
 				PrevPage();
 			
-			Remove(tabBox);
 			var maybeSliderActiveDialog = (tab as TdiSliderTab)?.ActiveDialog;
 			if(maybeSliderActiveDialog != null) {
 				OnTabClosed(maybeSliderActiveDialog, CloseSource.WithParentPage);
 			}
 			OnTabClosed(tab, source);
 			tab.OnTabClosed();
-			
+
+			var tabBoxChilds = GtkHelper.EnumerateAllChildren(tabBox).ToList();
 			//TODO проверить работу Destroy
 			//после вызова Destroy у родительского элемента-контейнера,
 			//должны произойти вызовы этого метода у всех присоединенных потомков по цепочке
-			if(tabBox != null && tabBox.Tab is Container) {
-				GtkHelper.EnumerateAllChildren((Container)tabBox.Tab)
-				.OfType<IMustBeDestroyed>().ToList()
+			if(tabBox != null)
+			{
+				tabBoxChilds.OfType<IMustBeDestroyed>()
 				.ForEach(w => w.Destroy());
 			}
 			logger.Debug("Вкладка <{0}> удалена", tab.TabName);
 			
-			tabBox?.Destroy();
+			tabBox.Destroy();
 			tabHeader?.Destroy();
 
 			tab.TabNameChanged -= OnTabNameChanged;
