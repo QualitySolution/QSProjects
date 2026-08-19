@@ -483,16 +483,7 @@ namespace QS.Journal.GtkUI
 			
 			tableview?.Destroy();
 
-			foreach(var keyPair in _widgetsWithJournalActions) {
-				if(keyPair.Key is Button button) {
-					button.Clicked -= OnJournalActionClicked;
-				}
-				else if(keyPair.Key is Widget widget) {
-					widget.ButtonPressEvent -= OnJournalActionPressed;
-				}
-			}
-			
-			_widgetsWithJournalActions.Clear();
+			buttonRefreshActions.Clear();
 
 			base.Destroy();
 		}
