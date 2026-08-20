@@ -246,7 +246,7 @@ namespace QS.Dialog.Gtk
 		}
 
 		protected override void OnDestroyed() {
-			if(UoW?.RootObject is INotifyPropertyChanged notifySubject) {
+			if(Entity is INotifyPropertyChanged notifySubject) {
 				notifySubject.PropertyChanged -= Subject_TitlePropertyChanged;
 				notifySubject.PropertyChanged -= Subject_NamePropertyChanged;
 			}
@@ -255,4 +255,3 @@ namespace QS.Dialog.Gtk
 		}
 	}
 }
-
