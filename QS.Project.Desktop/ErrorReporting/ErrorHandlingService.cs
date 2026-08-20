@@ -1,18 +1,9 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using QS.Dialog;
 
 namespace QS.ErrorReporting {
-
-	/// <summary>
-	/// Порядок обработчиков важен: первый, кто узнал ошибку, забирает её себе,
-	/// до предложения отправить отчёт она уже не доходит.
-	///
-	/// <see cref="IErrorReporter"/> и настройки необязательны: без них приложение
-	/// просто показывает сообщение, как и раньше, - отсутствие отправки отчётов
-	/// не повод ломать показ ошибки.
-	/// </summary>
 	public class ErrorHandlingService : IErrorHandlingService {
 		private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -53,7 +44,6 @@ namespace QS.ErrorReporting {
 			ShowUnexpected(exception, title);
 		}
 
-		/// <summary>Сбой самого обработчика не должен подменять исходную ошибку - идём к следующему</summary>
 		private bool TakenByHandler(Exception exception) {
 			foreach(var handler in handlers) {
 				try {
@@ -61,7 +51,7 @@ namespace QS.ErrorReporting {
 						return true;
 				}
 				catch(Exception ex) {
-					logger.Error(ex, "Ошибка в обработчике {0}", handler.GetType().Name);
+					logger.Error(ex, "Ошибка в обработчике {0}", handler.GetType().Name); //?
 				}
 			}
 			return false;
@@ -80,9 +70,7 @@ namespace QS.ErrorReporting {
 				return;
 			}
 
-			// Вопрос блокирующий, и задавать его из GUI-потока нельзя, а Handle зовут
-			// синхронно откуда угодно. Уводим в фон и не ждём: показать ошибку мы уже
-			// обязались, а отправка отчёта вызывающего не касается
+			// Вопрос блокирующий, и задавать его из UI-потока нельзя, а Handle зовут синхронно откуда угодно
 			_ = Task.Run(() => AskAndSend(exception, title));
 		}
 
@@ -102,7 +90,6 @@ namespace QS.ErrorReporting {
 			}
 		}
 
-		/// <summary>Не отправился отчёт - это не повод показывать пользователю вторую ошибку поверх первой</summary>
 		private void SendQuietly(Exception exception, ErrorType type) {
 			try {
 				if(!errorReporter.SendReport(exception, type))

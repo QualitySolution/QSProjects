@@ -115,8 +115,6 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		}
 
 		public async Task Login() {
-			// подключение запоминаем до первого await: провайдер создан под него, и уехать
-			// на страницу баз должен тот же самый объект, иначе LastBaseId запишется чужому
 			var connection = SelectedConnection;
 			if(connection is null)
 				return;
@@ -136,8 +134,6 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 					interactiveMessage.ShowMessage(ImportanceLevel.Error, resp.ErrorMessage, "Не удалось войти");
 			}
 			catch(Exception ex) {
-				// неверный пароль сюда не приходит - на него сервер отвечает Success = false,
-				// а здесь остаётся то, что пользователь сам не поправит
 				errorHandling.Handle(ex, "Не удалось войти");
 			}
 		}
