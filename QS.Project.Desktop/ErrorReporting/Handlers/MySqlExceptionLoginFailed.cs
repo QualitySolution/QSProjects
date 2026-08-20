@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using MySqlConnector;
 using QS.Dialog;
@@ -7,15 +7,15 @@ using QS.Utilities.Debug;
 namespace QS.ErrorReporting.Handlers {
 
 	/// <summary>
-	/// Сервер отказал в доступе: неверный логин или пароль, нет прав на базу.
-	/// Разбирается на месте самим пользователем или его администратором,
-	/// отчёт разработчикам тут не нужен.
+	/// Сервер отказал в доступе, неверный логин или пароль, нет прав на базу
 	/// </summary>
-	public class MySqlExceptionLoginFailed : IErrorHandler {
-
-		// 1044 - нет доступа к базе, 1045 - неверный логин или пароль,
-		// 1698 - учётка есть, но входить ей этим способом нельзя
-		private static readonly int[] AccessDeniedNumbers = { 1044, 1045, 1698 };
+	public class MySqlExceptionLoginFailed : IErrorHandler
+	{
+		private static readonly int[] AccessDeniedNumbers = {
+			1044 //нет доступа к базе
+			, 1045 //неверный логин или пароль
+			, 1698 //учётка есть, но входить ей этим способом нельзя
+		};
 
 		private readonly IInteractiveMessage interactiveMessage;
 

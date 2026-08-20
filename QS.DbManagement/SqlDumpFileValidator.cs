@@ -12,10 +12,6 @@ namespace QS.DbManagement {
 			"SET ", "USE ", "LOCK", "DELIMITER", "START TRANSACTION"
 		};
 
-		/// <summary>
-		/// Проверка перед запуском операции: null - файл похож на SQL-дамп,
-		/// иначе готовый текст отказа для пользователя.
-		/// </summary>
 		public static string Validate(string filePath) {
 			try {
 				EnsureLooksLikeSqlDump(filePath);
@@ -39,7 +35,7 @@ namespace QS.DbManagement {
 
 			string head = ReadHead(filePath, InspectBytes);
 
-			// Бинарный файл почти всегда содержит нулевые байты
+			// Бинарный файл содержит нулевые байты
 			if(head.IndexOf('\0') >= 0)
 				throw new InvalidDataException(
 					"Файл не похож на SQL-дамп: это бинарный файл, а не текстовый SQL-скрипт");
