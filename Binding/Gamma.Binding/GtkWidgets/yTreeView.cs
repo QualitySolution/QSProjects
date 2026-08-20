@@ -76,7 +76,8 @@ namespace Gamma.GtkWidgets {
 			get { return itemsDataSource; }
 			set {
 				if(value == null) {
-					Model = null;
+					itemsDataSource = null;
+					YTreeModel = null;
 					return;
 				}
 
@@ -457,8 +458,11 @@ namespace Gamma.GtkWidgets {
 			if(columnConf != null && columnConf.HasToolTip) {
 				object node = YTreeModel.NodeAtPath(path);
 				var text = columnConf.GetTooltipText(node);
+				if(text == null)
+					return false;
+
 				tooltip.Text = text;
-				return text != null;
+				return true;
 			}
 
 			return base.OnQueryTooltip(x, y, keyboard_tooltip, tooltip);
@@ -476,11 +480,7 @@ namespace Gamma.GtkWidgets {
 			
 			UnsubscribeAll();
 			Binding.CleanSources();
-
-			//base.Destroy();
-			if(YTreeModel is IDisposable model) {
-				model.Dispose();
-			}
+			ItemsDataSource = null;
 
 			_disposed = true;
 		}
@@ -525,4 +525,3 @@ namespace Gamma.GtkWidgets {
 		}
 	}
 }
-
