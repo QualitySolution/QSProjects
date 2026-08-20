@@ -10,6 +10,8 @@ namespace Gamma.Widgets
 	[System.ComponentModel.Category ("Gamma Gtk")]
 	public class yValidatedEntry : ValidatedEntry
 	{
+		private bool _destroyed;
+		
 		public BindingControler<yValidatedEntry> Binding { get; private set;}
 
 		public yValidatedEntry ()
@@ -23,6 +25,17 @@ namespace Gamma.Widgets
 		{
 			Binding.FireChange (w => w.Text);
 			base.OnChanged ();
+		}
+		
+		protected override void OnDestroyed() {
+			if(_destroyed) {
+				return;
+			}
+
+			Binding.CleanSources();
+			base.OnDestroyed();
+			
+			_destroyed = true;
 		}
 	}
 }

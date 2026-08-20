@@ -8,12 +8,12 @@ namespace Gamma.ColumnConfig
 {
 	public class TimeRendererMapping<TNode> : RendererMappingBase<NodeCellRendererTime<TNode>, TNode>
 	{
-		private NodeCellRendererTime<TNode> cellRenderer = new NodeCellRendererTime<TNode> ();
+		private readonly NodeCellRendererTime<TNode> _cellRenderer = new NodeCellRendererTime<TNode> ();
 
 		public TimeRendererMapping (ColumnMapping<TNode> column, Expression<Func<TNode, TimeSpan?>> getDataExp)
 			: base(column)
 		{
-			cellRenderer.DataPropertyInfo = PropertyUtil.GetPropertyInfo(getDataExp);
+			_cellRenderer.DataPropertyInfo = PropertyUtil.GetPropertyInfo(getDataExp);
 
 			var properties = FetchPropertyInfoFromExpression.Fetch(getDataExp);
 
@@ -28,7 +28,7 @@ namespace Gamma.ColumnConfig
 			}
 
 			var getter = getDataExp.Compile();
-			cellRenderer.LambdaSetters.Add ((c, n) => c.Text = TimeToText(getter(n)));
+			_cellRenderer.LambdaSetters.Add ((c, n) => c.Text = TimeToText(getter(n)));
 		}
 
 		public TimeRendererMapping (ColumnMapping<TNode> column)
@@ -44,12 +44,12 @@ namespace Gamma.ColumnConfig
 
 		public override INodeCellRenderer GetRenderer ()
 		{
-			return cellRenderer;
+			return _cellRenderer;
 		}
 
 		protected override void SetSetterSilent (Action<NodeCellRendererTime<TNode>, TNode> commonSet)
 		{
-			cellRenderer.LambdaSetters.Insert(0, commonSet);
+			_cellRenderer.LambdaSetters.Insert(0, commonSet);
 		}
 
 		#endregion
@@ -64,77 +64,93 @@ namespace Gamma.ColumnConfig
 
 		public TimeRendererMapping<TNode> Editable(bool on=true)
 		{
-			cellRenderer.Editable = on;
+			_cellRenderer.Editable = on;
 			return this;
 		}
 
 		public TimeRendererMapping<TNode> Background(string color)
 		{
-			cellRenderer.Background = color;
+			_cellRenderer.Background = color;
 			return this;
 		}
 
 		public TimeRendererMapping<TNode> WrapMode(Pango.WrapMode mode)
 		{
-			cellRenderer.WrapMode = mode;
+			_cellRenderer.WrapMode = mode;
 			return this;
 		}
 
 		public TimeRendererMapping<TNode> WrapWidth(int width)
 		{
-			cellRenderer.WrapWidth = width;
+			_cellRenderer.WrapWidth = width;
 			return this;
 		}
 
 		public TimeRendererMapping<TNode> WidthChars(int widthChars)
 		{
-			cellRenderer.WidthChars = widthChars;
+			_cellRenderer.WidthChars = widthChars;
 			return this;
 		}
 
 		public TimeRendererMapping<TNode> XAlign(float alignment)
 		{
-			cellRenderer.Xalign = alignment;
+			_cellRenderer.Xalign = alignment;
 			return this;
 		}
 		
 		public TimeRendererMapping<TNode> YAlign(float alignment)
 		{
-			cellRenderer.Yalign = alignment;
+			_cellRenderer.Yalign = alignment;
 			return this;
 		}
 
 		public TimeRendererMapping<TNode> SearchHighlight(bool on=true)
 		{
-			cellRenderer.SearchHighlight = on;
+			_cellRenderer.SearchHighlight = on;
 			return this;
 		}
 
 		public TimeRendererMapping<TNode> Sensitive(bool on=true)
 		{
-			cellRenderer.Sensitive = on;
+			_cellRenderer.Sensitive = on;
 			return this;
 		}
 
 		public TimeRendererMapping<TNode> AddSetter(Action<NodeCellRendererTime<TNode>, TNode> setter)
 		{
-			cellRenderer.LambdaSetters.Add (setter);
+			_cellRenderer.LambdaSetters.Add (setter);
 			return this;
 		}
 
 		public TimeRendererMapping<TNode> EditingStartedEvent (Gtk.EditingStartedHandler handler)
 		{
-			cellRenderer.EditingStarted += handler;
+			_cellRenderer.EditingStarted += handler;
+			AddHandler(handler);
 			return this;
 		}
 
 		public TimeRendererMapping<TNode> EditedEvent (Gtk.EditedHandler handler)
 		{
-			cellRenderer.Edited += handler;
+			_cellRenderer.Edited += handler;
+			AddHandler(handler);
 			return this;
 		}
 
 		#endregion
+		
+		public override void Dispose() {
+			if(_cellRenderer != null) {
+				foreach(var eventInfo in _cellRenderer.GetType().GetEvents()) {
+					if(EventHandlers.TryGetValue(eventInfo.EventHandlerType, out var handlers)) {
+						foreach(var handler in handlers) {
+							eventInfo.RemoveEventHandler(_cellRenderer, (Delegate)handler);
+						}
+					}
+				}
+				
+				base.Dispose();
+			}
+		}
 	}
 }
 

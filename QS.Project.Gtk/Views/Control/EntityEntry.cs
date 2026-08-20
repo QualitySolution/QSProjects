@@ -121,7 +121,9 @@ namespace QS.Views.Control
 		#region AutoCompletion
 
 		private bool isInternalTextSet;
+		private bool isDestroyed;
 		private ListStore completionListStore;
+		private CellRendererText entryCompletionCell;
 		uint timerId;
 
 		private void ConfigureEntryComplition()
@@ -129,9 +131,9 @@ namespace QS.Views.Control
 			entryObject.Completion = new EntryCompletion();
 			entryObject.Completion.MatchSelected += Completion_MatchSelected;
 			entryObject.Completion.MatchFunc = Completion_MatchFunc;
-			var cell = new CellRendererText();
-			entryObject.Completion.PackStart(cell, true);
-			entryObject.Completion.SetCellDataFunc(cell, OnCellLayoutDataFunc);
+			entryCompletionCell = new CellRendererText();
+			entryObject.Completion.PackStart(entryCompletionCell, true);
+			entryObject.Completion.SetCellDataFunc(entryCompletionCell, OnCellLayoutDataFunc);
 		}
 
 		bool Completion_MatchFunc(EntryCompletion completion, string key, TreeIter iter)
@@ -141,48 +143,76 @@ namespace QS.Views.Control
 
 		void OnCellLayoutDataFunc(CellLayout cell_layout, CellRenderer cell, TreeModel tree_model, TreeIter iter)
 		{
-			if(viewModel == null)
+			if(!(cell is CellRendererText cellRenderer))
 				return;
 
-			var title =  viewModel.GetAutocompleteTitle(tree_model.GetValue(iter, 0)) ?? String.Empty;
-			var words = entryObject.Text.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+			if(viewModel == null || !TryGetAutocompleteNode(tree_model, iter, out var node)) {
+				cellRenderer.Markup = String.Empty;
+				return;
+			}
+
+			var title = viewModel.GetAutocompleteTitle(node) ?? String.Empty;
+			var words = (entryObject?.Text ?? String.Empty)
+				.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 			foreach(var word in words) {
 				string pattern = String.Format("{0}", Regex.Escape(word));
 				title = Regex.Replace(title, pattern, (match) => String.Format("<b>{0}</b>", match.Value), RegexOptions.IgnoreCase);
 			}
-			(cell as CellRendererText).Markup = title;
+			cellRenderer.Markup = title;
 		}
 
 		[GLib.ConnectBefore]
 		void Completion_MatchSelected(object o, MatchSelectedArgs args)
 		{
-			var node = args.Model.GetValue(args.Iter, 0);
+			if(viewModel == null || !TryGetAutocompleteNode(args.Model, args.Iter, out var node)) {
+				args.RetVal = false;
+				return;
+			}
+
 			viewModel.AutocompleteSelectNode(node);
 			args.RetVal = true;
 		}
 
+		private bool TryGetAutocompleteNode(TreeModel model, TreeIter iter, out object node)
+		{
+			node = null;
+			// После отложенной перерисовки GTK может передать TreeIter от уже обновлённой модели.
+			if(isDestroyed || !(model is ListStore listStore) || !listStore.IterIsValid(iter))
+				return false;
+
+			node = listStore.GetValue(iter, 0);
+			return node != null;
+		}
+
 		void ViewModel_AutoCompleteListUpdated(object sender, AutocompleteUpdatedEventArgs e)
 		{
-			Application.Invoke((s, arg) => {
-				FillAutocomplete(e.List);
-			});
+			var list = e.List;
+			Application.Invoke((s, arg) => FillAutocomplete(list));
 		}
 
 		private void FillAutocomplete(IList list)
 		{
+			if(isDestroyed || list == null)
+				return;
+
+			var completion = entryObject?.Completion;
+			if(completion is null)
+				return;
+
 			logger.Info("Запрос данных для автодополнения...");
-			completionListStore = new ListStore(typeof(object));
+			// Не заменяем модель: отложенная отрисовка может ещё хранить её TreeIter.
+			if(completionListStore == null)
+				completionListStore = new ListStore(typeof(object));
+			else
+				completionListStore.Clear();
 
 			foreach (var item in list) {
-				completionListStore.AppendValues(item);
+				if(item != null)
+					completionListStore.AppendValues(item);
 			}
 
-			if(entryObject?.Completion is null) {
-				return;
-			}
-
-			entryObject.Completion.Model = completionListStore;
-			entryObject.Completion.PopupCompletion = true;
+			completion.Model = completionListStore;
+			completion.PopupCompletion = true;
 			logger.Debug("Получено {0} строк автодополения...", completionListStore.IterNChildren());
 		}
 
@@ -234,16 +264,36 @@ namespace QS.Views.Control
 		
 		protected override void OnDestroyed()
 		{
+			// Нативный callback может быть уже поставлен в очередь, поэтому сначала
+			// запрещаем всем обработчикам обращаться к состоянию виджета.
+			isDestroyed = true;
+
+			if(timerId != 0) {
+				GLib.Source.Remove(timerId);
+				timerId = 0;
+			}
+
+			var completion = entryObject?.Completion;
+			if(completion != null) {
+				completion.MatchSelected -= Completion_MatchSelected;
+				completion.MatchFunc = null;
+				if(entryCompletionCell != null)
+					completion.SetCellDataFunc(entryCompletionCell, null);
+				completion.Model = null;
+			}
+
 			if(viewModel != null) {
-				ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
+				viewModel.PropertyChanged -= ViewModel_PropertyChanged;
 				viewModel.AutoCompleteListUpdated -= ViewModel_AutoCompleteListUpdated;
 
-				if(viewModel.DisposeViewModel) {
+				if(viewModel.DisposeViewModel)
 					viewModel.Dispose();
-					viewModel = null;
-				}
+
+				viewModel = null;
 			}
-			entryObject.Completion.Model = null;
+
+			completionListStore?.Dispose();
+			completionListStore = null;
 
 			Binding.CleanSources();
 			var viewImage = buttonViewEntity.Image as Gtk.Image;
@@ -253,8 +303,6 @@ namespace QS.Views.Control
 			var clearImage = buttonClear.Image as Gtk.Image;
 			clearImage.DisposeImagePixbuf();
 
-			GLib.Source.Remove(timerId);
-			
 			base.OnDestroyed();
 		}
 	}

@@ -6,6 +6,7 @@ using System.Linq;
 using Gtk;
 using NLog;
 using QS.Dialog.Gtk;
+using QS.Dialog.GtkUI;
 using QS.Project.Journal;
 using QS.Project.Journal.DataLoader;
 using QS.Utilities;
@@ -19,7 +20,7 @@ using QS.Widgets;
 namespace QS.Journal.GtkUI
 {
 	[WindowSize(900, 600)]
-	public partial class JournalView : TabViewBase<JournalViewModelBase>
+	public partial class JournalView : TabViewBase<JournalViewModelBase>, IMustBeDestroyed
 	{
 		private readonly IGtkViewResolver viewResolver;
 		private static Logger logger = LogManager.GetCurrentClassLogger();
@@ -481,6 +482,8 @@ namespace QS.Journal.GtkUI
 			}
 			
 			tableview?.Destroy();
+
+			buttonRefreshActions.Clear();
 
 			base.Destroy();
 		}

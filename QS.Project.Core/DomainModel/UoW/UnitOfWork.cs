@@ -22,8 +22,8 @@ namespace QS.DomainModel.UoW
 			IsNew = true;
             ActionTitle = title;
 			Root = new TRootEntity();
-			if(Root is IBusinessObject)
-				((IBusinessObject)Root).UoW = this;
+			if(Root is IBusinessObject businessObject)
+				businessObject.UoW = this;
 		}
 
 		internal UnitOfWork(ISessionProvider sessionProvider, TRootEntity root, UnitOfWorkTitle title) : base(sessionProvider)
@@ -31,8 +31,8 @@ namespace QS.DomainModel.UoW
 			IsNew = true;
 			Root = root;
             ActionTitle = title;
-			if(Root is IBusinessObject)
-				((IBusinessObject)Root).UoW = this;
+			if(Root is IBusinessObject businessObject)
+				businessObject.UoW = this;
 		}
 
 		internal UnitOfWork(ISessionProvider sessionProvider, int id, UnitOfWorkTitle title) : base(sessionProvider)
@@ -40,6 +40,8 @@ namespace QS.DomainModel.UoW
 			IsNew = false;
             ActionTitle = title;
 			Root = GetById<TRootEntity>(id);
+			if(Root is IBusinessObject businessObject)
+				businessObject.UoW = this;
 		}
 
 		public override void Save<TEntity>(TEntity entity, bool orUpdate = true)
@@ -56,6 +58,14 @@ namespace QS.DomainModel.UoW
 		{
 			Save(Root);
 		}
-    }
-}
 
+		public override void Dispose() {
+			base.Dispose();
+			
+			if(Root is IBusinessObject obj)
+				obj.UoW = null;
+			
+			Root = null;
+		}
+	}
+}

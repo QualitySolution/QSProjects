@@ -40,6 +40,11 @@ namespace Gamma.GtkWidgets
 		}
 
 		#endregion
+
+		protected override void OnDestroyed() {
+			Binding.CleanSources();
+			base.OnDestroyed();
+		}
 	}
 }
 

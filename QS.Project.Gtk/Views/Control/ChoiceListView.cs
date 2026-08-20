@@ -20,7 +20,15 @@ namespace QS.Views.Control {
 		public IChoiceListViewModel ViewModel {
 			get => viewModel; 
 			set {
+				if(viewModel == value)
+					return;
+
 				viewModel = value;
+				if(viewModel == null) {
+					ytreeChoiseEntities.ItemsDataSource = null;
+					return;
+				}
+
 				CreateTable();
 			}
 		}
@@ -47,17 +55,14 @@ namespace QS.Views.Control {
 
 		public override void Destroy() 
 		{
-			if (destroyed) 
-			{
+			if(destroyed) {
 				return;
 			}
+			destroyed = true;
 
 			Binding.CleanSources();
 			ViewModel = null;
-			ytreeChoiseEntities.Dispose();
 			base.Destroy();
-			
-			destroyed = true;
 		}
 
 		protected void OnButtonClearClicked(object sender, System.EventArgs e) {

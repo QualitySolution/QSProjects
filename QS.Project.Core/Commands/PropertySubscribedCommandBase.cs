@@ -2,13 +2,14 @@
 using System.Linq;
 using System.Windows.Input;
 using System.Collections.Generic;
+using System.ComponentModel;
 using QS.DomainModel.Entity;
 using Gamma.Utilities;
 using System.Linq.Expressions;
 
 namespace QS.Commands
 {
-	public abstract class PropertySubscribedCommandBase : ICommand
+	public abstract class PropertySubscribedCommandBase : ICommand, IDisposable
 	{
 		public event EventHandler CanExecuteChanged;
 
@@ -45,6 +46,14 @@ namespace QS.Commands
 		public void RaiseCanExecuteChanged()
 		{
 			CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+		}
+
+		public virtual void Dispose() {
+			foreach(var updatedSet in updatedSets) {
+				if(updatedSet[0] is INotifyPropertyChanged disposable) {
+					disposable.PropertyChanged -= ViewModel_PropertyChanged;
+				}
+			}
 		}
 	}
 }

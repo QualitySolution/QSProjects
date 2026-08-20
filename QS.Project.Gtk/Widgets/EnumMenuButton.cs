@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -15,8 +15,8 @@ namespace QS.Widgets
 	public class EnumMenuButton : MenuButton
 	{
 		private static Logger logger = LogManager.GetCurrentClassLogger();
-
-		Dictionary<ImageMenuItem, object> MenuItems;
+		private Dictionary<ImageMenuItem, object> _menuItems = new Dictionary<ImageMenuItem, object>();
+		
 		public event EventHandler<EnumItemClickedEventArgs> EnumItemClicked;
 		List<object> sensitiveFalseItems = new List<object>();
 		List<object> invisibleItems = new List<object>();
@@ -50,9 +50,8 @@ namespace QS.Widgets
 			if(Menu != null) {
 				Menu.Destroy();
 				Menu = null;
+				UnSubscribeMenuItemsAndClear();
 			}
-
-			MenuItems = new Dictionary<ImageMenuItem, object>();
 
 			if(ItemsEnum == null)
 				return;
@@ -80,7 +79,7 @@ namespace QS.Widgets
 					item.Sensitive = false;
 				if(invisibleItems.Contains(info.GetValue(null)))
 					item.Visible = false;
-				MenuItems.Add(item, info.GetValue(null));
+				_menuItems.Add(item, info.GetValue(null));
 				Menu.Add(item);
 			}
 			Menu.ShowAll();
@@ -89,14 +88,14 @@ namespace QS.Widgets
 		void OnMenuItemActivated(object sender, EventArgs e)
 		{
 			if(EnumItemClicked != null) {
-				object item = MenuItems[(ImageMenuItem)sender];
+				object item = _menuItems[(ImageMenuItem)sender];
 				EnumItemClicked(this, new EnumItemClickedEventArgs(item));
 			}
 		}
 
 		public void SetSensitive(object enumItem, bool sensitive)
 		{
-			var menuitem = MenuItems.First(pair => enumItem.Equals(pair.Value)).Key;
+			var menuitem = _menuItems.First(pair => enumItem.Equals(pair.Value)).Key;
 			menuitem.Sensitive = sensitive;
 			if(sensitive)
 				if(!sensitiveFalseItems.Contains(enumItem))
@@ -108,7 +107,7 @@ namespace QS.Widgets
 
 		public void SetVisibility(object enumItem, bool visible)
 		{
-			var menuitem = MenuItems.First(pair => enumItem.Equals(pair.Value)).Key;
+			var menuitem = _menuItems.First(pair => enumItem.Equals(pair.Value)).Key;
 			menuitem.Visible = visible;
 			if(visible) {
 				if(!invisibleItems.Contains(enumItem))
@@ -117,6 +116,24 @@ namespace QS.Widgets
 					if(invisibleItems.Contains(enumItem))
 					invisibleItems.Remove(enumItem);
 			}
+		}
+
+		protected override void OnDestroyed()
+		{
+			Binding.CleanSources();
+			UnSubscribeMenuItemsAndClear();
+			
+			base.OnDestroyed();
+		}
+
+		private void UnSubscribeMenuItemsAndClear()
+		{
+			foreach(var menuItem in _menuItems.Keys)
+			{
+				menuItem.Activated -= OnMenuItemActivated;
+			}
+			
+			_menuItems.Clear();
 		}
 	}
 

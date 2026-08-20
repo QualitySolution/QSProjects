@@ -48,5 +48,12 @@ namespace Gamma.GtkWidgets
 			get => Active ? BindValueWhenActivated : null;
 			set => Active = TypeUtil.EqualBoxedValues(value, BindValueWhenActivated);
 		}
+
+		protected override void OnDestroyed() {
+			Toggled -= YRadioButton_Toggled;
+			Binding.CleanSources();
+			
+			base.OnDestroyed();
+		}
 	}
 }

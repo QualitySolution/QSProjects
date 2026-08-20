@@ -82,9 +82,6 @@ namespace QS.Tdi
 
 		public override void Destroy()
 		{
-			TabWidget.Destroy();
-			titleLabel.Destroy();
-			
 			if(Tab is ITdiTabWithPath tdiTabWithPath)
 			{
 				tdiTabWithPath.PathChanged -= OnPathUpdated;
