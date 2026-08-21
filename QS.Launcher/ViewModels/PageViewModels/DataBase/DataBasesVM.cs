@@ -18,59 +18,27 @@ using ReactiveUI;
 
 namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 	public class DataBasesVM : CarouselPageVM {
-		private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-
 		private const string DropDatabaseTitle = "Удаление базы данных";
 		private const string RefreshMetadataTitle = "Синхронизация метаинформации";
 
 		private Connection currentConnection;
 		private Action saveConnectionsAction;
-		private IDbProvider provider;
-		public IDbProvider Provider {
-			get => provider;
-			set => this.RaiseAndSetIfChanged(ref provider, value);
+
+		public IDbProvider Provider { get; private set; }
+
+		private DbCapabilitySet capabilitySet = DbCapabilitySet.None;
+		public DbCapabilitySet Capabilities {
+			get => capabilitySet;
+			private set => this.RaiseAndSetIfChanged(ref capabilitySet, value);
 		}
-
-		/// <summary>
-		/// Что доступно пользователю, знает провайдер, поэтому после его смены пересчитываем
-		/// видимость всех кнопок разом.
-		/// </summary>
-		private void RaiseCapabilitiesChanged() {
-			this.RaisePropertyChanged(nameof(CanCreateDatabase));
-			this.RaisePropertyChanged(nameof(CanImportDatabase));
-			this.RaisePropertyChanged(nameof(CanDropDatabase));
-			this.RaisePropertyChanged(nameof(CanBackupDatabase));
-			this.RaisePropertyChanged(nameof(CanManageDatabases));
-			this.RaisePropertyChanged(nameof(CanOpenDbOperations));
-			this.RaisePropertyChanged(nameof(CanRefreshMetadata));
-			this.RaisePropertyChanged(nameof(CanOpenChangePassword));
-			this.RaisePropertyChanged(nameof(CanOpenUserManagement));
-		}
-
-		public bool CanCreateDatabase => capabilities.CanCreate(provider);
-
-		public bool CanImportDatabase => capabilities.CanImport(provider);
-
-		public bool CanDropDatabase => capabilities.CanDrop(provider);
-
-		public bool CanBackupDatabase => capabilities.CanBackup(provider);
-
-		public bool CanManageDatabases =>
-			CanDropDatabase || CanBackupDatabase;
-
-		public bool CanOpenDbOperations => CanCreateDatabase || CanImportDatabase || CanRefreshMetadata;
-
-		public bool CanRefreshMetadata => capabilities.CanRefreshMetadata(provider);
-
-		public bool CanOpenChangePassword => capabilities.CanChangeOwnPassword(provider);
-		public bool CanOpenUserManagement => capabilities.CanManageUsers(provider);
 
 		public Connection CurrentConnection => currentConnection;
 
 		public async Task SetProviderAsync(IDbProvider dbProvider, Connection connection, Action saveConnections) {
+			Provider = dbProvider;
 			currentConnection = connection;
 			saveConnectionsAction = saveConnections;
-			Provider = dbProvider; // подписка в конструкторе разбудит свойства доступности
+			Capabilities = dbCapabilities.For(dbProvider);
 
 			await ReloadDatabasesAsync();
 			LoadLastSelectedDatabase();
@@ -109,14 +77,14 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 
 		public ReactiveCommand<Unit, Unit> RefreshDatabasesCommand { get; }
 
-		public event Action<bool> StartLaunchProgram;
+		/// <summary>«Назад» - возврат к выбору подключения</summary>
 
 		private readonly IInteractiveMessage interactiveMessage;
 		private readonly IInteractiveQuestion interactiveQuestion;
 		private readonly IServiceProvider serviceProvider;
 
 		private readonly IAppRunner appRunner;
-		private readonly DbCapabilities capabilities;
+		private readonly DbCapabilities dbCapabilities;
 		private readonly IErrorHandlingService errorHandling;
 
 		public DataBasesVM(
@@ -126,18 +94,19 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			LauncherOptions launcherOptions,
 			IServiceProvider serviceProvider,
 			DbCapabilities capabilities,
-			IErrorHandlingService errorHandling)
+			IErrorHandlingService errorHandling) : base(navigation)
 		{
 			this.errorHandling = errorHandling ?? throw new ArgumentNullException(nameof(errorHandling));
-			this.appRunner = appRunner ?? throw new ArgumentNullException(nameof(appRunner));
+			Launch = launch ?? throw new ArgumentNullException(nameof(launch));
 			this.interactiveMessage = interactiveMessage ?? throw new ArgumentNullException(nameof(interactiveMessage));
 			this.interactiveQuestion = interactiveQuestion ?? throw new ArgumentNullException(nameof(interactiveQuestion));
 			this.launcherOptions = launcherOptions;
 			this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
-			this.capabilities = capabilities ?? throw new ArgumentNullException(nameof(capabilities));
+			this.dbCapabilities = capabilities ?? throw new ArgumentNullException(nameof(capabilities));
 
-			this.WhenAnyValue(x => x.Provider).Subscribe(_ => RaiseCapabilitiesChanged());
-
+			// запуск приложения закрывает лаунчер, а с ним и фоновую работу - поэтому
+			// «Запустить» держим закрытым, пока страница занята, иначе Shutdown обрывает
+			// операцию на середине
 			IObservable<bool> canExecuteConnection = this
 				.WhenAnyValue(x => x.SelectedDatabase, x => x.IsBusy,
 					(database, busy) => database != null && !busy);
@@ -153,10 +122,11 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			RefreshMetadataCommand = ReactiveCommand.Create(OpenRefreshMetadata);
 			RefreshDatabasesCommand = ReactiveCommand.CreateFromTask(
 				() => RunBusyAsync("Обновление списка баз", RefreshDatabases));
+			BackCommand = ReactiveCommand.Create(Navigation.Previous);
 		}
 
 		private void OpenRefreshMetadata() {
-			if(provider == null || !CanRefreshMetadata)
+			if(Provider == null || !Capabilities.CanRefreshMetadata)
 				return;
 
 			int syncedBases = 0;
@@ -179,12 +149,12 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 
 			var progress = serviceProvider.GetRequiredService<CreateDataBaseProgressVM>();
 			progress.OperationTitle = RefreshMetadataTitle;
-			progress.SetPipeline(provider, currentConnection, phases);
+			progress.SetPipeline(Provider, currentConnection, phases);
 			progress.OperationCompleted += () => CompleteRefreshMetadata(syncedBases, syncedUsers);
 			// причину отказа страница прогресса показывает сама, нам остаётся только увести
 			// пользователя обратно, когда он её прочитал и закрыл
 			progress.CloseRequested += () => ReturnToDatabases(refreshList: syncedBases > 0);
-			PushPageCommand?.Execute(progress);
+			Navigation.Push(progress);
 		}
 
 		private void CompleteRefreshMetadata(int syncedBases, int syncedUsers) {
@@ -196,21 +166,21 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		}
 
 		private void ChangePassword() {
-			if(provider == null)
+			if(Provider == null)
 				return;
 
 			var vm = serviceProvider.GetRequiredService<ChangePasswordVM>();
-			vm.SetProvider(provider);
-			PushPageCommand?.Execute(vm);
+			vm.SetProvider(Provider);
+			Navigation.Push(vm);
 		}
 
 		private void OpenUsers() {
-			if(provider == null)
+			if(Provider == null)
 				return;
 
 			var vm = serviceProvider.GetRequiredService<UsersVM>();
-			vm.SetProvider(provider);
-			PushPageCommand?.Execute(vm);
+			vm.SetProvider(Provider);
+			Navigation.Push(vm);
 		}
 
 		/// <summary>
@@ -265,9 +235,11 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		}
 
 		private async Task DeleteDatabaseAsync(DbInfo database) {
-			if(database == null || !CanDropDatabase)
+			if(database == null || !Capabilities.CanDrop)
 				return;
 
+			// вопрос задаём до того, как перекрыли страницу: перекрытие показывает ход
+			// операции, а операция начинается только с согласия пользователя
 			bool confirmed = await interactiveQuestion.AskInBackground(
 				$"Безвозвратно удалить базу данных «{database.Title}»?", DropDatabaseTitle);
 			if(!confirmed)
@@ -275,7 +247,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 
 			await RunBusyAsync(DropDatabaseTitle, async () => {
 				try {
-					await Task.Run(() => provider.DropDatabase(database));
+					await Task.Run(() => Provider.DropDatabase(database));
 					await RefreshDatabases();
 					interactiveMessage.ShowMessage(ImportanceLevel.Success,
 						$"База данных {database.Title} удалена.", DropDatabaseTitle);
@@ -287,7 +259,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		}
 
 		public async Task RefreshDatabases() {
-			if(provider == null)
+			if(Provider == null)
 				return;
 
 			int? selectedBaseId = SelectedDatabase?.BaseId;
@@ -304,7 +276,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		/// список и уведомление обновляем уже после await, на потоке интерфейса
 		/// </summary>
 		private async Task ReloadDatabasesAsync() {
-			Databases = await Task.Run(() => provider.GetUserDatabases().AsList());
+			Databases = await Task.Run(() => Provider.GetUserDatabases().AsList());
 			this.RaisePropertyChanged(nameof(Databases));
 		}
 
@@ -326,7 +298,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		public async Task ConnectAsync() {
 			// вход в базу это поход на сервер, а в облаке ещё и запуск сессии - уводим в фон,
 			// иначе интерфейс стоит всё время подключения
-			var resp = await Task.Run(() => provider.LoginToDatabase(SelectedDatabase));
+			var resp = await Task.Run(() => Provider.LoginToDatabase(SelectedDatabase));
 			if(!resp.Success) {
 				interactiveMessage.ShowMessage(ImportanceLevel.Error, resp.ErrorMessage, "Ошибка подключения к базе данных");
 				return;
