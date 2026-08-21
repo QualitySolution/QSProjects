@@ -23,16 +23,16 @@ public partial class MainWindow : Window
 		Closing += (_, _) => vm.SaveConnections();
 
 		// корневые страницы:
-		foreach(var page in vm.Pages)
+		foreach(var page in vm.Navigation.Pages)
 			carousel.Items.Add(viewLocator.Resolve(page));
 
-		vm.Pages.CollectionChanged += OnPagesChanged;
+		vm.Navigation.Pages.CollectionChanged += OnPagesChanged;
 
 		DataContext = vm;
 	}
 
 	/// <summary>
-	/// Поддерживает carousel.Items в соответствии со стеком <see cref="MainWindowVM.Pages"/>
+	/// Поддерживает carousel.Items в соответствии со стеком <see cref="LauncherNavigation.Pages"/>
 	/// </summary>
 	private void OnPagesChanged(object? sender, NotifyCollectionChangedEventArgs e) {
 		switch(e.Action) {

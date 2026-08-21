@@ -16,14 +16,14 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 
 		private readonly IInteractiveMessage interactiveMessage;
 
-		protected DbOperationSettingsVM(IDbManager provider, Connection connection, IServiceProvider services,
-			IInteractiveMessage interactiveMessage) {
+		protected DbOperationSettingsVM(LauncherNavigation navigation, IDbManager provider, Connection connection,
+			IServiceProvider services, IInteractiveMessage interactiveMessage) : base(navigation) {
 			Provider = provider ?? throw new ArgumentNullException(nameof(provider));
 			Connection = connection ?? throw new ArgumentNullException(nameof(connection));
 			Services = services ?? throw new ArgumentNullException(nameof(services));
 			this.interactiveMessage = interactiveMessage ?? throw new ArgumentNullException(nameof(interactiveMessage));
 
-			CancelCommand = ReactiveCommand.Create(() => PopPageCommand?.Execute(null));
+			CancelCommand = ReactiveCommand.Create(Navigation.Pop);
 		}
 
 		public abstract string Title { get; }
@@ -54,8 +54,8 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			progress.OperationTitle = Title;
 			progress.SetPipeline(Provider, Connection, BuildPipeline());
 			progress.OperationCompleted += () => OperationCompleted?.Invoke();
-			progress.CloseRequested += () => PopPageCommand?.Execute(null);
-			PushPageCommand?.Execute(progress);
+			progress.CloseRequested += Navigation.Pop;
+			Navigation.Push(progress);
 		}
 	}
 }

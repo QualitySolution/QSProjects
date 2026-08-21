@@ -78,6 +78,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		public ReactiveCommand<Unit, Unit> RefreshDatabasesCommand { get; }
 
 		/// <summary>«Назад» - возврат к выбору подключения</summary>
+		public ReactiveCommand<Unit, Unit> BackCommand { get; }
 
 		private readonly IInteractiveMessage interactiveMessage;
 		private readonly IInteractiveQuestion interactiveQuestion;
@@ -89,6 +90,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 
 		public DataBasesVM(
 			IAppRunner appRunner,
+			LauncherNavigation navigation,
 			IInteractiveMessage interactiveMessage,
 			IInteractiveQuestion interactiveQuestion,
 			LauncherOptions launcherOptions,
@@ -183,44 +185,31 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			Navigation.Push(vm);
 		}
 
-		/// <summary>
-		/// открывает страницу создания базы; по завершении возвращает фокус на <see cref="DataBasesVM"/> и обновляет список баз
-		/// </summary>
-		private void OpenCreateDatabase() {
-			if(!CanCreateDatabase)
+		/// <summary>Общий путь всех операций с базой</summary>
+		private void OpenOperation(bool allowed, Func<DbOperationSettingsVM> createSettings) {
+			if(!allowed)
 				return;
 
-			var settings = new CreateDbSettingsVM(Provider, CurrentConnection, serviceProvider, interactiveMessage);
+			var settings = createSettings();
 			settings.OperationCompleted += () => OnOperationCompleted(settings);
-			PushPageCommand?.Execute(settings);
+			Navigation.Push(settings);
 		}
 
-		/// <summary>
-		/// открывает страницу импорта базы из дампа; по завершении возвращает фокус на <see cref="DataBasesVM"/> и обновляет список баз
-		/// </summary>
-		private void OpenImportDatabase() {
-			if(!CanImportDatabase)
-				return;
+		/// <summary>открывает страницу создания базы</summary>
+		private void OpenCreateDatabase() => OpenOperation(Capabilities.CanCreate,
+			() => new CreateDbSettingsVM(Navigation, Provider, CurrentConnection, serviceProvider, interactiveMessage));
 
-			var settings = new ImportDbSettingsVM(Provider, CurrentConnection, serviceProvider, interactiveMessage);
-			settings.OperationCompleted += () => OnOperationCompleted(settings);
-			PushPageCommand?.Execute(settings);
-		}
+		/// <summary>открывает страницу импорта базы из дампа</summary>
+		private void OpenImportDatabase() => OpenOperation(Capabilities.CanImport,
+			() => new ImportDbSettingsVM(Navigation, Provider, CurrentConnection, serviceProvider, interactiveMessage));
 
-		/// <summary>
-		/// открывает страницу резервного копирования выбранной базы
-		/// </summary>
-		private void OpenBackup(DbInfo database) {
-			if(database == null || !CanBackupDatabase)
-				return;
+		/// <summary>открывает страницу резервного копирования выбранной базы</summary>
+		private void OpenBackup(DbInfo database) => OpenOperation(database != null && Capabilities.CanBackup,
+			() => new BackupDbSettingsVM(Navigation, database, Provider, CurrentConnection, serviceProvider, interactiveMessage));
 
-			var settings = new BackupDbSettingsVM(database, Provider, CurrentConnection, serviceProvider, interactiveMessage);
-			settings.OperationCompleted += () => OnOperationCompleted(settings);
-			PushPageCommand?.Execute(settings);
-		}
-
+		/// <summary>снимаем всё, что стоит выше, и обновляемсписок</summary>
 		private void ReturnToDatabases(bool refreshList = true) {
-			PopToPageCommand?.Execute(GetType());
+			Navigation.PopTo(GetType());
 			if(refreshList)
 				RefreshDatabasesCommand.Execute().Subscribe();
 		}

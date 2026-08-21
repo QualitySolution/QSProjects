@@ -23,10 +23,11 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 
 		private IDbUserManager provider;
 
-		public UsersVM(IInteractiveMessage interactiveMessage,
+		public UsersVM(LauncherNavigation navigation,
+			IInteractiveMessage interactiveMessage,
 			IInteractiveQuestion interactiveQuestion,
 			IServiceProvider serviceProvider,
-			IErrorHandlingService errorHandling) {
+			IErrorHandlingService errorHandling) : base(navigation) {
 			this.interactiveMessage = interactiveMessage ?? throw new ArgumentNullException(nameof(interactiveMessage));
 			this.interactiveQuestion = interactiveQuestion ?? throw new ArgumentNullException(nameof(interactiveQuestion));
 			this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
@@ -39,7 +40,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			DeleteUserCommand = ReactiveCommand.CreateFromTask(DeleteUserAsync, hasSelectedUser);
 			RefreshUsersCommand = ReactiveCommand.CreateFromTask(
 				() => RunBusyAsync("Загрузка списка пользователей", RefreshUsers));
-			BackCommand = ReactiveCommand.Create(() => PopPageCommand?.Execute(null));
+			BackCommand = ReactiveCommand.Create(Navigation.Pop);
 
 			Users = new ObservableCollection<DbUserInfo>();
 		}
@@ -98,7 +99,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			var vm = serviceProvider.GetRequiredService<UserManagementVM>();
 			vm.SetContext(provider, user, isCreating);
 			vm.OperationCompleted += () => RefreshUsersCommand.Execute().Subscribe();
-			PushPageCommand?.Execute(vm);
+			Navigation.Push(vm);
 		}
 
 		private async Task DeleteUserAsync() {

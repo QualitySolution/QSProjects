@@ -15,7 +15,8 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		private readonly IErrorHandlingService errorHandling;
 		private const string MessageTitle = "Смена пароля";
 
-		public ChangePasswordVM(IInteractiveMessage interactiveMessage, IErrorHandlingService errorHandling) {
+		public ChangePasswordVM(LauncherNavigation navigation, IInteractiveMessage interactiveMessage,
+			IErrorHandlingService errorHandling) : base(navigation) {
 			this.interactiveMessage = interactiveMessage ?? throw new ArgumentNullException(nameof(interactiveMessage));
 			this.errorHandling = errorHandling ?? throw new ArgumentNullException(nameof(errorHandling));
 
@@ -23,7 +24,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 				(pass, confirm) => !string.IsNullOrEmpty(pass) && pass == confirm);
 			ChangeOwnPasswordCommand = ReactiveCommand.CreateFromTask(
 				() => RunBusyAsync(MessageTitle, ChangeOwnPasswordAsync), canChangeOwnPassword);
-			BackCommand = ReactiveCommand.Create(() => PopPageCommand?.Execute(null));
+			BackCommand = ReactiveCommand.Create(Navigation.Pop);
 		}
 
 		private string ownNewPassword;
@@ -64,7 +65,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 				return;
 			}
 
-			PopPageCommand?.Execute(null);
+			Navigation.Pop();
 		}
 	}
 }

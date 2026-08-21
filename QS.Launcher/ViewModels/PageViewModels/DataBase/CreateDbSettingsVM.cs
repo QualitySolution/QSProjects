@@ -13,9 +13,9 @@ using System.Collections.Generic;
 
 namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 	public class CreateDbSettingsVM : DbOperationSettingsVM {
-		public CreateDbSettingsVM(IDbManager provider, Connection connection, IServiceProvider services,
-			IInteractiveMessage interactiveMessage)
-			: base(provider, connection, services, interactiveMessage) {
+		public CreateDbSettingsVM(LauncherNavigation navigation, IDbManager provider, Connection connection,
+			IServiceProvider services, IInteractiveMessage interactiveMessage)
+			: base(navigation, provider, connection, services, interactiveMessage) {
 			SetValidity(this.WhenAnyValue(x => x.DbName, x => x.DbTitle,
 				(name, title) => !string.IsNullOrWhiteSpace(name) && !string.IsNullOrWhiteSpace(title)));
 		}
