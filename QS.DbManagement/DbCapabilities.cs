@@ -11,43 +11,22 @@ namespace QS.DbManagement {
 			this.scripts = scripts;
 		}
 
-		/// <summary>
-		/// Создание из встроенного скрипта, если
-		/// сервер разрешает и зарегистрирован скрипт создания
-		/// </summary>
-		public bool CanCreate(IDbManager manager) {
-			return manager?.CanCreateDatabase == true
-				&& scripts?.HasCreationScript() == true;
-		}
+		/// <summary>Провайдер отвечает за то, что разрешает сервер</summary>
+		public DbCapabilitySet For(IDbProvider provider) {
+			if(provider == null)
+				return DbCapabilitySet.None;
 
-		/// <summary>
-		/// Наполнение дампом, если
-		/// есть права на создание
-		/// </summary>
-		public bool CanImport(IDbManager manager) {
-			return manager?.CanCreateDatabase == true;
-		}
-
-		/// <summary>по возможности провайдера</summary>
-		public bool CanBackup(IDbManager manager) {
-			return manager?.CanBackupDatabase == true;
-		}
-
-		/// <summary>по праву провайдера</summary>
-		public bool CanDrop(IDbManager manager) {
-			return manager?.CanDropDatabase == true;
-		}
-
-		public bool CanChangeOwnPassword(IDbUserManager userManager) {
-			return userManager?.CanChangeOwnPassword == true;
-		}
-
-		public bool CanManageUsers(IDbUserManager userManager) {
-			return userManager?.CanManageUsers == true;
-		}
-
-		public bool CanRefreshMetadata(IDbManager manager) {
-			return manager?.CanRefreshMetadata == true;
+			return new DbCapabilitySet {
+				// создание из встроенного скрипта: и сервер разрешает, и скрипт зарегистрирован
+				CanCreate = provider.CanCreateDatabase && scripts?.HasCreationScript() == true,
+				// наполнению дампом скрипт не нужен - хватает права на создание
+				CanImport = provider.CanCreateDatabase,
+				CanDrop = provider.CanDropDatabase,
+				CanBackup = provider.CanBackupDatabase,
+				CanRefreshMetadata = provider.CanRefreshMetadata,
+				CanChangeOwnPassword = provider.CanChangeOwnPassword,
+				CanManageUsers = provider.CanManageUsers
+			};
 		}
 	}
 }

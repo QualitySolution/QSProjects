@@ -36,7 +36,7 @@
             <DockPanel Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,4">
                 <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
                     <!-- Операции с базами -->
-                    <Button Classes="icon" IsVisible="{Binding CanOpenDbOperations}"
+                    <Button Classes="icon" IsVisible="{Binding Capabilities.CanOpenDbOperations}"
                             ToolTip.Tip="Базы данных: создание и импорт">
                         <Panel Width="24" Height="22">
                             <PathIcon Width="16" Height="16" HorizontalAlignment="Left" VerticalAlignment="Top" Data="{StaticResource DatabaseGeometry}" />
@@ -44,17 +44,17 @@
                         </Panel>
                         <Button.Flyout>
                             <MenuFlyout Placement="BottomEdgeAlignedRight">
-                                <MenuItem Header="Создать базу данных" Command="{Binding OpenCreateDatabaseCommand}" IsVisible="{Binding CanCreateDatabase}" />
-                                <MenuItem Header="Импортировать базу" Command="{Binding OpenImportDatabaseCommand}" IsVisible="{Binding CanImportDatabase}" />
-                                <MenuItem Header="Обновить метаинформацию" Command="{Binding RefreshMetadataCommand}" IsVisible="{Binding CanRefreshMetadata}" />
+                                <MenuItem Header="Создать базу данных" Command="{Binding OpenCreateDatabaseCommand}" IsVisible="{Binding Capabilities.CanCreate}" />
+                                <MenuItem Header="Импортировать базу" Command="{Binding OpenImportDatabaseCommand}" IsVisible="{Binding Capabilities.CanImport}" />
+                                <MenuItem Header="Обновить метаинформацию" Command="{Binding RefreshMetadataCommand}" IsVisible="{Binding Capabilities.CanRefreshMetadata}" />
                             </MenuFlyout>
                         </Button.Flyout>
                     </Button>
 
-                    <Rectangle Width="1" Margin="6,4" Fill="#40808080" IsVisible="{Binding CanOpenDbOperations}" />
+                    <Rectangle Width="1" Margin="6,4" Fill="#40808080" IsVisible="{Binding Capabilities.CanOpenDbOperations}" />
 
                     <!-- Пользователи и пароль -->
-                    <Button Classes="icon" IsVisible="{Binding CanOpenChangePassword}"
+                    <Button Classes="icon" IsVisible="{Binding Capabilities.CanChangeOwnPassword}"
                             ToolTip.Tip="Пользователи: смена пароля и управление">
                         <Panel Width="24" Height="22">
                             <PathIcon Width="16" Height="16" HorizontalAlignment="Left" VerticalAlignment="Top" Data="{StaticResource PersonGeometry}" />
@@ -63,7 +63,7 @@
                         <Button.Flyout>
                             <MenuFlyout Placement="BottomEdgeAlignedRight">
                                 <MenuItem Header="Сменить пароль" Command="{Binding OpenChangePasswordCommand}" />
-                                <MenuItem Header="Управление пользователями" Command="{Binding OpenUserManagementCommand}" IsVisible="{Binding CanOpenUserManagement}" />
+                                <MenuItem Header="Управление пользователями" Command="{Binding OpenUserManagementCommand}" IsVisible="{Binding Capabilities.CanManageUsers}" />
                             </MenuFlyout>
                         </Button.Flyout>
                     </Button>
@@ -79,13 +79,13 @@
                         <DockPanel HorizontalAlignment="Stretch">
                             <Button DockPanel.Dock="Right" Margin="4,0,0,0" Padding="8,0" VerticalAlignment="Center"
                                     Background="Transparent" BorderThickness="0" FontWeight="Bold" Content="⋮"
-                                    IsVisible="{Binding $parent[ListBox].((vmdb:DataBasesVM)DataContext).CanManageDatabases}">
+                                    IsVisible="{Binding $parent[ListBox].((vmdb:DataBasesVM)DataContext).Capabilities.CanManageDatabases}">
                                 <Button.Flyout>
                                     <MenuFlyout>
                                         <MenuItem Header="Сделать резервную копию" Click="BackupDatabase_OnClick"
-											IsVisible="{Binding $parent[ListBox].((vmdb:DataBasesVM)DataContext).CanBackupDatabase}" />
+											IsVisible="{Binding $parent[ListBox].((vmdb:DataBasesVM)DataContext).Capabilities.CanBackup}" />
                                         <MenuItem Header="Удалить базу" Click="DeleteDatabase_OnClick"
-											IsVisible="{Binding $parent[ListBox].((vmdb:DataBasesVM)DataContext).CanDropDatabase}" />
+											IsVisible="{Binding $parent[ListBox].((vmdb:DataBasesVM)DataContext).Capabilities.CanDrop}" />
                                     </MenuFlyout>
                                 </Button.Flyout>
                             </Button>
@@ -103,12 +103,12 @@
 	            </ListBox.KeyBindings>
             </ListBox>
 
-            <Button Grid.Row="2" Grid.Column="0" Margin="5" HorizontalAlignment="Stretch" Command="{Binding PreviousPageCommand}" Content="Назад" />
+            <Button Grid.Row="2" Grid.Column="0" Margin="5" HorizontalAlignment="Stretch" Command="{Binding BackCommand}" Content="Назад" />
             <Button Grid.Row="2" Grid.Column="1" IsDefault="True" Margin="5" HorizontalAlignment="Stretch" Command="{Binding ConnectCommand}" Content="Запустить" />
 
             <CheckBox Grid.Row="3" Grid.ColumnSpan="2" Margin="5" Content="Не закрывать лаунчер после подключения" Foreground="#7A000000"
-                      IsChecked="{Binding !ShouldCloseLauncherAfterStart}"
-                      IsVisible="{Binding VisibleShouldCloseLauncherCheckBox}" />
+                      IsChecked="{Binding !Launch.ShouldCloseLauncherAfterStart}"
+                      IsVisible="{Binding Launch.IsStandalone}" />
 
             <StackPanel x:Name="loadingPanel" Grid.Row="4" Grid.ColumnSpan="2" HorizontalAlignment="Center" IsVisible="False" Orientation="Horizontal">
                 <Label Margin="5" Content="Запуск..." />
