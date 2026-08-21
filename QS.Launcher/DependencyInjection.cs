@@ -41,7 +41,6 @@ namespace QS.Launcher {
 				.AddTransient<CreateDataBaseProgressVM>()
 				.AddSingleton<IDbCreatorInteraction, LauncherDbCreatorInteraction>()
 				
-				.AddSingleton<AppLaunchService>()
 				.AddSingleton<DbCapabilities>();
 		}
 
