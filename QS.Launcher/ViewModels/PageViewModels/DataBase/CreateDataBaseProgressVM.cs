@@ -94,9 +94,10 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		public ReactiveCommand<Unit, Unit> CloseCommand { get; }
 
 		public CreateDataBaseProgressVM(
+			LauncherNavigation navigation,
 			IGuiDispatcher guiDispatcher,
 			IServiceProvider services,
-			IErrorHandlingService errorHandling)
+			IErrorHandlingService errorHandling) : base(navigation)
 		{
 			this.guiDispatcher = guiDispatcher ?? throw new ArgumentNullException(nameof(guiDispatcher));
 			this.services = services ?? throw new ArgumentNullException(nameof(services));
@@ -106,7 +107,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			StartCommand = ReactiveCommand.CreateFromTask(RunAsync);
 			CancelCommand = ReactiveCommand.Create(() => {
 				cts.Cancel();
-				PopPageCommand?.Execute(null);
+				Navigation.Pop();
 			});
 			CloseCommand = ReactiveCommand.Create(() => CloseRequested?.Invoke());
 		}
@@ -150,8 +151,6 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 				logger.Info("Операция с базой отменена.");
 			}
 			catch(Exception ex) {
-				// сбои самих запросов создания базы разбирает IDbCreatorInteraction - у него
-				// на руках последний выполненный запрос. Сюда доходит то, что до него не дошло
 				errorHandling.Handle(ex, OperationTitle);
 				Fail(ex.Message);
 			}

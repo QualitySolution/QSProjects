@@ -66,13 +66,13 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		private readonly IErrorHandlingService errorHandling;
 
 		public LoginVM(
-			IEnumerable<ConnectionTypeBase> connectionTypes,
+			LauncherNavigation navigation,
 			LauncherOptions options,
 			Configurator configurator,
 			IApplicationInfo applicationInfo,
 			DataBasesVM dbVM,
 			IInteractiveMessage interactiveMessage,
-			IErrorHandlingService errorHandling) : base()
+			IErrorHandlingService errorHandling) : base(navigation)
 		{
 			this.configurator = configurator ?? throw new ArgumentNullException(nameof(configurator));
 			this.dbVM = dbVM;
@@ -82,8 +82,10 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			AppTitle = options.AppTitle;
 
 			this.applicationInfo = applicationInfo;
-			ConnectionTypes = connectionTypes.ToList();
-			Connections = new ObservableCollection<Connection>(configurator.ReadConnections()); 
+			// типы подключений берём у конфигуратора: он же по ним и разбирает файл,
+			// и второй список тех же типов означал бы два источника правды
+			ConnectionTypes = configurator.ConnectionTypes.ToList();
+			Connections = new ObservableCollection<Connection>(configurator.ReadConnections());
 			SelectedConnection = Connections.FirstOrDefault(c => c.Last);
 			
 			LoginCommand = ReactiveCommand.CreateFromTask(
@@ -122,13 +124,12 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			try {
 				dbProvider = connection.CreateProvider(Password, applicationInfo.ProductCode);
 				var resp = await Task.Run(() => dbProvider.LoginToServer());
-
 				SaveConnections();
 
 				if(resp.Success) {
 					BusyText = "Чтение списка баз";
 					await dbVM.SetProviderAsync(dbProvider, connection, SaveConnections);
-					NextPageCommand?.Execute(null);
+					Navigation.Next();
 				}
 				else
 					interactiveMessage.ShowMessage(ImportanceLevel.Error, resp.ErrorMessage, "Не удалось войти");

@@ -11,9 +11,9 @@ using System.Collections.Generic;
 
 namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 	public class ImportDbSettingsVM : DbOperationSettingsVM {
-		public ImportDbSettingsVM(IDbManager provider, Connection connection, IServiceProvider services,
-			IInteractiveMessage interactiveMessage)
-			: base(provider, connection, services, interactiveMessage) {
+		public ImportDbSettingsVM(LauncherNavigation navigation, IDbManager provider, Connection connection,
+			IServiceProvider services, IInteractiveMessage interactiveMessage)
+			: base(navigation, provider, connection, services, interactiveMessage) {
 			SetValidity(this.WhenAnyValue(x => x.DbName, x => x.DbTitle, x => x.ImportDumpFilePath,
 				(name, title, dump) => !string.IsNullOrWhiteSpace(name)
 					&& !string.IsNullOrWhiteSpace(title)

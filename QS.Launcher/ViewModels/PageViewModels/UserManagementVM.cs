@@ -25,9 +25,10 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		private IDbUserManager provider;
 
 		public UserManagementVM(
+			LauncherNavigation navigation,
 			IInteractiveMessage interactiveMessage,
 			IInteractiveQuestion interactiveQuestion,
-			IErrorHandlingService errorHandling) {
+			IErrorHandlingService errorHandling) : base(navigation) {
 			this.interactiveMessage = interactiveMessage ?? throw new ArgumentNullException(nameof(interactiveMessage));
 			this.interactiveQuestion = interactiveQuestion ?? throw new ArgumentNullException(nameof(interactiveQuestion));
 			this.errorHandling = errorHandling ?? throw new ArgumentNullException(nameof(errorHandling));
@@ -201,7 +202,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 				|| await SaveUserAsync();
 
 			if(isUserSavedSuccessfully && isBaseAccessSavedSuccessfully) {
-				PopPageCommand?.Execute(null);
+				Navigation.Pop();
 				OperationCompleted?.Invoke();
 			}
 		}
@@ -211,7 +212,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 				|| !string.IsNullOrEmpty(Card.NewPassword)
 				|| BaseAccesses.Any(r => r.IsDirty);
 			if(!hasChanges) {
-				PopPageCommand?.Execute(null);
+				Navigation.Pop();
 				return;
 			}
 
@@ -219,7 +220,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 				"Есть несохранённые изменения. Выйти без сохранения?", messageTitle);
 			if(!confirmed) return;
 
-			PopPageCommand?.Execute(null);
+			Navigation.Pop();
 		}
 	}
 }

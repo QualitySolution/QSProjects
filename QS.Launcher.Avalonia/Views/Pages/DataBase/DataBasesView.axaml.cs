@@ -19,7 +19,7 @@ public partial class DataBasesView : UserControl {
 
 		DataContext = ViewModel = viewModel;
 
-		ViewModel.StartLaunchProgram += HandleStartMainProgram;
+		ViewModel.Launch.LaunchRequested += HandleStartMainProgram;
 		// Enter обрабатывают KeyBinding списка и кнопка «Запустить» с IsDefault - обе
 		// смотрят на CanExecute команды. Свой обработчик на всём UserControl запускал
 		// подключение и без выбранной базы
