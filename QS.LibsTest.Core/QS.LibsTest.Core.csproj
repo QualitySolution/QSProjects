@@ -27,7 +27,13 @@
     </ItemGroup>
 
     <ItemGroup>
+      <EmbeddedResource Include="Launcher\Base\AppBase.sql" LogicalName="QS.Launcher.Test.Base.AppBase.sql" />
+      <EmbeddedResource Include="Launcher\Base\QSLauncher.sql" LogicalName="QS.Launcher.Test.Base.QSLauncher.sql" />
+    </ItemGroup>
+
+    <ItemGroup>
       <ProjectReference Include="..\QS.BaseParameters\QS.BaseParameters.csproj" />
+      <ProjectReference Include="..\QS.Cloud.Client\QS.Cloud.Client.csproj" />
       <ProjectReference Include="..\QS.Configuration\QS.Configuration.csproj" />
       <ProjectReference Include="..\QS.Extensions.Observable\QS.Extensions.Observable.csproj" />
       <ProjectReference Include="..\QS.Features\QS.Features.csproj" />

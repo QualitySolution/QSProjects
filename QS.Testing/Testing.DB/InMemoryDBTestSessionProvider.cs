@@ -1,5 +1,4 @@
 using NHibernate;
-using NHibernate.Cfg;
 using NHibernate.Tool.hbm2ddl;
 using QS.Project.DB;
 
@@ -7,12 +6,13 @@ namespace QS.Testing.DB
 {
 	public class InMemoryDBTestSessionProvider : ISessionProvider
 	{
-		private readonly Configuration configuration;
+		// имя пишем полностью: короткое Configuration перехватывает пространство имён QS.Configuration
+		private readonly NHibernate.Cfg.Configuration configuration;
 		private readonly ISessionFactory sessionFactory;
 		private bool useSameDb = false;
 		ISession lastSession;
 
-		public InMemoryDBTestSessionProvider(Configuration configuration, ISessionFactory sessionFactory)
+		public InMemoryDBTestSessionProvider(NHibernate.Cfg.Configuration configuration, ISessionFactory sessionFactory)
 		{
 			this.configuration = configuration ?? throw new System.ArgumentNullException(nameof(configuration));
 			this.sessionFactory = sessionFactory ?? throw new System.ArgumentNullException(nameof(sessionFactory));
