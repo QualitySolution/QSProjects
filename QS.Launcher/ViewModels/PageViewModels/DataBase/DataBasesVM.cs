@@ -18,6 +18,8 @@ using ReactiveUI;
 
 namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 	public class DataBasesVM : CarouselPageVM {
+		private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
 		private const string DropDatabaseTitle = "Удаление базы данных";
 		private const string RefreshMetadataTitle = "Синхронизация метаинформации";
 
@@ -66,6 +68,8 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		/// </summary>
 		public bool VisibleShouldCloseLauncherCheckBox => launcherOptions?.IsStandalone ?? false;
 
+		public event Action<bool> StartLaunchProgram;
+
 		public ICommand ConnectCommand { get; }
 		public ReactiveCommand<Unit, Unit> OpenCreateDatabaseCommand { get; }
 		public ReactiveCommand<Unit, Unit> OpenImportDatabaseCommand { get; }
@@ -99,7 +103,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			IErrorHandlingService errorHandling) : base(navigation)
 		{
 			this.errorHandling = errorHandling ?? throw new ArgumentNullException(nameof(errorHandling));
-			Launch = launch ?? throw new ArgumentNullException(nameof(launch));
+			this.appRunner = appRunner ?? throw new ArgumentNullException(nameof(appRunner));
 			this.interactiveMessage = interactiveMessage ?? throw new ArgumentNullException(nameof(interactiveMessage));
 			this.interactiveQuestion = interactiveQuestion ?? throw new ArgumentNullException(nameof(interactiveQuestion));
 			this.launcherOptions = launcherOptions;
