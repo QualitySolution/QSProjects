@@ -28,40 +28,40 @@
                 <!-- Форма редактирования -->
                 <StackPanel IsVisible="{Binding ShowEditForm}">
                     <Label Margin="5,10,5,0" Content="Логин:" />
-                    <TextBox Margin="5" Text="{Binding EditLogin}" IsEnabled="{Binding IsNewUser}" />
+                    <TextBox Margin="5" Text="{Binding Card.Login}" IsEnabled="{Binding Card.IsNew}" />
 
-                    <StackPanel IsVisible="{Binding ShowName}">
+                    <StackPanel IsVisible="{Binding Card.ShowName}">
                         <Label Margin="5,5,5,0" Content="Имя:" />
-                        <TextBox Margin="5" Text="{Binding EditName}" />
+                        <TextBox Margin="5" Text="{Binding Card.Name}" />
                     </StackPanel>
 
-                    <StackPanel IsVisible="{Binding ShowEmail}">
+                    <StackPanel IsVisible="{Binding Card.ShowEmail}">
                         <Label Margin="5,5,5,0" Content="Email:" />
-                        <TextBox Margin="5" Text="{Binding EditEmail}" />
+                        <TextBox Margin="5" Text="{Binding Card.Email}" />
                     </StackPanel>
 
-                    <StackPanel IsVisible="{Binding ShowPhone}">
+                    <StackPanel IsVisible="{Binding Card.ShowPhone}">
                         <Label Margin="5,5,5,0" Content="Телефон:" />
-                        <TextBox Margin="5" Text="{Binding EditPhone}" />
+                        <TextBox Margin="5" Text="{Binding Card.Phone}" />
                     </StackPanel>
 
-                    <StackPanel IsVisible="{Binding ShowPost}">
+                    <StackPanel IsVisible="{Binding Card.ShowPost}">
                         <Label Margin="5,5,5,0" Content="Должность:" />
-                        <TextBox Margin="5" Text="{Binding EditPost}" />
+                        <TextBox Margin="5" Text="{Binding Card.Post}" />
                     </StackPanel>
 
-                    <StackPanel IsVisible="{Binding ShowComment}">
+                    <StackPanel IsVisible="{Binding Card.ShowComment}">
                         <Label Margin="5,5,5,0" Content="Комментарий:" />
-                        <TextBox Margin="5" AcceptsReturn="True" MaxHeight="60" Text="{Binding EditComment}" />
+                        <TextBox Margin="5" AcceptsReturn="True" MaxHeight="60" Text="{Binding Card.Comment}" />
                     </StackPanel>
 
                     <CheckBox Margin="5,5,5,0" Content="Администратор учётной записи"
-                              IsChecked="{Binding EditIsAdmin}" IsVisible="{Binding ShowAdminFlag}" />
+                              IsChecked="{Binding Card.IsAdmin}" IsVisible="{Binding Card.ShowAdminFlag}" />
                     <CheckBox Margin="5,0" Content="Отключён"
-                              IsChecked="{Binding EditDisabled}" IsVisible="{Binding ShowDisabling}" />
+                              IsChecked="{Binding Card.Disabled}" IsVisible="{Binding Card.ShowDisabling}" />
 
                     <Label Margin="5,5,5,0" Content="Пароль:" />
-                    <TextBox Margin="5" PasswordChar="•" Text="{Binding EditNewPassword}" Watermark="{Binding PasswordWatermark}" />
+                    <TextBox Margin="5" PasswordChar="•" Text="{Binding Card.NewPassword}" Watermark="{Binding Card.PasswordWatermark}" />
 
                     <!-- Доступ к базам -->
                     <StackPanel IsVisible="{Binding HasSelectedUser}">
