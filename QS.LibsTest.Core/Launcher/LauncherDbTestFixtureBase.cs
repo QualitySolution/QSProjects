@@ -27,8 +27,6 @@ namespace QS.Launcher.Test {
 		/// <summary>Код чужого продукта - его базы наш лаунчер видеть не должен</summary>
 		protected const byte OtherProductCode = 77;
 
-		protected const string TestAccountName = "testaccount";
-
 		/// <summary>Базы, которые ResetServer никогда не трогает</summary>
 		private static readonly string[] KeptDatabases =
 			{ "information_schema", "mysql", "performance_schema", "sys", LauncherDbName };
@@ -38,8 +36,6 @@ namespace QS.Launcher.Test {
 
 		private readonly List<IDisposable> createdProviders = new List<IDisposable>();
 		private Stopwatch testTimer;
-
-		protected int TestAccountId { get; private set; }
 
 		#region Жизненный цикл
 
@@ -89,10 +85,8 @@ namespace QS.Launcher.Test {
 			await DropApplicationDatabases();
 			await DropTestLogins();
 			await TruncateMetabase();
-			TestAccountId = await SeedAccount(TestAccountName);
-			await SeedMetabaseUser(RootLogin, isAccountAdmin: true);
-			LogStep("сервер приведён в исходное: аккаунт {0} (id {1}), в метабазе только {2}",
-				TestAccountName, TestAccountId, RootLogin);
+			await SeedMetabaseUser(RootLogin, isAdmin: true);
+			LogStep("сервер приведён в исходное: в метабазе только {0}", RootLogin);
 		}
 
 		[TearDown]
@@ -121,9 +115,9 @@ namespace QS.Launcher.Test {
 					foreach(var row in await ReadMetabaseBases())
 						Log($"│    метабаза/bases: id={row.Id} {row.BaseName} «{row.Title}» v{row.Version} disabled={row.Disabled}");
 					foreach(var row in await ReadMetabaseUsers())
-						Log($"│    метабаза/server_users: id={row.Id} {row.Login} «{row.Name}» admin={row.IsAccountAdmin} disabled={row.Disabled}");
-					foreach(var row in await ReadMetabaseAccess())
-						Log($"│    метабаза/base_access: {row.Login} -> {row.BaseName} admin={row.Admin} readOnly={row.ReadOnly}");
+						Log($"│    метабаза/server_users: id={row.Id} {row.Login} «{row.Name}» admin={row.IsAdmin} disabled={row.Disabled}");
+					foreach(var row in await ReadBaseUpdateRights())
+						Log($"│    метабаза/base_update_rights: {row.Login} -> {row.BaseName} canUpdate={row.CanUpdate}");
 				}
 				else
 					Log("│    метабазы нет");
@@ -175,25 +169,7 @@ namespace QS.Launcher.Test {
 			LogStep("метабаза {0} снесена", LauncherDbName);
 		}
 
-		/// <summary>Убирает колонку из таблицы метабазы - для проверки интроспекции схемы.</summary>
-		protected async Task DropMetabaseColumn(string table, string column) {
-			using(var connection = CreateConnection(LauncherDbName)) {
-				await connection.OpenAsync();
-				await connection.ExecuteAsync($"ALTER TABLE `{table}` DROP COLUMN `{column}`;");
-			}
-			LogStep("из таблицы метабазы {0} убрана колонка {1}", table, column);
-		}
-
-		/// <summary>Сносит таблицу метабазы - для проверки поведения на сломанной метабазе.</summary>
-		protected async Task DropMetabaseTable(string table) {
-			using(var connection = CreateConnection(LauncherDbName)) {
-				await connection.OpenAsync();
-				await connection.ExecuteAsync($"DROP TABLE `{table}`;");
-			}
-			LogStep("из метабазы удалена таблица {0}", table);
-		}
-
-		protected async Task TruncateMetabase() {
+		private async Task TruncateMetabase() {
 			if(!await DatabaseExists(LauncherDbName)) {
 				await DeployMetabase();
 				return;
@@ -202,62 +178,53 @@ namespace QS.Launcher.Test {
 			using(var connection = CreateConnection(LauncherDbName)) {
 				await connection.OpenAsync();
 				await connection.ExecuteAsync(
-					"DELETE FROM `base_access`; DELETE FROM `sessions`; DELETE FROM `api_tokens`; " +
-					"DELETE FROM `bases`; DELETE FROM `server_users`; DELETE FROM `accounts`;");
+					"DELETE FROM `base_update_rights`; DELETE FROM `bases`; DELETE FROM `server_users`;");
+				await SeedProducts(connection);
 			}
 		}
 
-		protected async Task<int> SeedAccount(string login) {
-			using(var connection = CreateConnection(LauncherDbName)) {
-				await connection.OpenAsync();
-				await connection.ExecuteAsync(
-					"INSERT INTO `accounts` (login, name) VALUES (@login, @login);", new { login });
-				return await connection.ExecuteScalarAsync<int>("SELECT LAST_INSERT_ID();");
-			}
-		}
+		/// <summary>Справочник продуктов: сам лаунчер в него не ходит, но метабаза без него неполна</summary>
+		private static Task SeedProducts(MySqlConnection connection) =>
+			connection.ExecuteAsync(
+				"REPLACE INTO `products` (id, name) VALUES (@ours, 'Тестовый продукт'), (@alien, 'Соседний продукт');",
+				new { ours = TestProductCode, alien = OtherProductCode });
 
-		protected async Task<int> SeedMetabaseUser(string login, bool isAccountAdmin = false,
-			string name = null, string email = null, bool disabled = false, int? accountId = null) {
+		protected async Task<int> SeedMetabaseUser(string login, bool isAdmin = false,
+			string name = null, string email = null, bool disabled = false, byte product = TestProductCode) {
 			using(var connection = CreateConnection(LauncherDbName)) {
 				await connection.OpenAsync();
 				await connection.ExecuteAsync(
-					"INSERT INTO `server_users` (account_id, product_id, login, name, email, is_account_admin, disabled) " +
-					"VALUES (@account, @product, @login, @name, @email, @admin, @disabled);",
-					new {
-						account = accountId ?? TestAccountId, product = TestProductCode, login,
-						name, email, admin = isAccountAdmin, disabled
-					});
+					"INSERT INTO `server_users` (product_id, login, name, email, is_admin, disabled) " +
+					"VALUES (@product, @login, @name, @email, @admin, @disabled);",
+					new { product, login, name, email, admin = isAdmin, disabled });
 				int id = await connection.ExecuteScalarAsync<int>("SELECT LAST_INSERT_ID();");
-				LogStep("в метабазу добавлен пользователь {0} (id {1}, админ аккаунта: {2})", login, id, isAccountAdmin);
+				LogStep("в метабазу добавлен пользователь {0} (id {1}, управляет пользователями: {2})", login, id, isAdmin);
 				return id;
 			}
 		}
 
 		protected async Task<int> SeedMetabaseBase(string baseName, string title = null,
-			byte product = TestProductCode, string version = "1.0", bool disabled = false, int? accountId = null) {
+			byte product = TestProductCode, string version = "1.0", bool disabled = false) {
 			using(var connection = CreateConnection(LauncherDbName)) {
 				await connection.OpenAsync();
 				await connection.ExecuteAsync(
-					"INSERT INTO `bases` (account_id, product_id, base_name, real_name, base_title, version, base_guid, disabled) " +
-					"VALUES (@account, @product, @name, @name, @title, @version, @guid, @disabled);",
-					new {
-						account = accountId ?? TestAccountId, product, name = baseName,
-						title = title ?? baseName, version, guid = Guid.NewGuid().ToString(), disabled
-					});
+					"INSERT INTO `bases` (product_id, base_name, base_title, version, disabled) " +
+					"VALUES (@product, @name, @title, @version, @disabled);",
+					new { product, name = baseName, title = title ?? baseName, version, disabled });
 				return await connection.ExecuteScalarAsync<int>("SELECT LAST_INSERT_ID();");
 			}
 		}
 
-		protected async Task GrantMetabaseAccess(int userId, int baseId, bool admin = false, bool readOnly = false) {
+		protected async Task GrantBaseUpdateRight(int userId, int baseId, bool canUpdate = true) {
 			using(var connection = CreateConnection(LauncherDbName)) {
 				await connection.OpenAsync();
 				await connection.ExecuteAsync(
-					"INSERT INTO `base_access` (user_id, base_id, admin, read_only) VALUES (@user, @base, @admin, @readOnly) " +
-					"ON DUPLICATE KEY UPDATE admin = VALUES(admin), read_only = VALUES(read_only);",
-					new { user = userId, @base = baseId, admin, readOnly });
+					"INSERT INTO `base_update_rights` (user_id, base_id, can_update) VALUES (@user, @base, @canUpdate) " +
+					"ON DUPLICATE KEY UPDATE can_update = VALUES(can_update);",
+					new { user = userId, @base = baseId, canUpdate });
 			}
-			LogStep("в метабазе выдан доступ: пользователь {0} -> база {1} (админ: {2}, только чтение: {3})",
-				userId, baseId, admin, readOnly);
+			LogStep("в метабазе отмечено право на обновление: пользователь {0} -> база {1} ({2})",
+				userId, baseId, canUpdate);
 		}
 
 		#endregion
@@ -268,16 +235,9 @@ namespace QS.Launcher.Test {
 			using(var connection = CreateConnection(LauncherDbName)) {
 				await connection.OpenAsync();
 				return (await connection.QueryAsync<MetabaseBaseRow>(
-					"SELECT id AS Id, base_name AS BaseName, real_name AS RealName, base_title AS Title, " +
-					"version AS Version, base_guid AS Guid, disabled AS Disabled, product_id AS ProductId " +
+					"SELECT id AS Id, base_name AS BaseName, base_title AS Title, " +
+					"version AS Version, disabled AS Disabled, product_id AS ProductId " +
 					"FROM `bases` ORDER BY base_name;")).ToList();
-			}
-		}
-
-		protected async Task<List<string>> ReadMetabaseBaseNames() {
-			using(var connection = CreateConnection(LauncherDbName)) {
-				await connection.OpenAsync();
-				return (await connection.QueryAsync<string>("SELECT base_name FROM `bases` ORDER BY base_name;")).ToList();
 			}
 		}
 
@@ -289,8 +249,8 @@ namespace QS.Launcher.Test {
 			using(var connection = CreateConnection(LauncherDbName)) {
 				await connection.OpenAsync();
 				return (await connection.QueryAsync<MetabaseUserRow>(
-					"SELECT id AS Id, login AS Login, name AS Name, email AS Email, " +
-					"is_account_admin AS IsAccountAdmin, disabled AS Disabled, password AS PasswordHash " +
+					"SELECT id AS Id, login AS Login, name AS Name, email AS Email, phone AS Phone, " +
+					"is_admin AS IsAdmin, disabled AS Disabled " +
 					"FROM `server_users` ORDER BY login;")).ToList();
 			}
 		}
@@ -299,15 +259,15 @@ namespace QS.Launcher.Test {
 			(await ReadMetabaseUsers()).FirstOrDefault(u =>
 				string.Equals(u.Login, login, StringComparison.OrdinalIgnoreCase));
 
-		protected async Task<List<MetabaseAccessRow>> ReadMetabaseAccess() {
+		protected async Task<List<MetabaseUpdateRightRow>> ReadBaseUpdateRights() {
 			using(var connection = CreateConnection(LauncherDbName)) {
 				await connection.OpenAsync();
-				return (await connection.QueryAsync<MetabaseAccessRow>(
-					"SELECT a.user_id AS UserId, a.base_id AS BaseId, a.admin AS Admin, a.read_only AS ReadOnly, " +
+				return (await connection.QueryAsync<MetabaseUpdateRightRow>(
+					"SELECT r.user_id AS UserId, r.base_id AS BaseId, r.can_update AS CanUpdate, " +
 					"u.login AS Login, b.base_name AS BaseName " +
-					"FROM `base_access` a " +
-					"LEFT JOIN `server_users` u ON u.id = a.user_id " +
-					"LEFT JOIN `bases` b ON b.id = a.base_id;")).ToList();
+					"FROM `base_update_rights` r " +
+					"LEFT JOIN `server_users` u ON u.id = r.user_id " +
+					"LEFT JOIN `bases` b ON b.id = r.base_id;")).ToList();
 			}
 		}
 
@@ -316,7 +276,7 @@ namespace QS.Launcher.Test {
 		#region Прикладные базы
 
 		protected async Task CreateApplicationDatabase(string dbName, string title = null,
-			byte product = TestProductCode, string version = "1.0", string baseGuid = null,
+			byte product = TestProductCode, string version = "1.0",
 			bool withUsersTable = true, bool withDeactivatedColumn = true, bool withParameters = true) {
 			var script = await ReadScript("AppBase.sql");
 			await PrepareDatabase(script, dbName: dbName);
@@ -325,7 +285,7 @@ namespace QS.Launcher.Test {
 				await connection.OpenAsync();
 
 				if(withParameters)
-					await WriteBaseParameters(connection, dbName, title, product, version, baseGuid);
+					await WriteBaseParameters(connection, dbName, title, product, version);
 
 				await AdjustUsersTable(connection, withUsersTable, withDeactivatedColumn);
 			}
@@ -335,14 +295,16 @@ namespace QS.Launcher.Test {
 				DescribeOmissions(withParameters, withUsersTable, withDeactivatedColumn));
 		}
 
+		// BaseGuid пишет сама база при наполнении, метабаза его не хранит - но параметр
+		// в base_parameters реальный, и чтение метаинформации обязано его пережить
 		private static Task WriteBaseParameters(MySqlConnection connection, string dbName,
-			string title, byte product, string version, string baseGuid) =>
+			string title, byte product, string version) =>
 			connection.ExecuteAsync(
 				"INSERT INTO `base_parameters` (name, str_value) VALUES " +
 				"('ProductCode', @product), ('BaseTitle', @title), ('version', @version), ('BaseGuid', @guid);",
 				new {
 					product = product.ToString(), title = title ?? dbName, version,
-					guid = baseGuid ?? Guid.NewGuid().ToString()
+					guid = Guid.NewGuid().ToString()
 				});
 
 		private static async Task AdjustUsersTable(MySqlConnection connection, bool withUsersTable, bool withDeactivatedColumn) {
@@ -398,7 +360,7 @@ namespace QS.Launcher.Test {
 			}
 		}
 
-		protected async Task<List<string>> ListApplicationDatabases() {
+		private async Task<List<string>> ListApplicationDatabases() {
 			using(var connection = CreateConnection(withoutDb: true)) {
 				await connection.OpenAsync();
 				return (await connection.QueryAsync<string>("SHOW DATABASES"))
@@ -526,10 +488,8 @@ namespace QS.Launcher.Test {
 		protected class MetabaseBaseRow {
 			public int Id { get; set; }
 			public string BaseName { get; set; }
-			public string RealName { get; set; }
 			public string Title { get; set; }
 			public string Version { get; set; }
-			public string Guid { get; set; }
 			public bool Disabled { get; set; }
 			public byte ProductId { get; set; }
 		}
@@ -539,16 +499,15 @@ namespace QS.Launcher.Test {
 			public string Login { get; set; }
 			public string Name { get; set; }
 			public string Email { get; set; }
-			public bool IsAccountAdmin { get; set; }
+			public string Phone { get; set; }
+			public bool IsAdmin { get; set; }
 			public bool Disabled { get; set; }
-			public string PasswordHash { get; set; }
 		}
 
-		protected class MetabaseAccessRow {
+		protected class MetabaseUpdateRightRow {
 			public int UserId { get; set; }
 			public int BaseId { get; set; }
-			public bool Admin { get; set; }
-			public bool ReadOnly { get; set; }
+			public bool CanUpdate { get; set; }
 			public string Login { get; set; }
 			public string BaseName { get; set; }
 		}

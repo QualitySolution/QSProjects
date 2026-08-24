@@ -24,8 +24,6 @@ namespace QS.Launcher.Test.ViewModels {
 		public async Task SetUpScenario() {
 			await CreateApplicationDatabase(BaseName, "Рабочая база");
 			baseId = await SeedMetabaseBase(BaseName, "Рабочая база");
-			int rootId = (await ReadMetabaseUser(RootLogin)).Id;
-			await GrantMetabaseAccess(rootId, baseId, admin: true);
 
 			provider = LoginAs();
 		}
@@ -110,13 +108,13 @@ namespace QS.Launcher.Test.ViewModels {
 			await form.SaveCommand.Execute();
 
 			var grants = await ReadServerGrants("form_worker");
-			var accessRows = await ReadMetabaseAccess();
+			var rights = await ReadBaseUpdateRights();
 			var baseUser = await ReadBaseUser(BaseName, "form_worker");
 
 			Assert.That(GrantsMentionDatabase(grants, BaseName), Is.True,
 				"грант на сервере");
-			Assert.That(accessRows.Any(r => r.Login == "form_worker" && r.BaseName == BaseName), Is.True,
-				"строка в base_access");
+			Assert.That(rights.Any(r => r.Login == "form_worker" && r.BaseName == BaseName), Is.True,
+				"строка в base_update_rights");
 			Assert.That(baseUser?.Deactivated, Is.False, "живая строка в users базы");
 		}
 
@@ -155,10 +153,10 @@ namespace QS.Launcher.Test.ViewModels {
 			await form.SaveCommand.Execute();
 
 			var baseUser = await ReadBaseUser(BaseName, "form_leaver");
-			var accessRows = await ReadMetabaseAccess();
+			var rights = await ReadBaseUpdateRights();
 
 			Assert.That(baseUser?.Deactivated, Is.True, "в базе пользователь должен стать отключённым");
-			Assert.That(accessRows.Any(r => r.Login == "form_leaver" && r.BaseName == BaseName), Is.False);
+			Assert.That(rights.Any(r => r.Login == "form_leaver" && r.BaseName == BaseName), Is.False);
 		}
 
 		[Test(Description = "Кнопка «Удалить» с подтверждением убирает пользователя и обновляет список")]

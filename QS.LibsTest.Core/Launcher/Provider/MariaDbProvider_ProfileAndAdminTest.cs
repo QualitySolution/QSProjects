@@ -23,11 +23,8 @@ namespace QS.Launcher.Test.Provider {
 			await CreateApplicationDatabase("profile_beta");
 
 			var provider = LoginAs();
-			int adminId = (await ReadMetabaseUser(RootLogin)).Id;
 			int alphaId = await SeedMetabaseBase("profile_alpha");
 			int betaId = await SeedMetabaseBase("profile_beta");
-			await GrantMetabaseAccess(adminId, alphaId);
-			await GrantMetabaseAccess(adminId, betaId);
 
 			provider.CreateUser(new DbUserInfo { Login = login, Name = "Было" }, login + "-pass");
 			provider.SetUserBaseAccess(login,

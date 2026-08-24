@@ -15,8 +15,7 @@ namespace QS.Launcher.Test.Provider {
 		[Test(Description = "Новая база на сервере попадает в метабазу со всеми параметрами")]
 		public async Task RefreshMetadata_NewDatabase_AppearsInMetabase() {
 			// база есть на сервере, в метабазе о ней ещё не знают
-			string guid = Guid.NewGuid().ToString();
-			await CreateApplicationDatabase("base_fresh", "Свежая", version: "3.1", baseGuid: guid);
+			await CreateApplicationDatabase("base_fresh", "Свежая", version: "3.1");
 
 			var provider = LoginAs();
 			provider.RefreshMetadata();
@@ -25,8 +24,7 @@ namespace QS.Launcher.Test.Provider {
 			Assert.That(row, Is.Not.Null, "база должна появиться в метабазе");
 			Assert.That(row?.Title, Is.EqualTo("Свежая"));
 			Assert.That(row?.Version, Is.EqualTo("3.1"));
-			Assert.That(row?.Guid, Is.EqualTo(guid));
-			Assert.That(row?.RealName, Is.EqualTo("base_fresh"));
+			Assert.That(row?.ProductId, Is.EqualTo(TestProductCode));
 			Assert.That(row?.Disabled, Is.False);
 		}
 
@@ -119,28 +117,6 @@ namespace QS.Launcher.Test.Provider {
 				"учётка на сервере есть - флагом disabled управляют явные операции, а не синхронизация");
 		}
 
-		[Test(Description = "Без колонки disabled мягкое удаление просто не выполняется и не падает")]
-		public async Task RefreshMetadata_WithoutDisabledColumn_DoesNotThrow() {
-			await CreateApplicationDatabase("base_present");
-			await SeedMetabaseBase("base_vanished"); // её бы пометили disabled, будь чем
-			// колонку убираем после наполнения: сидинг сам её заполняет
-			await DropMetabaseColumn("bases", "disabled");
-			await DropMetabaseColumn("server_users", "disabled");
-			try {
-				var provider = LoginAs();
-
-				Assert.DoesNotThrow(() => provider.RefreshMetadata(),
-					"наличие колонки проверяется интроспекцией - её отсутствие не должно ронять синхронизацию");
-
-				// читаем только имена: обычная читалка выбирает и disabled, которой сейчас нет
-				var names = await ReadMetabaseBaseNames();
-				Assert.That(names, Does.Contain("base_present"), "живые базы всё равно синхронизируются");
-			}
-			finally {
-				await DeployMetabase();
-			}
-		}
-
 		[Test(Description = "Без метабазы синхронизация тихо ничего не делает")]
 		public async Task RefreshMetadata_WithoutMetabase_DoesNothingQuietly() {
 			await DropMetabase();
@@ -159,7 +135,7 @@ namespace QS.Launcher.Test.Provider {
 		[Test(Description = "Пользователю без прав на запись метабаза отказывает явно")]
 		public async Task RefreshMetadata_UserWithoutWriteRights_Throws() {
 			await CreateServerLogin("reader", "reader-pass");
-			await SeedMetabaseUser("reader", isAccountAdmin: true);
+			await SeedMetabaseUser("reader", isAdmin: true);
 			await GrantOnDatabase("reader", LauncherDbName, "SELECT"); // метабазу читает, но не пишет
 			await CreateApplicationDatabase("base_any");
 
@@ -169,6 +145,31 @@ namespace QS.Launcher.Test.Provider {
 				"кнопка синхронизации не должна быть доступна пользователю без права создавать базы");
 			Assert.Throws<UnauthorizedAccessException>(() => provider.RefreshMetadata(),
 				"если операцию всё-таки позвали - отказ должен быть явным");
+		}
+
+		[Test(Description = "Пользователю, который видит не весь сервер, синхронизация запрещена")]
+		public async Task RefreshMetadata_UserSeeingPartOfServer_Throws() {
+			await CreateApplicationDatabase("base_his_own");
+			await CreateApplicationDatabase("base_someone_elses");
+			await SeedMetabaseBase("base_his_own");
+			await SeedMetabaseBase("base_someone_elses");
+
+			// права есть, но только на свою базу: CREATE у него есть, а сервер он видит не весь
+			await CreateServerLogin("owner", "owner-pass");
+			await GrantOnDatabase("owner", LauncherDbName, "SELECT, INSERT, UPDATE, DELETE");
+			await GrantOnDatabase("owner", "base_his_own", "ALL PRIVILEGES");
+			await SeedMetabaseUser("owner", isAdmin: true);
+
+			var provider = LoginAs("owner", "owner-pass");
+
+			Assert.That(provider.CanRefreshMetadata, Is.False,
+				"SHOW DATABASES покажет ему не все базы - синхронизировать каталог он не вправе");
+			Assert.Throws<UnauthorizedAccessException>(() => provider.RefreshMetadata(),
+				"если операцию всё-таки позвали - отказ должен быть явным");
+
+			// в этом и вред: невидимые базы неотличимы от удалённых, и синхронизация погасила бы их
+			Assert.That((await ReadMetabaseBase("base_someone_elses"))?.Disabled, Is.False,
+				"чужая база не должна быть помечена пропавшей");
 		}
 
 		[Test(Description = "Синхронизация большого числа баз укладывается в одну пачку запросов")]

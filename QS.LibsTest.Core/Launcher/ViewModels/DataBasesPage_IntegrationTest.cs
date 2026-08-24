@@ -17,12 +17,10 @@ namespace QS.Launcher.Test.ViewModels {
 	[TestFixture(TestOf = typeof(DataBasesVM))]
 	public class DataBasesPage_IntegrationTest : LauncherViewModelTestFixtureBase {
 
+		/// <summary>База на сервере и её запись в каталоге метабазы</summary>
 		private async Task<int> SeedBaseWithAccess(string baseName, string title) {
 			await CreateApplicationDatabase(baseName, title);
-			int baseId = await SeedMetabaseBase(baseName, title);
-			int rootId = (await ReadMetabaseUser(RootLogin)).Id;
-			await GrantMetabaseAccess(rootId, baseId, admin: true);
-			return baseId;
+			return await SeedMetabaseBase(baseName, title);
 		}
 
 		[Test(Description = "После входа страница показывает доступные базы и выбирает первую")]

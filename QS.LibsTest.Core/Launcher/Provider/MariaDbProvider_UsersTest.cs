@@ -39,8 +39,6 @@ namespace QS.Launcher.Test.Provider {
 			Assert.That(metabaseRow, Is.Not.Null, "пользователь должен отразиться в метабазе");
 			Assert.That(metabaseRow?.Name, Is.EqualTo("Новичок"));
 			Assert.That(metabaseRow?.Email, Is.EqualTo("newbie@example.com"));
-			Assert.That(metabaseRow?.PasswordHash, Is.Not.Null.And.Not.EqualTo("newbie-pass"),
-				"пароль в метабазе хранится хешем");
 		}
 
 		[Test(Description = "Созданный пользователь может войти на сервер")]
@@ -180,11 +178,8 @@ namespace QS.Launcher.Test.Provider {
 			await CreateApplicationDatabase("base_beta");
 
 			var provider = LoginAs();
-			int userId = (await ReadMetabaseUser(RootLogin)).Id;
 			int alphaId = await SeedMetabaseBase("base_alpha");
 			int betaId = await SeedMetabaseBase("base_beta");
-			await GrantMetabaseAccess(userId, alphaId);
-			await GrantMetabaseAccess(userId, betaId); // обе базы видны администратору
 
 			provider.CreateUser(new DbUserInfo { Login = "wanderer", Name = "Странник" }, "wanderer-pass");
 			provider.SetUserBaseAccess("wanderer",
@@ -262,21 +257,17 @@ namespace QS.Launcher.Test.Provider {
 				"строка подключения провайдера должна была обновиться вместе с паролем");
 		}
 
-		[Test(Description = "Администратору смена своего пароля обновляет и хеш в метабазе")]
-		public async Task ChangeOwnPassword_Admin_UpdatesMetabaseHash() {
+		[Test(Description = "Смена своего пароля пускает на сервер с новым паролем")]
+		public void ChangeOwnPassword_Admin_NewPasswordWorks() {
 			var admin = LoginAs();
-			admin.CreateUser(new DbUserInfo { Login = "selfadmin", IsAdmin = true }, "first-pass"); // админу метабаза доступна на запись
-
+			admin.CreateUser(new DbUserInfo { Login = "selfadmin", IsAdmin = true }, "first-pass");
 			var self = LoginAs("selfadmin", "first-pass");
-			string hashBefore = (await ReadMetabaseUser("selfadmin"))?.PasswordHash;
 
 			bool changed = self.ChangeOwnPassword("second-pass");
 
-			string hashAfter = (await ReadMetabaseUser("selfadmin"))?.PasswordHash;
 			Assert.That(changed, Is.True);
-			Assert.That(CreateProvider("selfadmin", "second-pass").LoginToServer().Success, Is.True,
-				"новый пароль должен пускать на сервер");
-			Assert.That(hashAfter, Is.Not.EqualTo(hashBefore), "хеш в метабазе должен обновиться");
+			// метабаза пароля не хранит - проверять там нечего, пускает на сервер сам MariaDB
+			Assert.That(CreateProvider("selfadmin", "second-pass").LoginToServer().Success, Is.True);
 		}
 
 		[Test(Description = "Операции с пользователями работают и без метабазы")]

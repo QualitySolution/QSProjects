@@ -1,8 +1,7 @@
-﻿using Dapper;
+using Dapper;
 using NUnit.Framework;
 using QS.DbManagement;
 using QS.DbManagement.Entities;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -30,27 +29,12 @@ namespace QS.Launcher.Test.Provider {
 				"метабазой воспользоваться нельзя - список должен собраться прямым запросом");
 		}
 
-		[Test(Description = "Аккаунт пользователя потерян - метабаза недоступна, но лаунчер работает")]
-		public async Task GetUserDatabases_AccountRowMissing_FallsBackToServer() {
-			await CreateApplicationDatabase("base_no_account", "Без аккаунта");
-			using(var connection = CreateConnection(LauncherDbName)) {
-				await connection.OpenAsync();
-				// пользователь остался, аккаунт исчез - JOIN в метабазе не сойдётся
-				await connection.ExecuteAsync("DELETE FROM `accounts`;"); // JOIN в метабазе больше не сойдётся
-			}
-
-			var provider = LoginAs();
-
-			Assert.DoesNotThrow(() => provider.GetUserDatabases());
-			Assert.That(provider.GetUserDatabases().Select(d => d.BaseName), Does.Contain("base_no_account"));
-		}
-
 		[Test(Description = "Таблицы метабазы нет - откат на прямой сервер, без падения")]
 		public async Task GetUserDatabases_MetabaseTableMissing_FallsBackToServer() {
 			await CreateApplicationDatabase("base_broken_meta", "Сломанная метабаза");
 			using(var connection = CreateConnection(LauncherDbName)) {
 				await connection.OpenAsync();
-				await connection.ExecuteAsync("DROP TABLE `base_access`;"); // метабаза есть, но читать из неё нечего
+				await connection.ExecuteAsync("DROP TABLE `bases`;"); // метабаза есть, но читать из неё нечего
 			}
 			try {
 				var provider = LoginAs();
@@ -61,26 +45,19 @@ namespace QS.Launcher.Test.Provider {
 					"ошибка чтения метабазы должна уводить в прямой режим");
 			}
 			finally {
+				await DropMetabase();
 				await DeployMetabase();
 			}
 		}
 
-		[Test(Description = "База числится в метабазе, но физически её нет - в списке она есть, подключение падает")]
-		public async Task GetUserDatabases_BaseInMetabaseButNotOnServer_ListedButNotConnectable() {
-			int rootId = (await ReadMetabaseUser(RootLogin)).Id;
-			int ghostId = await SeedMetabaseBase("base_ghost", "Призрак");
-			await GrantMetabaseAccess(rootId, ghostId);
+		[Test(Description = "База числится в метабазе, но физически её нет - в списке её не будет")]
+		public async Task GetUserDatabases_BaseInMetabaseButNotOnServer_NotListed() {
+			await SeedMetabaseBase("base_ghost", "Призрак");
 
 			var provider = LoginAs();
-			var databases = provider.GetUserDatabases();
 
-			Assert.That(databases.Select(d => d.BaseName), Does.Contain("base_ghost"),
-				"метабаза - источник правды для списка, расхождение видно только при подключении");
-
-			// подключение к несуществующей базе - ожидаемый отказ на границе, не исключение наружу
-			var response = provider.LoginToDatabase(databases.First(d => d.BaseName == "base_ghost"));
-			Assert.That(response.Success, Is.True,
-				"LoginToDatabase только собирает строку подключения - проверка живости базы не его дело");
+			Assert.That(provider.GetUserDatabases().Select(d => d.BaseName), Does.Not.Contain("base_ghost"),
+				"видимость проверяет сам сервер - несуществующей базы в SHOW DATABASES нет");
 		}
 
 		[Test(Description = "База есть на сервере, но её нет в метабазе - до синхронизации она невидима")]
@@ -92,12 +69,9 @@ namespace QS.Launcher.Test.Provider {
 				"метабаза отвечает пустым списком, а не ошибкой - отката не будет");
 
 			provider.RefreshMetadata();
-			int rootId = (await ReadMetabaseUser(RootLogin)).Id;
-			int baseId = (await ReadMetabaseBase("base_unregistered")).Id;
-			await GrantMetabaseAccess(rootId, baseId);
 
 			Assert.That(provider.GetUserDatabases().Select(d => d.BaseName), Does.Contain("base_unregistered"),
-				"после синхронизации и выдачи доступа база должна появиться");
+				"после синхронизации база должна появиться");
 		}
 
 		[Test(Description = "В users базы нет колонки deactivated - снятие доступа не падает")]
@@ -122,6 +96,23 @@ namespace QS.Launcher.Test.Provider {
 				"на сервере права всё равно должны быть отозваны");
 		}
 
+		[Test(Description = "База не заведена в метабазе - гранты выдаются, право записать некуда")]
+		public async Task SetUserBaseAccess_BaseMissingInMetabase_GrantsStillIssued() {
+			await CreateApplicationDatabase("base_unregistered"); // в метабазу не заносим
+
+			var provider = LoginAs();
+			provider.CreateUser(new DbUserInfo { Login = "nobase", Name = "Без базы" }, "nobase-pass");
+
+			Assert.DoesNotThrow(() => provider.SetUserBaseAccess("nobase", new DbUserBaseAccess {
+				BaseName = "base_unregistered", HasAccess = true, Name = "Без базы"
+			}), "отражение в метабазе - best-effort, гранты выдать оно мешать не должно");
+
+			var grants = await ReadServerGrants("nobase");
+			Assert.That(GrantsMentionDatabase(grants, "base_unregistered"), Is.True);
+			Assert.That(await ReadBaseUpdateRights(), Is.Empty,
+				"право на неизвестную базу записать некуда - строка ссылается на bases.id");
+		}
+
 		[Test(Description = "База без ProductCode в параметрах в синхронизацию не попадает")]
 		public async Task RefreshMetadata_BaseWithoutProductCode_Skipped() {
 			await CreateApplicationDatabase("base_no_product", withParameters: false);
@@ -136,71 +127,24 @@ namespace QS.Launcher.Test.Provider {
 			Assert.That(names, Does.Contain("base_with_product"));
 		}
 
-		[Test(Description = "Доступ в метабазе ссылается на удалённую базу - список не ломается")]
-		public async Task GetUserDatabases_DanglingAccessRow_Ignored() {
-			await CreateApplicationDatabase("base_alive");
-			int rootId = (await ReadMetabaseUser(RootLogin)).Id;
-			int aliveId = await SeedMetabaseBase("base_alive");
-			await GrantMetabaseAccess(rootId, aliveId);
-			// доступ на базу, записи о которой нет
-			await GrantMetabaseAccess(rootId, baseId: 999999); // ссылка в никуда
-
-			var provider = LoginAs();
-			var databases = provider.GetUserDatabases();
-
-			Assert.That(databases.Select(d => d.BaseName), Is.EquivalentTo(new[] { "base_alive" }),
-				"висячая строка доступа не должна ни ломать выборку, ни добавлять пустую базу");
-		}
-
 		[Test(Description = "Учётка есть на сервере, но не заведена в метабазе - доступы всё равно читаются")]
 		public async Task GetUserBaseAccess_UserOnServerOnly_ReadFromGrants() {
 			await CreateApplicationDatabase("base_grants_only");
+			await SeedMetabaseBase("base_grants_only");
 			await CreateServerLogin("outsider", "outsider-pass");
 			await GrantOnDatabase("outsider", "base_grants_only", "SELECT");
 
 			var provider = LoginAs();
-			var rows = provider.GetUserBaseAccess("outsider");
+			var row = provider.GetUserBaseAccess("outsider").FirstOrDefault(r => r.BaseName == "base_grants_only");
 
-			Assert.That(rows, Is.Not.Null,
-				"пользователя нет в метабазе - доступы должны прийти из прямого чтения грантов");
-		}
-
-		[Test(Description = "Права разошлись: на сервере доступ шире, чем записано в метабазе")]
-		public async Task GetUserBaseAccess_ServerWiderThanMetabase_ReportsMetabaseView() {
-			await CreateApplicationDatabase("base_disagreement");
-			int baseId = await SeedMetabaseBase("base_disagreement");
-
-			var provider = LoginAs();
-			provider.CreateUser(new DbUserInfo { Login = "wider", Name = "Шире" }, "wider-pass");
-			// на сервере выдали руками, мимо лаунчера - метабаза об этом не знает, права разошлись
-			await GrantOnDatabase("wider", "base_disagreement", "ALL PRIVILEGES");
-
-			var fromMetabase = provider.GetUserBaseAccess("wider")
-				.FirstOrDefault(r => r.BaseName == "base_disagreement");
-
-			Assert.That(fromMetabase?.HasAccess, Is.False,
-				"пока метабаза доступна, показания снимаются с неё - расхождение с сервером тут не видно");
-
-			// а прямое чтение видит реальную картину
-			await DropMetabase();
-			try {
-				var direct = LoginAs();
-				var fromServer = direct.GetUserBaseAccess("wider")
-					.FirstOrDefault(r => r.BaseName == "base_disagreement");
-
-				Assert.That(fromServer?.HasAccess, Is.True,
-					"без метабазы видно реальные гранты сервера");
-			}
-			finally {
-				await DeployMetabase();
-			}
+			Assert.That(row?.HasAccess, Is.True,
+				"пользователя нет в метабазе - доступы приходят из прямого чтения грантов");
 		}
 
 		[Test(Description = "Метабаза пропала посреди сессии - следующая операция уходит в прямой режим")]
 		public async Task Operations_MetabaseDisappearsMidSession_ContinueDirectly() {
 			await CreateApplicationDatabase("base_mid_session");
-			int rootId = (await ReadMetabaseUser(RootLogin)).Id;
-			await GrantMetabaseAccess(rootId, await SeedMetabaseBase("base_mid_session"));
+			await SeedMetabaseBase("base_mid_session");
 
 			var provider = LoginAs();
 			Assert.That(provider.GetUserDatabases(), Is.Not.Empty, "предусловие: метабаза работает");

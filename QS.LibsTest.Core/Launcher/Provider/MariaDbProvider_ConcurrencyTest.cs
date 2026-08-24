@@ -23,19 +23,15 @@ namespace QS.Launcher.Test.Provider {
 	[Category("Concurrency")]
 	public class MariaDbProvider_ConcurrencyTest : LauncherDbTestFixtureBase {
 
-		private async Task SeedTwoBasesWithAccess(MariaDBProvider provider) {
+		private async Task SeedTwoBases() {
 			await CreateApplicationDatabase("base_conc_a", "А");
 			await CreateApplicationDatabase("base_conc_b", "Б");
-
-			int rootId = (await ReadMetabaseUser(RootLogin)).Id;
-			await GrantMetabaseAccess(rootId, await SeedMetabaseBase("base_conc_a", "А"));
-			await GrantMetabaseAccess(rootId, await SeedMetabaseBase("base_conc_b", "Б"));
 		}
 
 		[Test(Description = "Чтение списка баз и списка пользователей одновременно не рвёт общее соединение")]
 		public async Task ParallelReads_OnSingleProvider_DoNotBreakSharedConnection() {
 			var provider = LoginAs();
-			await SeedTwoBasesWithAccess(provider);
+			await SeedTwoBases();
 			await SeedMetabaseUser("concurrent_user");
 
 			var errors = new ConcurrentBag<Exception>();
@@ -97,7 +93,7 @@ namespace QS.Launcher.Test.Provider {
 		[Test(Description = "Синхронизация метабазы параллельно с удалением базы не оставляет мусора")]
 		public async Task RefreshMetadataDuringDrop_LeavesConsistentMetabase() {
 			var provider = LoginAs();
-			await SeedTwoBasesWithAccess(provider);
+			await SeedTwoBases();
 
 			var errors = new ConcurrentBag<Exception>();
 
@@ -157,9 +153,7 @@ namespace QS.Launcher.Test.Provider {
 
 		[Test(Description = "Метабаза собирается один раз, даже если к ней обратились сразу из нескольких потоков")]
 		public async Task ParallelFirstAccess_BuildsMetadataConsistently() {
-			await CreateApplicationDatabase("base_lazy_meta");
-			int rootId = (await ReadMetabaseUser(RootLogin)).Id;
-			await GrantMetabaseAccess(rootId, await SeedMetabaseBase("base_lazy_meta"));
+			await SeedMetabaseUser("lazy_meta_user");
 
 			// провайдер только что вошёл: метабазу соберёт первое обращение, и оно будет сразу из восьми потоков
 			var provider = LoginAs();
@@ -167,7 +161,7 @@ namespace QS.Launcher.Test.Provider {
 			var errors = new ConcurrentBag<Exception>();
 			var results = new ConcurrentBag<int>();
 			var tasks = Enumerable.Range(0, 8).Select(_ => Task.Run(() => {
-				try { results.Add(provider.GetUserDatabases().Count); }
+				try { results.Add(provider.GetUsers().Count); }
 				catch(Exception ex) { errors.Add(ex); }
 			})).ToList();
 			await Task.WhenAll(tasks);
@@ -176,14 +170,12 @@ namespace QS.Launcher.Test.Provider {
 				"ленивое создание метабазы не потокобезопасно по построению. Первая ошибка: "
 				+ (errors.FirstOrDefault()?.Message ?? "нет"));
 			Assert.That(results.Distinct().Count(), Is.LessThanOrEqualTo(1),
-				"все потоки должны увидеть одинаковый список баз");
+				"все потоки должны увидеть одинаковый список пользователей");
 		}
 
 		[Test(Description = "Два провайдера на одном сервере друг другу не мешают - у каждого своё соединение")]
 		public async Task TwoProviders_WorkIndependently() {
 			await CreateApplicationDatabase("base_shared_server");
-			int rootId = (await ReadMetabaseUser(RootLogin)).Id;
-			await GrantMetabaseAccess(rootId, await SeedMetabaseBase("base_shared_server"));
 
 			var first = LoginAs();
 			var second = LoginAs(); // у каждого своё соединение - общего состояния нет
