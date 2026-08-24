@@ -210,6 +210,7 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			return new BaseRow
 			{
 				ProductId = productCode,
+				BaseName = dbName,
 				Version = Parameter(parameters, "version"),
 				BaseTitle = Parameter(parameters, "BaseTitle")
 			};
