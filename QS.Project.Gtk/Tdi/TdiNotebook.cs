@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Gtk;
-using NHibernate.Util;
 using NLog;
 using QS.Dialog.GtkUI;
 using QS.Navigation;
@@ -12,7 +11,6 @@ using QS.Utilities;
 using QS.ViewModels.Extension;
 using QS.Journal.GtkUI;
 using QS.Views.GtkUI;
-using Gamma.GtkWidgets;
 
 namespace QS.Tdi.Gtk
 {
@@ -797,7 +795,8 @@ namespace QS.Tdi.Gtk
 			
 			if(IsCurrent)
 				PrevPage();
-			
+
+			Remove(tabBox);
 			var maybeSliderActiveDialog = (tab as TdiSliderTab)?.ActiveDialog;
 			if(maybeSliderActiveDialog != null) {
 				OnTabClosed(maybeSliderActiveDialog, CloseSource.WithParentPage);
@@ -805,18 +804,17 @@ namespace QS.Tdi.Gtk
 			OnTabClosed(tab, source);
 			tab.OnTabClosed();
 
-			var tabBoxChilds = GtkHelper.EnumerateAllChildren(tabBox).ToList();
 			//TODO проверить работу Destroy
 			//после вызова Destroy у родительского элемента-контейнера,
 			//должны произойти вызовы этого метода у всех присоединенных потомков по цепочке
-			if(tabBox != null)
-			{
-				tabBoxChilds.OfType<IMustBeDestroyed>()
+			if(tabBox != null && tabBox.Tab is Container) {
+				GtkHelper.EnumerateAllChildren((Container)tabBox.Tab)
+				.OfType<IMustBeDestroyed>().ToList()
 				.ForEach(w => w.Destroy());
 			}
 			logger.Debug("Вкладка <{0}> удалена", tab.TabName);
 			
-			tabBox.Destroy();
+			tabBox?.Destroy();
 			tabHeader?.Destroy();
 
 			tab.TabNameChanged -= OnTabNameChanged;

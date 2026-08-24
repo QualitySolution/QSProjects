@@ -6,7 +6,6 @@ using System.Linq;
 using Gtk;
 using NLog;
 using QS.Dialog.Gtk;
-using QS.Dialog.GtkUI;
 using QS.Project.Journal;
 using QS.Project.Journal.DataLoader;
 using QS.Utilities;
@@ -20,7 +19,7 @@ using QS.Widgets;
 namespace QS.Journal.GtkUI
 {
 	[WindowSize(900, 600)]
-	public partial class JournalView : TabViewBase<JournalViewModelBase>, IMustBeDestroyed
+	public partial class JournalView : TabViewBase<JournalViewModelBase>
 	{
 		private readonly IGtkViewResolver viewResolver;
 		private static Logger logger = LogManager.GetCurrentClassLogger();
