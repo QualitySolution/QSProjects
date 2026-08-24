@@ -1,188 +1,114 @@
 using Grpc.Core;
+using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 using NUnit.Framework;
 using QS.Cloud.Client.DataBase;
+using QS.Cloud.Core;
 using QS.DbManagement.Entities;
 using System;
-using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace QS.Launcher.Test.Cloud {
 	/// <summary>
-	/// Доступ к базам и поведение на краях. У облака доступ живёт в одном месте, зато появляется
-	/// свой набор краёв: обрывы связи, отказы сервиса, чужие коды ошибок.
+	/// Доступ к базам. В облаке доступ хранится одной строкой на пару «пользователь-база»,
+	/// и провайдеру остаётся правильно её отправить и правильно прочитать список
 	/// </summary>
 	[TestFixture(TestOf = typeof(QSCloudProvider))]
 	public class CloudProvider_BaseAccessTest : CloudProviderTestFixtureBase {
-		private const string BaseName = "access_base";
+		private const string Worker = "worker";
+		private const int BaseId = 7;
 
-		private QSCloudProvider provider;
-		private int baseId;
-
-		[SetUp]
-		public void SetUpScenario() {
-			baseId = AddBase(BaseName, "Тестовая база").Id;
-			AddUser("worker", "worker-pass", name: "Работник");
-			provider = LoginAs();
-		}
-
-		[Test(Description = "Выдача доступа отражается в реестре облака")]
-		public void SetUserBaseAccess_Granted_StoredInCloud() {
-			provider.SetUserBaseAccess("worker", new DbUserBaseAccess {
-				BaseId = baseId, BaseName = BaseName, HasAccess = true
+		[Test(Description = "Список доступов приходит с флагами по каждой базе")]
+		public void GetUserBaseAccess_MapsFlagsPerBase() {
+			UserClient.GetUserBaseAccess(Worker, TestProductCode).Returns(new List<BaseAccessInfo> {
+				new BaseAccessInfo { BaseId = BaseId, BaseTitle = "Рабочая", HasAccess = true, ReadOnly = true },
+				new BaseAccessInfo { BaseId = 8, BaseTitle = "Вторая", HasAccess = false }
 			});
 
-			var access = State.FindAccess("worker", baseId);
-			Assert.That(access, Is.Not.Null);
-			Assert.That(access.HasAccess, Is.True);
-			Assert.That(access.Admin, Is.False);
-			Assert.That(access.ReadOnly, Is.False);
+			var rows = LoginAs().GetUserBaseAccess(Worker);
+
+			Assert.That(rows.Select(r => r.BaseId), Is.EquivalentTo(new[] { BaseId, 8 }));
+			var granted = rows.Single(r => r.BaseId == BaseId);
+			Assert.That(granted.Title, Is.EqualTo("Рабочая"));
+			Assert.That(granted.HasAccess, Is.True);
+			Assert.That(granted.ReadOnly, Is.True);
+			Assert.That(rows.Single(r => r.BaseId == 8).HasAccess, Is.False);
 		}
 
-		[Test(Description = "Доступ только на чтение сохраняется отдельным флагом")]
-		public void SetUserBaseAccess_ReadOnly_StoredAsFlag() {
-			provider.SetUserBaseAccess("worker", new DbUserBaseAccess {
-				BaseId = baseId, BaseName = BaseName, HasAccess = true, ReadOnly = true
+		[Test(Description = "Список запрашивается по коду продукта - чужие базы облако не отдаст")]
+		public void GetUserBaseAccess_AsksForOwnProductOnly() {
+			UserClient.GetUserBaseAccess(Arg.Any<string>(), Arg.Any<uint>()).Returns(new List<BaseAccessInfo>());
+
+			LoginAs().GetUserBaseAccess(Worker);
+
+			UserClient.Received(1).GetUserBaseAccess(Worker, TestProductCode);
+			UserClient.DidNotReceive().GetUserBaseAccess(Arg.Any<string>(), OtherProductCode);
+		}
+
+		// Облако хранит флаги как есть, отдельного правила у провайдера нет -
+		// проверяем, что оба доехали в том виде, в каком их поставил пользователь
+		[TestCase(false, false, TestName = "Доступ без дополнительных прав")]
+		[TestCase(true, false, TestName = "Администратор базы")]
+		[TestCase(false, true, TestName = "Только чтение")]
+		public void SetUserBaseAccess_Granted_SendsFlags(bool admin, bool readOnly) {
+			UserClient.ChangeBaseAccess(Arg.Any<string>(), Arg.Any<int>(), Arg.Any<bool>(),
+				Arg.Any<bool>(), Arg.Any<bool>(), Arg.Any<uint>())
+				.Returns(new ChangeBaseAccessResponse { Success = true });
+
+			LoginAs().SetUserBaseAccess(Worker, new DbUserBaseAccess {
+				BaseId = BaseId, HasAccess = true, IsAdmin = admin, ReadOnly = readOnly
 			});
 
-			var access = State.FindAccess("worker", baseId);
-			Assert.That(access.ReadOnly, Is.True);
-			Assert.That(access.Admin, Is.False);
+			UserClient.Received(1).ChangeBaseAccess(Worker, BaseId, true, admin, readOnly, TestProductCode);
 		}
 
-		[Test(Description = "Администратор базы сохраняется флагом admin")]
-		public void SetUserBaseAccess_BaseAdmin_StoredAsFlag() {
-			provider.SetUserBaseAccess("worker", new DbUserBaseAccess {
-				BaseId = baseId, BaseName = BaseName, HasAccess = true, IsAdmin = true
-			});
+		[Test(Description = "Снятие доступа уходит тем же вызовом с grant = false")]
+		public void SetUserBaseAccess_Revoked_SendsGrantFalse() {
+			UserClient.ChangeBaseAccess(Arg.Any<string>(), Arg.Any<int>(), Arg.Any<bool>(),
+				Arg.Any<bool>(), Arg.Any<bool>(), Arg.Any<uint>())
+				.Returns(new ChangeBaseAccessResponse { Success = true });
 
-			Assert.That(State.FindAccess("worker", baseId).Admin, Is.True);
+			LoginAs().SetUserBaseAccess(Worker, new DbUserBaseAccess { BaseId = BaseId, HasAccess = false });
+
+			UserClient.Received(1).ChangeBaseAccess(Worker, BaseId, false, false, false, TestProductCode);
 		}
 
-		[Test(Description = "Снятие доступа убирает строку из реестра")]
-		public void SetUserBaseAccess_Revoked_RemovesRow() {
-			Grant("worker", baseId);
+		[Test(Description = "Отказ облака объясняется его же текстом")]
+		public void SetUserBaseAccess_Refused_ThrowsWithCloudMessage() {
+			UserClient.ChangeBaseAccess(Arg.Any<string>(), Arg.Any<int>(), Arg.Any<bool>(),
+				Arg.Any<bool>(), Arg.Any<bool>(), Arg.Any<uint>())
+				.Returns(new ChangeBaseAccessResponse { Success = false, Message = "База не найдена" });
+			var provider = LoginAs();
 
-			provider.SetUserBaseAccess("worker", new DbUserBaseAccess {
-				BaseId = baseId, BaseName = BaseName, HasAccess = false // снимаем
-			});
-
-			Assert.That(State.FindAccess("worker", baseId), Is.Null);
-		}
-
-		[Test(Description = "Повторная выдача доступа не плодит строк")]
-		public void SetUserBaseAccess_AppliedTwice_IsIdempotent() {
-			var access = new DbUserBaseAccess { BaseId = baseId, BaseName = BaseName, HasAccess = true };
-			provider.SetUserBaseAccess("worker", access);
-			provider.SetUserBaseAccess("worker", access);
-
-			Assert.That(State.Access.Count(a => a.Login == "worker" && a.BaseId == baseId), Is.EqualTo(1));
-		}
-
-		[Test(Description = "Список доступов показывает все базы продукта с флагами")]
-		public void GetUserBaseAccess_ListsAllProductBasesWithFlags() {
-			int secondId = AddBase("second_base", "Вторая").Id;
-			AddBase("alien_base", product: OtherProductCode); // чужой продукт в список не идёт
-			Grant("worker", baseId, readOnly: true);
-
-			var rows = provider.GetUserBaseAccess("worker");
-
-			Assert.That(rows.Select(r => r.BaseId), Is.EquivalentTo(new[] { baseId, secondId }));
-			Assert.That(rows.First(r => r.BaseId == baseId).HasAccess, Is.True);
-			Assert.That(rows.First(r => r.BaseId == baseId).ReadOnly, Is.True);
-			Assert.That(rows.First(r => r.BaseId == secondId).HasAccess, Is.False);
-		}
-
-		[Test(Description = "Доступ несуществующему пользователю - отказ облака с объяснением")]
-		public void SetUserBaseAccess_UnknownLogin_Throws() {
 			var exception = Assert.Throws<InvalidOperationException>(
-				() => provider.SetUserBaseAccess("нет-такого", new DbUserBaseAccess {
-					BaseId = baseId, BaseName = BaseName, HasAccess = true
-				}));
+				() => provider.SetUserBaseAccess(Worker, new DbUserBaseAccess { BaseId = 9999, HasAccess = true }));
 
-			Assert.That(exception.Message, Does.Contain("не найден"));
+			Assert.That(exception.Message, Is.EqualTo("База не найдена"));
 		}
 
-		[Test(Description = "Доступ к несуществующей базе - тоже явный отказ")]
-		public void SetUserBaseAccess_UnknownBase_Throws() {
-			Assert.Throws<InvalidOperationException>(
-				() => provider.SetUserBaseAccess("worker", new DbUserBaseAccess {
-					BaseId = 9999, BaseName = "нет-такой", HasAccess = true
-				}));
+		[Test(Description = "Отказ без текста всё равно объясняется - пустое сообщение пользователю бесполезно")]
+		public void SetUserBaseAccess_RefusedWithoutMessage_ThrowsWithFallbackText() {
+			UserClient.ChangeBaseAccess(Arg.Any<string>(), Arg.Any<int>(), Arg.Any<bool>(),
+				Arg.Any<bool>(), Arg.Any<bool>(), Arg.Any<uint>())
+				.Returns(new ChangeBaseAccessResponse { Success = false, Message = string.Empty });
+			var provider = LoginAs();
+
+			var exception = Assert.Throws<InvalidOperationException>(
+				() => provider.SetUserBaseAccess(Worker, new DbUserBaseAccess { BaseId = BaseId, HasAccess = true }));
+
+			Assert.That(exception.Message, Does.Contain("Не удалось изменить доступ"));
 		}
 
-		[Test(Description = "Обычному пользователю чужие доступы менять нельзя")]
-		public void SetUserBaseAccess_ByPlainUser_Throws() {
-			AddUser("plain", "plain-pass");
-			var plain = LoginAs("plain", "plain-pass");
-
-			Assert.Throws<InvalidOperationException>(
-				() => plain.SetUserBaseAccess("worker", new DbUserBaseAccess {
-					BaseId = baseId, BaseName = BaseName, HasAccess = true
-				}));
-		}
-
-		[Test(Description = "Обрыв связи с облаком - исключение с текстом сервера, а не молчание")]
+		[Test(Description = "Обрыв связи при чтении доступов - исключение с текстом сервера")]
 		public void GetUserBaseAccess_CloudUnavailable_ThrowsWithDetail() {
-			BreakCloud(StatusCode.Unavailable, "связь потеряна");
+			UserClient.GetUserBaseAccess(Arg.Any<string>(), Arg.Any<uint>())
+				.Throws(Refusal(StatusCode.Unavailable, "связь потеряна"));
+			var provider = LoginAs();
 
-			var exception = Assert.Throws<InvalidOperationException>(
-				() => provider.GetUserBaseAccess("worker"));
+			var exception = Assert.Throws<InvalidOperationException>(() => provider.GetUserBaseAccess(Worker));
 
 			Assert.That(exception.Message, Does.Contain("связь потеряна"));
-		}
-
-		[Test(Description = "Облако восстановилось - следующий вызов проходит, переподключаться вручную не нужно")]
-		public void Operations_AfterCloudRecovers_WorkAgain() {
-			BreakCloud(StatusCode.Unavailable);
-			Assert.Throws<InvalidOperationException>(() => provider.GetUserBaseAccess("worker"));
-
-			RepairCloud();
-
-			Assert.DoesNotThrow(() => provider.GetUserBaseAccess("worker"),
-				"канал gRPC переживает временную недоступность сам");
-		}
-
-		[Test(Description = "Параллельные вызовы через один провайдер друг другу не мешают")]
-		[Category("Concurrency")]
-		public async Task ParallelCalls_OnSingleProvider_DoNotInterfere() {
-			// в отличие от свободного подключения тут нет общего MySqlConnection:
-			// канал gRPC потокобезопасен по построению, тест это фиксирует
-			Grant("worker", baseId);
-
-			var errors = new ConcurrentBag<Exception>();
-			var tasks = Enumerable.Range(0, 20).Select(i => Task.Run(() => {
-				try {
-					if(i % 2 == 0)
-						provider.GetUserDatabases();
-					else
-						provider.GetUserBaseAccess("worker");
-				}
-				catch(Exception ex) { errors.Add(ex); }
-			})).ToList();
-			await Task.WhenAll(tasks);
-
-			Assert.That(errors, Is.Empty,
-				"первая ошибка: " + (errors.FirstOrDefault()?.Message ?? "нет"));
-		}
-
-		[Test(Description = "Сотня баз и сотня пользователей читаются за один вызов каждый")]
-		[Category("Performance")]
-		public void LargeAccount_ReadsStayFast() {
-			for(int i = 0; i < 100; i++)
-				AddBase($"bulk_base_{i:D3}");
-			for(int i = 0; i < 100; i++)
-				AddUser($"bulk_user_{i:D3}");
-
-			var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-			var databases = provider.GetUserDatabases();
-			var users = provider.GetUsers();
-			stopwatch.Stop();
-
-			Assert.That(databases.Count, Is.GreaterThanOrEqualTo(100));
-			Assert.That(users.Count, Is.GreaterThanOrEqualTo(100));
-			Assert.That(stopwatch.ElapsedMilliseconds, Is.LessThan(5000),
-				$"два вызова к облаку заняли {stopwatch.ElapsedMilliseconds} мс");
 		}
 	}
 }

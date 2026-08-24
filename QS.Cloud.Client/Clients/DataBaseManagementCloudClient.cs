@@ -11,25 +11,25 @@ namespace QS.Cloud.Client.Clients {
 		{
 			ProductCode = productCode;
 		}
-		public ClearDataBaseResponse ClearDataBase(int baseId) {
+		public virtual ClearDataBaseResponse ClearDataBase(int baseId) {
 			var client = new DataBaseManagement.DataBaseManagementClient(Channel);
 			var request = new ClearDataBaseRequest { BaseId = baseId, ProductId = ProductCode };
 			return client.ClearDataBase(request, headers);
 		}
 
-		public CheckDataBaseExistsResponse CheckDataBaseExists(string dbName) {
+		public virtual CheckDataBaseExistsResponse CheckDataBaseExists(string dbName) {
 			var client = new DataBaseManagement.DataBaseManagementClient(Channel);
 			var request = new CheckDataBaseExistsRequest { Name = dbName, ProductId = ProductCode };
 			return client.CheckDataBaseExists(request, headers);
 		}
 
-		public CreateDataBaseResponse CreateDataBase(string dbName, string dbTitle) {
+		public virtual CreateDataBaseResponse CreateDataBase(string dbName, string dbTitle) {
 			var client = new DataBaseManagement.DataBaseManagementClient(Channel);
 			var request = new CreateDataBaseRequest { Name = dbName, Title = dbTitle, ProductId = ProductCode };
 			return client.CreateDataBase(request, headers);
 		}
 
-		public DropDataBaseResponse DropDataBase(int baseId) {
+		public virtual DropDataBaseResponse DropDataBase(int baseId) {
 			var client = new DataBaseManagement.DataBaseManagementClient(Channel);
 			var request = new DropDataBaseRequest { BaseId = baseId, ProductId = ProductCode };
 			return client.DropDataBase(request, headers);

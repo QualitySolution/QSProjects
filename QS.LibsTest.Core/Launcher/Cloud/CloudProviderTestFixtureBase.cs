@@ -1,146 +1,67 @@
-﻿using NUnit.Framework;
+using Grpc.Core;
+using NSubstitute;
+using NUnit.Framework;
 using QS.Cloud.Client;
+using QS.Cloud.Client.Clients;
 using QS.Cloud.Client.DataBase;
-using QS.DbManagement.Entities;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+using QS.Cloud.Core;
 
 namespace QS.Launcher.Test.Cloud {
-	[NonParallelizable]
+	/// <summary>
+	/// Облачный провайдер проверяется по входу и выходу: три клиента приходят подстановками,
+	/// gRPC-сервер не поднимается. Раньше на его месте стоял рукописный FakeCloudBackend -
+	/// он воспроизводил правила облака (кто админ, какие базы видны), и тесты в итоге
+	/// проверяли эту копию, а не наш код. Здесь проверяется только то, за что отвечает
+	/// провайдер: что он послал облаку и как разобрал ответ.
+	/// </summary>
 	public abstract class CloudProviderTestFixtureBase {
 		protected const string AccountName = "testaccount";
 		protected const string AdminLogin = "admin";
-		protected const string AdminPassword = "admin-pass";
 		protected const byte TestProductCode = 1;
 		protected const byte OtherProductCode = 77;
 
-		private readonly List<IDisposable> createdProviders = new List<IDisposable>();
-		private Stopwatch testTimer;
-
-		protected FakeCloudBackend Cloud { get; private set; }
-		protected FakeCloudBackend.CloudState State => Cloud.State;
-
-		#region Жизненный цикл
+		protected LoginManagementCloudClient LoginClient { get; private set; }
+		protected DataBaseManagementCloudClient DbClient { get; private set; }
+		protected UserManagementCloudClient UserClient { get; private set; }
 
 		[SetUp]
-		public virtual void StartCloud() {
-			testTimer = Stopwatch.StartNew();
-			var test = TestContext.CurrentContext.Test;
-			Log($"┌─ {test.ClassName?.Split('.').Last()}.{test.Name}");
-			if(test.Properties.Get("Description") is string description)
-				Log($"│  {description}");
+		public void CreateClients() {
+			var auth = new BasicAuthInfoProvider($@"{AccountName}\{AdminLogin}", "pass");
 
-			Cloud = new FakeCloudBackend();
+			LoginClient = Substitute.For<LoginManagementCloudClient>(auth);
+			DbClient = Substitute.For<DataBaseManagementCloudClient>(auth, (uint)TestProductCode);
+			UserClient = Substitute.For<UserManagementCloudClient>(auth);
 
-			CloudClientServiceBase.OverrideAddress = "127.0.0.1";
-			CloudClientServiceBase.OverridePort = Cloud.Port;
-			CloudClientServiceBase.UseInsecureOverride = true;
-
-			State.AddUser(AdminLogin, AdminPassword, isAdmin: true, name: "Администратор");
-			LogStep("облако поднято на порту {0}, в нём администратор {1}", Cloud.Port, AdminLogin);
+			// канал до облака поднимается лениво и в тестах не нужен, но CanCreateDatabase
+			// про него спрашивает - отвечаем, что связь есть
+			DbClient.CanConnect.Returns(true);
 		}
 
-		[TearDown]
-		public virtual void StopCloud() {
-			foreach(var provider in createdProviders)
-				provider.Dispose();
-			createdProviders.Clear();
+		protected QSCloudProvider CreateProvider(string login = AdminLogin, byte productCode = TestProductCode) =>
+			new QSCloudProvider(AccountName, login, productCode, LoginClient, DbClient, UserClient);
 
-			var result = TestContext.CurrentContext.Result;
-			if(result.Outcome.Status == NUnit.Framework.Interfaces.TestStatus.Failed)
-				DumpCloudState();
+		/// <summary>Провайдер после успешного входа - состояние, из которого работают все страницы лаунчера</summary>
+		protected QSCloudProvider LoginAs(string login = AdminLogin, bool isAdmin = true, bool needUpdate = false) {
+			LoginClient.Start(Arg.Any<string>())
+				.Returns(new StartResponse { YouAccountAdmin = isAdmin, NeedUpdateLauncher = needUpdate });
 
-			Log($"└─ {result.Outcome.Status}, {testTimer?.ElapsedMilliseconds ?? 0} мс");
-
-			Cloud?.Dispose();
-			Cloud = null;
-		}
-
-		private static void Log(string line) => TestContext.Out.WriteLine(line);
-
-		protected static void LogStep(string format, params object[] args) =>
-			Log("  · " + (args.Length == 0 ? format : string.Format(format, args)));
-
-		/// <summary>Снимок облака на момент падения - иначе по одному Assert не понять, что осталось</summary>
-		private void DumpCloudState() {
-			Log("│  СОСТОЯНИЕ ОБЛАКА НА МОМЕНТ ПАДЕНИЯ:");
-			foreach(var user in State.Users)
-				Log($"│    пользователь: {user.Info.Login} «{user.Info.Name}» "
-					+ $"админ={user.Info.IsAccountAdmin} отключён={user.Info.Disabled}");
-			foreach(var db in State.Bases)
-				Log($"│    база: id={db.Id} {db.Name} «{db.Title}» продукт={db.ProductId} наполнена={db.HasData}");
-			foreach(var access in State.Access)
-				Log($"│    доступ: {access.Login} -> база {access.BaseId} "
-					+ $"есть={access.HasAccess} админ={access.Admin} чтение={access.ReadOnly}");
-			if(State.Users.Count == 0 && State.Bases.Count == 0)
-				Log("│    пусто");
-		}
-
-		#endregion
-
-		#region Провайдер
-
-		protected QSCloudProvider CreateProvider(string login = AdminLogin, string password = AdminPassword,
-			byte productCode = TestProductCode) {
-			var parameters = new List<ConnectionParameterValue> {
-				new ConnectionParameterValue(new ConnectionParameter("Account", "Аккаунт"), AccountName),
-				new ConnectionParameterValue(new ConnectionParameter("Login", "Пользователь"), login)
-			};
-
-			var provider = new QSCloudProvider(parameters, productCode, password);
-			createdProviders.Add(provider);
-			LogStep("собран провайдер: {0}\\{1}, продукт {2}", AccountName, login, productCode);
-			return provider;
-		}
-
-		protected QSCloudProvider LoginAs(string login = AdminLogin, string password = AdminPassword,
-			byte productCode = TestProductCode) {
-			var provider = CreateProvider(login, password, productCode);
+			var provider = CreateProvider(login);
 			var response = provider.LoginToServer();
-			Assert.That(response.Success, Is.True, $"Не удалось войти в облако как {login}: {response.ErrorMessage}");
-			LogStep("вход выполнен как {0}: админ={1}, создание баз={2}, управление пользователями={3}",
-				login, provider.IsAdmin, provider.CanCreateDatabase, provider.CanManageUsers);
+			Assert.That(response.Success, Is.True, response.ErrorMessage);
 			return provider;
 		}
 
-		#endregion
+		/// <summary>Отказ облака - то, из чего провайдер обязан сделать понятное сообщение</summary>
+		protected static RpcException Refusal(StatusCode code, string detail = "облако недоступно") =>
+			new RpcException(new Status(code, detail));
 
-		#region Подготовка состояния
+		protected static BaseInfo Base(int id, string name, string title = null, string version = "1.0") =>
+			new BaseInfo { BaseId = id, BaseName = name, BaseTitle = title ?? name, BaseVersion = version };
 
-		protected FakeCloudBackend.CloudBase AddBase(string name, string title = null,
-			byte product = TestProductCode, string version = "1.0") {
-			var db = State.AddBase(name, title, product, version);
-			LogStep("в облаке заведена база {0} «{1}» (id {2}, продукт {3})", name, title ?? name, db.Id, product);
-			return db;
-		}
-
-		protected FakeCloudBackend.CloudUser AddUser(string login, string password = "pass-1234",
-			bool isAdmin = false, string name = null, bool disabled = false) {
-			var user = State.AddUser(login, password, isAdmin, name, disabled: disabled);
-			LogStep("в облаке заведён пользователь {0} (админ: {1}, отключён: {2})", login, isAdmin, disabled);
-			return user;
-		}
-
-		protected void Grant(string login, int baseId, bool admin = false, bool readOnly = false) {
-			State.Grant(login, baseId, admin, readOnly);
-			LogStep("в облаке выдан доступ: {0} -> база {1} (админ: {2}, только чтение: {3})",
-				login, baseId, admin, readOnly);
-		}
-
-		/// <summary>Облако начинает отвечать отказом на любой вызов</summary>
-		protected void BreakCloud(Grpc.Core.StatusCode code, string detail = null) {
-			State.FailEverythingWith = code;
-			State.FailureDetail = detail;
-			LogStep("облако переведено в отказ: {0} «{1}»", code, detail ?? "-");
-		}
-
-		protected void RepairCloud() {
-			State.FailEverythingWith = null;
-			State.FailureDetail = null;
-		}
-
-		#endregion
+		protected static UserInfo User(string login, string name = "", bool isAdmin = false, bool disabled = false) =>
+			new UserInfo {
+				Login = login, Name = name, Email = string.Empty, Phone = string.Empty,
+				Post = string.Empty, Comment = string.Empty, Disabled = disabled, IsAccountAdmin = isAdmin
+			};
 	}
 }
