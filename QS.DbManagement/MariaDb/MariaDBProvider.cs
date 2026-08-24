@@ -61,7 +61,7 @@ namespace QS.DbManagement {
 
 		#region QSLauncher
 
-		public bool CanRefreshMetadata => CanCreateDatabase;
+		public bool CanRefreshMetadata => IsAdmin;
 		public bool CanBackupDatabase { get; } = true;
 
 		private LauncherMetadataManagement metadata;
@@ -85,7 +85,7 @@ namespace QS.DbManagement {
 				{
 					metadata = new LauncherMetadataManagement(
 						new MySqlConnectionStringBuilder(ConnectionStringBuilder.ConnectionString),
-						CanCreateDatabase, UserName, ProductCode);
+						CanRefreshMetadata, UserName, ProductCode);
 				}
 				catch(Exception ex) when(
 					ex is MySqlException //базы нет, нет прав, сервер недоступен
