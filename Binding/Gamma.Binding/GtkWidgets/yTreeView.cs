@@ -389,12 +389,19 @@ namespace Gamma.GtkWidgets {
 			set => SelectObject(value);
 		}
 
+		public event EventHandler SelectionChanged;
+		
 		void Selection_Changed(object sender, EventArgs e)
 		{
+			if(_disposed)
+				return;
+
 			if(Selection.Mode == SelectionMode.Multiple)
 				Binding.FireChange(x => x.SelectedRows);
 			else
 				Binding.FireChange(x => x.SelectedRow);
+
+			SelectionChanged?.Invoke(this, e);
 		}
 
 		#endregion
@@ -477,12 +484,11 @@ namespace Gamma.GtkWidgets {
 
 		public override void Dispose() {
 			if(_disposed) return;
-			
+			_disposed = true;
+
 			UnsubscribeAll();
 			Binding.CleanSources();
 			ItemsDataSource = null;
-
-			_disposed = true;
 		}
 		
 
