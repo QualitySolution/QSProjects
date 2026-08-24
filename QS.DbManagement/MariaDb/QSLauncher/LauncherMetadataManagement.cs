@@ -9,13 +9,10 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 		public LauncherBasesManagement Bases { get; }
 		public LauncherUsersManagement Users { get; }
 
-		public LauncherMetadataManagement(MySqlConnectionStringBuilder connectionBuilder, bool canWrite, string login, byte productId) {
-			// схему метабазы оба менеджера читают одну и ту же - кэш у них общий
-			var schema = new LauncherSchemaCache();
-
-			// пользователь ищется один раз и отдаёт аккаунт менеджеру баз
-			Users = new LauncherUsersManagement(connectionBuilder, login, productId, schema);
-			Bases = new LauncherBasesManagement(connectionBuilder, canWrite, Users.CurrentAccountId, productId, schema);
+		public LauncherMetadataManagement(MySqlConnectionStringBuilder connectionBuilder, bool canSync, string login, byte productId)
+		{
+			Bases = new LauncherBasesManagement(connectionBuilder, canSync, productId);
+			Users = new LauncherUsersManagement(connectionBuilder, login, productId, Bases);
 
 			// строку правим на копии: builder принадлежит вызывающему
 			var toLauncher = new MySqlConnectionStringBuilder(connectionBuilder.ConnectionString) {
@@ -24,14 +21,14 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			connectionString = toLauncher.ConnectionString;
 		}
 
-		public (int baseId, string baseGuid) CreateBaseWithCreatorAccess(DbInfo dbInfo) {
+		public int CreateBaseWithCreatorAccess(DbInfo dbInfo) {
 			using(var connection = new MySqlConnection(connectionString)) {
 				connection.Open();
 				using(var transaction = connection.BeginTransaction()) {
-					var result = Bases.InsertBase(connection, transaction, dbInfo);
-					Users.GrantCreatorAccess(connection, transaction, result.baseId);
+					int baseId = Bases.InsertBase(connection, transaction, dbInfo);
+					Users.GrantCreatorUpdateRight(connection, transaction, baseId);
 					transaction.Commit();
-					return result;
+					return baseId;
 				}
 			}
 		}

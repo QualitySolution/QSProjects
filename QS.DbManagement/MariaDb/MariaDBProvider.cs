@@ -195,10 +195,8 @@ namespace QS.DbManagement {
 			Name = u.Name,
 			Email = u.Email,
 			Phone = u.Phone,
-			Post = u.Post,
-			Comment = u.Comment,
 			Disabled = u.Disabled,
-			IsAdmin = u.IsAccountAdmin,
+			IsAdmin = u.IsAdmin,
 			IsCurrentUser = string.Equals(u.Login, UserName, StringComparison.OrdinalIgnoreCase)
 		};
 
@@ -208,20 +206,8 @@ namespace QS.DbManagement {
 			Name = u.Name,
 			Email = u.Email,
 			Phone = u.Phone,
-			Post = u.Post,
-			Comment = u.Comment,
 			Disabled = u.Disabled,
-			IsAccountAdmin = u.IsAdmin
-		};
-
-		private static DbUserBaseAccess ToDbUserBaseAccess(BaseAccessRow r) => new DbUserBaseAccess
-		{
-			BaseId = r.BaseId,
-			BaseName = r.BaseName,
-			Title = r.BaseTitle,
-			HasAccess = r.HasAccess,
-			IsAdmin = r.Admin,
-			ReadOnly = r.ReadOnly
+			IsAdmin = u.IsAdmin
 		};
 
 		#endregion
@@ -241,7 +227,7 @@ namespace QS.DbManagement {
 			}
 		}
 
-		private void ReflectUserUpdateInMetadata(DbUserInfo user, string newPassword)
+		private void ReflectUserUpdateInMetadata(DbUserInfo user)
 		{
 			ReflectInMetadata(m => {
 				var target = m.Users.GetUserByLogin(user.Login);
@@ -249,7 +235,7 @@ namespace QS.DbManagement {
 					return;
 				var launcherUser = ToLauncherUser(user);
 				launcherUser.Id = target.Id;
-				m.Users.UpdateUser(launcherUser, newPassword);
+				m.Users.UpdateUser(launcherUser);
 			}, "обновление", user.Login);
 		}
 
@@ -295,7 +281,7 @@ namespace QS.DbManagement {
 
 		public List<DbInfo> GetUserDatabases() {
 			return FromMetadataOrDirect(
-				metadata => metadata.Bases.GetBases(UserName).ToList(),
+				metadata => metadata.Bases.GetBases().ToList(),
 				() => GetUserDatabasesDirect());
 		}
 
@@ -507,7 +493,6 @@ namespace QS.DbManagement {
 
 			ConnectionStringBuilder.Password = newPassword;
 
-			ReflectInMetadata(m => m.Users.SyncWithChangeOwnPassword(UserName, newPassword), "смену пароля", UserName);
 			return true;
 		}
 
@@ -598,7 +583,7 @@ namespace QS.DbManagement {
 			lock(serverLock)
 				userHosts[user.Login] = NewUserHosts.ToList();
 
-			ReflectInMetadata(m => m.Users.CreateUser(ToLauncherUser(user), password), "создание", user.Login);
+			ReflectInMetadata(m => m.Users.CreateUser(ToLauncherUser(user)), "создание", user.Login);
 			return true;
 		}
 
@@ -629,7 +614,7 @@ namespace QS.DbManagement {
 			if(statements.Any())
 				OnConnection(c => c.Execute(string.Join(";", statements)));
 
-			ReflectUserUpdateInMetadata(user, newPassword);
+			ReflectUserUpdateInMetadata(user);
 			ReflectProfileInBases(user);
 			return true;
 		}
@@ -686,19 +671,8 @@ namespace QS.DbManagement {
 			return true;
 		}
 
-		public List<DbUserBaseAccess> GetUserBaseAccess(string login) {
-			return FromMetadataOrDirect(
-				metadata => {
-					var user = metadata.Users.GetUserByLogin(login)
-						?? throw new InvalidOperationException($"Пользователь {login} не найден в метабазе.");
-					var list = metadata.Users.GetUserBaseAccess(user).Select(ToDbUserBaseAccess).ToList();
-					FillUsersProfiles(list, login);
-					return list;
-				},
-				() => GetUserBaseAccessDirect(login));
-		}
-
-		private List<DbUserBaseAccess> GetUserBaseAccessDirect(string login) {
+		public List<DbUserBaseAccess> GetUserBaseAccess(string login)
+		{
 			var grants = ReadGrantsByHost(login).Values.SelectMany(g => g).ToList();
 			bool globalAdmin = MySqlGrants.HasGlobalAdmin(grants);
 
@@ -747,11 +721,14 @@ namespace QS.DbManagement {
 
 			ReflectInMetadata(m => {
 				var target = m.Users.GetUserByLogin(login);
-				if(target != null)
-					m.Users.ChangeBaseAccess(
-						new BaseAccessRow { BaseId = access.BaseId, BaseName = access.BaseName, HasAccess = access.HasAccess, Admin = access.IsAdmin, ReadOnly = access.ReadOnly
-						}, target);
-			}, "изменение доступа", login);
+				if(target == null)
+					return;
+				if(access.HasAccess)
+					m.Users.SetBaseUpdateRight(access.BaseName, target, access.IsAdmin);
+				else
+					m.Users.RevokeBaseUpdateRight(access.BaseName, target);
+			}, "изменение права на обновление базы", login);
+
 			BaseUsers.SyncWithUserTable(access.BaseName, new BaseUserRow { Admin = access.IsAdmin, Deactivated = !access.HasAccess, Email = access.Email, Login = login, Name = access.Name}, access.HasAccess);
 
 			return true;

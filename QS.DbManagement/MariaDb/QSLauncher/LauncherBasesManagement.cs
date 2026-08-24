@@ -12,13 +12,14 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 
 		private const string LauncherBaseName = LauncherMetadataManagement.LauncherBaseName;
 		private const string BasesTable = "bases";
-		private static readonly string[] BaseDependencies = { "sessions", "api_tokens", "base_access" };
+		private static readonly string[] BaseDependencies = { "base_update_rights" };
+		private static readonly string[] BaseColumns =
+			{ "product_id", "base_name", "base_title", "version" };
+		private static readonly string[] BaseUpdatableColumns = { "base_title", "version" };
 
 		private readonly bool canWrite;
 		private readonly string connectionString;
 		private readonly byte productId;
-		private readonly int accountId;
-		private readonly LauncherSchemaCache schema;
 
 		public LauncherBasesManagement(MySqlConnectionStringBuilder connectionBuilder, bool canWrite, int accountId, byte productId, LauncherSchemaCache schema) {
 			var toLauncher = new MySqlConnectionStringBuilder(connectionBuilder.ConnectionString) {
@@ -28,9 +29,7 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			connectionString = toLauncher.ConnectionString;
 
 			this.canWrite = canWrite;
-			this.accountId = accountId;
 			this.productId = productId;
-			this.schema = schema ?? throw new ArgumentNullException(nameof(schema));
 		}
 
 		public int SyncBases() {
@@ -44,49 +43,32 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 					.Except(MySqlSystemObjects.Databases, StringComparer.OrdinalIgnoreCase)
 					.ToList();
 
-				var tableColumns = schema.TableColumns(connection, LauncherBaseName, BasesTable);
-				var keyColumns = schema.KeyColumns(connection, LauncherBaseName, BasesTable);
-
+				//Базы нашего продукта, о которых есть что записать в метабазу
 				var parameters = BaseParametersReader.ReadMany(connection, bases, BaseMetaParameters);
-
-				var rows = new List<Dictionary<string, object>>();
-				foreach(var dbName in bases) {
-					var meta = ToBaseMeta(dbName, parameters);
-					if(meta == null || meta.ProductCode != productId)
+				var rows = new List<BaseRow>();
+				foreach(var dbName in bases)
+				{
+					BaseRow row = ToBaseMeta(dbName, parameters);
+					if(row == null || row.ProductId != productId)
 						continue;
 
-					// значения, которые синхронизация умеет отдать, но в UpsertBases пойдут только те, что реально есть среди колонок таблицы
-					rows.Add(new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase) {
-						["account_id"] = accountId,
-						["product_id"] = meta.ProductCode,
-						["base_name"] = dbName,
-						["real_name"] = dbName, //?
-						["base_title"] = meta.Title,
-						["version"] = meta.Version,
-						["base_guid"] = meta.Guid,
-					});
+					rows.Add(row);
 				}
 
-				int written = rows.Any() ? UpsertBases(connection, tableColumns, keyColumns, rows) : 0;
+				int written = rows.Count > 0 ? UpsertBases(connection, rows) : 0;
 
 				// пропавшие с сервера базы помечаем disabled
-				MarkMissingBasesDisabled(connection, tableColumns, bases);
+				MarkMissingBasesDisabled(connection, bases);
 
 				return written;
 			}
 		}
 
-		private static int UpsertBases(MySqlConnection connection, IReadOnlyList<string> tableColumns, ICollection<string> keyColumns, IList<Dictionary<string, object>> rows, MySqlTransaction tx = null)
-		{
-			var columns = tableColumns.Where(rows[0].ContainsKey).ToList();
-			if(!columns.Any())
-				return 0;
-			var updatable = columns.Where(c => !keyColumns.Contains(c)).ToList();
-
+		private static int UpsertBases(MySqlConnection connection, IList<BaseRow> rows, MySqlTransaction tx = null) {
 			const int chunkSize = 500;
 			for(int offset = 0; offset < rows.Count; offset += chunkSize) {
 				var chunk = rows.Skip(offset).Take(chunkSize).ToList();
-				string sql = BuildUpsert(columns, updatable, chunk, out var parameters);
+				string sql = BuildUpsert(chunk, out var parameters);
 				connection.Execute(sql, parameters, tx);
 			}
 
@@ -94,10 +76,9 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 		}
 
 		/// <summary>Один INSERT со всеми строками пачки ON DUPLICATE KEY UPDATE</summary>
-		private static string BuildUpsert(IReadOnlyList<string> columns, IReadOnlyList<string> updatable,
-			IReadOnlyList<Dictionary<string, object>> chunk, out DynamicParameters parameters) {
+		private static string BuildUpsert(IReadOnlyList<BaseRow> chunk, out DynamicParameters parameters) {
 			var sql = new StringBuilder($"INSERT INTO `{BasesTable}` (")
-				.Append(string.Join(", ", columns.Select(c => $"`{c}`")))
+				.Append(string.Join(", ", BaseColumns.Select(c => $"`{c}`")))
 				.Append(") VALUES ");
 			parameters = new DynamicParameters();
 
@@ -105,73 +86,77 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 				if(row > 0)
 					sql.Append(',');
 				sql.Append('(')
-					.Append(string.Join(",", columns.Select((c, i) => "@" + ParameterName(row, i))))
+					.Append(string.Join(",", BaseColumns.Select((c, i) => "@" + ParameterName(row, i))))
 					.Append(')');
 
-				for(int i = 0; i < columns.Count; i++)
-					parameters.Add(ParameterName(row, i), chunk[row].TryGetValue(columns[i], out var value) ? value : null);
+				var values = RowValues(chunk[row]);
+				for(int i = 0; i < values.Length; i++)
+					parameters.Add(ParameterName(row, i), values[i]);
 			}
 
-			if(updatable.Any())
-				sql.Append(" ON DUPLICATE KEY UPDATE ")
-					.Append(string.Join(", ", updatable.Select(c => $"`{c}` = VALUES(`{c}`)")));
+			sql.Append(" ON DUPLICATE KEY UPDATE ")
+				.Append(string.Join(", ", BaseUpdatableColumns.Select(c => $"`{c}` = VALUES(`{c}`)")));
 
 			return sql.ToString();
 		}
 
+		/// <summary>Порядок обязан совпадать с <see cref="BaseColumns"/></summary>
+		private static object[] RowValues(BaseRow row) => new object[] {
+			row.ProductId, row.BaseName, row.BaseTitle, row.Version
+		};
+
 		private static string ParameterName(int row, int column) => $"p{row}_{column}";
 
-		private void MarkMissingBasesDisabled(MySqlConnection connection, ICollection<string> tableColumns, IEnumerable<string> presentDatabases)
+		private void MarkMissingBasesDisabled(MySqlConnection connection, IReadOnlyCollection<string> presentDatabases)
 		{
-			if(!tableColumns.Contains("disabled", StringComparer.OrdinalIgnoreCase))
-				return;
-
-			if(!presentDatabases.Any()) {
+			if(presentDatabases.Count == 0) {
 				connection.Execute(
-					$"UPDATE `{BasesTable}` SET disabled = TRUE WHERE account_id = @acc AND product_id = @pid;",
-					new { acc = accountId, pid = productId });
+					$"UPDATE `{BasesTable}` SET disabled = TRUE WHERE product_id = @pid;",
+					new { pid = productId });
 				return;
 			}
 			// пропавшие -> disabled
 			// вернувшиеся -> снимаем флаг
 			connection.Execute(
-				$"UPDATE `{BasesTable}` SET disabled = (base_name NOT IN @present) WHERE account_id = @acc AND product_id = @pid;",
-				new { present = presentDatabases, acc = accountId, pid = productId });
+				$"UPDATE `{BasesTable}` SET disabled = (base_name NOT IN @present) WHERE product_id = @pid;",
+				new { present = presentDatabases, pid = productId });
 		}
 
-		public IEnumerable<DbInfo> GetBases(string login)
+		public IEnumerable<DbInfo> GetBases()
 		{
 			using(var connection = new MySqlConnection(connectionString)) {
 				connection.Open();
-				var sql = @"
-					SELECT `bases`.`id` AS BaseId, COALESCE(base_title, base_name) AS Title,
-						COALESCE(real_name, base_name, '') AS BaseName, version AS Version
-					FROM `base_access`
-					JOIN `bases` ON `base_access`.`base_id` = `bases`.`id`
-					JOIN `server_users` ON `base_access`.`user_id` = `server_users`.`id`
-					WHERE `server_users`.`login` = @login
-						AND `bases`.`product_id` = @productId;";
-				return connection.Query<DbInfo>(sql, new { login, productId }).ToList();
+
+				var visible = new HashSet<string>(connection.Query<string>("SHOW DATABASES"),
+					StringComparer.OrdinalIgnoreCase);
+
+				return connection.Query<DbInfo>(
+						"SELECT `id` AS BaseId, COALESCE(base_title, base_name) AS Title, " +
+						"	`base_name` AS BaseName, `version` AS Version " +
+						$"FROM `{BasesTable}` WHERE product_id = @productId " +
+						"	AND base_name IN @visible;",
+						new { productId, visible })
+					.ToList();
 			}
 		}
 
-		public (int baseId, string baseGuid) InsertBase(MySqlConnection connection, MySqlTransaction transaction, DbInfo dbInfo)
+		/// <summary>Идентификатор базы продукта в метабазе, 0 - её там нет</summary>
+		public int FindBaseId(MySqlConnection connection, string baseName, MySqlTransaction transaction = null) =>
+			connection.ExecuteScalar<int?>(
+				$"SELECT id FROM `{BasesTable}` WHERE base_name = @name AND product_id = @pid;",
+				new { name = baseName, pid = productId }, transaction) ?? 0;
+
+		public int InsertBase(MySqlConnection connection, MySqlTransaction transaction, DbInfo dbInfo)
 		{
-			var baseGuid = Guid.NewGuid().ToString();
 			connection.Execute(
-				"INSERT INTO bases (account_id, base_title, base_name, product_id, real_name, base_guid) " +
-				"VALUES (@account_id, @base_title, @base_name, @product_id, @real_name, @base_guid);",
+				"INSERT INTO bases (base_title, base_name, product_id) VALUES (@base_title, @base_name, @product_id);",
 				new {
-					account_id = accountId,
 					base_title = dbInfo.Title,
 					base_name = dbInfo.BaseName,
 					product_id = productId,
-					real_name = dbInfo.BaseName,
-					base_guid = baseGuid,
 				}, transaction);
 
-			var baseId = connection.ExecuteScalar<int>("SELECT LAST_INSERT_ID();", transaction: transaction);
-			return (baseId, baseGuid);
+			return connection.ExecuteScalar<int>("SELECT LAST_INSERT_ID();", transaction: transaction);
 		}
 
 		public bool SyncWithDelete(DbInfo dbInfo)
@@ -192,9 +177,7 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			// в удаление приходит и база, созданная только что при пересоздании: у неё известно лишь имя
 			int baseId = dbInfo.BaseId > 0
 				? dbInfo.BaseId
-				: transaction.Connection.ExecuteScalar<int?>(
-					$"SELECT id FROM `{BasesTable}` WHERE real_name = @name AND account_id = @acc AND product_id = @pid;",
-					new { name = dbInfo.BaseName, acc = accountId, pid = productId }, transaction) ?? 0;
+				: FindBaseId(transaction.Connection, dbInfo.BaseName, transaction);
 
 			if(baseId <= 0) {
 				logger.Debug("База {0} в метабазе не значится, удалять нечего", dbInfo.BaseName);
@@ -206,36 +189,37 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 					new { id = baseId }, transaction);
 			transaction.Connection.Execute($"DELETE FROM `{BasesTable}` WHERE id = @id;", new { id = baseId }, transaction);
 
-			logger.Info("Удалена база {0} аккаунтом {1}", dbInfo.BaseName, accountId);
+			logger.Info("Удалена база {0} продукта {1}", dbInfo.BaseName, productId);
 			return true;
 		}
 
-		private static readonly string[] BaseMetaParameters = { "ProductCode", "version", "BaseTitle", "BaseGuid" };
+		private static readonly string[] BaseMetaParameters = { "ProductCode", "version", "BaseTitle" };
 
 		/// <summary>null - параметров базы нет либо в них нет кода продукта</summary>
-		private static BaseMeta ToBaseMeta(string dbName, IReadOnlyDictionary<string, Dictionary<string, string>> byDatabase) {
+		private static BaseRow ToBaseMeta(string dbName, IReadOnlyDictionary<string, Dictionary<string, string>> byDatabase) {
 			if(!byDatabase.TryGetValue(dbName, out var parameters))
 				return null;
 
 			if(!parameters.TryGetValue("ProductCode", out var code) || !byte.TryParse(code, out var productCode))
 				return null;
 
-			return new BaseMeta {
-				ProductCode = productCode,
+			return new BaseRow
+			{
+				ProductId = productCode,
 				Version = Parameter(parameters, "version"),
-				Title = Parameter(parameters, "BaseTitle"),
-				Guid = Parameter(parameters, "BaseGuid")
+				BaseTitle = Parameter(parameters, "BaseTitle")
 			};
 		}
 
 		private static string Parameter(IReadOnlyDictionary<string, string> parameters, string name)
 			=> parameters.TryGetValue(name, out var value) ? value : null;
 
-		private sealed class BaseMeta {
-			public byte ProductCode { get; set; }
+		/// <summary>Строка таблицы bases, как её пишет синхронизация</summary>
+		private sealed class BaseRow {
+			public byte ProductId { get; set; }
+			public string BaseName { get; set; }
+			public string BaseTitle { get; set; }
 			public string Version { get; set; }
-			public string Title { get; set; }
-			public string Guid { get; set; }
 		}
 	}
 }
