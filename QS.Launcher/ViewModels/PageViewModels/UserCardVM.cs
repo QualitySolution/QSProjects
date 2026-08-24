@@ -103,7 +103,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 
 		#region Изменения
 
-		private static readonly string signatureSeparator = ((char)1).ToString(); //? может лучше через хеш проверять сингнатуру
+		private static readonly string signatureSeparator = ((char)1).ToString();
 
 		private string loadedSignature;
 
