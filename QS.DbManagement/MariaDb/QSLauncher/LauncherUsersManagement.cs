@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using MySqlConnector;
 using QS.DbManagement.Entities;
-using QS.Utilities.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,21 +10,26 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 	{
 		private const string LauncherBaseName = LauncherMetadataManagement.LauncherBaseName;
 		private const string UsersTable = "server_users";
+		private const string UpdateRightsTable = "base_update_rights";
 		private const int ER_DUP_ENTRY = 1062;
 
 		private const string UserNotFound = "Пользователь с указанным именем не найден";
 		private const string LoginTaken = "Такое имя пользователя уже занято";
+		private const string BaseNotFound = "База не найдена";
 
-		private static readonly HashSet<string> StructuralUserColumns = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-			{ "id", "login", "password", "account_id" };
+		private const string UserSelect =
+			"`id` AS Id, `login` AS Login, `name` AS Name, " +
+			"`email` AS Email, `phone` AS Phone, `is_admin` AS IsAdmin, `disabled` AS Disabled";
+
+		private static readonly string[] UserWritableColumns = { "name", "email", "is_admin", "disabled" };
 
 		private readonly string connectionString;
 		private readonly byte productId;
-		private readonly LauncherSchemaCache schema;
+		private readonly LauncherBasesManagement bases;
 		private readonly LauncherUserInfo userInfo;
-		private bool? isAdminCached;
 
-		public LauncherUsersManagement(MySqlConnectionStringBuilder connectionBuilder, string login, byte productId, LauncherSchemaCache schema) {
+		public LauncherUsersManagement(MySqlConnectionStringBuilder connectionBuilder, string login, byte productId,
+			LauncherBasesManagement bases) {
 			// строку правим на копии: builder принадлежит вызывающему
 			var toLauncher = new MySqlConnectionStringBuilder(connectionBuilder.ConnectionString) {
 				Database = LauncherBaseName,
@@ -33,23 +37,20 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			};
 			connectionString = toLauncher.ConnectionString;
 			this.productId = productId;
-			this.schema = schema ?? throw new ArgumentNullException(nameof(schema));
+			this.bases = bases ?? throw new ArgumentNullException(nameof(bases));
 
 			userInfo = GetLauncherUserInfo(login)
 				?? throw new ArgumentException("Не удалось получить информацию о текущем пользователе", nameof(login));
 		}
-
-		public int CurrentAccountId => userInfo.AccountId;
 
 		public IEnumerable<LauncherUserInfo> GetUsers() {
 			RequireAdminFor("просмотра пользователей");
 
 			using(var connection = new MySqlConnection(connectionString)) {
 				connection.Open();
-				var columns = schema.TableColumns(connection, LauncherBaseName, UsersTable);
-				string select = LauncherColumnMapper.SelectList(columns, typeof(LauncherUserInfo));
-				string query = $"SELECT {select} FROM `{UsersTable}` WHERE account_id = @accountId AND product_id = @productId ORDER BY login;";
-				return connection.Query<LauncherUserInfo>(query, new { accountId = userInfo.AccountId, productId = productId }).ToList();
+				return connection.Query<LauncherUserInfo>(
+					$"SELECT {UserSelect} FROM `{UsersTable}` WHERE product_id = @productId ORDER BY login;",
+					new { productId }).ToList();
 			}
 		}
 
@@ -58,15 +59,13 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 
 			using(var connection = new MySqlConnection(connectionString)) {
 				connection.Open();
-				var columns = schema.TableColumns(connection, LauncherBaseName, UsersTable);
-				string select = LauncherColumnMapper.SelectList(columns, typeof(LauncherUserInfo));
-				string query = $"SELECT {select} FROM `{UsersTable}` WHERE login = @login AND account_id = @accountId AND product_id = @productId;";
-				return connection.QueryFirstOrDefault<LauncherUserInfo>(query,
-					new { login, accountId = userInfo.AccountId, productId = productId });
+				return connection.QueryFirstOrDefault<LauncherUserInfo>(
+					$"SELECT {UserSelect} FROM `{UsersTable}` WHERE login = @login AND product_id = @productId;",
+					new { login, productId });
 			}
 		}
 
-		public bool CreateUser(LauncherUserInfo user, string password) {
+		public bool CreateUser(LauncherUserInfo user) {
 			RequireAdminFor("управления пользователями");
 
 			using(var connection = new MySqlConnection(connectionString)) {
@@ -79,24 +78,12 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 					if(taken != 0)
 						throw new ArgumentException(LoginTaken, nameof(user));
 
-					var tableColumns = schema.TableColumns(connection, LauncherBaseName, UsersTable);
-					var (columns, parameters) = LauncherColumnMapper.MapForWrite(tableColumns, user, StructuralUserColumns);
-
-					columns.Insert(0, "account_id");
-					parameters.Add("account_id", userInfo.AccountId);
-
-					columns.Insert(0, "product_id");
-					parameters.Add("product_id", productId);
-
-					columns.Insert(0, "password");
-					parameters.Add("password", Cryptography.ComputeHash(password)); //?
-
-					columns.Insert(0, "login");
-					parameters.Add("login", user.Login);
+					var columns = new List<string> { "login", "product_id" };
+					columns.AddRange(UserWritableColumns);
 
 					string query = $"INSERT INTO `{UsersTable}` ({string.Join(", ", columns.Select(c => $"`{c}`"))}) " +
 						$"VALUES ({string.Join(", ", columns.Select(c => "@" + c))});";
-					return connection.Execute(query, parameters) > 0;
+					return connection.Execute(query, InsertParameters(user)) > 0;
 				}
 				catch(MySqlException ex) when(ex.Number == ER_DUP_ENTRY) { //логин заняли между проверкой и вставкой
 					throw new ArgumentException(LoginTaken, nameof(user), ex);
@@ -104,7 +91,24 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			}
 		}
 
-		public bool UpdateUser(LauncherUserInfo user, string password) {
+		private DynamicParameters InsertParameters(LauncherUserInfo user) {
+			var parameters = MakeWritableParameters(user);
+			parameters.Add("login", user.Login);
+			parameters.Add("product_id", productId);
+			return parameters;
+		}
+		private static DynamicParameters MakeWritableParameters(LauncherUserInfo user) {
+			var parameters = new DynamicParameters();
+			parameters.Add("name", Blank(user.Name));
+			parameters.Add("email", Blank(user.Email));
+			parameters.Add("is_admin", user.IsAdmin);
+			parameters.Add("disabled", user.Disabled);
+			return parameters;
+		}
+		/// <summary>Пустую строку из формы кладём как NULL</summary>
+		private static string Blank(string value) => string.IsNullOrEmpty(value) ? null : value;
+
+		public bool UpdateUser(LauncherUserInfo user) {
 			RequireAdminFor("управления пользователями");
 			if(user.Id <= 0)
 				throw new ArgumentException(UserNotFound, nameof(user));
@@ -112,37 +116,13 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			using(var connection = new MySqlConnection(connectionString)) {
 				connection.Open();
 
-				var tableColumns = schema.TableColumns(connection, LauncherBaseName, UsersTable);
-				var (columns, parameters) = LauncherColumnMapper.MapForWrite(tableColumns, user, StructuralUserColumns);
-				var setParts = columns.ConvertAll(c => $"`{c}` = @{c}");
-
-				if(!string.IsNullOrEmpty(password)) {
-					setParts.Add("`password` = @password");
-					parameters.Add("password", Cryptography.ComputeHash(password)); //?
-				}
-				if(!setParts.Any())
-					return true;
-
+				var parameters = MakeWritableParameters(user);
 				parameters.Add("id", user.Id);
-				string query = $"UPDATE `{UsersTable}` SET {string.Join(", ", setParts)} WHERE id = @id;";
-				connection.Execute(query, parameters);
+
+				string assignments = string.Join(", ", UserWritableColumns.Select(c => $"`{c}` = @{c}"));
+				connection.Execute($"UPDATE `{UsersTable}` SET {assignments} WHERE id = @id;", parameters);
 			}
 			return true;
-		}
-
-		public bool SyncWithChangeOwnPassword(string login, string newPassword) {
-			if(string.IsNullOrEmpty(newPassword))
-				return false;
-
-			using(var connection = new MySqlConnection(connectionString)) {
-				connection.Open();
-
-				int rowsAffected = connection.Execute(
-					$"UPDATE `{UsersTable}` SET `password` = @password WHERE login = @login AND account_id = @acc;",
-					new { login, password = Cryptography.ComputeHash(newPassword), acc = userInfo.AccountId });
-
-				return rowsAffected > 0;
-			}
 		}
 
 		public bool DeleteUser(LauncherUserInfo user) {
@@ -162,7 +142,7 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			if(user.Id <= 0)
 				throw new ArgumentException(UserNotFound, nameof(user));
 
-			transaction.Connection.Execute("DELETE FROM `base_access` WHERE `user_id` = @userId", new { userId = user.Id }, transaction);
+			transaction.Connection.Execute($"DELETE FROM `{UpdateRightsTable}` WHERE `user_id` = @userId", new { userId = user.Id }, transaction);
 			int rowsAffected = transaction.Connection.Execute($"DELETE FROM `{UsersTable}` WHERE `id` = @userId", new { userId = user.Id }, transaction);
 
 			return rowsAffected > 0;
@@ -181,116 +161,89 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			using(var connection = new MySqlConnection(connectionString)) {
 				connection.Open();
 
-				var columns = schema.TableColumns(connection, LauncherBaseName, UsersTable);
-				if(!columns.Contains("disabled", StringComparer.OrdinalIgnoreCase))
-					return 0;
-
 				// product_id обязателен: список логинов собран для нашего продукта, и без него
 				// синхронизация погасила бы пользователей соседнего продукта на том же сервере
 				if(!present.Any()) {
 					connection.Execute(
-						$"UPDATE `{UsersTable}` SET disabled = TRUE WHERE account_id = @acc AND product_id = @pid;",
-						new { acc = userInfo.AccountId, pid = productId });
+						$"UPDATE `{UsersTable}` SET disabled = TRUE WHERE product_id = @pid;",
+						new { pid = productId });
 					return 0;
 				}
 
 				connection.Execute(
-					$"UPDATE `{UsersTable}` SET disabled = TRUE WHERE account_id = @acc AND product_id = @pid AND login NOT IN @present;",
-					new { acc = userInfo.AccountId, pid = productId, present });
+					$"UPDATE `{UsersTable}` SET disabled = TRUE WHERE product_id = @pid AND login NOT IN @present;",
+					new { pid = productId, present });
 
 				return present.Count;
 			}
 		}
 
-		public IEnumerable<BaseAccessRow> GetUserBaseAccess(LauncherUserInfo user) {
-			RequireAdminFor("просмотра доступов пользователей");
+		#region Право на обновление базы
+
+		public bool SetBaseUpdateRight(string baseName, LauncherUserInfo user, bool canUpdate) {
+			RequireAdminFor("изменения прав на обновление баз");
 			if(user.Id <= 0)
 				throw new ArgumentException(UserNotFound, nameof(user));
 
 			using(var connection = new MySqlConnection(connectionString)) {
 				connection.Open();
-				string query = @"SELECT b.id AS BaseId, COALESCE(b.real_name, b.base_name, '') AS BaseName,
-						COALESCE(b.base_title, b.base_name) AS BaseTitle,
-						(ba.user_id IS NOT NULL) AS HasAccess,
-						COALESCE(ba.admin, 0) AS Admin,
-						COALESCE(ba.read_only, 0) AS ReadOnly
-					FROM bases b
-					LEFT JOIN base_access ba ON ba.base_id = b.id AND ba.user_id = @userId
-					WHERE b.account_id = @accountId AND b.product_id = @productId
-					ORDER BY BaseTitle;";
-				return connection.Query<BaseAccessRow>(query,
-					new { userId = user.Id, accountId = userInfo.AccountId, productId }).ToList();
-			}
-		}
+				int baseId = RequireBaseId(connection, baseName);
 
-		public bool ChangeBaseAccess(BaseAccessRow access, LauncherUserInfo user) {
-			RequireAdminFor("изменения доступов");
-			if(user.Id <= 0)
-				throw new ArgumentException(UserNotFound, nameof(user));
-
-			using(var connection = new MySqlConnection(connectionString)) {
-				connection.Open();
-
-				var baseId = connection.QueryFirstOrDefault<int?>(
-					"SELECT id FROM bases WHERE real_name = @name AND account_id = @account AND product_id = @productId;",
-					new { name = access.BaseName, account = userInfo.AccountId, productId });
-				if(baseId == null)
-					throw new ArgumentException("База не найдена", nameof(access));
-
-				if(!access.HasAccess) {
-					connection.Execute("DELETE FROM base_access WHERE user_id = @uid AND base_id = @bid;",
-						new { uid = user.Id, bid = baseId });
-				}
-				else {
-					bool readOnly = !access.Admin && access.ReadOnly;
-					connection.Execute(
-						"INSERT INTO base_access (user_id, base_id, admin, read_only) " +
-						"VALUES (@uid, @bid, @admin, @readOnly) " +
-						"ON DUPLICATE KEY UPDATE admin = VALUES(admin), read_only = VALUES(read_only);",
-						new { uid = user.Id, bid = baseId, access.Admin, readOnly });
-				}
+				connection.Execute(
+					$"INSERT INTO `{UpdateRightsTable}` (user_id, base_id, can_update) VALUES (@uid, @bid, @canUpdate) " +
+					"ON DUPLICATE KEY UPDATE can_update = VALUES(can_update);",
+					new { uid = user.Id, bid = baseId, canUpdate });
 			}
 			return true;
 		}
 
-		public void GrantCreatorAccess(MySqlConnection connection, MySqlTransaction transaction, int baseId) {
+		/// <summary>
+		/// Снимает запись о праве обновлять базу. На доступ к базе не влияет:
+		/// видимость и доступ живут в GRANT'ах сервера
+		/// </summary>
+		public bool RevokeBaseUpdateRight(string baseName, LauncherUserInfo user) {
+			RequireAdminFor("изменения прав на обновление баз");
+			if(user.Id <= 0)
+				throw new ArgumentException(UserNotFound, nameof(user));
+
+			using(var connection = new MySqlConnection(connectionString)) {
+				connection.Open();
+				int baseId = RequireBaseId(connection, baseName);
+
+				connection.Execute($"DELETE FROM `{UpdateRightsTable}` WHERE user_id = @uid AND base_id = @bid;",
+					new { uid = user.Id, bid = baseId });
+			}
+			return true;
+		}
+
+		/// <summary>Создавший базу может её обновлять</summary>
+		public void GrantCreatorUpdateRight(MySqlConnection connection, MySqlTransaction transaction, int baseId) {
 			connection.Execute(
-				"INSERT INTO base_access (user_id, base_id, admin) VALUES (@user_id, @base_id, 1) " +
-				"ON DUPLICATE KEY UPDATE admin = VALUES(admin);",
+				$"INSERT INTO `{UpdateRightsTable}` (user_id, base_id, can_update) VALUES (@user_id, @base_id, 1) " +
+				"ON DUPLICATE KEY UPDATE can_update = VALUES(can_update);",
 				new { user_id = userInfo.Id, base_id = baseId }, transaction);
 		}
 
+		private int RequireBaseId(MySqlConnection connection, string baseName) {
+			int baseId = bases.FindBaseId(connection, baseName);
+			if(baseId <= 0)
+				throw new ArgumentException(BaseNotFound, nameof(baseName));
+			return baseId;
+		}
+
+		#endregion
+
 		private void RequireAdminFor(string action) {
-			if(!IsAdmin())
+			if(!userInfo.IsAdmin)
 				throw new UnauthorizedAccessException($"Недостаточно прав для {action}");
-		}
-
-		private bool IsAdmin() {
-			if(isAdminCached.HasValue)
-				return isAdminCached.Value;
-
-			bool result = userInfo.IsAccountAdmin || HasAnyBaseAdminAccess();
-			isAdminCached = result;
-			return result;
-		}
-
-		private bool HasAnyBaseAdminAccess() {
-			using(var connection = new MySqlConnection(connectionString)) {
-				connection.Open();
-				return connection.ExecuteScalar<int>(
-					"SELECT EXISTS(SELECT 1 FROM base_access WHERE user_id = @id AND admin = 1);",
-					new { id = userInfo.Id }) == 1;
-			}
 		}
 
 		private LauncherUserInfo GetLauncherUserInfo(string login) {
 			using(var connection = new MySqlConnection(connectionString)) {
 				connection.Open();
-				var query = @"SELECT `server_users`.`id` AS Id, `server_users`.`login` AS Login, `server_users`.`password` AS PasswordHash,
-       				`accounts`.`id` AS AccountId, accounts.login AS AccountName, server_users.is_account_admin AS IsAccountAdmin
-					FROM `server_users` JOIN accounts ON accounts.id = `server_users`.`account_id`
-					WHERE `server_users`.`login` = @login AND `server_users`.`product_id` = @productId;";
-				return connection.QueryFirstOrDefault<LauncherUserInfo>(query, new { login, productId });
+				return connection.QueryFirstOrDefault<LauncherUserInfo>(
+					$"SELECT {UserSelect} FROM `{UsersTable}` WHERE `login` = @login AND `product_id` = @productId;",
+					new { login, productId });
 			}
 		}
 	}

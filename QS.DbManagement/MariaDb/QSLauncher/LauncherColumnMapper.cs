@@ -16,30 +16,10 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 				new { schema, table }, tx).ToList();
 		}
 
-		public static HashSet<string> KeyColumns(MySqlConnection connection, string schema, string table, MySqlTransaction tx = null)
-		{
-			return new HashSet<string>(
-				connection.Query<string>(
-					"SELECT DISTINCT COLUMN_NAME FROM information_schema.STATISTICS " +
-					"WHERE TABLE_SCHEMA = @schema AND TABLE_NAME = @table AND NON_UNIQUE = 0",
-					new { schema, table }, tx),
-				StringComparer.OrdinalIgnoreCase);
-		}
-
 		/// <summary>
-		/// список колонок, у которых есть одноимённое свойство сущности
+		/// Проекция под свойства сущности с одинаковым набором и порядком колонок для любой базы - иначе ветки UNION не соединить
+		/// Недостающие колонки подставляются как NULL
 		/// </summary>
-		public static string SelectList(IEnumerable<string> tableColumns, Type entityType)
-		{
-			var props = Properties(entityType); //?
-			var pairs = new List<string>();
-			foreach(var column in tableColumns) {
-				if(props.TryFind(column, out var property))
-					pairs.Add($"`{column}` AS `{property.Name}`");
-			}
-			return string.Join(", ", pairs);
-		}
-
 		public static string SelectListAligned(IEnumerable<string> tableColumns, Type entityType)
 		{
 			var byName = new NameIndex<string>(tableColumns, c => c);
