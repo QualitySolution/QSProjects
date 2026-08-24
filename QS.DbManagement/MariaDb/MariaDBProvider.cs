@@ -676,7 +676,9 @@ namespace QS.DbManagement {
 			var grants = ReadGrantsByHost(login).Values.SelectMany(g => g).ToList();
 			bool globalAdmin = MySqlGrants.HasGlobalAdmin(grants);
 
-			var result = GetUserDatabasesDirect()
+			// каталог берём из метабазы одним запросом, а не читая параметры каждой базы;
+			// отстал от сервера - его догоняет «Обновить метаинформацию»
+			var result = GetUserDatabases()
 				.Select(db => globalAdmin ? MySqlAccess.FullAccessByGlobalGrant(db) : MySqlAccess.FromGrants(db, grants))
 				.ToList();
 
@@ -710,8 +712,7 @@ namespace QS.DbManagement {
 				throw new InvalidOperationException($"Пользователь {login} не найден на сервере.");
 
 			if(MySqlGrants.HasGlobalAdmin(grantsByHost.Values.SelectMany(g => g)))
-				throw new InvalidOperationException(
-					$"У пользователя {login} глобальные права на весь сервер");
+				throw new InvalidOperationException($"У пользователя {login} глобальные права на весь сервер");
 
 			var statements = grantsByHost
 				.SelectMany(hostGrants => MySqlAccess.Statements(login, hostGrants.Key, hostGrants.Value, access))
@@ -724,7 +725,7 @@ namespace QS.DbManagement {
 				if(target == null)
 					return;
 				if(access.HasAccess)
-					m.Users.SetBaseUpdateRight(access.BaseName, target, access.IsAdmin);
+					m.Users.SetBaseUpdateRight(access.BaseName, target, !access.ReadOnly);
 				else
 					m.Users.RevokeBaseUpdateRight(access.BaseName, target);
 			}, "изменение права на обновление базы", login);

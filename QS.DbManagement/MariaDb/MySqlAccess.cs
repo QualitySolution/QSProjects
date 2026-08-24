@@ -9,7 +9,10 @@ namespace QS.DbManagement.MariaDb {
 	internal static class MySqlAccess {
 		public const string AllPrivileges = "ALL PRIVILEGES";
 		private const string ReadOnlyPrivileges = "SELECT, LOCK TABLES, SHOW VIEW";
-		private const string EditPrivileges = "SELECT, INSERT, UPDATE, DELETE, EXECUTE, CREATE TEMPORARY TABLES, LOCK TABLES, SHOW VIEW";
+
+		private const string UpdatePrivileges =
+			"SELECT, INSERT, UPDATE, DELETE, EXECUTE, CREATE TEMPORARY TABLES, LOCK TABLES, SHOW VIEW, "
+			+ "ALTER, CREATE, DROP"; //Право накатывать на базу обновления
 
 		/// <summary>переводит в вид в виде 'логин'@'хост'</summary>
 		public static string UserOf(string login, string host)
@@ -27,6 +30,7 @@ namespace QS.DbManagement.MariaDb {
 
 		public static DbUserBaseAccess FullAccessByGlobalGrant(DbInfo db)
 			=> new DbUserBaseAccess {
+				BaseId = db.BaseId,
 				BaseName = db.BaseName,
 				Title = db.Title,
 				HasAccess = true,
@@ -36,7 +40,7 @@ namespace QS.DbManagement.MariaDb {
 
 		public static DbUserBaseAccess FromGrants(DbInfo db, IEnumerable<string> grants)
 		{
-			var access = new DbUserBaseAccess { BaseName = db.BaseName, Title = db.Title };
+			var access = new DbUserBaseAccess { BaseId = db.BaseId, BaseName = db.BaseName, Title = db.Title };
 
 			var privileges = grants
 				.Where(g => CoversDatabase(g, db.BaseName) && MySqlGrants.IsMeaningful(g))
@@ -83,7 +87,7 @@ namespace QS.DbManagement.MariaDb {
 				return AllPrivileges;
 			if(access.ReadOnly)
 				return ReadOnlyPrivileges;
-			return EditPrivileges;
+			return UpdatePrivileges;
 		}
 
 		// грант на всём сервере *.* базу тоже покрывает
