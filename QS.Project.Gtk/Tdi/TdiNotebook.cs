@@ -798,27 +798,29 @@ namespace QS.Tdi.Gtk
 			if(IsCurrent)
 				PrevPage();
 			
+			var tabBoxChilds = GtkHelper.EnumerateAllChildren(tabBox).ToList();
+			//TODO проверить работу Destroy
+			//после вызова Destroy у родительского элемента-контейнера,
+			//должны произойти вызовы этого метода у всех присоединенных потомков по цепочке
+			
+			//Вложенные виджеты уничтожаем до Dispose самой вкладки и до оповещения о закрытии,
+			if(tabBox != null) {
+				tabBoxChilds.OfType<IMustBeDestroyed>()
+				.ForEach(w => w.Destroy());
+			}
+
+			tabBox.Destroy();
+			tabHeader?.Destroy();
+
 			var maybeSliderActiveDialog = (tab as TdiSliderTab)?.ActiveDialog;
 			if(maybeSliderActiveDialog != null) {
 				OnTabClosed(maybeSliderActiveDialog, CloseSource.WithParentPage);
 			}
 			OnTabClosed(tab, source);
 			tab.OnTabClosed();
-
-			var tabBoxChilds = GtkHelper.EnumerateAllChildren(tabBox).ToList();
-			//TODO проверить работу Destroy
-			//после вызова Destroy у родительского элемента-контейнера,
-			//должны произойти вызовы этого метода у всех присоединенных потомков по цепочке
-			if(tabBox != null)
-			{
-				tabBoxChilds.OfType<IMustBeDestroyed>()
-				.ForEach(w => w.Destroy());
-			}
+		
 			logger.Debug("Вкладка <{0}> удалена", tab.TabName);
 			
-			tabBox.Destroy();
-			tabHeader?.Destroy();
-
 			tab.TabNameChanged -= OnTabNameChanged;
 			
             if(tab is IDisposable disp)
