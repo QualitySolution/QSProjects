@@ -44,6 +44,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 					IsAdmin = false;
 					ReadOnly = false;
 				}
+				RaiseLevelChanged();
 			}
 		}
 
@@ -56,6 +57,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 					HasAccess = true;
 					ReadOnly = false;
 				}
+				RaiseLevelChanged();
 			}
 		}
 
@@ -68,7 +70,25 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 					HasAccess = true;
 					IsAdmin = false;
 				}
+				RaiseLevelChanged();
 			}
+		}
+
+		public bool CanUpdate => HasAccess && !ReadOnly;
+
+		public string LevelDescription {
+			get {
+				if(!HasAccess)
+					return "Нет доступа";
+				if(IsAdmin)
+					return "Все права на базу";
+				return ReadOnly ? "Только чтение, без обновления базы" : "Работа с данными и обновление базы";
+			}
+		}
+
+		private void RaiseLevelChanged() {
+			this.RaisePropertyChanged(nameof(CanUpdate));
+			this.RaisePropertyChanged(nameof(LevelDescription));
 		}
 
 		public DbUserBaseAccess ToAccess(string name, string email) => new DbUserBaseAccess {

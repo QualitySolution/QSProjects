@@ -55,7 +55,8 @@
                         <TextBox Margin="5" AcceptsReturn="True" MaxHeight="60" Text="{Binding Card.Comment}" />
                     </StackPanel>
 
-                    <CheckBox Margin="5,5,5,0" Content="Администратор учётной записи"
+                    <CheckBox Margin="5,5,5,0" Content="Администратор"
+                              ToolTip.Tip="Управление пользователями и их доступами. Право не на отдельную базу, а целиком"
                               IsChecked="{Binding Card.IsAdmin}" IsVisible="{Binding Card.ShowAdminFlag}" />
                     <CheckBox Margin="5,0" Content="Отключён"
                               IsChecked="{Binding Card.Disabled}" IsVisible="{Binding Card.ShowDisabling}" />
@@ -67,19 +68,25 @@
                     <StackPanel IsVisible="{Binding HasSelectedUser}">
                         <Label Margin="5,15,5,0" FontWeight="Bold" Content="Доступ к базам" />
 
-                        <Grid Margin="5,0" ColumnDefinitions="*,52,52,52">
-                            <TextBlock Grid.Column="1" HorizontalAlignment="Center" FontSize="12" Opacity="0.6" Text="Доступ" />
-                            <TextBlock Grid.Column="2" HorizontalAlignment="Center" FontSize="12" Opacity="0.6" Text="Админ" />
+                        <Grid Margin="5,0" ColumnDefinitions="*,60,70,60">
+                            <TextBlock Grid.Column="1" HorizontalAlignment="Center" FontSize="12" Opacity="0.6" Text="Доступ"
+                                       ToolTip.Tip="Работа с данными базы. В этот доступ входит и право накатывать на неё обновления" />
+                            <TextBlock Grid.Column="2" HorizontalAlignment="Center" FontSize="12" Opacity="0.6" Text="Все права"
+                                       ToolTip.Tip="Все права на эту базу" />
                             <TextBlock Grid.Column="3" HorizontalAlignment="Center" FontSize="12" Opacity="0.6" Text="Чтение"
+                                       ToolTip.Tip="Только чтение: обновлять базу такой пользователь не сможет"
                                        IsVisible="{Binding ShowReadOnly}" />
                         </Grid>
 
                         <ItemsControl ItemsSource="{Binding BaseAccesses}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate x:DataType="vm:BaseAccessRowVM">
-                                    <Grid Margin="5,2" ColumnDefinitions="*,52,52,52">
-                                        <TextBlock Grid.Column="0" VerticalAlignment="Center"
-                                                   TextTrimming="CharacterEllipsis" Text="{Binding Title}" />
+                                    <Grid Margin="5,2" ColumnDefinitions="*,60,70,60">
+                                        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                            <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding Title}" />
+                                            <TextBlock FontSize="11" Opacity="0.6" TextTrimming="CharacterEllipsis"
+                                                       Text="{Binding LevelDescription}" />
+                                        </StackPanel>
                                         <CheckBox Grid.Column="1" MinWidth="0" Padding="0" HorizontalAlignment="Center"
                                                   IsChecked="{Binding HasAccess}" IsEnabled="{Binding CanEdit}" />
                                         <CheckBox Grid.Column="2" MinWidth="0" Padding="0" HorizontalAlignment="Center"
@@ -90,6 +97,10 @@
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
+
+                        <TextBlock Margin="5,4,5,0" FontSize="12" Opacity="0.6" TextWrapping="Wrap"
+                                   Text="Обновлять базу может каждый, у кого есть доступ к ней. Чтобы этого права не было, отметьте «Чтение»."
+                                   IsVisible="{Binding ShowReadOnly}" />
 
                         <TextBlock Margin="5,0" FontSize="12" Opacity="0.6" TextWrapping="Wrap"
                                    Text="У пользователя глобальные права на весь сервер — доступ к отдельным базам не настраивается"
