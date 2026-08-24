@@ -17,24 +17,28 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			{ "product_id", "base_name", "base_title", "version" };
 		private static readonly string[] BaseUpdatableColumns = { "base_title", "version" };
 
-		private readonly bool canWrite;
+		private readonly bool canSync;
 		private readonly string connectionString;
 		private readonly byte productId;
 
-		public LauncherBasesManagement(MySqlConnectionStringBuilder connectionBuilder, bool canWrite, int accountId, byte productId, LauncherSchemaCache schema) {
+
+		/// <param name="canSync">
+		/// Требуется полный обзор сервера
+		/// </param>
+		public LauncherBasesManagement(MySqlConnectionStringBuilder connectionBuilder, bool canSync, byte productId) {
 			var toLauncher = new MySqlConnectionStringBuilder(connectionBuilder.ConnectionString) {
 				Database = LauncherBaseName,
 				AllowLoadLocalInfile = true
 			};
 			connectionString = toLauncher.ConnectionString;
 
-			this.canWrite = canWrite;
+			this.canSync = canSync;
 			this.productId = productId;
 		}
 
 		public int SyncBases() {
-			if(!canWrite)
-				throw new UnauthorizedAccessException($"У пользователя нет прав на запись в базу {LauncherBaseName}");
+			if(!canSync)
+				throw new UnauthorizedAccessException($"Синхронизировать {LauncherBaseName} может только пользователь с правами на весь сервер");
 
 			using(var connection = new MySqlConnection(connectionString)) {
 				connection.Open();
