@@ -68,25 +68,24 @@
                     <StackPanel IsVisible="{Binding HasSelectedUser}">
                         <Label Margin="5,15,5,0" FontWeight="Bold" Content="Доступ к базам" />
 
-                        <Grid Margin="5,0" ColumnDefinitions="*,60,70,60">
-                            <TextBlock Grid.Column="1" HorizontalAlignment="Center" FontSize="12" Opacity="0.6" Text="Доступ"
-                                       ToolTip.Tip="Работа с данными базы. В этот доступ входит и право накатывать на неё обновления" />
+                        <Grid Margin="5,0" ColumnDefinitions="*,88,80,80">
+                            <TextBlock Grid.Column="1" HorizontalAlignment="Center" FontSize="12" Opacity="0.6" Text="Пользование"
+                                       ToolTip.Tip="Работа с данными базы и обновление её структуры" />
                             <TextBlock Grid.Column="2" HorizontalAlignment="Center" FontSize="12" Opacity="0.6" Text="Все права"
                                        ToolTip.Tip="Все права на эту базу" />
-                            <TextBlock Grid.Column="3" HorizontalAlignment="Center" FontSize="12" Opacity="0.6" Text="Чтение"
-                                       ToolTip.Tip="Только чтение: обновлять базу такой пользователь не сможет"
+                            <TextBlock Grid.Column="3" HorizontalAlignment="Center" FontSize="12" Opacity="0.6" Text="Просмотр"
+                                       ToolTip.Tip="Только просмотр: ни менять данные, ни обновлять базу нельзя"
                                        IsVisible="{Binding ShowReadOnly}" />
                         </Grid>
 
                         <ItemsControl ItemsSource="{Binding BaseAccesses}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate x:DataType="vm:BaseAccessRowVM">
-                                    <Grid Margin="5,2" ColumnDefinitions="*,60,70,60">
-                                        <StackPanel Grid.Column="0" VerticalAlignment="Center">
-                                            <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding Title}" />
-                                            <TextBlock FontSize="11" Opacity="0.6" TextTrimming="CharacterEllipsis"
-                                                       Text="{Binding LevelDescription}" />
-                                        </StackPanel>
+                                    <!-- Background нужен для срабатывания подсказки: прозрачная сетка событий мыши не ловит -->
+                                    <Grid Margin="5,2" ColumnDefinitions="*,88,80,80" Background="Transparent"
+                                          ToolTip.Tip="{Binding LevelDescription}">
+                                        <TextBlock Grid.Column="0" VerticalAlignment="Center"
+                                                   TextTrimming="CharacterEllipsis" Text="{Binding Title}" />
                                         <CheckBox Grid.Column="1" MinWidth="0" Padding="0" HorizontalAlignment="Center"
                                                   IsChecked="{Binding HasAccess}" IsEnabled="{Binding CanEdit}" />
                                         <CheckBox Grid.Column="2" MinWidth="0" Padding="0" HorizontalAlignment="Center"
@@ -99,10 +98,6 @@
                         </ItemsControl>
 
                         <TextBlock Margin="5,4,5,0" FontSize="12" Opacity="0.6" TextWrapping="Wrap"
-                                   Text="Обновлять базу может каждый, у кого есть доступ к ней. Чтобы этого права не было, отметьте «Чтение»."
-                                   IsVisible="{Binding ShowReadOnly}" />
-
-                        <TextBlock Margin="5,0" FontSize="12" Opacity="0.6" TextWrapping="Wrap"
                                    Text="У пользователя глобальные права на весь сервер — доступ к отдельным базам не настраивается"
                                    IsVisible="{Binding BaseAccessLocked}" />
 

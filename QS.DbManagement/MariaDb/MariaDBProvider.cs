@@ -85,12 +85,12 @@ namespace QS.DbManagement {
 				{
 					metadata = new LauncherMetadataManagement(
 						new MySqlConnectionStringBuilder(ConnectionStringBuilder.ConnectionString),
-						CanRefreshMetadata, UserName, ProductCode);
+						IsAdmin, UserName, ProductCode);
 				}
 				catch(Exception ex) when(
 					ex is MySqlException //базы нет, нет прав, сервер недоступен
 					|| ex is InvalidOperationException|| ex is KeyNotFoundException //схема не та, что можно читать
-					|| ex is ArgumentException //текущего пользователя в метабазе нет
+					|| ex is ArgumentException
 					)
 				{
 					logger.Debug(ex, "QSLauncher база недоступна, используем прямой доступ к серверу");
@@ -159,7 +159,7 @@ namespace QS.DbManagement {
 			if(launcher == null)
 				return MetadataUnavailable();
 
-			var users = GetUsersDirect().Select(u => u.Login).ToList();
+			var users = GetUsersDirect().ConvertAll(ToLauncherUser);
 			return new RefreshMetadataResponse
 			{
 				Success = true,
@@ -510,8 +510,6 @@ namespace QS.DbManagement {
 			=> accounts.All(r => MySqlGrants.IsGlobalAdmin(IsYes(r.SuperPriv), IsYes(r.CreateUserPriv)));
 
 		private List<DbUserInfo> GetUsersDirect() {
-			// чтение и пересборка кеша хостов - одна операция: между ними словарь пуст,
-			// и параллельный HostsOf увидел бы учётку без хостов
 			lock(serverLock) {
 				var rows = ReadServerAccounts();
 
@@ -676,9 +674,8 @@ namespace QS.DbManagement {
 			var grants = ReadGrantsByHost(login).Values.SelectMany(g => g).ToList();
 			bool globalAdmin = MySqlGrants.HasGlobalAdmin(grants);
 
-			// каталог берём из метабазы одним запросом, а не читая параметры каждой базы;
-			// отстал от сервера - его догоняет «Обновить метаинформацию»
-			var result = GetUserDatabases()
+			// каталог берём из метабазы одним запросом, а не читая параметры каждой базы
+			List<DbUserBaseAccess> result = GetUserDatabases()
 				.Select(db => globalAdmin ? MySqlAccess.FullAccessByGlobalGrant(db) : MySqlAccess.FromGrants(db, grants))
 				.ToList();
 
@@ -687,7 +684,7 @@ namespace QS.DbManagement {
 		}
 
 		private void FillUsersProfiles(IEnumerable<DbUserBaseAccess> accesses, string login) {
-			var withAccess = accesses.Where(a => a.HasAccess && !string.IsNullOrEmpty(a.BaseName)).ToList();
+			var withAccess = accesses.Where(a => a.HasAccess && !string.IsNullOrEmpty(a.BaseName));
 			if(!withAccess.Any())
 				return;
 
