@@ -1,10 +1,11 @@
-using QS.DbManagement;
+﻿using QS.DbManagement;
 using QS.DbManagement.Entities;
 using QS.Dialog;
 using QS.ErrorReporting;
 using QS.Project.Versioning;
 using ReactiveUI;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
@@ -140,7 +141,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		private async Task LoadBaseAccess(string login) {
 			try {
 				// чтение блокирующее и срабатывает на каждый выбор в списке - уводим в фон
-				var rows = await Task.Run(() => provider.GetUserBaseAccess(login));
+				List<DbUserBaseAccess> rows = await Task.Run(() => provider.GetUserBaseAccess(login));
 
 				BaseAccesses.Clear();
 				foreach(var row in rows)

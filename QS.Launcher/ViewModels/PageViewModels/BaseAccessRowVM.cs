@@ -76,13 +76,14 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 
 		public bool CanUpdate => HasAccess && !ReadOnly;
 
+		/// <summary>Подпись уровня. Показывается подсказкой при наведении на строку</summary>
 		public string LevelDescription {
 			get {
 				if(!HasAccess)
 					return "Нет доступа";
 				if(IsAdmin)
 					return "Все права на базу";
-				return ReadOnly ? "Только чтение, без обновления базы" : "Работа с данными и обновление базы";
+				return ReadOnly ? "Только просмотр, без обновления базы" : "Пользование и обновление базы";
 			}
 		}
 

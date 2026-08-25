@@ -24,23 +24,23 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 		private static readonly string[] UserWritableColumns = { "name", "email", "is_admin", "disabled" };
 
 		private readonly string connectionString;
+		private readonly string login;
+		private readonly bool isAdmin;
 		private readonly byte productId;
 		private readonly LauncherBasesManagement bases;
-		private readonly LauncherUserInfo userInfo;
 
-		public LauncherUsersManagement(MySqlConnectionStringBuilder connectionBuilder, string login, byte productId,
-			LauncherBasesManagement bases) {
+		public LauncherUsersManagement(MySqlConnectionStringBuilder connectionBuilder, string login, bool isAdmin,
+			byte productId, LauncherBasesManagement bases) {
 			// строку правим на копии: builder принадлежит вызывающему
 			var toLauncher = new MySqlConnectionStringBuilder(connectionBuilder.ConnectionString) {
 				Database = LauncherBaseName,
 				AllowLoadLocalInfile = true
 			};
 			connectionString = toLauncher.ConnectionString;
+			this.login = login ?? throw new ArgumentNullException(nameof(login));
+			this.isAdmin = isAdmin;
 			this.productId = productId;
 			this.bases = bases ?? throw new ArgumentNullException(nameof(bases));
-
-			userInfo = GetLauncherUserInfo(login)
-				?? throw new ArgumentException("Не удалось получить информацию о текущем пользователе", nameof(login));
 		}
 
 		public IEnumerable<LauncherUserInfo> GetUsers() {
@@ -148,34 +148,40 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			return rowsAffected > 0;
 		}
 
-		/// <summary>Возвращает число сопоставленных учёток</summary>
-		public int SyncUsers(IEnumerable<string> realLogins) {
+		/// <returns>число учёток сервера, сопоставленных с метабазой</returns>
+		public int SyncUsers(IEnumerable<LauncherUserInfo> serverUsers) {
 			RequireAdminFor("синхронизации пользователей");
 
-			var present = (realLogins
-				?? Enumerable.Empty<string>())
-					.Where(l => !string.IsNullOrEmpty(l))
-					.Distinct(StringComparer.OrdinalIgnoreCase)
-					.ToList();
+			var present = (serverUsers ?? Enumerable.Empty<LauncherUserInfo>())
+				.Where(u => !string.IsNullOrEmpty(u?.Login))
+				.ToList();
 
 			using(var connection = new MySqlConnection(connectionString)) {
 				connection.Open();
-
-				// product_id обязателен: список логинов собран для нашего продукта, и без него
-				// синхронизация погасила бы пользователей соседнего продукта на том же сервере
-				if(!present.Any()) {
-					connection.Execute(
-						$"UPDATE `{UsersTable}` SET disabled = TRUE WHERE product_id = @pid;",
-						new { pid = productId });
-					return 0;
-				}
-
-				connection.Execute(
-					$"UPDATE `{UsersTable}` SET disabled = TRUE WHERE product_id = @pid AND login NOT IN @present;",
-					new { pid = productId, present });
-
+				DisableMissingUsers(connection, present.ConvertAll(u => u.Login));
+				InsertMissingUsers(connection, present);
 				return present.Count;
 			}
+		}
+		private void DisableMissingUsers(MySqlConnection connection, List<string> presentLogins) {
+			var keep = presentLogins.Concat(MySqlSystemObjects.Users).ToList();
+
+			connection.Execute(
+				$"UPDATE `{UsersTable}` SET disabled = TRUE WHERE product_id = @pid AND login NOT IN @keep;",
+				new { pid = productId, keep });
+		}
+
+		private void InsertMissingUsers(MySqlConnection connection, IEnumerable<LauncherUserInfo> serverUsers) {
+			connection.QueryMultiple(
+				$"INSERT INTO `{UsersTable}` (`login`, `product_id`, `is_admin`, `disabled`) " +
+				"VALUES (@login, @product_id, @is_admin, @disabled) " +
+				"ON DUPLICATE KEY UPDATE `login` = `login`;",
+				serverUsers.Select(user => new {
+					login = user.Login,
+					product_id = productId,
+					is_admin = user.IsAdmin,
+					disabled = user.Disabled
+				}).ToList());
 		}
 
 		#region Право на обновление базы
@@ -221,7 +227,18 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			connection.Execute(
 				$"INSERT INTO `{UpdateRightsTable}` (user_id, base_id, can_update) VALUES (@user_id, @base_id, 1) " +
 				"ON DUPLICATE KEY UPDATE can_update = VALUES(can_update);",
-				new { user_id = userInfo.Id, base_id = baseId }, transaction);
+				new { user_id = EnsureOwnRow(connection, transaction), base_id = baseId }, transaction);
+		}
+
+		private int EnsureOwnRow(MySqlConnection connection, MySqlTransaction transaction) {
+			connection.Execute(
+				$"INSERT INTO `{UsersTable}` (`login`, `product_id`, `is_admin`) VALUES (@login, @product_id, @is_admin) " +
+				"ON DUPLICATE KEY UPDATE `login` = `login`;",
+				new { login, product_id = productId, is_admin = isAdmin }, transaction);
+
+			// логин уникален на всю метабазу, поэтому product_id в условии не нужен
+			return connection.ExecuteScalar<int>(
+				$"SELECT `id` FROM `{UsersTable}` WHERE `login` = @login;", new { login }, transaction);
 		}
 
 		private int RequireBaseId(MySqlConnection connection, string baseName) {
@@ -234,17 +251,9 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 		#endregion
 
 		private void RequireAdminFor(string action) {
-			if(!userInfo.IsAdmin)
+			// право на весь сервер; своей записи в метабазе при этом может и не быть
+			if(!isAdmin)
 				throw new UnauthorizedAccessException($"Недостаточно прав для {action}");
-		}
-
-		private LauncherUserInfo GetLauncherUserInfo(string login) {
-			using(var connection = new MySqlConnection(connectionString)) {
-				connection.Open();
-				return connection.QueryFirstOrDefault<LauncherUserInfo>(
-					$"SELECT {UserSelect} FROM `{UsersTable}` WHERE `login` = @login AND `product_id` = @productId;",
-					new { login, productId });
-			}
 		}
 	}
 }

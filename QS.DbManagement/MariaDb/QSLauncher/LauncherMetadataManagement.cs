@@ -1,4 +1,5 @@
-﻿using MySqlConnector;
+﻿using Dapper;
+using MySqlConnector;
 using QS.DbManagement.Entities;
 
 namespace QS.DbManagement.MariaDb.QSLauncher {
@@ -9,16 +10,26 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 		public LauncherBasesManagement Bases { get; }
 		public LauncherUsersManagement Users { get; }
 
-		public LauncherMetadataManagement(MySqlConnectionStringBuilder connectionBuilder, bool canSync, string login, byte productId)
+		public LauncherMetadataManagement(MySqlConnectionStringBuilder connectionBuilder, bool isServerAdmin,
+			string login, byte productId)
 		{
-			Bases = new LauncherBasesManagement(connectionBuilder, canSync, productId);
-			Users = new LauncherUsersManagement(connectionBuilder, login, productId, Bases);
+			Bases = new LauncherBasesManagement(connectionBuilder, isServerAdmin, productId);
+			Users = new LauncherUsersManagement(connectionBuilder, login, isServerAdmin, productId, Bases);
 
 			// строку правим на копии: builder принадлежит вызывающему
 			var toLauncher = new MySqlConnectionStringBuilder(connectionBuilder.ConnectionString) {
 				Database = LauncherBaseName
 			};
 			connectionString = toLauncher.ConnectionString;
+
+			EnsureAvailable();
+		}
+
+		private void EnsureAvailable() {
+			using(var connection = new MySqlConnection(connectionString)) {
+				connection.Open();
+				connection.ExecuteScalar<int?>("SELECT 1 FROM `bases` LIMIT 1;");
+			}
 		}
 
 		public int CreateBaseWithCreatorAccess(DbInfo dbInfo) {
