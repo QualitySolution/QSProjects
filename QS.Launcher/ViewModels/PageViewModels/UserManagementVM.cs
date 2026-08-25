@@ -11,6 +11,7 @@ using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace QS.Launcher.ViewModels.PageViewModels {
 	public class UserManagementVM : CarouselPageVM {
@@ -147,13 +148,12 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 				foreach(var row in rows)
 					BaseAccesses.Add(new BaseAccessRowVM(row, ShowReadOnly));
 
-				var profile = rows.FirstOrDefault(r => !string.IsNullOrEmpty(r.Name) || !string.IsNullOrEmpty(r.Email));
-				if(profile != null) {
-					if(string.IsNullOrEmpty(Card.Name))
-						Card.Name = profile.Name;
-					if(string.IsNullOrEmpty(Card.Email))
-						Card.Email = profile.Email;
-				}
+				var byBase = rows.OrderBy(r => r.BaseName, StringComparer.Ordinal).ToList();
+
+				if(string.IsNullOrEmpty(Card.Name))
+					Card.Name = byBase.FirstOrDefault(n => !string.IsNullOrEmpty(n.Name)).Name;
+				if(string.IsNullOrEmpty(Card.Email))
+					Card.Email = byBase.FirstOrDefault(e => !string.IsNullOrEmpty(e.Email)).Email;
 			}
 			catch(Exception ex) {
 				errorHandling.Handle(ex, AccessTitle);
