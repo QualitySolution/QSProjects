@@ -21,6 +21,7 @@ public partial class LauncherApp() : Application
 
 	public override void OnFrameworkInitializationCompleted() {
 		RxAppExceptionHandler.Install(ErrorHandling);
+		DispatcherExceptionHandler.Install(ErrorHandling);
 
 		if (MainWindowGetter is null)
 			throw new ArgumentNullException(nameof(MainWindowGetter));

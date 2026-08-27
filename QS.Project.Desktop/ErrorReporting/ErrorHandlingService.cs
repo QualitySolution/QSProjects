@@ -51,7 +51,7 @@ namespace QS.ErrorReporting {
 						return true;
 				}
 				catch(Exception ex) {
-					logger.Error(ex, "Ошибка в обработчике {0}", handler.GetType().Name); //?
+					logger.Error(ex, "Ошибка в обработчике {0}", handler.GetType().Name);
 				}
 			}
 			return false;
