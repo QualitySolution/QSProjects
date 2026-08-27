@@ -176,8 +176,17 @@ namespace QS.Views.Control
 		private bool TryGetAutocompleteNode(TreeModel model, TreeIter iter, out object node)
 		{
 			node = null;
+			if(isDestroyed || model == null)
+				return false;
+
+			// GTK оборачивает Completion.Model в TreeModelFilter извлекаем ListStore через child iter.
+			if(model is TreeModelFilter filterModel) {
+				model = filterModel.ChildModel;
+				iter = filterModel.ConvertIterToChildIter(iter);
+			}
+
 			// После отложенной перерисовки GTK может передать TreeIter от уже обновлённой модели.
-			if(isDestroyed || !(model is ListStore listStore) || !listStore.IterIsValid(iter))
+			if(!(model is ListStore listStore) || !listStore.IterIsValid(iter))
 				return false;
 
 			node = listStore.GetValue(iter, 0);
