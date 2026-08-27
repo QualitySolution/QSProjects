@@ -6,6 +6,11 @@
         <IsPackable>false</IsPackable>
 
         <RootNamespace>QS.Test</RootNamespace>
+
+        <!-- Своя точка входа вместо сгенерированной пустышки: сборку надо уметь запустить
+             отдельным процессом, чтобы уронить его в тесте CrashProbeTest -->
+        <GenerateProgramFile>false</GenerateProgramFile>
+        <StartupObject>QS.LibsTest.Core.ErrorReporting.CrashProbe</StartupObject>
     </PropertyGroup>
 
     <ItemGroup>
