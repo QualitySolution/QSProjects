@@ -1,10 +1,4 @@
-﻿CREATE TABLE `products` (
-	`id` TINYINT UNSIGNED NOT NULL,
-	`name` VARCHAR(64) NOT NULL,
-	PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE `server_users` (
+﻿CREATE TABLE `server_users` (
 	`id` INT NOT NULL AUTO_INCREMENT,
 	`product_id` TINYINT UNSIGNED NULL,
 	`login` VARCHAR(80) NOT NULL,

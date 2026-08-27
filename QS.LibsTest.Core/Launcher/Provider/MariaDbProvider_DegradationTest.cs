@@ -13,20 +13,42 @@ namespace QS.Launcher.Test.Provider {
 	[TestFixture(TestOf = typeof(MariaDBProvider))]
 	public class MariaDbProvider_DegradationTest : LauncherDbTestFixtureBase {
 
-		[Test(Description = "Пользователя нет в метабазе - работаем напрямую с сервером")]
-		public async Task GetUserDatabases_LoginMissingInMetabase_FallsBackToServer() {
+		[Test(Description = "Записи о себе в метабазе нет - каталог всё равно читается из неё")]
+		public async Task GetUserDatabases_LoginMissingInMetabase_StillUsesCatalog() {
 			await CreateApplicationDatabase("base_fallback", "Запасная");
-			// вычищаем запись о себе из метабазы: метаданные собрать не получится
+			int baseId = await SeedMetabaseBase("base_fallback", "Из каталога");
+			// вычищаем запись о себе: до 24.08.2026 это отключало метабазу целиком
 			using(var connection = CreateConnection(LauncherDbName)) {
 				await connection.OpenAsync();
 				await connection.ExecuteAsync("DELETE FROM `server_users` WHERE login = @login;", new { login = RootLogin });
 			}
 
 			var provider = LoginAs();
-			var databases = provider.GetUserDatabases();
+			var database = provider.GetUserDatabases().FirstOrDefault(d => d.BaseName == "base_fallback");
 
-			Assert.That(databases.Select(d => d.BaseName), Does.Contain("base_fallback"),
-				"метабазой воспользоваться нельзя - список должен собраться прямым запросом");
+			Assert.That(database, Is.Not.Null);
+			Assert.That(database?.Title, Is.EqualTo("Из каталога"),
+				"заголовок пришёл из метабазы - доступность метабазы не зависит от наличия в ней своей записи");
+			Assert.That(database?.BaseId, Is.EqualTo(baseId));
+		}
+
+		[Test(Description = "Своя запись заведена под чужим продуктом - метабазу это не отключает")]
+		public async Task GetUserDatabases_OwnRowUnderOtherProduct_StillUsesCatalog() {
+			await CreateApplicationDatabase("base_alien_owner", "Своя");
+			await SeedMetabaseBase("base_alien_owner", "Из каталога");
+			// запись есть, но продукт чужой - прежний поиск себя её не находил
+			using(var connection = CreateConnection(LauncherDbName)) {
+				await connection.OpenAsync();
+				await connection.ExecuteAsync(
+					"UPDATE `server_users` SET product_id = @alien WHERE login = @login;",
+					new { alien = OtherProductCode, login = RootLogin });
+			}
+
+			var provider = LoginAs();
+			var database = provider.GetUserDatabases().FirstOrDefault(d => d.BaseName == "base_alien_owner");
+
+			Assert.That(database?.Title, Is.EqualTo("Из каталога"),
+				"чужой product_id у своей записи не должен лишать лаунчер каталога");
 		}
 
 		[Test(Description = "Таблицы метабазы нет - откат на прямой сервер, без падения")]
@@ -43,6 +65,31 @@ namespace QS.Launcher.Test.Provider {
 
 				Assert.That(databases.Select(d => d.BaseName), Does.Contain("base_broken_meta"),
 					"ошибка чтения метабазы должна уводить в прямой режим");
+			}
+			finally {
+				await DropMetabase();
+				await DeployMetabase();
+			}
+		}
+
+		[Test(Description = "Колонка server_users названа по-старому - страдает только список пользователей")]
+		public async Task Login_UsersColumnRenamed_CatalogKeepsWorking() {
+			await CreateApplicationDatabase("base_old_schema", "Старая схема");
+			await SeedMetabaseBase("base_old_schema", "Из каталога");
+			using(var connection = CreateConnection(LauncherDbName)) {
+				await connection.OpenAsync();
+				// ровно то, что осталось на серверах, развёрнутых до переименования is_account_admin
+				await connection.ExecuteAsync(
+					"ALTER TABLE `server_users` CHANGE `is_admin` `is_account_admin` TINYINT(1) NOT NULL DEFAULT 0;");
+			}
+			try {
+				var provider = LoginAs();
+
+				Assert.That(provider.GetUserDatabases().FirstOrDefault(d => d.BaseName == "base_old_schema")?.Title,
+					Is.EqualTo("Из каталога"),
+					"каталог баз колонок server_users не касается - ломаться ему не с чего");
+				Assert.DoesNotThrow(() => provider.GetUsers(),
+					"а список пользователей обязан молча уйти на прямое чтение сервера");
 			}
 			finally {
 				await DropMetabase();

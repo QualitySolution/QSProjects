@@ -29,10 +29,10 @@ namespace QS.Launcher.Test.ViewModels {
 
 			Assert.That(row.CanUpdate, Is.True,
 				"в обычный доступ входят ALTER/CREATE/DROP - это и есть право накатывать обновления");
-			Assert.That(row.LevelDescription, Is.EqualTo("Работа с данными и обновление базы"));
+			Assert.That(row.LevelDescription, Is.EqualTo("Пользование и обновление базы"));
 		}
 
-		[Test(Description = "Только чтение отбирает право обновлять")]
+		[Test(Description = "Только просмотр отбирает право обновлять")]
 		public void ReadOnly_CannotUpdate() {
 			var row = Row();
 
@@ -40,7 +40,7 @@ namespace QS.Launcher.Test.ViewModels {
 			row.ReadOnly = true;
 
 			Assert.That(row.CanUpdate, Is.False);
-			Assert.That(row.LevelDescription, Is.EqualTo("Только чтение, без обновления базы"));
+			Assert.That(row.LevelDescription, Is.EqualTo("Только просмотр, без обновления базы"));
 		}
 
 		[Test(Description = "Все права на базу тоже позволяют её обновлять")]

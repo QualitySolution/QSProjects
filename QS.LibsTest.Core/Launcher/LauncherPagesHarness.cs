@@ -128,7 +128,12 @@ namespace QS.Launcher.Test {
 		public async Task<UsersVM> OpenUsersPage(IDbUserManager provider) {
 			var vm = BuildUsersVM();
 			vm.SetProvider(provider);
+
+			// SetProvider запускает загрузку «в никуда» - Execute().Subscribe() без ожидания.
+			// Дожидаемся её и перечитываем список сами: иначе тест иногда видит момент,
+			// когда RefreshUsers уже сделал Users.Clear(), но ещё не заполнил список
 			await vm.RefreshUsersCommand.IsExecuting.Where(executing => !executing).FirstAsync();
+			await vm.RefreshUsersCommand.Execute();
 			return vm;
 		}
 

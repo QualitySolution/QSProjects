@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Dapper;
+using NUnit.Framework;
 using QS.DbManagement;
 using System;
 using System.Linq;
@@ -86,6 +87,72 @@ namespace QS.Launcher.Test.Provider {
 			Assert.That(rows[0].Id, Is.EqualTo(idAfterFirst), "идентификатор записи сохраняется");
 			Assert.That(rows[0].Title, Is.EqualTo("Второй заголовок"));
 			Assert.That(rows[0].Version, Is.EqualTo("2.0"));
+		}
+
+		[Test(Description = "Первый запуск: метабаза развёрнута, но пуста - синхронизация обязана пройти")]
+		public async Task RefreshMetadata_EmptyMetabase_PopulatesUsers() {
+			await CreateServerLogin("firstcomer", "first-pass");
+			using(var connection = CreateConnection(LauncherDbName)) {
+				await connection.OpenAsync();
+				// состояние сразу после развёртывания скрипта: ни одного пользователя
+				await connection.ExecuteAsync("DELETE FROM `server_users`;");
+			}
+
+			var provider = LoginAs();
+			var response = provider.RefreshMetadata();
+
+			Assert.That(response.Success, Is.True,
+				"до 24.08.2026 здесь был замкнутый круг: нет записи о себе - нет метабазы - нечем синхронизировать");
+			Assert.That((await ReadMetabaseUsers()).Select(u => u.Login), Does.Contain("firstcomer"),
+				"пустая метабаза должна наполняться этой же кнопкой, а не руками через SQL");
+		}
+
+		[Test(Description = "Учётка сервера, которой нет в метабазе, заводится синхронизацией")]
+		public async Task RefreshMetadata_NewUserOnServer_AppearsInMetabase() {
+			await CreateServerLogin("newcomer", "newcomer-pass"); // в метабазу не заносим
+
+			var provider = LoginAs();
+			provider.RefreshMetadata();
+
+			Assert.That(await ReadMetabaseUser("newcomer"), Is.Not.Null,
+				"ради этого кнопка и нужна: без записи пользователю негде хранить имя и почту");
+			Assert.That(provider.GetUsers().Select(u => u.Login), Does.Contain("newcomer"),
+				"и он должен появиться в списке пользователей - тот читается из метабазы");
+		}
+
+		[Test(Description = "Права администратора у новой учётки берутся с сервера")]
+		public async Task RefreshMetadata_NewAdminOnServer_KeepsAdminFlag() {
+			await CreateServerLogin("newchief", "chief-pass", isAdmin: true);
+
+			var provider = LoginAs();
+			provider.RefreshMetadata();
+
+			Assert.That((await ReadMetabaseUser("newchief"))?.IsAdmin, Is.True,
+				"иначе настоящий администратор сервера получил бы запись с is_admin = 0 "
+				+ "и потерял управление пользователями");
+		}
+
+		[Test(Description = "Карточку уже заведённого пользователя синхронизация не переписывает")]
+		public async Task RefreshMetadata_ExistingUser_CardKept() {
+			await CreateServerLogin("known", "known-pass");
+			await SeedMetabaseUser("known", name: "Иван Петров", email: "ivan@example.com");
+
+			var provider = LoginAs();
+			provider.RefreshMetadata();
+
+			var row = await ReadMetabaseUser("known");
+			Assert.That(row?.Name, Is.EqualTo("Иван Петров"), "имя знает только метабаза - взять его больше негде");
+			Assert.That(row?.Email, Is.EqualTo("ivan@example.com"));
+		}
+
+		[Test(Description = "Служебную учётку сервера синхронизация не гасит - её просто не показывают")]
+		public async Task RefreshMetadata_SystemAccount_NotDisabled() {
+			var provider = LoginAs(); // вход под root, его запись в метабазе завела фикстура
+
+			provider.RefreshMetadata();
+
+			Assert.That((await ReadMetabaseUser(RootLogin))?.Disabled, Is.False,
+				"root скрыт из списка пользователей, но на сервере он есть - гасить его запись нельзя");
 		}
 
 		[Test(Description = "Пропавший с сервера пользователь деактивируется в метабазе")]

@@ -13,10 +13,12 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace QS.Launcher.Test {
-	[Parallelizable(ParallelScope.Fixtures)]
+	/// <summary>
+	/// Фикстуры идут по очереди и делят один сервер - см. <see cref="TestMariaDbServer"/>.
+	/// Параллельными им быть нельзя: <see cref="ResetServer"/> сносит на сервере все базы
+	/// и все учётки, кроме системных, а имя метабазы - константа, своей копии не сделать
+	/// </summary>
 	public abstract class LauncherDbTestFixtureBase : MariaDbTestContainerSqlFixtureBase {
-		private const string MariaDbImage = "mariadb:10.11";
-
 		protected const string LauncherDbName = "QSLauncher";
 		protected const string RootLogin = "root";
 		protected const string RootPassword = "root";
@@ -42,9 +44,13 @@ namespace QS.Launcher.Test {
 		[OneTimeSetUp]
 		public override async Task OneTimeSetUp() {
 			ConfigureLogging();
-			await InitialiseMariaDb();
+			MariaDbContainer = await TestMariaDbServer.GetAsync();
 			await DeployMetabase();
 		}
+
+		/// <summary>Сервер общий на всю сборку - гасит его <see cref="TestMariaDbServer"/></summary>
+		[OneTimeTearDown]
+		public override Task OneTimeTearDown() => Task.CompletedTask;
 
 		private static void ConfigureLogging() {
 			if(NLog.LogManager.Configuration != null)
@@ -94,6 +100,11 @@ namespace QS.Launcher.Test {
 			foreach(var provider in createdProviders)
 				provider.Dispose();
 			createdProviders.Clear();
+
+			// Dispose провайдера возвращает соединение в пул, а не закрывает его на сервере.
+			// Учёток за прогон десятки, у каждой свой пул - на общем сервере это упирается
+			// в max_connections. Пулы живут в процессе тестов, поэтому чистим их сами
+			await MySqlConnection.ClearAllPoolsAsync();
 
 			var result = TestContext.CurrentContext.Result;
 			if(result.Outcome.Status == NUnit.Framework.Interfaces.TestStatus.Failed)
@@ -179,15 +190,8 @@ namespace QS.Launcher.Test {
 				await connection.OpenAsync();
 				await connection.ExecuteAsync(
 					"DELETE FROM `base_update_rights`; DELETE FROM `bases`; DELETE FROM `server_users`;");
-				await SeedProducts(connection);
 			}
 		}
-
-		/// <summary>Справочник продуктов: сам лаунчер в него не ходит, но метабаза без него неполна</summary>
-		private static Task SeedProducts(MySqlConnection connection) =>
-			connection.ExecuteAsync(
-				"REPLACE INTO `products` (id, name) VALUES (@ours, 'Тестовый продукт'), (@alien, 'Соседний продукт');",
-				new { ours = TestProductCode, alien = OtherProductCode });
 
 		protected async Task<int> SeedMetabaseUser(string login, bool isAdmin = false,
 			string name = null, string email = null, bool disabled = false, byte product = TestProductCode) {
