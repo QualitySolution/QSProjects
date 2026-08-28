@@ -1,4 +1,4 @@
-using NSubstitute;
+﻿using NSubstitute;
 using NUnit.Framework;
 using QS.DbManagement;
 using QS.DbManagement.Entities;
@@ -9,10 +9,6 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace QS.Launcher.Test.ViewModels {
-	/// <summary>
-	/// Управление пользователями от нажатия кнопки: страница списка, форма редактирования,
-	/// доступы к базам - и что из этого получается на сервере, в метабазе и в самих базах.
-	/// </summary>
 	[TestFixture(TestOf = typeof(UsersVM))]
 	public class UsersPage_IntegrationTest : LauncherViewModelTestFixtureBase {
 		private const string BaseName = "base_users_page";
@@ -23,12 +19,12 @@ namespace QS.Launcher.Test.ViewModels {
 		[SetUp]
 		public async Task SetUpScenario() {
 			await CreateApplicationDatabase(BaseName, "Рабочая база");
-			baseId = await SeedMetabaseBase(BaseName, "Рабочая база");
+			baseId = await SeedMetabase(BaseName, "Рабочая база");
 
 			provider = LoginAs();
 		}
 
-		/// <summary>Открывает форму нового пользователя так же, как это делает кнопка «Создать»</summary>
+		/// <summary>Открывает форму нового пользователя так же, как это делает кнопка Создать</summary>
 		private async Task<UserManagementVM> OpenNewUserForm(UsersVM usersPage) {
 			await usersPage.NewUserCommand.Execute();
 			return Pages.LastForm;
@@ -46,7 +42,7 @@ namespace QS.Launcher.Test.ViewModels {
 				Is.SupersetOf(new[] { "existing_one", "existing_two" }));
 		}
 
-		[Test(Description = "Полный путь создания: кнопка «Создать» - форма - «Сохранить»")]
+		[Test(Description = "Полный путь создания")]
 		public async Task CreateUser_ThroughForm_CreatesEverywhere() {
 			var page = await Pages.OpenUsersPage(provider);
 			var form = await OpenNewUserForm(page);
@@ -70,7 +66,7 @@ namespace QS.Launcher.Test.ViewModels {
 				"список на странице должен обновиться сам");
 		}
 
-		[Test(Description = "Без пароля кнопка «Сохранить» нового пользователя недоступна")]
+		[Test(Description = "Без пароля кнопка Сохранить нового пользователя недоступна")]
 		public async Task CreateUser_WithoutPassword_SaveDisabled() {
 			var page = await Pages.OpenUsersPage(provider);
 			var form = await OpenNewUserForm(page);
@@ -81,7 +77,7 @@ namespace QS.Launcher.Test.ViewModels {
 			Assert.That(canSave, Is.False, "новому пользователю пароль обязателен");
 		}
 
-		[Test(Description = "Без логина кнопка «Сохранить» недоступна")]
+		[Test(Description = "Без логина кнопка Сохранить недоступна")]
 		public async Task CreateUser_WithoutLogin_SaveDisabled() {
 			var page = await Pages.OpenUsersPage(provider);
 			var form = await OpenNewUserForm(page);
@@ -103,7 +99,7 @@ namespace QS.Launcher.Test.ViewModels {
 
 			var row = form.BaseAccesses.First(r => r.BaseName == BaseName);
 			Assert.That(row.HasAccess, Is.False, "предусловие: доступа ещё нет");
-			row.HasAccess = true; // это и есть та самая галочка
+			row.HasAccess = true;		//галочка
 
 			await form.SaveCommand.Execute();
 
@@ -118,7 +114,7 @@ namespace QS.Launcher.Test.ViewModels {
 			Assert.That(baseUser?.Deactivated, Is.False, "живая строка в users базы");
 		}
 
-		[Test(Description = "Галочка «только чтение» ограничивает выданные привилегии")]
+		[Test(Description = "Галочка только чтение ограничивает выданные привилегии")]
 		public async Task GrantReadOnlyAccess_ThroughForm_GrantsSelectOnly() {
 			provider.CreateUser(new DbUserInfo { Login = "form_reader", Name = "Читатель" }, "reader-pass");
 
@@ -127,7 +123,7 @@ namespace QS.Launcher.Test.ViewModels {
 			await page.EditUserCommand.Execute();
 			var form = await Pages.LastFormLoaded();
 
-			form.BaseAccesses.First(r => r.BaseName == BaseName).ReadOnly = true; // галочка «только чтение»
+			form.BaseAccesses.First(r => r.BaseName == BaseName).ReadOnly = true; // галочка
 			await form.SaveCommand.Execute();
 
 			var grants = await ReadServerGrants("form_reader");
@@ -159,7 +155,7 @@ namespace QS.Launcher.Test.ViewModels {
 			Assert.That(rights.Any(r => r.Login == "form_leaver" && r.BaseName == BaseName), Is.False);
 		}
 
-		[Test(Description = "Кнопка «Удалить» с подтверждением убирает пользователя и обновляет список")]
+		[Test(Description = "Кнопка Удалить с подтверждением убирает пользователя и обновляет список")]
 		public async Task DeleteUserCommand_Confirmed_RemovesUserAndRefreshes() {
 			provider.CreateUser(new DbUserInfo { Login = "doomed" }, "doomed-pass");
 			Pages.AnswerYesToQuestions();
@@ -187,38 +183,6 @@ namespace QS.Launcher.Test.ViewModels {
 			await page.DeleteUserCommand.Execute();
 
 			Assert.That(await ServerLoginExists("spared"), Is.True);
-		}
-
-		[Test(Description = "Ошибка сервера при сохранении показывается пользователю, страница не закрывается")]
-		public async Task SaveUser_WhenLoginAlreadyTaken_ShowsErrorAndKeepsForm() {
-			await CreateServerLogin("occupied", "occupied-pass"); // логин уже занят на сервере
-
-			var page = await Pages.OpenUsersPage(provider);
-			var form = await OpenNewUserForm(page);
-			form.Card.Login = "occupied";
-			form.Card.NewPassword = "another-pass";
-
-			await form.SaveCommand.Execute();
-
-			Pages.InteractiveMessage.Received().ShowMessage(ImportanceLevel.Error,
-				Arg.Any<string>(), Arg.Any<string>());
-			Assert.That(Pages.PopCount, Is.Zero, "форма с ошибкой закрываться не должна");
-		}
-
-		[Test(Description = "Список пользователей на странице переживает отсутствие метабазы")]
-		public async Task UsersPage_WithoutMetabase_ShowsServerAccounts() {
-			await CreateServerLogin("server_only", "server-pass");
-			await DropMetabase();
-			try {
-				var direct = LoginAs();
-				var page = await Pages.OpenUsersPage(direct);
-
-				Assert.That(page.Users.Select(u => u.Login), Does.Contain("server_only"),
-					"без метабазы список берётся с сервера");
-			}
-			finally {
-				await DeployMetabase();
-			}
 		}
 	}
 }

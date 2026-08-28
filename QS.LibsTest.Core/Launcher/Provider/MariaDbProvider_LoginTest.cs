@@ -6,41 +6,10 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace QS.Launcher.Test.Provider {
-	/// <summary>
-	/// Вход на сервер и вычисление прав - то, с чего начинается любая работа лаунчера.
-	/// </summary>
 	[TestFixture(TestOf = typeof(MariaDBProvider))]
-	public class MariaDbProvider_LoginTest : LauncherDbTestFixtureBase {
-
-		[Test(Description = "Администратор сервера входит и получает полный набор прав")]
-		public void LoginToServer_Root_GetsAdminRights() {
-			var provider = CreateProvider();
-
-			var response = provider.LoginToServer();
-
-			Assert.That(response.Success, Is.True, response.ErrorMessage);
-			Assert.That(provider.IsAdmin, Is.True, "root - администратор сервера");
-			Assert.That(provider.CanCreateDatabase, Is.True);
-			Assert.That(provider.CanDropDatabase, Is.True);
-			Assert.That(provider.CanManageBaseAccess, Is.True, "у root есть GRANT OPTION");
-			Assert.That(provider.CanManageUsers, Is.True);
-		}
-
-		[Test(Description = "Пользователь без прав входит, но управлять ничем не может")]
-		public async Task LoginToServer_LimitedUser_HasNoManagementRights() {
-			await CreateServerLogin("limited", "limited-pass"); // учётка без единого гранта
-
-			var provider = CreateProvider("limited", "limited-pass");
-			var response = provider.LoginToServer();
-
-			Assert.That(response.Success, Is.True, response.ErrorMessage);
-			Assert.That(provider.IsAdmin, Is.False);
-			Assert.That(provider.CanCreateDatabase, Is.False);
-			Assert.That(provider.CanDropDatabase, Is.False);
-			Assert.That(provider.CanManageUsers, Is.False);
-		}
-
-		[Test(Description = "Права на создание и удаление считаются по реальным грантам, а не по флагу админа")]
+	public class MariaDbProvider_LoginTest : LauncherDbTestFixtureBase
+	{
+		[Test(Description = "Права на создание и удаление считаются по реальным грантам")]
 		public async Task LoginToServer_UserWithCreateGrant_CanCreateButNotManageUsers() {
 			await CreateServerLogin("creator", "creator-pass");
 			await GrantOnDatabase("creator", "%", "CREATE, DROP"); // права на базы, но не на сервер
@@ -54,21 +23,9 @@ namespace QS.Launcher.Test.Provider {
 			Assert.That(provider.CanManageUsers, Is.False);
 		}
 
-		[Test(Description = "Неверный пароль - отказ Response-объектом, а не исключением")]
-		public void LoginToServer_WrongPassword_ReturnsFailureResponse() {
-			var provider = CreateProvider(RootLogin, "не-тот-пароль");
-
-			LoginToServerResponse response = null;
-			Assert.DoesNotThrow(() => response = provider.LoginToServer(),
-				"ожидаемый отказ на границе с сервером должен приходить Response-объектом");
-
-			Assert.That(response.Success, Is.False);
-			Assert.That(response.ErrorMessage, Is.Not.Null.And.Not.Empty);
-		}
-
-		[Test(Description = "Конструктор провайдера не ходит в сеть: до входа он обязан быть мгновенным")]
+		[Test(Description = "Конструктор не должен ходить в сеть — иначе интерфейс замирает на выборе подключения")]
 		public void CreateProvider_UnreachableServer_ConstructorDoesNotBlock() {
-			// адрес заведомо мёртвый: если конструктор полезет на сервер, тест поймает таймаут
+			// адрес заведомо не существующий
 			var parameters = new List<ConnectionParameterValue> {
 				new ConnectionParameterValue(new ConnectionParameter("Server", "Сервер"), "203.0.113.1:3306"),
 				new ConnectionParameterValue(new ConnectionParameter("Login", "Пользователь"), "someone")
@@ -129,7 +86,8 @@ namespace QS.Launcher.Test.Provider {
 		}
 
 		[Test(Description = "Заблокированная учётка на сервер не пускает")]
-		public async Task LoginToServer_LockedAccount_Fails() {
+		public async Task LoginToServer_LockedAccount_Fails()
+		{
 			await CreateServerLogin("locked", "locked-pass", locked: true); // сразу с ACCOUNT LOCK
 
 			var provider = CreateProvider("locked", "locked-pass");

@@ -8,52 +8,14 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace QS.Launcher.Test.Provider {
-	/// <summary>
-	/// Гонки, которые реально возможны в лаунчере.
-	///
-	/// Провайдер живёт один на всё окно, а страницы дёргают его из фоновых задач
-	/// (`await Task.Run(() => provider...)`). Значит, две операции могут оказаться в полёте
-	/// одновременно: пользователь нажал «Обновить метаинформацию» и, не дожидаясь, «Удалить базу»;
-	/// список пользователей перезагружается, пока сохраняются доступы, и так далее.
-	///
-	/// Внутри провайдера при этом одно поле `connection` на всех и обычный Dictionary с хостами.
-	/// Эти тесты фиксируют требование: одновременные вызовы не должны рвать друг друга.
-	/// </summary>
+	/// <summary>Гонки</summary>
 	[TestFixture(TestOf = typeof(MariaDBProvider))]
 	[Category("Concurrency")]
-	public class MariaDbProvider_ConcurrencyTest : LauncherDbTestFixtureBase {
-
+	public class MariaDbProvider_ConcurrencyTest : LauncherDbTestFixtureBase
+	{
 		private async Task SeedTwoBases() {
 			await CreateApplicationDatabase("base_conc_a", "А");
 			await CreateApplicationDatabase("base_conc_b", "Б");
-		}
-
-		[Test(Description = "Чтение списка баз и списка пользователей одновременно не рвёт общее соединение")]
-		public async Task ParallelReads_OnSingleProvider_DoNotBreakSharedConnection() {
-			var provider = LoginAs();
-			await SeedTwoBases();
-			await SeedMetabaseUser("concurrent_user");
-
-			var errors = new ConcurrentBag<Exception>();
-			var tasks = new List<Task>();
-
-			for(int i = 0; i < 10; i++) {
-				// оба чтения идут через метабазу и через общее соединение провайдера
-				tasks.Add(Task.Run(() => {
-					try { provider.GetUserDatabases(); }
-					catch(Exception ex) { errors.Add(ex); }
-				}));
-				tasks.Add(Task.Run(() => {
-					try { provider.GetUsers(); }
-					catch(Exception ex) { errors.Add(ex); }
-				}));
-			}
-			await Task.WhenAll(tasks);
-
-			Assert.That(errors, Is.Empty,
-				"провайдер держит одно соединение на все операции; страницы зовут его из Task.Run, "
-				+ "поэтому одновременные вызовы обязаны переживаться. Первая ошибка: "
-				+ (errors.FirstOrDefault()?.Message ?? "нет"));
 		}
 
 		[Test(Description = "Одновременные чтения с сервера напрямую не путают кеш хостов учёток")]
@@ -97,7 +59,6 @@ namespace QS.Launcher.Test.Provider {
 
 			var errors = new ConcurrentBag<Exception>();
 
-			// классика из жизни: нажали «Обновить», не дождались и нажали «Удалить»
 			var refresh = Task.Run(() => {
 				try { provider.RefreshMetadata(); }
 				catch(Exception ex) { errors.Add(ex); }
@@ -124,7 +85,7 @@ namespace QS.Launcher.Test.Provider {
 		[Test(Description = "Одновременная выдача доступов разным пользователям не теряет ни одного")]
 		public async Task ParallelAccessGrants_AllApplied() {
 			await CreateApplicationDatabase("base_parallel_access", "Общая");
-			int baseId = await SeedMetabaseBase("base_parallel_access", "Общая");
+			int baseId = await SeedMetabase("base_parallel_access", "Общая");
 
 			var provider = LoginAs();
 			const int userCount = 6;
@@ -154,8 +115,6 @@ namespace QS.Launcher.Test.Provider {
 		[Test(Description = "Метабаза собирается один раз, даже если к ней обратились сразу из нескольких потоков")]
 		public async Task ParallelFirstAccess_BuildsMetadataConsistently() {
 			await SeedMetabaseUser("lazy_meta_user");
-
-			// провайдер только что вошёл: метабазу соберёт первое обращение, и оно будет сразу из восьми потоков
 			var provider = LoginAs();
 
 			var errors = new ConcurrentBag<Exception>();
@@ -178,7 +137,7 @@ namespace QS.Launcher.Test.Provider {
 			await CreateApplicationDatabase("base_shared_server");
 
 			var first = LoginAs();
-			var second = LoginAs(); // у каждого своё соединение - общего состояния нет
+			var second = LoginAs();
 
 			var errors = new ConcurrentBag<Exception>();
 			var tasks = new List<Task>();

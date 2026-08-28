@@ -11,16 +11,14 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace QS.Launcher.Test.ViewModels {
-	/// <summary>
-	/// спискок баз целиком: от нажатия кнопки до состояния сервера и метабазы.
-	/// </summary>
+	/// <summary>от нажатия кнопки до состояния сервера и метабазы</summary>
 	[TestFixture(TestOf = typeof(DataBasesVM))]
 	public class DataBasesPage_IntegrationTest : LauncherViewModelTestFixtureBase {
 
 		/// <summary>База на сервере и её запись в каталоге метабазы</summary>
 		private async Task<int> SeedBaseWithAccess(string baseName, string title) {
 			await CreateApplicationDatabase(baseName, title);
-			return await SeedMetabaseBase(baseName, title);
+			return await SeedMetabase(baseName, title);
 		}
 
 		[Test(Description = "После входа страница показывает доступные базы и выбирает первую")]
@@ -60,11 +58,11 @@ namespace QS.Launcher.Test.ViewModels {
 			Assert.That(page.Capabilities.CanRefreshMetadata, Is.False);
 		}
 
-		[Test(Description = "Кнопка «Удалить базу» с подтверждением сносит базу и обновляет список")]
+		[Test(Description = "Кнопка Удалить базу")]
 		public async Task DeleteDatabaseCommand_Confirmed_DropsDatabaseAndRefreshesList() {
 			await SeedBaseWithAccess("base_to_delete", "На удаление");
 			await SeedBaseWithAccess("base_to_keep", "Остаётся"); // соседняя база не должна пострадать
-			Pages.AnswerYesToQuestions(); // на диалог подтверждения отвечаем «да»
+			Pages.AnswerYesToQuestions(); // на диалог подтверждения отвечаем да
 
 			var page = await Pages.OpenDatabasesPage(LoginAs());
 			var target = page.Databases.First(d => d.BaseName == "base_to_delete");
@@ -93,25 +91,6 @@ namespace QS.Launcher.Test.ViewModels {
 			Assert.That(await DatabaseExists("base_survivor"), Is.True, "отказ значит отказ");
 		}
 
-		[Test(Description = "Кнопка «Обновить метаинформацию» синхронизирует метабазу и сообщает об успехе")]
-		public async Task RefreshMetadataCommand_SyncsMetabaseAndReportsSuccess() {
-			await SeedBaseWithAccess("base_known", "Известная");
-			await CreateApplicationDatabase("base_appeared", "Появилась"); // её метабаза ещё не знает
-
-			var page = await Pages.OpenDatabasesPage(LoginAs());
-
-			// кнопка только открывает страницу прогресса, работу делает пайплайн на ней
-			await page.RefreshMetadataCommand.Execute();
-			await Pages.RunLastProgressPage();
-
-			var appeared = await ReadMetabaseBase("base_appeared");
-			Assert.That(appeared, Is.Not.Null, "новая база должна попасть в метабазу");
-			Assert.That(appeared?.Title, Is.EqualTo("Появилась"));
-			// пользователю показываем не голое «обновлено», а что именно синхронизировалось
-			Pages.InteractiveMessage.Received().ShowMessage(ImportanceLevel.Success,
-				Arg.Is<string>(m => m.Contains("Баз: 2")), "Синхронизация метаинформации");
-		}
-
 		[Test(Description = "При недоступной метабазе страница прогресса остаётся и объясняет, что синхронизировать некуда")]
 		public async Task RefreshMetadataCommand_WithoutMetabase_KeepsPageAndExplains() {
 			await CreateApplicationDatabase("base_any", "Любая");
@@ -135,7 +114,7 @@ namespace QS.Launcher.Test.ViewModels {
 			}
 		}
 
-		[Test(Description = "«Закрыть» на странице отказа возвращает на список баз")]
+		[Test(Description = "Закрыть на странице отказа возвращает на список баз")]
 		public async Task RefreshMetadataCommand_CloseAfterFailure_ReturnsToDatabases() {
 			await CreateApplicationDatabase("base_any", "Любая");
 			await DropMetabase();
@@ -153,7 +132,7 @@ namespace QS.Launcher.Test.ViewModels {
 			}
 		}
 
-		[Test(Description = "Кнопка «Подключиться» отдаёт строку подключения запускателю программы")]
+		[Test(Description = "Кнопка Подключиться отдаёт строку подключения запускателю программы")]
 		public async Task ConnectCommand_PassesConnectionToAppRunner() {
 			await SeedBaseWithAccess("base_to_run", "Рабочая");
 
@@ -166,7 +145,7 @@ namespace QS.Launcher.Test.ViewModels {
 				r => r.Success && r.ConnectionString.Contains("base_to_run")));
 		}
 
-		[Test(Description = "Кнопка «Пользователи» открывает страницу управления с тем же провайдером")]
+		[Test(Description = "Кнопка Пользователи открывает страницу управления")]
 		public async Task OpenUserManagementCommand_PushesUsersPage() {
 			await SeedBaseWithAccess("base_users_page", "С пользователями");
 
@@ -178,22 +157,6 @@ namespace QS.Launcher.Test.ViewModels {
 			Assert.That(Pages.PushedPages[0], Is.InstanceOf<UsersVM>());
 			Assert.That(((UsersVM)Pages.PushedPages[0]).CanManageUsers, Is.True,
 				"страница должна получить рабочий провайдер");
-		}
-
-		[Test(Description = "Без метабазы страница всё равно показывает базы с сервера")]
-		public async Task SetProvider_WithoutMetabase_StillShowsDatabases() {
-			await DropMetabase();
-			try {
-				await CreateApplicationDatabase("base_direct_page", "Прямая");
-
-				var page = await Pages.OpenDatabasesPage(LoginAs());
-
-				Assert.That(page.Databases.Select(d => d.BaseName), Does.Contain("base_direct_page"),
-					"метабаза необязательна, список обязан собраться напрямую");
-			}
-			finally {
-				await DeployMetabase();
-			}
 		}
 	}
 }

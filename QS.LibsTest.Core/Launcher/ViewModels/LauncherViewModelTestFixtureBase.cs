@@ -1,11 +1,7 @@
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using QS.DbManagement;
 
 namespace QS.Launcher.Test.ViewModels {
-	/// <summary>
-	/// Основа для тестов «от нажатия кнопки» поверх свободного подключения: живой сервер в контейнере
-	/// от <see cref="LauncherDbTestFixtureBase"/> плюс общая сборка страниц <see cref="LauncherPagesHarness"/>.
-	/// </summary>
 	public abstract class LauncherViewModelTestFixtureBase : LauncherDbTestFixtureBase {
 		protected LauncherPagesHarness Pages { get; private set; }
 

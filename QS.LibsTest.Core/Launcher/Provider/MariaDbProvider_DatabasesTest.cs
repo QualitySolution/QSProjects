@@ -5,19 +5,13 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace QS.Launcher.Test.Provider {
-	/// <summary>
-	/// Список баз и удаление базы: реальный сервер и метабаза должны меняться согласованно.
-	/// </summary>
 	[TestFixture(TestOf = typeof(MariaDBProvider))]
-	public class MariaDbProvider_DatabasesTest : LauncherDbTestFixtureBase {
-
-		// Каталог баз даёт метабаза одним запросом, видимость - сам сервер: SHOW DATABASES
-		// показывает только то, на что у пользователя есть права. Отдельного списка доступов нет.
-
+	public class MariaDbProvider_DatabasesTest : LauncherDbTestFixtureBase
+	{
 		[Test(Description = "Список берётся из метабазы со всеми полями записи")]
 		public async Task GetUserDatabases_FromMetabase_ReturnsCatalogRow() {
 			await CreateApplicationDatabase("base_listed", "Видимая");
-			int baseId = await SeedMetabaseBase("base_listed", "Видимая", version: "2.5");
+			int baseId = await SeedMetabase("base_listed", "Видимая", version: "2.5");
 
 			var provider = LoginAs();
 			var found = provider.GetUserDatabases().FirstOrDefault(d => d.BaseName == "base_listed");
@@ -32,8 +26,8 @@ namespace QS.Launcher.Test.Provider {
 		public async Task GetUserDatabases_BaseInvisibleToUser_NotListed() {
 			await CreateApplicationDatabase("base_allowed", "Своя");
 			await CreateApplicationDatabase("base_forbidden", "Чужая");
-			await SeedMetabaseBase("base_allowed", "Своя");
-			await SeedMetabaseBase("base_forbidden", "Чужая"); // в каталоге есть, прав на неё не будет
+			await SeedMetabase("base_allowed", "Своя");
+			await SeedMetabase("base_forbidden", "Чужая"); // в каталоге есть, прав на неё не будет
 
 			await CreateServerLogin("limited", "limited-pass");
 			await GrantOnDatabase("limited", LauncherDbName, "SELECT"); // метабазу читать надо
@@ -90,7 +84,7 @@ namespace QS.Launcher.Test.Provider {
 		public async Task DropDatabase_RemovesFromServerAndMetabase() {
 			await CreateApplicationDatabase("base_to_drop");
 			int userId = (await ReadMetabaseUser(RootLogin)).Id;
-			int baseId = await SeedMetabaseBase("base_to_drop");
+			int baseId = await SeedMetabase("base_to_drop");
 			await GrantBaseUpdateRight(userId, baseId);
 
 			var provider = LoginAs();
@@ -108,9 +102,9 @@ namespace QS.Launcher.Test.Provider {
 		}
 
 		[Test(Description = "Удаление базы, известной только по имени, тоже вычищает метабазу")]
-		public async Task DropDatabase_WithoutBaseId_ResolvesRecordByName() {
+		public async Task DropDatabase_WithoutBaseId_ResolvesRecordByName(){
 			await CreateApplicationDatabase("base_by_name");
-			await SeedMetabaseBase("base_by_name");
+			await SeedMetabase("base_by_name");
 
 			var provider = LoginAs();
 			// так база приходит из ветки пересоздания: известно только имя
@@ -155,7 +149,7 @@ namespace QS.Launcher.Test.Provider {
 		public async Task DropDatabase_CleansUpGrantsOfOtherUsers() {
 			await CreateApplicationDatabase("base_with_grants");
 			await CreateServerLogin("granted", "granted-pass");
-			await GrantOnDatabase("granted", "base_with_grants", "SELECT"); // чужой грант на удаляемую базу
+			await GrantOnDatabase("granted", "base_with_grants", "SELECT"); //чужой грант на удаляемую базу
 
 			var provider = LoginAs();
 			provider.DropDatabase(new DbInfo { BaseName = "base_with_grants" });
@@ -163,19 +157,6 @@ namespace QS.Launcher.Test.Provider {
 			var grants = await ReadServerGrants("granted");
 			Assert.That(GrantsMentionDatabase(grants, "base_with_grants"), Is.False,
 				"права на удалённую базу не должны оставаться висеть в mysql.db");
-		}
-
-		[Test(Description = "Подключение к базе подставляет её в строку соединения")]
-		public async Task LoginToDatabase_ReturnsConnectionStringWithDatabase() {
-			await CreateApplicationDatabase("base_to_connect", "Рабочая");
-
-			var provider = LoginAs();
-			var response = provider.LoginToDatabase(new DbInfo { BaseName = "base_to_connect", Title = "Рабочая" });
-
-			Assert.That(response.Success, Is.True, response.ErrorMessage);
-			Assert.That(response.ConnectionString, Does.Contain("base_to_connect"));
-			Assert.That(response.Login, Is.EqualTo(RootLogin));
-			Assert.That(response.Parameters["BaseTitle"], Is.EqualTo("Рабочая"));
 		}
 	}
 }

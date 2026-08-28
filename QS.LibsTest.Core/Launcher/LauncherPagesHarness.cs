@@ -81,8 +81,8 @@ namespace QS.Launcher.Test {
 		}
 
 		public static void UseImmediateSchedulers() {
-			// В тестах нет диспетчера интерфейса: команды и подписки должны выполняться сразу,
-			// иначе await над ReactiveCommand не дождётся результата
+			// В тестах нет диспетчера интерфейса
+			// команды и подписки должны выполняться сразу, иначе await над ReactiveCommand не дождётся результата
 			RxApp.MainThreadScheduler = ImmediateScheduler.Instance;
 			RxApp.TaskpoolScheduler = ImmediateScheduler.Instance;
 		}
@@ -129,9 +129,8 @@ namespace QS.Launcher.Test {
 			var vm = BuildUsersVM();
 			vm.SetProvider(provider);
 
-			// SetProvider запускает загрузку «в никуда» - Execute().Subscribe() без ожидания.
-			// Дожидаемся её и перечитываем список сами: иначе тест иногда видит момент,
-			// когда RefreshUsers уже сделал Users.Clear(), но ещё не заполнил список
+			// SetProvider запускает Execute().Subscribe() без ожидания
+			// Дожидаемся её и перечитываем список
 			await vm.RefreshUsersCommand.IsExecuting.Where(executing => !executing).FirstAsync();
 			await vm.RefreshUsersCommand.Execute();
 			return vm;

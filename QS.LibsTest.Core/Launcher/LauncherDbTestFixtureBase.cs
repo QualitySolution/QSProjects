@@ -13,21 +13,15 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace QS.Launcher.Test {
-	/// <summary>
-	/// Фикстуры идут по очереди и делят один сервер - см. <see cref="TestMariaDbServer"/>.
-	/// Параллельными им быть нельзя: <see cref="ResetServer"/> сносит на сервере все базы
-	/// и все учётки, кроме системных, а имя метабазы - константа, своей копии не сделать
-	/// </summary>
 	public abstract class LauncherDbTestFixtureBase : MariaDbTestContainerSqlFixtureBase {
 		protected const string LauncherDbName = "QSLauncher";
 		protected const string RootLogin = "root";
 		protected const string RootPassword = "root";
 
-		/// <summary>Код целевого продукта</summary>
 		protected const byte TestProductCode = 42;
 
-		/// <summary>Код чужого продукта - его базы наш лаунчер видеть не должен</summary>
-		protected const byte OtherProductCode = 77;
+		/// <summary>его базы наш лаунчер видеть не должен</summary>
+		protected const byte OtherProductCode = 41;
 
 		/// <summary>Базы, которые ResetServer никогда не трогает</summary>
 		private static readonly string[] KeptDatabases =
@@ -39,8 +33,6 @@ namespace QS.Launcher.Test {
 		private readonly List<IDisposable> createdProviders = new List<IDisposable>();
 		private Stopwatch testTimer;
 
-		#region Жизненный цикл
-
 		[OneTimeSetUp]
 		public override async Task OneTimeSetUp() {
 			ConfigureLogging();
@@ -48,7 +40,6 @@ namespace QS.Launcher.Test {
 			await DeployMetabase();
 		}
 
-		/// <summary>Сервер общий на всю сборку - гасит его <see cref="TestMariaDbServer"/></summary>
 		[OneTimeTearDown]
 		public override Task OneTimeTearDown() => Task.CompletedTask;
 
@@ -65,7 +56,6 @@ namespace QS.Launcher.Test {
 			NLog.LogManager.Configuration = configuration;
 		}
 
-		/// <summary>Цель NLog, отдающая записи в лог текущего теста</summary>
 		private sealed class TestProgressTarget : NLog.Targets.TargetWithLayout {
 			protected override void Write(NLog.LogEventInfo logEvent) {
 				Log(RenderLogEvent(Layout, logEvent));
@@ -101,9 +91,6 @@ namespace QS.Launcher.Test {
 				provider.Dispose();
 			createdProviders.Clear();
 
-			// Dispose провайдера возвращает соединение в пул, а не закрывает его на сервере.
-			// Учёток за прогон десятки, у каждой свой пул - на общем сервере это упирается
-			// в max_connections. Пулы живут в процессе тестов, поэтому чистим их сами
 			await MySqlConnection.ClearAllPoolsAsync();
 
 			var result = TestContext.CurrentContext.Result;
@@ -162,8 +149,6 @@ namespace QS.Launcher.Test {
 
 		private const string ScriptResourcePrefix = "QS.Launcher.Test.Base.";
 
-		#endregion
-
 		#region Метабаза
 
 		protected async Task DeployMetabase() {
@@ -207,7 +192,7 @@ namespace QS.Launcher.Test {
 			}
 		}
 
-		protected async Task<int> SeedMetabaseBase(string baseName, string title = null,
+		protected async Task<int> SeedMetabase(string baseName, string title = null,
 			byte product = TestProductCode, string version = "1.0", bool disabled = false) {
 			using(var connection = CreateConnection(LauncherDbName)) {
 				await connection.OpenAsync();
@@ -230,10 +215,6 @@ namespace QS.Launcher.Test {
 			LogStep("в метабазе отмечено право на обновление: пользователь {0} -> база {1} ({2})",
 				userId, baseId, canUpdate);
 		}
-
-		#endregion
-
-		#region Чтение метабазы для проверок
 
 		protected async Task<List<MetabaseBaseRow>> ReadMetabaseBases() {
 			using(var connection = CreateConnection(LauncherDbName)) {
@@ -299,8 +280,6 @@ namespace QS.Launcher.Test {
 				DescribeOmissions(withParameters, withUsersTable, withDeactivatedColumn));
 		}
 
-		// BaseGuid пишет сама база при наполнении, метабаза его не хранит - но параметр
-		// в base_parameters реальный, и чтение метаинформации обязано его пережить
 		private static Task WriteBaseParameters(MySqlConnection connection, string dbName,
 			string title, byte product, string version) =>
 			connection.ExecuteAsync(
@@ -386,9 +365,9 @@ namespace QS.Launcher.Test {
 
 		#region Учётки сервера
 
-		/// <summary>Заводит учётку прямо на сервере, минуя лаунчер.</summary>
-		protected async Task CreateServerLogin(string login, string password,
-			bool isAdmin = false, string host = "%", bool locked = false) {
+		/// <summary>Заводит учётку прямо на сервере, минуя лаунчер</summary>
+		protected async Task CreateServerLogin(string login, string password, bool isAdmin = false, string host = "%", bool locked = false)
+		{
 			using(var connection = CreateConnection(withoutDb: true)) {
 				await connection.OpenAsync();
 				string account = $"'{login}'@'{host}'";
@@ -429,10 +408,8 @@ namespace QS.Launcher.Test {
 			// Имя базы в GRANT экранируется как шаблон base\_name, поэтому SHOW GRANTS отдаёт его с обратными слешами
 			grants.Any(g => Unescape(g).IndexOf($"`{dbName}`", StringComparison.OrdinalIgnoreCase) >= 0);
 
-		/// <summary>Грант на указанную базу в человекочитаемом виде, null - его нет</summary>
 		protected static string FindGrantOnDatabase(IEnumerable<string> grants, string dbName) =>
-			grants.Select(Unescape)
-				.FirstOrDefault(g => g.IndexOf($"`{dbName}`", StringComparison.OrdinalIgnoreCase) >= 0);
+			grants.Select(Unescape).FirstOrDefault(g => g.IndexOf($"`{dbName}`", StringComparison.OrdinalIgnoreCase) >= 0);
 
 		private static string Unescape(string grant) =>
 			grant.Replace("\\_", "_").Replace("\\%", "%");
@@ -487,7 +464,7 @@ namespace QS.Launcher.Test {
 
 		#endregion
 
-		#region Строки для проверок
+		#region Строки
 
 		protected class MetabaseBaseRow {
 			public int Id { get; set; }

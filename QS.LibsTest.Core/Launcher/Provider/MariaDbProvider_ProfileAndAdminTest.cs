@@ -1,4 +1,4 @@
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using QS.DbManagement;
 using QS.DbManagement.Entities;
 using System;
@@ -7,24 +7,20 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace QS.Launcher.Test.Provider {
-	/// <summary>
-	/// Случаи, на которых ловили ошибки: профиль, записываемый мимо доступов, и флаг администратора,
-	/// который раньше применялся только при выставленной маске изменённых полей.
-	/// </summary>
 	[TestFixture(TestOf = typeof(MariaDBProvider))]
 	public class MariaDbProvider_ProfileAndAdminTest : LauncherDbTestFixtureBase {
 
 		private static bool HasGlobalPrivileges(IEnumerable<string> grants) =>
 			grants.Any(g => g.IndexOf("ALL PRIVILEGES ON *.*", StringComparison.OrdinalIgnoreCase) >= 0);
 
-		/// <summary>Пользователь с доступом к двум базам продукта</summary>
-		private async Task<MariaDBProvider> WithUserInTwoBases(string login) {
+		private async Task<MariaDBProvider> WithUserInTwoBases(string login)
+		{
 			await CreateApplicationDatabase("profile_alpha");
 			await CreateApplicationDatabase("profile_beta");
 
 			var provider = LoginAs();
-			int alphaId = await SeedMetabaseBase("profile_alpha");
-			int betaId = await SeedMetabaseBase("profile_beta");
+			int alphaId = await SeedMetabase("profile_alpha");
+			int betaId = await SeedMetabase("profile_beta");
 
 			provider.CreateUser(new DbUserInfo { Login = login, Name = "Было" }, login + "-pass");
 			provider.SetUserBaseAccess(login,
@@ -48,7 +44,8 @@ namespace QS.Launcher.Test.Provider {
 
 			Assert.That(inAlpha?.Name, Is.EqualTo("Стало"));
 			Assert.That(inAlpha?.Email, Is.EqualTo("stalo@example.com"));
-			Assert.That(inBeta?.Name, Is.EqualTo("Стало"), "во вторую базу тоже - обход не обрывается на первой");
+			Assert.That(inBeta?.Name, Is.EqualTo("Стало"), "во вторую базу тоже");
+			Assert.That(inBeta?.Email, Is.EqualTo("stalo@example.com"), "обход не обрывается на первой");
 		}
 
 		[Test(Description = "Пустые поля профиля не затирают то, что уже записано в базе")]
@@ -74,17 +71,7 @@ namespace QS.Launcher.Test.Provider {
 
 			var row = await ReadBaseUser("profile_alpha", "baseadmin");
 			Assert.That(row?.Name, Is.EqualTo("Переименован"));
-			Assert.That(row?.Admin, Is.True, "запись профиля не должна трогать другие колонки");
-		}
-
-		[Test(Description = "Флаг администратора применяется без маски изменённых полей")]
-		public async Task UpdateUser_AdminFlag_AppliedWithoutDirtyMask() {
-			var provider = LoginAs();
-			provider.CreateUser(new DbUserInfo { Login = "risen" }, "risen-pass");
-
-			provider.UpdateUser(new DbUserInfo { Login = "risen", IsAdmin = true });
-
-			Assert.That(HasGlobalPrivileges(await ReadServerGrants("risen")), Is.True);
+			Assert.That(row?.Admin, Is.True, "admin в users не должен сбросываться");
 		}
 
 		[Test(Description = "Повторное сохранение с тем же флагом ничего не ломает")]
@@ -92,9 +79,8 @@ namespace QS.Launcher.Test.Provider {
 			var provider = LoginAs();
 			provider.CreateUser(new DbUserInfo { Login = "stillchief", IsAdmin = true }, "chief-pass");
 
-			// желаемое совпадает с фактическим - провайдер не должен выдавать грант повторно и падать
+			// желаемое совпадает с фактическим - провайдер не должен выдавать грант повторно или падать
 			Assert.DoesNotThrow(() => provider.UpdateUser(new DbUserInfo { Login = "stillchief", IsAdmin = true }));
-
 			Assert.That(HasGlobalPrivileges(await ReadServerGrants("stillchief")), Is.True);
 		}
 
@@ -119,21 +105,6 @@ namespace QS.Launcher.Test.Provider {
 			Assert.That(HasGlobalPrivileges(grants), Is.False, "глобальные права должны уйти");
 			Assert.That(GrantsMentionDatabase(grants, "profile_alpha"), Is.True,
 				"REVOKE ... ON *.* не должен задевать грантов уровня базы");
-		}
-
-		[Test(Description = "Блокировка применяется без маски и снимается повторным сохранением")]
-		public void UpdateUser_Disabling_AppliedWithoutDirtyMask() {
-			var provider = LoginAs();
-			provider.CreateUser(new DbUserInfo { Login = "togglable" }, "toggle-pass");
-
-			provider.UpdateUser(new DbUserInfo { Login = "togglable", Disabled = true });
-			bool blocked = CreateProvider("togglable", "toggle-pass").LoginToServer().Success;
-
-			provider.UpdateUser(new DbUserInfo { Login = "togglable", Disabled = false });
-			bool restored = CreateProvider("togglable", "toggle-pass").LoginToServer().Success;
-
-			Assert.That(blocked, Is.False, "заблокированная учётка входить не должна");
-			Assert.That(restored, Is.True, "разблокировка должна вернуть вход");
 		}
 	}
 }

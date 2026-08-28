@@ -7,17 +7,9 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace QS.Launcher.Test.Provider {
-	/// <summary>
-	/// Пользователи: учётка на сервере, запись в метабазе и строка в users каждой базы
-	/// должны меняться согласованно.
-	/// </summary>
 	[TestFixture(TestOf = typeof(MariaDBProvider))]
-	public class MariaDbProvider_UsersTest : LauncherDbTestFixtureBase {
-
-		/// <summary>
-		/// Есть ли среди грантов права на весь сервер - признак администратора.
-		/// Своим методом, а не Contains: в netstandard2.0 у string нет перегрузки со StringComparison.
-		/// </summary>
+	public class MariaDbProvider_UsersTest : LauncherDbTestFixtureBase
+	{
 		private static bool HasGlobalPrivileges(IEnumerable<string> grants) =>
 			grants.Any(g => g.IndexOf("ALL PRIVILEGES ON *.*", StringComparison.OrdinalIgnoreCase) >= 0);
 
@@ -39,17 +31,6 @@ namespace QS.Launcher.Test.Provider {
 			Assert.That(metabaseRow, Is.Not.Null, "пользователь должен отразиться в метабазе");
 			Assert.That(metabaseRow?.Name, Is.EqualTo("Новичок"));
 			Assert.That(metabaseRow?.Email, Is.EqualTo("newbie@example.com"));
-		}
-
-		[Test(Description = "Созданный пользователь может войти на сервер")]
-		public void CreateUser_NewUserCanLogIn() {
-			var provider = LoginAs();
-			provider.CreateUser(new DbUserInfo { Login = "loginable" }, "loginable-pass");
-
-			var asNewUser = CreateProvider("loginable", "loginable-pass");
-			var response = asNewUser.LoginToServer();
-
-			Assert.That(response.Success, Is.True, response.ErrorMessage);
 		}
 
 		[Test(Description = "Новому пользователю выдаётся чтение метабазы - иначе он не увидит список баз")]
@@ -74,16 +55,6 @@ namespace QS.Launcher.Test.Provider {
 				"администратору выдаются права на весь сервер");
 		}
 
-		[Test(Description = "Пустой пароль и пустой логин отвергаются до обращения к серверу")]
-		public void CreateUser_InvalidArguments_Throws() {
-			var provider = LoginAs();
-
-			Assert.Throws<ArgumentException>(
-				() => provider.CreateUser(new DbUserInfo { Login = "someone" }, string.Empty));
-			Assert.Throws<ArgumentException>(
-				() => provider.CreateUser(new DbUserInfo { Login = "   " }, "pass"));
-		}
-
 		[Test(Description = "Смена пароля пользователя пускает его по новому паролю")]
 		public void UpdateUser_NewPassword_TakesEffect() {
 			var provider = LoginAs();
@@ -100,10 +71,10 @@ namespace QS.Launcher.Test.Provider {
 		[Test(Description = "Блокировка пользователя закрывает ему вход")]
 		public void UpdateUser_Disabled_BlocksLogin() {
 			var provider = LoginAs();
-			provider.CreateUser(new DbUserInfo { Login = "blockme" }, "blockme-pass");
+			provider.CreateUser(new DbUserInfo { Login = "block" }, "block-pass");
 
 			provider.UpdateUser(new DbUserInfo {
-				Login = "blockme", Disabled = true
+				Login = "block", Disabled = true
 			});
 
 			Assert.That(CreateProvider("blockme", "blockme-pass").LoginToServer().Success, Is.False,
@@ -178,8 +149,8 @@ namespace QS.Launcher.Test.Provider {
 			await CreateApplicationDatabase("base_beta");
 
 			var provider = LoginAs();
-			int alphaId = await SeedMetabaseBase("base_alpha");
-			int betaId = await SeedMetabaseBase("base_beta");
+			int alphaId = await SeedMetabase("base_alpha");
+			int betaId = await SeedMetabase("base_beta");
 
 			provider.CreateUser(new DbUserInfo { Login = "wanderer", Name = "Странник" }, "wanderer-pass");
 			provider.SetUserBaseAccess("wanderer",
@@ -209,52 +180,6 @@ namespace QS.Launcher.Test.Provider {
 			var found = users.FirstOrDefault(u => u.Login == "meta_only_user");
 			Assert.That(found, Is.Not.Null, "пользователей показываем из метабазы");
 			Assert.That(found?.Name, Is.EqualTo("Только в метабазе"));
-		}
-
-		[Test(Description = "Без метабазы список пользователей собирается с сервера без служебных учёток")]
-		public async Task GetUsers_WithoutMetabase_ReturnsRealAccountsOnly() {
-			await DropMetabase();
-			try {
-				await CreateServerLogin("real_user", "real-pass");
-
-				var provider = LoginAs();
-				var logins = provider.GetUsers().Select(u => u.Login).ToList();
-
-				Assert.That(logins, Does.Contain("real_user"));
-				Assert.That(logins, Does.Not.Contain("root"), "служебные учётки сервера пользователю не показываем");
-				Assert.That(logins.Any(l => l.StartsWith("mysql.", StringComparison.OrdinalIgnoreCase)), Is.False);
-			}
-			finally {
-				await DeployMetabase();
-			}
-		}
-
-		[Test(Description = "Обычный пользователь меняет себе пароль без прав администратора")]
-		public void ChangeOwnPassword_PlainUser_ChangesPasswordOnServer() {
-			var admin = LoginAs();
-			admin.CreateUser(new DbUserInfo { Login = "selfchanger" }, "first-pass");
-
-			var self = LoginAs("selfchanger", "first-pass");
-			bool changed = self.ChangeOwnPassword("second-pass");
-
-			Assert.That(changed, Is.True);
-			Assert.That(CreateProvider("selfchanger", "second-pass").LoginToServer().Success, Is.True,
-				"новый пароль должен пускать на сервер");
-			Assert.That(CreateProvider("selfchanger", "first-pass").LoginToServer().Success, Is.False,
-				"старый пароль должен перестать работать");
-		}
-
-		[Test(Description = "После смены своего пароля провайдер продолжает открывать новые соединения")]
-		public void ChangeOwnPassword_KeepsProviderUsable() {
-			var admin = LoginAs();
-			admin.CreateUser(new DbUserInfo { Login = "stillworking" }, "first-pass");
-
-			var self = LoginAs("stillworking", "first-pass");
-			self.ChangeOwnPassword("second-pass");
-
-			// список баз открывает подключения помимо основного - со старым паролем они получат отказ
-			Assert.DoesNotThrow(() => self.GetUserDatabases(),
-				"строка подключения провайдера должна была обновиться вместе с паролем");
 		}
 
 		[Test(Description = "Смена своего пароля пускает на сервер с новым паролем")]

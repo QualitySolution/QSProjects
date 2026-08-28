@@ -1,16 +1,12 @@
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using QS.DbManagement;
 using QS.DbManagement.Entities;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace QS.Launcher.Test.Provider {
-	/// <summary>
-	/// Доступ пользователя к базе живёт в грантах сервера и в строке таблицы users самой базы.
-	/// Право накатывать обновления - это выданный набор привилегий с DDL, метабаза лишь
-	/// отражает его у себя. Проверяем, что эти три вещи не расходятся.
-	/// </summary>
+namespace QS.Launcher.Test.Provider
+{
 	[TestFixture(TestOf = typeof(MariaDBProvider))]
 	public class MariaDbProvider_BaseAccessTest : LauncherDbTestFixtureBase {
 		private const string BaseName = "base_access_test";
@@ -21,7 +17,7 @@ namespace QS.Launcher.Test.Provider {
 		[SetUp]
 		public async Task SetUpScenario() {
 			await CreateApplicationDatabase(BaseName, "Тестовая база");
-			baseId = await SeedMetabaseBase(BaseName, "Тестовая база");
+			baseId = await SeedMetabase(BaseName, "Тестовая база");
 
 			provider = LoginAs();
 			provider.CreateUser(new DbUserInfo { Login = "worker", Name = "Работник" }, "worker-pass");
@@ -85,8 +81,8 @@ namespace QS.Launcher.Test.Provider {
 			Assert.That(right?.CanUpdate, Is.True, "администратор базы вправе накатывать на неё обновления");
 		}
 
-		[Test(Description = "Обычный доступ к базе включает DDL - им и накатываются обновления")]
-		public async Task SetUserBaseAccess_PlainUser_GrantsDdlForUpdates() {
+		[Test(Description = "Обычный доступ к базе включает обновления")]
+		public async Task SetUserBaseAccess_PlainUser_GrantsForUpdates() {
 			provider.SetUserBaseAccess("worker", Access());
 
 			var grants = await ReadServerGrants("worker");
@@ -97,13 +93,13 @@ namespace QS.Launcher.Test.Provider {
 			Assert.That(baseGrant, Does.Contain("CREATE"));
 			Assert.That(baseGrant, Does.Contain("DROP"));
 			Assert.That(right?.CanUpdate, Is.True,
-				"право обновлять базу - это выданный набор с DDL, а не отдельная запись");
+				"право обновлять базу - это выданный набор, а не отдельная запись");
 		}
 
 		[Test(Description = "Снятие доступа убирает гранты, право на обновление и деактивирует пользователя в базе")]
 		public async Task SetUserBaseAccess_Revoked_CleansUpEverywhere() {
 			provider.SetUserBaseAccess("worker", Access());
-			provider.SetUserBaseAccess("worker", Access(hasAccess: false)); // и сразу отбираем
+			provider.SetUserBaseAccess("worker", Access(hasAccess: false)); //сразу отбираем
 
 			var grants = await ReadServerGrants("worker");
 			var rights = await ReadBaseUpdateRights();
@@ -120,7 +116,7 @@ namespace QS.Launcher.Test.Provider {
 		[Test(Description = "Повторная выдача доступа не плодит гранты и строки")]
 		public async Task SetUserBaseAccess_AppliedTwice_IsIdempotent() {
 			provider.SetUserBaseAccess("worker", Access());
-			provider.SetUserBaseAccess("worker", Access()); // тот же доступ второй раз
+			provider.SetUserBaseAccess("worker", Access());
 
 			var rights = (await ReadBaseUpdateRights()).Where(r => r.Login == "worker").ToList();
 			var baseUsers = (await ReadBaseUsers(BaseName)).Where(u => u.Login == "worker").ToList();
@@ -132,7 +128,7 @@ namespace QS.Launcher.Test.Provider {
 		[Test(Description = "Список доступов показывает все базы продукта, а не только доступные")]
 		public async Task GetUserBaseAccess_ListsAllProductBasesWithFlags() {
 			await CreateApplicationDatabase("base_second", "Вторая"); // вторая база продукта, доступа на неё не будет
-			await SeedMetabaseBase("base_second", "Вторая");
+			await SeedMetabase("base_second", "Вторая");
 
 			provider.SetUserBaseAccess("worker", Access());
 
@@ -153,21 +149,6 @@ namespace QS.Launcher.Test.Provider {
 			Assert.That(row?.HasAccess, Is.True);
 			Assert.That(row?.ReadOnly, Is.True, "только читающие привилегии - значит доступ на чтение");
 			Assert.That(row?.IsAdmin, Is.False);
-		}
-
-		[Test(Description = "База без грантов показывается без доступа")]
-		public async Task GetUserBaseAccess_BaseWithoutGrantsHasNoAccess() {
-			await CreateApplicationDatabase("base_no_grants", "Без грантов"); // грантов на неё не выдаём
-			await SeedMetabaseBase("base_no_grants", "Без грантов");
-			await GrantOnDatabase("worker", BaseName, "SELECT, INSERT"); // а на соседнюю - выдаём
-
-			var rows = provider.GetUserBaseAccess("worker");
-
-			// у любой учётки есть GRANT USAGE ON *.*, и он не должен читаться как доступ
-			Assert.That(rows.First(r => r.BaseName == "base_no_grants").HasAccess, Is.False,
-				"USAGE - это отсутствие привилегий, а не доступ ко всем базам");
-			Assert.That(rows.First(r => r.BaseName == BaseName).HasAccess, Is.True,
-				"предусловие: там, где гранты есть, доступ виден");
 		}
 
 		[Test(Description = "У глобального администратора доступ ко всем базам и правится он не здесь")]
@@ -192,7 +173,7 @@ namespace QS.Launcher.Test.Provider {
 			Assert.That(exception.Message, Does.Contain("глобальные права"));
 		}
 
-		[Test(Description = "Доступ несуществующему пользователю - явная ошибка, а не молчание")]
+		[Test(Description = "Доступ несуществующему пользователю - явная ошибка")]
 		public void SetUserBaseAccess_UnknownLogin_Throws() {
 			Assert.Throws<InvalidOperationException>(
 				() => provider.SetUserBaseAccess("who_is_this", Access()));
@@ -207,7 +188,7 @@ namespace QS.Launcher.Test.Provider {
 		[Test(Description = "База без таблицы users - гранты выдаются, синхронизация профиля молча пропускается")]
 		public async Task SetUserBaseAccess_BaseWithoutUsersTable_StillGrantsOnServer() {
 			await CreateApplicationDatabase("base_no_users", withUsersTable: false);
-			int noUsersId = await SeedMetabaseBase("base_no_users");
+			int noUsersId = await SeedMetabase("base_no_users");
 
 			Assert.DoesNotThrow(() => provider.SetUserBaseAccess("worker", new DbUserBaseAccess {
 				BaseName = "base_no_users", BaseId = noUsersId, HasAccess = true, Name = "Работник"

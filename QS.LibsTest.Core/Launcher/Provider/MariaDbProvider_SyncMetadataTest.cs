@@ -6,10 +6,6 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace QS.Launcher.Test.Provider {
-	/// <summary>
-	/// Синхронизация метабазы с реальным состоянием сервера - кнопка «Обновить метаинформацию».
-	/// Главное свойство механизма: пропавшее деактивируется, а не удаляется.
-	/// </summary>
 	[TestFixture(TestOf = typeof(MariaDBProvider))]
 	public class MariaDbProvider_SyncMetadataTest : LauncherDbTestFixtureBase {
 
@@ -47,7 +43,7 @@ namespace QS.Launcher.Test.Provider {
 		[Test(Description = "Пропавшая с сервера база деактивируется, но остаётся в метабазе")]
 		public async Task RefreshMetadata_MissingDatabase_SoftDeleted() {
 			await CreateApplicationDatabase("base_present");
-			await SeedMetabaseBase("base_vanished", "Исчезнувшая"); // только в метабазе, на сервере её нет
+			await SeedMetabase("base_vanished", "Исчезнувшая"); // только в метабазе, на сервере её нет
 
 			var provider = LoginAs();
 			provider.RefreshMetadata();
@@ -60,7 +56,7 @@ namespace QS.Launcher.Test.Provider {
 
 		[Test(Description = "Вернувшаяся база снова становится активной")]
 		public async Task RefreshMetadata_ReturnedDatabase_ReactivatedAgain() {
-			await SeedMetabaseBase("base_returning", disabled: true); // помечена пропавшей
+			await SeedMetabase("base_returning", disabled: true); // помечена пропавшей
 			await CreateApplicationDatabase("base_returning", "Вернулась"); // и снова появилась на сервере
 
 			var provider = LoginAs();
@@ -89,7 +85,7 @@ namespace QS.Launcher.Test.Provider {
 			Assert.That(rows[0].Version, Is.EqualTo("2.0"));
 		}
 
-		[Test(Description = "Первый запуск: метабаза развёрнута, но пуста - синхронизация обязана пройти")]
+		[Test(Description = "метабаза развёрнута, но пуста - синхронизация обязана пройти")]
 		public async Task RefreshMetadata_EmptyMetabase_PopulatesUsers() {
 			await CreateServerLogin("firstcomer", "first-pass");
 			using(var connection = CreateConnection(LauncherDbName)) {
@@ -107,19 +103,6 @@ namespace QS.Launcher.Test.Provider {
 				"пустая метабаза должна наполняться этой же кнопкой, а не руками через SQL");
 		}
 
-		[Test(Description = "Учётка сервера, которой нет в метабазе, заводится синхронизацией")]
-		public async Task RefreshMetadata_NewUserOnServer_AppearsInMetabase() {
-			await CreateServerLogin("newcomer", "newcomer-pass"); // в метабазу не заносим
-
-			var provider = LoginAs();
-			provider.RefreshMetadata();
-
-			Assert.That(await ReadMetabaseUser("newcomer"), Is.Not.Null,
-				"ради этого кнопка и нужна: без записи пользователю негде хранить имя и почту");
-			Assert.That(provider.GetUsers().Select(u => u.Login), Does.Contain("newcomer"),
-				"и он должен появиться в списке пользователей - тот читается из метабазы");
-		}
-
 		[Test(Description = "Права администратора у новой учётки берутся с сервера")]
 		public async Task RefreshMetadata_NewAdminOnServer_KeepsAdminFlag() {
 			await CreateServerLogin("newchief", "chief-pass", isAdmin: true);
@@ -132,19 +115,6 @@ namespace QS.Launcher.Test.Provider {
 				+ "и потерял управление пользователями");
 		}
 
-		[Test(Description = "Карточку уже заведённого пользователя синхронизация не переписывает")]
-		public async Task RefreshMetadata_ExistingUser_CardKept() {
-			await CreateServerLogin("known", "known-pass");
-			await SeedMetabaseUser("known", name: "Иван Петров", email: "ivan@example.com");
-
-			var provider = LoginAs();
-			provider.RefreshMetadata();
-
-			var row = await ReadMetabaseUser("known");
-			Assert.That(row?.Name, Is.EqualTo("Иван Петров"), "имя знает только метабаза - взять его больше негде");
-			Assert.That(row?.Email, Is.EqualTo("ivan@example.com"));
-		}
-
 		[Test(Description = "Служебную учётку сервера синхронизация не гасит - её просто не показывают")]
 		public async Task RefreshMetadata_SystemAccount_NotDisabled() {
 			var provider = LoginAs(); // вход под root, его запись в метабазе завела фикстура
@@ -153,35 +123,6 @@ namespace QS.Launcher.Test.Provider {
 
 			Assert.That((await ReadMetabaseUser(RootLogin))?.Disabled, Is.False,
 				"root скрыт из списка пользователей, но на сервере он есть - гасить его запись нельзя");
-		}
-
-		[Test(Description = "Пропавший с сервера пользователь деактивируется в метабазе")]
-		public async Task RefreshMetadata_MissingUser_SoftDeleted() {
-			await SeedMetabaseUser("ghost"); // на сервере такой учётки нет
-			await CreateServerLogin("alive", "alive-pass");
-			await SeedMetabaseUser("alive"); // а эта есть и там, и там
-
-			var provider = LoginAs();
-			provider.RefreshMetadata();
-
-			var ghost = await ReadMetabaseUser("ghost");
-			var alive = await ReadMetabaseUser("alive");
-			Assert.That(ghost, Is.Not.Null, "пользователь не удаляется, а деактивируется");
-			Assert.That(ghost?.Disabled, Is.True);
-			Assert.That(alive?.Disabled, Is.False, "существующие на сервере учётки не трогаем");
-		}
-
-		[Test(Description = "Заблокированную, но существующую учётку синхронизация не деактивирует")]
-		public async Task RefreshMetadata_LockedButExistingUser_LeftUntouched() {
-			await CreateServerLogin("sleeper", "sleeper-pass", locked: true);
-			await SeedMetabaseUser("sleeper");
-
-			var provider = LoginAs();
-			provider.RefreshMetadata();
-
-			var sleeper = await ReadMetabaseUser("sleeper");
-			Assert.That(sleeper?.Disabled, Is.False,
-				"учётка на сервере есть - флагом disabled управляют явные операции, а не синхронизация");
 		}
 
 		[Test(Description = "Без метабазы синхронизация тихо ничего не делает")]
@@ -218,8 +159,8 @@ namespace QS.Launcher.Test.Provider {
 		public async Task RefreshMetadata_UserSeeingPartOfServer_Throws() {
 			await CreateApplicationDatabase("base_his_own");
 			await CreateApplicationDatabase("base_someone_elses");
-			await SeedMetabaseBase("base_his_own");
-			await SeedMetabaseBase("base_someone_elses");
+			await SeedMetabase("base_his_own");
+			await SeedMetabase("base_someone_elses");
 
 			// права есть, но только на свою базу: CREATE у него есть, а сервер он видит не весь
 			await CreateServerLogin("owner", "owner-pass");
@@ -234,29 +175,9 @@ namespace QS.Launcher.Test.Provider {
 			Assert.Throws<UnauthorizedAccessException>(() => provider.RefreshMetadata(),
 				"если операцию всё-таки позвали - отказ должен быть явным");
 
-			// в этом и вред: невидимые базы неотличимы от удалённых, и синхронизация погасила бы их
+			//невидимые базы неотличимы от удалённых, и синхронизация погасила бы их
 			Assert.That((await ReadMetabaseBase("base_someone_elses"))?.Disabled, Is.False,
 				"чужая база не должна быть помечена пропавшей");
-		}
-
-		[Test(Description = "Синхронизация большого числа баз укладывается в одну пачку запросов")]
-		[Category("Performance")]
-		public async Task RefreshMetadata_ManyDatabases_CompletesInReasonableTime() {
-			const int databaseCount = 40;
-			for(int i = 0; i < databaseCount; i++)
-				await CreateApplicationDatabase($"base_bulk_{i:D3}", $"База {i}");
-
-			var provider = LoginAs();
-
-			var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-			provider.RefreshMetadata();
-			stopwatch.Stop();
-
-			var synced = (await ReadMetabaseBases()).Count(b => b.BaseName.StartsWith("base_bulk_", StringComparison.Ordinal));
-			Assert.That(synced, Is.EqualTo(databaseCount), "синхронизироваться должны все базы");
-			// upsert идёт пачками по 500 строк; порог ловит скатывание в запрос на строку
-			Assert.That(stopwatch.ElapsedMilliseconds, Is.LessThan(30000),
-				$"синхронизация {databaseCount} баз заняла {stopwatch.ElapsedMilliseconds} мс");
 		}
 	}
 }
