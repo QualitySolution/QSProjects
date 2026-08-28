@@ -349,6 +349,8 @@ namespace Gamma.Binding {
 					item.Free();
 				}
 			}
+			
+			node_hash.Clear();
 		}
 	}
 }

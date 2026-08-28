@@ -20,7 +20,7 @@ using QSWidgetLib;
 namespace QS.Journal.GtkUI
 {
 	[WindowSize(900, 600)]
-	public partial class JournalView : TabViewBase<JournalViewModelBase>, IMustBeDestroyed
+	public partial class JournalView : TabViewBase<JournalViewModelBase>
 	{
 		private readonly IGtkViewResolver viewResolver;
 		private static Logger logger = LogManager.GetCurrentClassLogger();
@@ -525,7 +525,7 @@ namespace QS.Journal.GtkUI
 
 		private bool isDestroyed = false;
 
-		public override void Destroy()
+		protected override void OnDestroyed()
 		{
 			isDestroyed = true;
 			
@@ -557,7 +557,7 @@ namespace QS.Journal.GtkUI
 			
 			_widgetsWithJournalActions.Clear();
 
-			base.Destroy();
+			base.OnDestroyed();
 		}
 
 		private void JournalView_KeyPressEvent(object o, KeyPressEventArgs args)

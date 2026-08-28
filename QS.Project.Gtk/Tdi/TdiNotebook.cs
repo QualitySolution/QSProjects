@@ -427,7 +427,7 @@ namespace QS.Tdi.Gtk
             for (var i = 0; i < NPages; i++)
             {// массив _tabs не пересортировывается при смене порядка, так что ищем по страницам
                 var master = _tabs.FirstOrDefault(tinfo => tinfo.TdiTab == ((TabVBox)GetNthPage(i)).Tab);
-                if (master?.MasterTabInfo == null)
+                if (master?.MasterTabInfo != null)
                 {// находим инфо родителей, меняем у них цвета и разметку
                     SwitchCurrentColor();
                     master.Color = Colors[_currentColor];
