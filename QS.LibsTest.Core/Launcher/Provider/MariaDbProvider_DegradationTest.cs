@@ -78,9 +78,9 @@ namespace QS.Launcher.Test.Provider {
 				"видимость проверяет сам сервер - несуществующей базы в SHOW DATABASES нет");
 		}
 
-		[Test(Description = "В users базы нет колонки deactivated - снятие доступа не падает")]
+		[Test(Description = "Схема users старее нашей - синхронизация строки не проходит, операция не падает")]
 		public async Task SetUserBaseAccess_UsersTableWithoutDeactivated_DoesNotThrow() {
-			await CreateApplicationDatabase("base_no_deactivated", withDeactivatedColumn: false); // снимать доступ будет нечем
+			await CreateApplicationDatabase("base_no_deactivated", withDeactivatedColumn: false); // писать в users будет нечем
 			int baseId = await SeedMetabase("base_no_deactivated");
 
 			var provider = LoginAs();
@@ -93,7 +93,7 @@ namespace QS.Launcher.Test.Provider {
 
 			access.HasAccess = false;
 			Assert.DoesNotThrow(() => provider.SetUserBaseAccess("flagless", access),
-				"колонки нет - синхронизацию профиля пропускаем, но доступ на сервере отзываем");
+				"схема разошлась - строку в users не пишем вовсе (Warn в логе), но доступ на сервере отзываем");
 
 			var grants = await ReadServerGrants("flagless");
 			Assert.That(GrantsMentionDatabase(grants, "`base_no_deactivated`"), Is.False,

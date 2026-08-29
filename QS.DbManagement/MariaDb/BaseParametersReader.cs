@@ -34,7 +34,7 @@ namespace QS.DbManagement.MariaDb {
 				return result;
 
 			var nameFilter = names?.ToList();
-			var withTable = MySqlMultiBase.TableColumns(connection, wanted, ParametersTable).Keys.ToList();
+			var withTable = MySqlMultiBase.DatabasesWithTable(connection, wanted, ParametersTable);
 
 			for(int offset = 0; offset < withTable.Count; offset += batchSize) {
 				var batch = withTable.Skip(offset).Take(batchSize).ToList();
