@@ -9,26 +9,20 @@ namespace QS.DbManagement.MariaDb {
 		/// <summary>
 		/// базы, где таблицы нет или куда нет доступа, в результат не попадают
 		/// </summary>
-		public static Dictionary<string, List<string>> TableColumns(IDbConnection connection, IEnumerable<string> databases, string table) {
-			var result = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
+		public static List<string> DatabasesWithTable(IDbConnection connection, IEnumerable<string> databases, string table) {
 			var wanted = Distinct(databases);
 			if(wanted.Count == 0)
-				return result;
+				return new List<string>();
 
-			var rows = connection.Query<ColumnRow>(
-				"SELECT TABLE_SCHEMA AS BaseName, COLUMN_NAME AS ColumnName FROM information_schema.COLUMNS " +
-				"WHERE TABLE_NAME = @table AND TABLE_SCHEMA IN @databases ORDER BY TABLE_SCHEMA, ORDINAL_POSITION",
-				new { table, databases = wanted });
-
-			foreach(var row in rows) {
-				if(!result.TryGetValue(row.BaseName, out var columns)) {
-					columns = new List<string>();
-					result[row.BaseName] = columns;
-				}
-				columns.Add(row.ColumnName);
-			}
-			return result;
+			return connection.Query<string>(
+				"SELECT TABLE_SCHEMA FROM information_schema.TABLES " +
+				"WHERE TABLE_NAME = @table AND TABLE_SCHEMA IN @databases ORDER BY TABLE_SCHEMA",
+				new { table, databases = wanted }).ToList();
 		}
+
+		/// <summary>Есть ли в базе такая таблица - и видна ли она текущему пользователю</summary>
+		public static bool HasTable(IDbConnection connection, string database, string table)
+			=> DatabasesWithTable(connection, new[] { database }, table).Count > 0;
 
 		/// <summary>
 		/// Число и порядок колонок в ветках обязаны совпадать
@@ -65,11 +59,6 @@ namespace QS.DbManagement.MariaDb {
 				.Where(db => !string.IsNullOrEmpty(db))
 				.Distinct(StringComparer.OrdinalIgnoreCase)
 				.ToList();
-		}
-
-		private sealed class ColumnRow {
-			public string BaseName { get; set; }
-			public string ColumnName { get; set; }
 		}
 	}
 }

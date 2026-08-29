@@ -10,8 +10,11 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 		private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 		private const string UsersTable = "users";
-		// id - первичный ключ, login - идентификатор для upsert
-		private static readonly HashSet<string> StructuralColumns = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "id", "login" };
+
+		// незаполненное поле формы приходит null и через COALESCE не затирает то,
+		// что в базу вписало само приложение
+		private const string ProfileSet = "`name` = COALESCE(@name, `name`), `email` = COALESCE(@email, `email`)";
+		private const string ProfileSelect = "`name` AS `Name`, `email` AS `Email`";
 
 		private readonly string connectionString;
 
@@ -24,43 +27,28 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			try {
 				using(var connection = new MySqlConnection(connectionString)) {
 					connection.Open();
-					var columns = LauncherColumnMapper.TableColumns(connection, baseName, UsersTable);
-					if(!columns.Any())
+					if(!MySqlMultiBase.HasTable(connection, baseName, UsersTable))
 						return; // таблицы users в этой базе нет
 
-					string table = $"`{MySqlEscape.Identifier(baseName)}`.`{UsersTable}`";
-
+					string table = Table(baseName);
 					if(!hasAccess) {
-						if(columns.Contains("deactivated", StringComparer.OrdinalIgnoreCase))
-						{
-							connection.Execute($"UPDATE {table} SET deactivated = TRUE WHERE login = @login", new { login = user.Login });
-						}
-						else {
-							logger.Warn("в базе {0} у таблицы {1} нет столбца deactivated", baseName, UsersTable);
-						}
+						connection.Execute($"UPDATE {table} SET `deactivated` = TRUE WHERE `login` = @login",
+							new { login = user.Login });
 						return;
 					}
 
-					bool exists = connection.ExecuteScalar<int>(
-						$"SELECT COUNT(*) FROM {table} WHERE login = @login", new { login = user.Login }) > 0;
+					bool exists = connection.ExecuteScalar<bool>(
+						$"SELECT COUNT(*) > 0 FROM {table} WHERE `login` = @login", new { login = user.Login });
 
+					// колонка name в базах NOT NULL - без подстановки вставка упадёт
 					if(!exists && string.IsNullOrEmpty(user.Name))
 						user.Name = user.Login;
 
-					var (cols, parameters) = LauncherColumnMapper.MapForWrite(columns, user, StructuralColumns);
-					parameters.Add("login", user.Login);
-
-					if(exists) {
-						connection.Execute(
-							$"UPDATE {table} SET {string.Join(", ", CoalesceAssignments(cols))} WHERE login = @login",
-							parameters);
-					}
-					else {
-						cols.Insert(0, "login");
-						connection.Execute(
-							$"INSERT INTO {table} ({string.Join(", ", cols.Select(c => $"`{c}`"))}) " +
-							$"VALUES ({string.Join(", ", cols.Select(c => "@" + c))})", parameters);
-					}
+					connection.Execute(exists
+							? $"UPDATE {table} SET {ProfileSet}, `admin` = @admin, `deactivated` = FALSE WHERE `login` = @login"
+							: $"INSERT INTO {table} (`login`, `name`, `email`, `admin`, `deactivated`) " +
+								"VALUES (@login, @name, @email, @admin, FALSE)",
+						new { login = user.Login, name = Blank(user.Name), email = Blank(user.Email), admin = user.Admin });
 				}
 			}
 			catch(MySqlException ex) {
@@ -68,101 +56,49 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			}
 		}
 
-		public void SyncWithDeletingUser(string login, List<string> baseNames)
-		{
+		public void SyncWithDeletingUser(string login, List<string> baseNames) {
 			try {
-				using(var connection = new MySqlConnection(connectionString)) {
-					connection.Open();
-					List<string> sqls = new List<string>(baseNames.Count);
-					foreach(string baseName in baseNames) {
-						List<string> columns = LauncherColumnMapper.TableColumns(connection, baseName, UsersTable);
-						if(!columns.Any())
-							continue; // таблицы users в этой базе нет
-
-						string table = $"`{MySqlEscape.Identifier(baseName)}`.`{UsersTable}`";
-
-						if(columns.Contains("deactivated", StringComparer.OrdinalIgnoreCase)) {
-							sqls.Add($"UPDATE {table} SET deactivated = TRUE WHERE login = @login");
-						}
-						else {
-							logger.Warn("в базе {0} у таблицы {1} нет столбца deactivated", baseName, UsersTable);
-						}
-					}
-					if(!sqls.Any())
-						return;
-					connection.Execute(string.Join("; ", sqls), new { login = login });
-				}
+				UpdateInBases(baseNames, "`deactivated` = TRUE", new { login });
 			}
 			catch(MySqlException ex) {
 				logger.Warn(ex, "не удалось синхронизировать отключение пользователя {0} из всех таблиц users", login);
 			}
 		}
 
-		/// <summary>
-		/// незаполненное поле формы приходит null
-		/// и оставляет в базе прежнее значение вместо того, чтобы затереть его пустотой
-		/// </summary>
-		private static IEnumerable<string> CoalesceAssignments(IEnumerable<string> columns)
-			=> columns.Select(c => $"`{c}` = COALESCE(@{c}, `{c}`)");
-
-		private static readonly string[] ProfileColumns = { "name", "email" };
-
 		public void SyncProfile(IEnumerable<string> baseNames, string login, string name, string email) {
-			var wanted = baseNames?.Where(b => !string.IsNullOrEmpty(b)).ToList();
-			if(wanted == null || wanted.Count == 0)
-				return;
 			if(string.IsNullOrEmpty(name) && string.IsNullOrEmpty(email))
 				return;
 
 			try {
-				using(var connection = new MySqlConnection(connectionString)) {
-					connection.Open();
-					var sqls = MySqlMultiBase.TableColumns(connection, wanted, UsersTable)
-						.Select(pair => ProfileUpdate(pair.Key, pair.Value))
-						.Where(sql => sql != null)
-						.ToList();
-					if(sqls.Count == 0)
-						return;
-
-					// незаполненное поле формы приходит null и через COALESCE не затирает базу
-					connection.Execute(string.Join("; ", sqls), new {
-						login,
-						name = string.IsNullOrEmpty(name) ? null : name,
-						email = string.IsNullOrEmpty(email) ? null : email
-					});
-				}
+				UpdateInBases(baseNames, ProfileSet, new { login, name = Blank(name), email = Blank(email) });
 			}
 			catch(MySqlException ex) {
 				logger.Warn(ex, "не удалось обновить профиль пользователя {0} в таблицах {1}", login, UsersTable);
 			}
 		}
 
-		/// <summary>null - в этой базе профильных колонок нет</summary>
-		private static string ProfileUpdate(string baseName, ICollection<string> columns) {
-			var setParts = CoalesceAssignments(ProfileColumns
-					.Where(c => columns.Contains(c, StringComparer.OrdinalIgnoreCase)))
-				.ToList();
-			if(setParts.Count == 0)
-				return null;
-
-			return $"UPDATE `{MySqlEscape.Identifier(baseName)}`.`{UsersTable}` " +
-				$"SET {string.Join(", ", setParts)} WHERE login = @login";
-		}
-
 		public Dictionary<string, BaseUserRow> TryGetProfiles(IEnumerable<string> baseNames, string login) {
 			var result = new Dictionary<string, BaseUserRow>(StringComparer.OrdinalIgnoreCase);
-			var wanted = baseNames?.Where(b => !string.IsNullOrEmpty(b)).ToList();
-			if(wanted == null || !wanted.Any())
+			var wanted = Wanted(baseNames);
+			if(wanted.Count == 0)
 				return result;
 
 			try {
 				using(var connection = new MySqlConnection(connectionString)) {
 					connection.Open();
-					var columnsByBase = MySqlMultiBase.TableColumns(connection, wanted, UsersTable);
-					if(!columnsByBase.Any())
+					var parameters = new DynamicParameters();
+					parameters.Add("login", login);
+
+					// набор колонок один на все базы, поэтому ветки UNION соединяются как есть
+					var projections = MySqlMultiBase.DatabasesWithTable(connection, wanted, UsersTable)
+						.Select(baseName => new KeyValuePair<string, string>(baseName, ProfileSelect));
+					string sql = MySqlMultiBase.UnionAll(projections, UsersTable,
+						nameof(BaseProfileRow.BaseName), "`login` = @login", parameters);
+					if(sql.Length == 0)
 						return result;
 
-					ReadProfiles(connection, columnsByBase, login, result);
+					foreach(BaseProfileRow row in connection.Query<BaseProfileRow>(sql, parameters))
+						result[row.BaseName] = row;
 				}
 			}
 			catch(MySqlException ex) {
@@ -171,26 +107,35 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			return result;
 		}
 
-		private static void ReadProfiles(MySqlConnection connection, Dictionary<string, List<string>> columnsByBase,
-			string login, IDictionary<string, BaseUserRow> result) {
-			var parameters = new DynamicParameters();
-			parameters.Add("login", login);
+		/// <summary>Все базы одним запросом: поштучно это два запроса на каждую</summary>
+		private void UpdateInBases(IEnumerable<string> baseNames, string setClause, object parameters) {
+			var wanted = Wanted(baseNames);
+			if(wanted.Count == 0)
+				return;
 
-			// набор колонок в каждой базе свой, поэтому проекция считается для каждой отдельно:
-			// выровненная, иначе ветки UNION не соединить
-			var projections = columnsByBase.Select(pair => new KeyValuePair<string, string>(
-				pair.Key, LauncherColumnMapper.SelectListAligned(pair.Value, typeof(BaseUserRow))));
-			string sql = MySqlMultiBase.UnionAll(projections, UsersTable,
-				nameof(BaseProfileRow.BaseName), "login = @login", parameters);
+			using(var connection = new MySqlConnection(connectionString)) {
+				connection.Open();
+				var sqls = MySqlMultiBase.DatabasesWithTable(connection, wanted, UsersTable)
+					.Select(baseName => $"UPDATE {Table(baseName)} SET {setClause} WHERE `login` = @login")
+					.ToList();
+				if(sqls.Count == 0)
+					return;
 
-			IEnumerable<BaseProfileRow> response = connection.Query<BaseProfileRow>(sql, parameters);
-			foreach(BaseProfileRow row in response)
-				result[row.BaseName] = row;
+				connection.Execute(string.Join("; ", sqls), parameters);
+			}
 		}
+
+		private static List<string> Wanted(IEnumerable<string> baseNames)
+			=> MySqlMultiBase.Distinct(baseNames ?? Enumerable.Empty<string>());
+
+		private static string Table(string baseName)
+			=> $"`{MySqlEscape.Identifier(baseName)}`.`{UsersTable}`";
+
+		/// <summary>Пустую строку из формы кладём как NULL</summary>
+		private static string Blank(string value) => string.IsNullOrEmpty(value) ? null : value;
 
 		private sealed class BaseProfileRow : BaseUserRow {
 			public string BaseName { get; set; }
 		}
-
 	}
 }
