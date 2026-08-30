@@ -117,8 +117,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 				.WhenAnyValue(x => x.SelectedDatabase, x => x.IsBusy,
 					(database, busy) => database != null && !busy);
 
-			ConnectCommand = ReactiveCommand.CreateFromTask(
-				() => RunBusyAsync("Подключение к базе данных", ConnectAsync), canExecuteConnection);
+			ConnectCommand = ReactiveCommand.CreateFromTask(ConnectAsync, canExecuteConnection);
 			OpenCreateDatabaseCommand = ReactiveCommand.Create(OpenCreateDatabase);
 			OpenImportDatabaseCommand = ReactiveCommand.Create(OpenImportDatabase);
 			BackupDatabaseCommand = ReactiveCommand.Create<DbInfo>(OpenBackup);
@@ -126,9 +125,10 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			OpenUserManagementCommand = ReactiveCommand.Create(OpenUsers);
 			OpenChangePasswordCommand = ReactiveCommand.Create(ChangePassword);
 			RefreshMetadataCommand = ReactiveCommand.Create(OpenRefreshMetadata);
-			RefreshDatabasesCommand = ReactiveCommand.CreateFromTask(
-				() => RunBusyAsync("Обновление списка баз", RefreshDatabases));
+			RefreshDatabasesCommand = ReactiveCommand.CreateFromTask(RefreshDatabases);
 			BackCommand = ReactiveCommand.Create(Navigation.Previous);
+
+			TrackBusy(ConnectCommand, RefreshDatabasesCommand, DeleteDatabaseCommand);
 		}
 
 		private void OpenRefreshMetadata() {
@@ -238,17 +238,15 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 			if(!confirmed)
 				return;
 
-			await RunBusyAsync(DropDatabaseTitle, async () => {
-				try {
-					await Task.Run(() => Provider.DropDatabase(database));
-					await RefreshDatabases();
-					interactiveMessage.ShowMessage(ImportanceLevel.Success,
-						$"База данных {database.Title} удалена.", DropDatabaseTitle);
-				}
-				catch(Exception ex) {
-					errorHandling.Handle(ex, DropDatabaseTitle);
-				}
-			});
+			try {
+				await Task.Run(() => Provider.DropDatabase(database));
+				await RefreshDatabases();
+				interactiveMessage.ShowMessage(ImportanceLevel.Success,
+					$"База данных {database.Title} удалена.", DropDatabaseTitle);
+			}
+			catch(Exception ex) {
+				errorHandling.Handle(ex, DropDatabaseTitle);
+			}
 		}
 
 		public async Task RefreshDatabases() {

@@ -38,9 +38,10 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			NewUserCommand = ReactiveCommand.Create(StartNewUser);
 			EditUserCommand = ReactiveCommand.Create(EditUser, hasSelectedUser);
 			DeleteUserCommand = ReactiveCommand.CreateFromTask(DeleteUserAsync, hasSelectedUser);
-			RefreshUsersCommand = ReactiveCommand.CreateFromTask(
-				() => RunBusyAsync("Загрузка списка пользователей", RefreshUsers));
+			RefreshUsersCommand = ReactiveCommand.CreateFromTask(RefreshUsers);
 			BackCommand = ReactiveCommand.Create(Navigation.Pop);
+
+			TrackBusy(RefreshUsersCommand, DeleteUserCommand);
 
 			Users = new ObservableCollection<DbUserInfo>();
 		}
@@ -116,16 +117,14 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			if(!confirmed)
 				return;
 
-			await RunBusyAsync("Удаление пользователя", async () => {
-				try {
-					await Task.Run(() => provider.DeleteUser(user.Login));
-					interactiveMessage.ShowMessage(ImportanceLevel.Success, "Пользователь удалён.", "Управление пользователями");
-					await RefreshUsers();
-				}
-				catch(Exception ex) {
-					errorHandling.Handle(ex, "Управление пользователями");
-				}
-			});
+			try {
+				await Task.Run(() => provider.DeleteUser(user.Login));
+				interactiveMessage.ShowMessage(ImportanceLevel.Success, "Пользователь удалён.", "Управление пользователями");
+				await RefreshUsers();
+			}
+			catch(Exception ex) {
+				errorHandling.Handle(ex, "Управление пользователями");
+			}
 		}
 	}
 }

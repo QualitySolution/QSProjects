@@ -40,13 +40,14 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 
 			var canSaveUser = this.WhenAnyValue(x => x.Card.Login, x => x.Card.NewPassword, x => x.Card.IsNew,
 				(login, pass, isNew) => !string.IsNullOrWhiteSpace(login) && (!isNew || !string.IsNullOrEmpty(pass)));
-			SaveCommand = ReactiveCommand.CreateFromTask(
-				() => RunBusyAsync("Сохранение пользователя", Save), canSaveUser);
+			SaveCommand = ReactiveCommand.CreateFromTask(Save, canSaveUser);
 
 			BackCommand = ReactiveCommand.CreateFromTask(GoBack);
 
-			LoadSelectedUserCommand = ReactiveCommand.CreateFromTask<DbUserInfo>(
-				user => RunBusyAsync("Загрузка карточки пользователя", () => LoadSelectedUser(user)));
+			LoadSelectedUserCommand = ReactiveCommand.CreateFromTask<DbUserInfo>(LoadSelectedUser);
+
+			TrackBusy(SaveCommand, LoadSelectedUserCommand);
+
 			this.WhenAnyValue(x => x.SelectedUser).InvokeCommand(LoadSelectedUserCommand);
 
 			this.WhenAnyValue(x => x.SelectedUser, x => x.Card.IsNew)
