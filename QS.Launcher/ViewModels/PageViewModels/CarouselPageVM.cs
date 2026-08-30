@@ -1,5 +1,7 @@
 ﻿using System;
-using System.Threading.Tasks;
+using System.Linq;
+using System.Reactive.Linq;
+using System.Windows.Input;
 using QS.ViewModels;
 using ReactiveUI;
 
@@ -18,41 +20,16 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			Navigation = navigation ?? throw new ArgumentNullException(nameof(navigation));
 		}
 
-		#region Занятость страницы
-
-		private int busyDepth;
-
-		private bool isBusy; //? может сделать его volatile чтобы он был потокобезопасен
+		private bool isBusy;
 		public bool IsBusy {
 			get => isBusy;
 			private set => this.RaiseAndSetIfChanged(ref isBusy, value);
 		}
 
-		private string busyText;
-		public string BusyText {
-			get => busyText;
-			protected set => this.RaiseAndSetIfChanged(ref busyText, value);
-		}
+		protected void TrackBusy(params ICommand[] commands) =>
+			commands.Cast<IReactiveCommand>().Select(command => command.IsExecuting)
+				.CombineLatest(running => running.Any(busy => busy))
+				.Subscribe(busy => IsBusy = busy);
 
-		protected async Task RunBusyAsync(string title, Func<Task> operation) {
-			if(operation == null)
-				throw new ArgumentNullException(nameof(operation));
-
-			if(busyDepth == 0)
-				BusyText = title;
-
-			busyDepth++;
-			IsBusy = true;
-			try {
-				await operation();
-			}
-			finally {
-				busyDepth--;
-				if(busyDepth == 0)
-					IsBusy = false;
-			}
-		}
-
-		#endregion
 	}
 }
