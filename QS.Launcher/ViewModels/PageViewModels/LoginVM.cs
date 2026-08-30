@@ -88,12 +88,13 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			Connections = new ObservableCollection<Connection>(configurator.ReadConnections());
 			SelectedConnection = Connections.FirstOrDefault(c => c.Last);
 			
-			LoginCommand = ReactiveCommand.CreateFromTask(
-				() => RunBusyAsync("Подключение к серверу", Login));
+			LoginCommand = ReactiveCommand.CreateFromTask(Login);
 			NewCommand = ReactiveCommand.Create(CreateNewConnection);
 			DeleteCommand = ReactiveCommand.Create(DeleteSelectedConnection);
 			CloneCommand = ReactiveCommand.Create(CloneConnection);
 			SaveCommand = ReactiveCommand.Create(SaveConnections);
+
+			TrackBusy(LoginCommand);
 		}
 
 		public void DeleteSelectedConnection() {
@@ -127,7 +128,6 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 				SaveConnections();
 
 				if(resp.Success) {
-					BusyText = "Чтение списка баз";
 					await dbVM.SetProviderAsync(dbProvider, connection, SaveConnections);
 					Navigation.Next();
 				}

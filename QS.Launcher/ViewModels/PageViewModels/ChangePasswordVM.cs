@@ -23,8 +23,10 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			var canChangeOwnPassword = this.WhenAnyValue(x => x.OwnNewPassword, x => x.OwnConfirmPassword,
 				(pass, confirm) => !string.IsNullOrEmpty(pass) && pass == confirm);
 			ChangeOwnPasswordCommand = ReactiveCommand.CreateFromTask(
-				() => RunBusyAsync(MessageTitle, ChangeOwnPasswordAsync), canChangeOwnPassword);
+				ChangeOwnPasswordAsync, canChangeOwnPassword);
 			BackCommand = ReactiveCommand.Create(Navigation.Pop);
+
+			TrackBusy(ChangeOwnPasswordCommand);
 		}
 
 		private string ownNewPassword;
