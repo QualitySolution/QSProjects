@@ -21,4 +21,9 @@ namespace QS.Dialog
 		/// <returns>Вернет заголовок кнопки которую нажал пользователь. Если пользователь закроет диалог крестиком, вернется null.</returns>
 		string Question(string[] buttons, string message, string title = null);
 	}
+
+	public interface IInteractiveQuestionWithLevel
+	{
+		string Question(ImportanceLevel level, string[] buttons, string message, string title = null);
+	}
 }

@@ -76,7 +76,7 @@ namespace QS.ErrorReporting {
 
 		private void AskAndSend(Exception exception, string title) {
 			try {
-				string answer = interactiveQuestion.Question(
+				string answer = Ask(
 					new[] { SendButton, CloseButton },
 					exception.Message + "\n\nОтправить отчёт об ошибке разработчикам? " +
 					"В отчёт попадут описание ошибки и последние строки журнала работы программы.",
@@ -89,6 +89,12 @@ namespace QS.ErrorReporting {
 				logger.Error(ex, "Не удалось показать сообщение о непредвиденной ошибке");
 			}
 		}
+
+		/// <summary>Это вопрос об ошибке, и выглядеть окно должно ошибкой - если реализация так умеет</summary>
+		private string Ask(string[] buttons, string message, string title) =>
+			interactiveQuestion is IInteractiveQuestionWithLevel leveled
+				? leveled.Question(ImportanceLevel.Error, buttons, message, title)
+				: interactiveQuestion.Question(buttons, message, title);
 
 		private void SendQuietly(Exception exception, ErrorType type) {
 			try {
