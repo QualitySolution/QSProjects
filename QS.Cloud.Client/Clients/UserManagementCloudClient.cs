@@ -9,14 +9,14 @@ namespace QS.Cloud.Client
 		public UserManagementCloudClient(IBasicAuthInfoProvider basicAuthInfoProvider)
 			: base(basicAuthInfoProvider, "core.cloud.qsolution.ru", 443) { }
 
-		public List<UserInfo> GetUsers()
+		public virtual List<UserInfo> GetUsers()
 		{
 			var client = new UserManagement.UserManagementClient(Channel);
 			var response = client.GetUsers(new GetUsersRequest(), headers);
 			return response.Users.ToList();
 		}
 
-		public CreateUserResponse CreateUser(UserInfo user, string password)
+		public virtual CreateUserResponse CreateUser(UserInfo user, string password)
 		{
 			var client = new UserManagement.UserManagementClient(Channel);
 			var request = new CreateUserRequest {
@@ -32,7 +32,7 @@ namespace QS.Cloud.Client
 			return client.CreateUser(request, headers);
 		}
 
-		public UpdateUserResponse UpdateUser(UserInfo user, string newPassword)
+		public virtual UpdateUserResponse UpdateUser(UserInfo user, string newPassword)
 		{
 			var client = new UserManagement.UserManagementClient(Channel);
 			var request = new UpdateUserRequest {
@@ -49,14 +49,14 @@ namespace QS.Cloud.Client
 			return client.UpdateUser(request, headers);
 		}
 
-		public DeleteUserResponse DeleteUser(string login)
+		public virtual DeleteUserResponse DeleteUser(string login)
 		{
 			var client = new UserManagement.UserManagementClient(Channel);
 			var request = new DeleteUserRequest { User = login };
 			return client.DeleteUser(request, headers);
 		}
 
-		public List<BaseAccessInfo> GetUserBaseAccess(string login, uint productId)
+		public virtual List<BaseAccessInfo> GetUserBaseAccess(string login, uint productId)
 		{
 			var client = new UserManagement.UserManagementClient(Channel);
 			var request = new GetUserBaseAccessRequest { User = login, ProductId = productId };
@@ -64,7 +64,7 @@ namespace QS.Cloud.Client
 			return response.Bases.ToList();
 		}
 
-		public ChangeBaseAccessResponse ChangeBaseAccess(string user, int baseId, bool grant, bool admin, bool readOnly, uint productId)
+		public virtual ChangeBaseAccessResponse ChangeBaseAccess(string user, int baseId, bool grant, bool admin, bool readOnly, uint productId)
 		{
 			var client = new UserManagement.UserManagementClient(Channel);
 			var request = new ChangeBaseAccessRequest {

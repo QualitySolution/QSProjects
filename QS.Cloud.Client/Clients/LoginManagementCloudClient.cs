@@ -9,14 +9,14 @@ namespace QS.Cloud.Client
 		public LoginManagementCloudClient(IBasicAuthInfoProvider basicAuthInfoProvider)
                         : base(basicAuthInfoProvider, "core.cloud.qsolution.ru", 443) { }
 
-		public StartResponse Start(string launcherVersion) {
+		public virtual StartResponse Start(string launcherVersion) {
 			var client = new LoginManagement.LoginManagementClient(Channel);
 			var request = new StartRequest { LauncherVersion = launcherVersion };
 			var response = client.Start(request, headers);
 			return response;
 		}
 
-		public StartSessionResponse StartSession(int baseId)
+		public virtual StartSessionResponse StartSession(int baseId)
 		{
 			var client = new LoginManagement.LoginManagementClient(Channel);
 
@@ -29,7 +29,7 @@ namespace QS.Cloud.Client
 			return response;
 		}
 
-		public List<BaseInfo> GetBasesForUser(uint productId)
+		public virtual List<BaseInfo> GetBasesForUser(uint productId)
 		{
 			var client = new LoginManagement.LoginManagementClient(Channel);
 			var request = new GetBasesForUserRequest();
@@ -38,7 +38,7 @@ namespace QS.Cloud.Client
 			return response.Bases.ToList();
 		}
 
-		public ChangePasswordResponse ChangePassword(string newPassword) {
+		public virtual ChangePasswordResponse ChangePassword(string newPassword) {
 			var client = new LoginManagement.LoginManagementClient(Channel);
 			var request = new ChangePasswordRequest { NewPassword = newPassword };
 			var response = client.ChangePassword(request, headers);
