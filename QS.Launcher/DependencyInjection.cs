@@ -61,6 +61,7 @@ namespace QS.Launcher {
 				//обработчики просматриваются в порядке регистрации
 				//широкие условия лучше ставить ниже
 				.AddSingleton<IErrorHandler, NotEnoughRights>()
+				.AddSingleton<IErrorHandler, OperationRefused>()
 				.AddSingleton<IErrorHandler, MySqlExceptionLoginFailed>()
 				.AddSingleton<IErrorHandler, ConnectionIsLost>()
 				.AddSingleton<IErrorHandler, MySqlExceptionAccessDenied>()
