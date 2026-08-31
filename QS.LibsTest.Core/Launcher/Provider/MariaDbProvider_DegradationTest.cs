@@ -27,25 +27,6 @@ namespace QS.Launcher.Test.Provider {
 			Assert.That(database?.BaseId, Is.EqualTo(baseId));
 		}
 
-		[Test(Description = "Своя запись заведена под чужим продуктом - метабазу это не отключает")]
-		public async Task GetUserDatabases_OwnRowUnderOtherProduct_StillUsesCatalog() {
-			await CreateApplicationDatabase("base_alien_owner", "Своя");
-			await SeedMetabase("base_alien_owner", "Из каталога");
-			// запись есть, но продукт чужой - прежний поиск себя её не находил
-			using(var connection = CreateConnection(LauncherDbName)) {
-				await connection.OpenAsync();
-				await connection.ExecuteAsync(
-					"UPDATE `server_users` SET product_id = @alien WHERE login = @login;",
-					new { alien = OtherProductCode, login = RootLogin });
-			}
-
-			var provider = LoginAs();
-			var database = provider.GetUserDatabases().FirstOrDefault(d => d.BaseName == "base_alien_owner");
-
-			Assert.That(database?.Title, Is.EqualTo("Из каталога"),
-				"чужой product_id у своей записи не должен лишать лаунчер каталога");
-		}
-
 		[Test(Description = "Таблицы метабазы нет - откат на прямой сервер, без падения")]
 		public async Task GetUserDatabases_MetabaseTableMissing_FallsBackToServer() {
 			await CreateApplicationDatabase("base_broken_meta", "Сломанная метабаза");

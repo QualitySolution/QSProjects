@@ -128,6 +128,21 @@ namespace QS.Launcher.Test.Provider {
 			Assert.That(row?.Email, Is.EqualTo("stalo@example.com"));
 		}
 
+		// телефон - единственное поле карточки, которого нет на сервере: он живёт только
+		// в метабазе, и потерять его можно молча, не сломав ничего остального
+		[Test(Description = "Телефон сохраняется при создании и меняется при правке")]
+		public async Task CreateAndUpdateUser_Phone_StoredInMetabase() {
+			var provider = LoginAs();
+			provider.CreateUser(new DbUserInfo { Login = "dialed", Phone = "+7-900-000" }, "dialed-pass");
+
+			Assert.That((await ReadMetabaseUser("dialed"))?.Phone, Is.EqualTo("+7-900-000"),
+				"телефон из карточки должен попасть в метабазу");
+
+			provider.UpdateUser(new DbUserInfo { Login = "dialed", Phone = "+7-911-111" });
+
+			Assert.That((await ReadMetabaseUser("dialed"))?.Phone, Is.EqualTo("+7-911-111"));
+		}
+
 		[Test(Description = "Удаление пользователя убирает учётки со всех хостов и запись из метабазы")]
 		public async Task DeleteUser_RemovesServerAccountsAndMetabaseRecord() {
 			var provider = LoginAs();
