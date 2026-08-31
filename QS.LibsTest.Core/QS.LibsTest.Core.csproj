@@ -6,6 +6,11 @@
         <IsPackable>false</IsPackable>
 
         <RootNamespace>QS.Test</RootNamespace>
+
+        <!-- Своя точка входа вместо сгенерированной пустышки: сборку надо уметь запустить
+             отдельным процессом, чтобы уронить его в тесте CrashProbeTest -->
+        <GenerateProgramFile>false</GenerateProgramFile>
+        <StartupObject>QS.LibsTest.Core.ErrorReporting.CrashProbe</StartupObject>
     </PropertyGroup>
 
     <ItemGroup>
@@ -26,6 +31,8 @@
         </PackageReference>
     </ItemGroup>
 
+    <!-- Скрипты интеграционных тестов лаунчера встраиваем в сборку, а не копируем в выходную
+         папку. Имена ресурсов фиксированные - код фикстур ищет их по этим именам. -->
     <ItemGroup>
       <EmbeddedResource Include="Launcher\Base\AppBase.sql" LogicalName="QS.Launcher.Test.Base.AppBase.sql" />
       <EmbeddedResource Include="Launcher\Base\QSLauncher.sql" LogicalName="QS.Launcher.Test.Base.QSLauncher.sql" />

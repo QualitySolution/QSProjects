@@ -30,15 +30,37 @@ namespace QS.Cloud.Client.DataBase {
 		private readonly DataBaseManagementCloudClient dbClient;
 		private readonly UserManagementCloudClient userClient;
 
-		public QSCloudProvider(IList<ConnectionParameterValue> parameters, byte productCode, string password = null) {
-			Account = parameters.First(p => p.Name == "Account").Value;
-			UserName = parameters.First(p => p.Name == "Login").Value;
-			ProductCode = productCode;
-			var authInfo = new BasicAuthInfoProvider($@"{Account}\{UserName}", password);
+		/// <summary>Клиентов создали мы сами - значит нам их и закрывать</summary>
+		private readonly bool ownsClients;
 
-			loginClient = new LoginManagementCloudClient(authInfo);
-			dbClient = new DataBaseManagementCloudClient(authInfo, ProductCode);
-			userClient = new UserManagementCloudClient(authInfo);
+		public QSCloudProvider(IList<ConnectionParameterValue> parameters, byte productCode, string password = null)
+			: this(parameters.First(p => p.Name == "Account").Value,
+				parameters.First(p => p.Name == "Login").Value,
+				productCode, password) { }
+		private QSCloudProvider(string account, string userName, byte productCode, string password)
+			: this(account, userName, productCode,
+				  new BasicAuthInfoProvider($@"{account}\{userName}", password)) { }
+
+		private QSCloudProvider(string account, string userName, byte productCode, IBasicAuthInfoProvider authInfo)
+			: this(account, userName, productCode,
+				new LoginManagementCloudClient(authInfo),
+				new DataBaseManagementCloudClient(authInfo, productCode),
+				new UserManagementCloudClient(authInfo)) {
+			ownsClients = true;
+		}
+
+		/// <summary>
+		/// Нужен тестам
+		/// </summary>
+		public QSCloudProvider(string account, string userName, byte productCode,
+			LoginManagementCloudClient loginClient, DataBaseManagementCloudClient dbClient, UserManagementCloudClient userClient) {
+			Account = account;
+			UserName = userName;
+			ProductCode = productCode;
+
+			this.loginClient = loginClient ?? throw new ArgumentNullException(nameof(loginClient));
+			this.dbClient = dbClient ?? throw new ArgumentNullException(nameof(dbClient));
+			this.userClient = userClient ?? throw new ArgumentNullException(nameof(userClient));
 		}
 
 		#region Управление пользователями
@@ -210,7 +232,9 @@ namespace QS.Cloud.Client.DataBase {
 			if(disposed)
 				return;
 
-			if(disposing) {
+			// Клиентов, пришедших снаружи, освобождает тот, кто их создал.
+			// Свои закрываем сами - за ними каналы gRPC
+			if(disposing && ownsClients) {
 				loginClient.Dispose();
 				dbClient.Dispose();
 				userClient.Dispose();
