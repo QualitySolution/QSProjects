@@ -136,7 +136,7 @@ namespace QS.Launcher.Test {
 		private static string Describe(ICollection<string> items) =>
 			items.Count == 0 ? "нет" : string.Join(", ", items);
 
-		private static async Task<string> ReadScript(string fileName) {
+		protected static async Task<string> ReadScript(string fileName) {
 			string resource = ScriptResourcePrefix + fileName;
 			using(var stream = typeof(LauncherDbTestFixtureBase).Assembly.GetManifestResourceStream(resource)) {
 				if(stream == null)

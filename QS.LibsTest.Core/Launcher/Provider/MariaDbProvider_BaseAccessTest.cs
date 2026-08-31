@@ -1,4 +1,6 @@
-﻿using NUnit.Framework;
+using Dapper;
+using MySqlConnector;
+using NUnit.Framework;
 using QS.DbManagement;
 using QS.DbManagement.Entities;
 using System;
@@ -177,6 +179,39 @@ namespace QS.Launcher.Test.Provider
 		public void SetUserBaseAccess_UnknownLogin_Throws() {
 			Assert.Throws<InvalidOperationException>(
 				() => provider.SetUserBaseAccess("who_is_this", Access()));
+		}
+
+		[Test(Description = "Оборванное сервером соединение провайдер переоткрывает сам")]
+		public async Task SetUserBaseAccess_ConnectionDropped_ReconnectsOnNextAttempt() {
+			provider.GetUserBaseAccess("worker"); // соединение провайдера открыто и работает
+
+			// так же обрывает простаивающее соединение сам сервер по wait_timeout
+			await KillOtherConnections();
+
+			Assert.Catch<MySqlException>(() => provider.SetUserBaseAccess("worker", Access()),
+				"обрыв должен быть виден вызывающему, а не выдан за «пользователь не найден»");
+
+			Assert.DoesNotThrow(() => provider.SetUserBaseAccess("worker", Access()),
+				"до 31.08.2026 соединение оставалось Broken, и дальше приложение до перезапуска "
+				+ "отвечало только «Cannot Open when State is Broken»");
+		}
+
+		/// <summary>Рвёт все соединения к серверу, кроме своего</summary>
+		private async Task KillOtherConnections() {
+			using(var connection = CreateConnection(withoutDb: true)) {
+				await connection.OpenAsync();
+				var ids = (await connection.QueryAsync<long>(
+					"SELECT ID FROM information_schema.PROCESSLIST WHERE ID <> CONNECTION_ID();")).ToList();
+				foreach(var id in ids) {
+					try {
+						await connection.ExecuteAsync($"KILL {id};");
+					}
+					catch(MySqlException) {
+						// соединение уже закрылось само - его и убивать незачем
+					}
+				}
+				LogStep("оборвано соединений: {0}", ids.Count);
+			}
 		}
 
 		[Test(Description = "Пустое имя базы отвергается до обращения к серверу")]
