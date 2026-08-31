@@ -18,6 +18,7 @@ namespace QS.DbManagement {
 		private const string MessageTitle = "Создание базы данных";
 		private const string AnyHost = "%";
 		private const string LocalHost = "localhost";
+		private const int ER_NONEXISTING_GRANT = 1141;
 
 		private readonly MySqlConnection connection;
 
@@ -765,7 +766,7 @@ namespace QS.DbManagement {
 					}
 				});
 			}
-			catch(MySqlException ex) {
+			catch(MySqlException ex) when(ex.Number == ER_NONEXISTING_GRANT) {
 				logger.Debug(ex, "Не удалось получить гранты пользователя {0}", login);
 			}
 			return result;
@@ -825,6 +826,9 @@ namespace QS.DbManagement {
 
 		private void EnsureOpen()
 		{
+			if(connection.State == ConnectionState.Broken)
+				connection.Close();
+
 			if(connection.State != ConnectionState.Open)
 				connection.Open();
 		}
