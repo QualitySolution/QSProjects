@@ -36,7 +36,7 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			using(var connection = new MySqlConnection(connectionString)) {
 				connection.Open();
 				using(var transaction = connection.BeginTransaction()) {
-					int baseId = Bases.InsertBase(connection, transaction, dbInfo);
+					int baseId = Bases.UpsertBase(connection, transaction, dbInfo);
 					Users.GrantCreatorUpdateRight(connection, transaction, baseId);
 					transaction.Commit();
 					return baseId;
