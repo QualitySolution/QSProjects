@@ -179,12 +179,30 @@ namespace QS.DbManagement {
 		{
 			try
 			{
-				Metadata?.CreateBaseWithCreatorAccess(new DbInfo { Title = request.DbTitle, BaseName = request.DbName });
+				Metadata?.CreateBaseWithCreatorAccess(new DbInfo {
+					Title = request.DbTitle,
+					BaseName = request.DbName,
+					Version = ReadBaseVersion(request.DbName)
+				});
 			}
 			catch(Exception ex)
 			{
 				logger.Warn(ex, "Не удалось зарегистрировать базу {0} в метабазе QSLauncher.", request.DbName);
 			}
+		}
+
+		/// <summary>
+		/// Версию база сообщает о себе сама: её кладёт в base_parameters дамп, которым базу наполнили.
+		/// null - параметра в базе нет, каталог обновится ближайшей синхронизацией
+		/// </summary>
+		private string ReadBaseVersion(string dbName) {
+			var parameters = OnConnection(c =>
+				BaseParametersReader.ReadMany(c, new[] { dbName }, new[] { VersionParameter }));
+
+			return parameters.TryGetValue(dbName, out var byName)
+				&& byName.TryGetValue(VersionParameter, out var version)
+					? version
+					: null;
 		}
 
 		#region Отображение сущностей метабазы в публичные
@@ -285,7 +303,8 @@ namespace QS.DbManagement {
 				() => GetUserDatabasesDirect());
 		}
 
-		private static readonly string[] DbInfoParameters = { "ProductCode", "BaseTitle", "version" };
+		private const string VersionParameter = "version";
+		private static readonly string[] DbInfoParameters = { "ProductCode", "BaseTitle", VersionParameter };
 
 		private List<DbInfo> GetUserDatabasesDirect() {
 			var names = OnConnection(c => c.Query<string>("SHOW DATABASES").ToList())
@@ -313,7 +332,7 @@ namespace QS.DbManagement {
 			return new DbInfo {
 				BaseName = dbName,
 				Title = parameters.TryGetValue("BaseTitle", out var title) ? title : dbName,
-				Version = parameters.TryGetValue("version", out var version) ? version : null
+				Version = parameters.TryGetValue(VersionParameter, out var version) ? version : null
 			};
 		}
 

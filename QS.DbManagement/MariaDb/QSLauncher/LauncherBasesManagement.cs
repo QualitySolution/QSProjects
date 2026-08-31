@@ -150,18 +150,19 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 				$"SELECT id FROM `{BasesTable}` WHERE base_name = @name AND product_id = @pid;",
 				new { name = baseName, pid = productId }, transaction) ?? 0;
 
-		public int InsertBase(MySqlConnection connection, MySqlTransaction transaction, DbInfo dbInfo)
+		public int UpsertBase(MySqlConnection connection, MySqlTransaction transaction, DbInfo dbInfo)
 		{
-			connection.Execute(
-				"INSERT INTO bases (base_title, base_name, product_id) VALUES (@base_title, @base_name, @product_id);",
-				new {
-					base_title = dbInfo.Title,
-					base_name = dbInfo.BaseName,
-					product_id = productId,
-				}, transaction);
+			UpsertBases(connection, new[] { ToBaseRow(dbInfo) }, transaction);
 
-			return connection.ExecuteScalar<int>("SELECT LAST_INSERT_ID();", transaction: transaction);
+			return FindBaseId(connection, dbInfo.BaseName, transaction);
 		}
+
+		private BaseRow ToBaseRow(DbInfo dbInfo) => new BaseRow {
+			ProductId = productId,
+			BaseName = dbInfo.BaseName,
+			BaseTitle = dbInfo.Title,
+			Version = dbInfo.Version
+		};
 
 		public bool SyncWithDelete(DbInfo dbInfo)
 		{
