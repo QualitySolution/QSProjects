@@ -20,11 +20,10 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 		private readonly string connectionString;
 		private readonly string login;
 		private readonly bool isAdmin;
-		private readonly byte productId;
 		private readonly LauncherBasesManagement bases;
 
 		public LauncherUsersManagement(MySqlConnectionStringBuilder connectionBuilder, string login, bool isAdmin,
-			byte productId, LauncherBasesManagement bases) {
+			LauncherBasesManagement bases) {
 			// строку правим на копии: builder принадлежит вызывающему
 			var toLauncher = new MySqlConnectionStringBuilder(connectionBuilder.ConnectionString) {
 				Database = LauncherBaseName,
@@ -33,7 +32,6 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			connectionString = toLauncher.ConnectionString;
 			this.login = login ?? throw new ArgumentNullException(nameof(login));
 			this.isAdmin = isAdmin;
-			this.productId = productId;
 			this.bases = bases ?? throw new ArgumentNullException(nameof(bases));
 		}
 
@@ -43,8 +41,7 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			using(var connection = new MySqlConnection(connectionString)) {
 				connection.Open();
 				return connection.Query<LauncherUserInfo>(
-					$"SELECT {UserSelect} FROM `{UsersTable}` WHERE product_id = @productId ORDER BY login;",
-					new { productId }).ToList();
+					$"SELECT {UserSelect} FROM `{UsersTable}` ORDER BY login;").ToList();
 			}
 		}
 
@@ -54,8 +51,8 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			using(var connection = new MySqlConnection(connectionString)) {
 				connection.Open();
 				return connection.QueryFirstOrDefault<LauncherUserInfo>(
-					$"SELECT {UserSelect} FROM `{UsersTable}` WHERE login = @login AND product_id = @productId;",
-					new { login, productId });
+					$"SELECT {UserSelect} FROM `{UsersTable}` WHERE login = @login;",
+					new { login });
 			}
 		}
 
@@ -73,11 +70,10 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 						throw new ArgumentException(LoginTaken, nameof(user));
 
 					DynamicParameters parameters = new DynamicParameters();
-					parameters.Add(ProductColumn, productId);
 					FillCreateUserCollumnsParams(user, parameters);
 
-					string query = $"INSERT INTO `{UsersTable}` ({GetInsertLabelsStr()}) " +
-						$"VALUES ({GetInsertValuesStr()});";
+					string query = $"INSERT INTO `{UsersTable}` ({GetLabelsUserStr(UserCreateColumns)}) " +
+						$"VALUES ({GetValuesUserStr(UserCreateColumns)});";
 					return connection.Execute(query, parameters) > 0;
 				}
 				catch(MySqlException ex) when(ex.Number == ER_DUP_ENTRY) { //логин заняли между проверкой и вставкой
@@ -148,8 +144,8 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			var keep = presentLogins.Concat(MySqlSystemObjects.Users).ToList();
 
 			connection.Execute(
-				$"UPDATE `{UsersTable}` SET disabled = TRUE WHERE product_id = @pid AND login NOT IN @keep;",
-				new { pid = productId, keep });
+				$"UPDATE `{UsersTable}` SET disabled = TRUE WHERE login NOT IN @keep;",
+				new { keep });
 		}
 
 		private void InsertMissingUsers(MySqlConnection connection, List<LauncherUserInfo> serverUsers)
@@ -160,23 +156,20 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 
 			List<string> values = new List<string>(userCount);
 			DynamicParameters parameters = new DynamicParameters();
-			parameters.Add(ProductColumn, productId);
 			for(int i = 0; i < userCount; i++)
 			{
-				values.Add($"({GetInsertValuesStr(i)})");
+				values.Add($"({GetValuesUserStr(UserCreateColumns, i)})");
 				FillCreateUserCollumnsParams(serverUsers[i], parameters, i);
 			}
 
 			connection.Execute(
-				$"INSERT INTO `{UsersTable}` ({GetInsertLabelsStr()})"
+				$"INSERT INTO `{UsersTable}` ({GetLabelsUserStr(UserCreateColumns)})"
 				+ " VALUES "
 				+ string.Join(", ", values)
 				+ " ON DUPLICATE KEY UPDATE `login` = `login`;"
 				, parameters);
 		}
 
-
-		private const string ProductColumn = "product_id";
 
 		private static readonly string[] UserKeyColumns = { "login" };
 		private static readonly string[] UserUpdateColumns = { "name", "email", "phone", "is_admin", "disabled" };
@@ -207,14 +200,6 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 		{
 			return string.Join(", ", columns.Select(c => $"`{c}` = @{c}{i}"));
 		}
-		private static string GetInsertLabelsStr()
-		{
-			return $"`{ProductColumn}`, {GetLabelsUserStr(UserCreateColumns)}";
-		}
-		private static string GetInsertValuesStr(int i = 0)
-		{
-			return $"@{ProductColumn}, {GetValuesUserStr(UserCreateColumns, i)}";
-		}
 		private const string UserSelect =
 			"`id` AS Id, `login` AS Login, `name` AS Name, " +
 			"`email` AS Email, `phone` AS Phone, `is_admin` AS IsAdmin, `disabled` AS Disabled";
@@ -222,11 +207,11 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 		private int EnsureOwnRow(MySqlConnection connection, MySqlTransaction transaction)
 		{
 			connection.Execute(
-				$"INSERT INTO `{UsersTable}` (`login`, `product_id`, `is_admin`) VALUES (@login, @product_id, @is_admin) " +
+				$"INSERT INTO `{UsersTable}` (`login`, `is_admin`) VALUES (@login, @is_admin) " +
 				"ON DUPLICATE KEY UPDATE `login` = `login`;",
-				new { login, product_id = productId, is_admin = isAdmin }, transaction);
+				new { login, is_admin = isAdmin }, transaction);
 
-			// логин уникален на всю метабазу, поэтому product_id в условии не нужен
+			// логин уникален на всю метабазу
 			return connection.ExecuteScalar<int>(
 				$"SELECT `id` FROM `{UsersTable}` WHERE `login` = @login;", new { login }, transaction);
 		}
