@@ -6,6 +6,7 @@ using QS.DbManagement;
 using QS.DbManagement.Entities;
 using QS.DBScripts.Controllers;
 using QS.Dialog;
+using QS.ErrorReporting;
 using QS.Project.Versioning;
 using System;
 using System.Collections.Generic;
@@ -126,7 +127,7 @@ namespace QS.Cloud.Client.DataBase {
 
 		private static bool EnsureSuccess(bool success, string message) {
 			if(!success)
-				throw new InvalidOperationException(message);
+				throw new OperationRefusedException(message);
 			return true;
 		}
 
@@ -152,8 +153,6 @@ namespace QS.Cloud.Client.DataBase {
 			Disabled = user.Disabled,
 			IsAccountAdmin = user.IsAdmin
 		};
-
-		private static Exception CloudError(RpcException ex) => new InvalidOperationException(Describe(ex));
 
 		#endregion
 
@@ -249,26 +248,29 @@ namespace QS.Cloud.Client.DataBase {
 			GC.SuppressFinalize(this);
 		}
 
-		public bool DropDatabase(DbInfo database) {
-			var response = dbClient.DropDataBase(database.BaseId);
-			return response.Success;
-		}
+		public bool DropDatabase(DbInfo database) => Call(() =>
+			dbClient.DropDataBase(database.BaseId).Success);
 
 		public void BackupDatabase(DbInfo database, string filePath, IProgressBarDisplayable progress, CancellationToken cancellation) {
-			using(var session = CloudDbSession.Open(loginClient, database.BaseId)) {
-				if(!session.Success)
-					throw new InvalidOperationException("Не удалось открыть сессию к облачной базе: " + session.Description);
-				new MariaDbExportService().Export(session.ConnectionStringBuilder, session.Db.BaseName, filePath, progress, cancellation);
+			try {
+				using(var session = CloudDbSession.Open(loginClient, database.BaseId)) {
+					if(!session.Success)
+						throw new InvalidOperationException("Не удалось открыть сессию к облачной базе: " + session.Description);
+					new MariaDbExportService().Export(session.ConnectionStringBuilder, session.Db.BaseName, filePath, progress, cancellation);
+				}
+			}
+			catch(RpcException ex) {
+				throw CloudError(ex);
 			}
 		}
 
-		public List<DbInfo> GetUserDatabases() =>
+		public List<DbInfo> GetUserDatabases() => Call(() =>
 			loginClient.GetBasesForUser(ProductCode).Select(bi => new DbInfo {
 				Title = bi.BaseTitle,
 				BaseId = bi.BaseId,
 				BaseName = bi.BaseName,
 				Version = bi.BaseVersion
-			}).ToList();
+			}).ToList());
 
 		public LoginToDatabaseResponse LoginToDatabase(DbInfo dbInfo) {
 			LoginToDatabaseResponse resp;
@@ -328,9 +330,23 @@ namespace QS.Cloud.Client.DataBase {
 			}
 		}
 
-		/// <summary>Пояснение от сервера, если оно есть - оно понятнее сообщения самого gRPC.</summary>
 		private static string Describe(RpcException ex) =>
 			string.IsNullOrEmpty(ex.Status.Detail) ? ex.Message : ex.Status.Detail;
+
+		private static Exception CloudError(RpcException ex) {
+			string message = Describe(ex);
+			switch(ex.StatusCode) {
+				case StatusCode.Unauthenticated:
+				case StatusCode.PermissionDenied:
+					return new UnauthorizedAccessException(message, ex);
+				case StatusCode.NotFound:
+				case StatusCode.AlreadyExists:
+				case StatusCode.InvalidArgument:
+					return new OperationRefusedException(message, ex);
+				default:
+					return new InvalidOperationException(message, ex);
+			}
+		}
 		#endregion
 	}
 }
