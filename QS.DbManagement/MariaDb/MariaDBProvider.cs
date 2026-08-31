@@ -439,7 +439,7 @@ namespace QS.DbManagement {
 
 		public DbUserFields SupportedUserFields =>
 			DbUserFields.BaseReadOnly
-			| DbUserFields.Name | DbUserFields.Email
+			| DbUserFields.Name | DbUserFields.Email | DbUserFields.Phone
 			| (CanManageUsers && SupportsAccountLock ? DbUserFields.Disabling : DbUserFields.None)
 			| (SupportsAdminFlag ? DbUserFields.AdminFlag : DbUserFields.None);
 
