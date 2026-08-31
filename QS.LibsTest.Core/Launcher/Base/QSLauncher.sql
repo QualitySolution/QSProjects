@@ -1,6 +1,5 @@
-﻿CREATE TABLE `server_users` (
+CREATE TABLE `server_users` (
 	`id` INT NOT NULL AUTO_INCREMENT,
-	`product_id` TINYINT UNSIGNED NULL,
 	`login` VARCHAR(80) NOT NULL,
 	`name` VARCHAR(255) NULL,
 	`email` VARCHAR(255) NULL,

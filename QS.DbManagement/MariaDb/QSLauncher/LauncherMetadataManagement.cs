@@ -14,7 +14,7 @@ namespace QS.DbManagement.MariaDb.QSLauncher {
 			string login, byte productId)
 		{
 			Bases = new LauncherBasesManagement(connectionBuilder, isServerAdmin, productId);
-			Users = new LauncherUsersManagement(connectionBuilder, login, isServerAdmin, productId, Bases);
+			Users = new LauncherUsersManagement(connectionBuilder, login, isServerAdmin, Bases);
 
 			// строку правим на копии: builder принадлежит вызывающему
 			var toLauncher = new MySqlConnectionStringBuilder(connectionBuilder.ConnectionString) {
