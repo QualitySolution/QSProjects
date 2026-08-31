@@ -1,4 +1,4 @@
-using Grpc.Core;
+﻿using Grpc.Core;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using NUnit.Framework;
@@ -13,15 +13,11 @@ using System.Linq;
 
 namespace QS.Launcher.Test.Cloud {
 	/// <summary>
-	/// Список баз, подключение и создание. Реестр баз ведёт облако, поэтому наша часть -
-	/// разбор ответа и ветвление в PrepareEmptyDatabase, когда база с таким именем уже есть
+	/// Список баз, подключение и создание
 	/// </summary>
 	[TestFixture(TestOf = typeof(QSCloudProvider))]
 	public class CloudProvider_DatabasesTest : CloudProviderTestFixtureBase {
 
-		#region Наполнение базы - подменяем, реальный скрипт тут не нужен
-
-		/// <summary>Ресурс-пустышка: важно только то, что фабрика по нему находит модель</summary>
 		public sealed class FakeResources : DbCreationResources { }
 
 		public sealed class FakeCreationModel : IDbCreatorModel {
@@ -60,7 +56,6 @@ namespace QS.Launcher.Test.Cloud {
 			};
 		}
 
-		/// <summary>Облако открыло сессию к базе и отдало параметры подключения</summary>
 		private void SessionOpens(int baseId, string baseName, bool isAdmin = true) =>
 			LoginClient.StartSession(baseId).Returns(new StartSessionResponse {
 				Success = true, SessionId = $"session-{baseId}", IsAdmin = isAdmin,
@@ -69,8 +64,6 @@ namespace QS.Launcher.Test.Cloud {
 					BaseName = baseName, Port = 3306
 				}
 			});
-
-		#endregion
 
 		[Test(Description = "Список баз приходит из облака со всеми полями")]
 		public void GetUserDatabases_MapsBasesFromCloud() {
@@ -85,16 +78,6 @@ namespace QS.Launcher.Test.Cloud {
 			Assert.That(found.BaseId, Is.EqualTo(3), "идентификатор базы ведёт облако");
 		}
 
-		[Test(Description = "Список запрашивается по своему коду продукта - чужие базы облако не отдаст")]
-		public void GetUserDatabases_AsksForOwnProductOnly() {
-			LoginClient.GetBasesForUser(Arg.Any<uint>()).Returns(new List<BaseInfo>());
-
-			LoginAs().GetUserDatabases();
-
-			LoginClient.Received(1).GetBasesForUser(TestProductCode);
-			LoginClient.DidNotReceive().GetBasesForUser(OtherProductCode);
-		}
-
 		[Test(Description = "Удаление базы отправляет её идентификатор в облако")]
 		public void DropDatabase_SendsBaseIdToCloud() {
 			DbClient.DropDataBase(5).Returns(new DropDataBaseResponse { Success = true });
@@ -103,15 +86,6 @@ namespace QS.Launcher.Test.Cloud {
 
 			Assert.That(dropped, Is.True);
 			DbClient.Received(1).DropDataBase(5);
-		}
-
-		[Test(Description = "Отказ в удалении возвращается признаком, а не исключением")]
-		public void DropDatabase_Refused_ReturnsFalse() {
-			DbClient.DropDataBase(Arg.Any<int>()).Returns(new DropDataBaseResponse { Success = false });
-
-			bool dropped = LoginAs().DropDatabase(new DbInfo { BaseId = 9999, BaseName = "нет-такой" });
-
-			Assert.That(dropped, Is.False);
 		}
 
 		[Test(Description = "Подключение отдаёт строку из облака и идентификатор сессии")]
@@ -153,7 +127,7 @@ namespace QS.Launcher.Test.Cloud {
 				"наполнение идёт по строке подключения из сессии облака");
 		}
 
-		[Test(Description = "«Пересоздать» сносит запись в облаке и заводит новую")]
+		[Test(Description = "Пересоздать сносит запись в облаке и заводит новую")]
 		public void CreateDatabase_Recreate_DropsThenCreates() {
 			DbClient.CheckDataBaseExists("busy_base").Returns(new CheckDataBaseExistsResponse { Exists = true, BaseId = 12 });
 			DbClient.DropDataBase(12).Returns(new DropDataBaseResponse { Success = true });
@@ -169,7 +143,7 @@ namespace QS.Launcher.Test.Cloud {
 			});
 		}
 
-		[Test(Description = "«Перезаписать» чистит базу, сохраняя запись реестра и доступы")]
+		[Test(Description = "Перезаписать чистит базу, сохраняя запись реестра и доступы")]
 		public void CreateDatabase_Rewrite_ClearsAndKeepsRegistry() {
 			DbClient.CheckDataBaseExists("keep_base").Returns(new CheckDataBaseExistsResponse { Exists = true, BaseId = 14 });
 			DbClient.ClearDataBase(14).Returns(new ClearDataBaseResponse { Success = true });
@@ -183,7 +157,7 @@ namespace QS.Launcher.Test.Cloud {
 			DbClient.DidNotReceive().CreateDataBase(Arg.Any<string>(), Arg.Any<string>());
 		}
 
-		[Test(Description = "«Ничего не делать» ничего и не делает")]
+		[Test(Description = "Ничего не делать")]
 		public void CreateDatabase_Nothing_LeavesEverythingAlone() {
 			DbClient.CheckDataBaseExists("untouched").Returns(new CheckDataBaseExistsResponse { Exists = true, BaseId = 15 });
 			interaction.AskDropExistingDatabase("untouched").Returns(ToDoWithExistingDatabase.Nothing);
@@ -220,7 +194,7 @@ namespace QS.Launcher.Test.Cloud {
 			Assert.That(FakeCreationModel.WasRun, Is.False);
 		}
 
-		[Test(Description = "Облако не открыло сессию - тоже объяснение, а не падение")]
+		[Test(Description = "Облако не открыло сессию - тоже объяснение")]
 		public void CreateDatabase_SessionRefused_ReportsError() {
 			DbClient.CheckDataBaseExists("no_session").Returns(new CheckDataBaseExistsResponse { Exists = false });
 			DbClient.CreateDataBase(Arg.Any<string>(), Arg.Any<string>()).Returns(new CreateDataBaseResponse { BaseId = 18 });

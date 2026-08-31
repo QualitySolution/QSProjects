@@ -179,13 +179,13 @@ namespace QS.Launcher.Test {
 		}
 
 		protected async Task<int> SeedMetabaseUser(string login, bool isAdmin = false,
-			string name = null, string email = null, bool disabled = false, byte product = TestProductCode) {
+			string name = null, string email = null, bool disabled = false, string phone = null) {
 			using(var connection = CreateConnection(LauncherDbName)) {
 				await connection.OpenAsync();
 				await connection.ExecuteAsync(
-					"INSERT INTO `server_users` (product_id, login, name, email, is_admin, disabled) " +
-					"VALUES (@product, @login, @name, @email, @admin, @disabled);",
-					new { product, login, name, email, admin = isAdmin, disabled });
+					"INSERT INTO `server_users` (login, name, email, phone, is_admin, disabled) " +
+					"VALUES (@login, @name, @email, @phone, @admin, @disabled);",
+					new { login, name, email, phone, admin = isAdmin, disabled });
 				int id = await connection.ExecuteScalarAsync<int>("SELECT LAST_INSERT_ID();");
 				LogStep("в метабазу добавлен пользователь {0} (id {1}, управляет пользователями: {2})", login, id, isAdmin);
 				return id;

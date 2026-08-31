@@ -11,12 +11,6 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace QS.Launcher.Test.Cloud {
-	/// <summary>
-	/// Здесь проверяется только то, чем облако отличается от свободного подключения.
-	/// Сами страницы про провайдер ничего не знают - их поведение (список баз, удаление
-	/// с подтверждением, форма пользователя, выдача доступа) проверено один раз
-	/// в DataBasesPage_IntegrationTest и UsersPage_IntegrationTest.
-	/// </summary>
 	[TestFixture(TestOf = typeof(DataBasesVM))]
 	public class CloudPages_IntegrationTest : CloudProviderTestFixtureBase {
 		private LauncherPagesHarness Pages { get; set; }
@@ -29,18 +23,17 @@ namespace QS.Launcher.Test.Cloud {
 			Pages = new LauncherPagesHarness(new QsCloudConnectionTypeBase(), "Облако", TestProductCode);
 
 		[Test(Description = "Синхронизация метаинформации в облаке недоступна - реестр баз ведёт оно само")]
-		public async Task Capabilities_Cloud_HidesRefreshMetadata() {
+		public async Task Capabilities_Cloud_HidesRefreshMetadata()
+		{
 			LoginClient.GetBasesForUser(Arg.Any<uint>()).Returns(new List<BaseInfo> { Base(1, "caps_base") });
 
 			var page = await Pages.OpenDatabasesPage(LoginAs());
 
 			Assert.That(page.Capabilities.CanRefreshMetadata, Is.False);
-			// остальные права проверены на свободном подключении, здесь довольно того,
-			// что страница вообще собралась поверх облачного провайдера
 			Assert.That(page.Capabilities.CanCreate, Is.True);
 		}
 
-		[Test(Description = "Кнопка «Подключиться» отдаёт запускателю идентификатор сессии - у свободного подключения его нет")]
+		[Test(Description = "Кнопка Подключиться отдаёт запускателю идентификатор сессии - у свободного подключения его нет")]
 		public async Task ConnectCommand_PassesCloudSessionToAppRunner() {
 			LoginClient.GetBasesForUser(Arg.Any<uint>()).Returns(new List<BaseInfo> { Base(2, "to_run", "Рабочая") });
 			LoginClient.StartSession(2).Returns(new StartSessionResponse {

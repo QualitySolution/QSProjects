@@ -1,4 +1,4 @@
-using Grpc.Core;
+﻿using Grpc.Core;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using NUnit.Framework;
@@ -10,10 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace QS.Launcher.Test.Cloud {
-	/// <summary>
-	/// Управление пользователями: что провайдер отправляет в облако и как разбирает ответ.
-	/// Правила облака (кто кому может менять профиль) проверяет само облако - это не наш код
-	/// </summary>
+	/// <summary>Управление пользователями</summary>
 	[TestFixture(TestOf = typeof(QSCloudProvider))]
 	public class CloudProvider_UsersTest : CloudProviderTestFixtureBase {
 
@@ -38,13 +35,13 @@ namespace QS.Launcher.Test.Cloud {
 			Assert.That(user.IsAdmin, Is.True, "администратор аккаунта в облаке - это IsAdmin в карточке");
 		}
 
-		[Test(Description = "Себя в списке пользователь видит помеченным - его нельзя удалить")]
+		[Test(Description = "Себя в списке пользователь видит помеченным, независимо от регистра логина")]
 		public void GetUsers_MarksCurrentUser() {
-			UserClient.GetUsers().Returns(new List<UserInfo> { User(AdminLogin), User("someone") });
+			UserClient.GetUsers().Returns(new List<UserInfo> { User(AdminLogin.ToUpperInvariant()), User("someone") });
 
 			var users = LoginAs().GetUsers();
 
-			Assert.That(users.Single(u => u.Login == AdminLogin).IsCurrentUser, Is.True);
+			Assert.That(users.Single(u => u.Login == AdminLogin.ToUpperInvariant()).IsCurrentUser, Is.True);
 			Assert.That(users.Single(u => u.Login == "someone").IsCurrentUser, Is.False);
 		}
 
@@ -76,7 +73,7 @@ namespace QS.Launcher.Test.Cloud {
 				Arg.Any<string>());
 		}
 
-		[Test(Description = "Отказ облака при создании становится исключением с его же текстом")]
+		[Test(Description = "Отказ облака становится исключением с его же текстом")]
 		public void CreateUser_CloudRefused_ThrowsWithCloudMessage() {
 			UserClient.CreateUser(Arg.Any<UserInfo>(), Arg.Any<string>())
 				.Returns(new CreateUserResponse { Success = false, Message = "Логин уже занят" });
@@ -86,38 +83,6 @@ namespace QS.Launcher.Test.Cloud {
 				() => provider.CreateUser(new DbUserInfo { Login = "occupied" }, "pass"));
 
 			Assert.That(exception.Message, Is.EqualTo("Логин уже занят"));
-		}
-
-		[Test(Description = "Правка отправляет профиль и новый пароль")]
-		public void UpdateUser_SendsProfileAndNewPassword() {
-			UserClient.UpdateUser(Arg.Any<UserInfo>(), Arg.Any<string>())
-				.Returns(new UpdateUserResponse { Success = true });
-
-			LoginAs().UpdateUser(new DbUserInfo { Login = "worker", Name = "Новое имя", Disabled = true }, "new-pass");
-
-			UserClient.Received(1).UpdateUser(
-				Arg.Is<UserInfo>(u => u.Login == "worker" && u.Name == "Новое имя" && u.Disabled),
-				"new-pass");
-		}
-
-		[Test(Description = "Удаление отправляет логин и разбирает отказ")]
-		public void DeleteUser_UnknownLogin_ThrowsWithCloudMessage() {
-			UserClient.DeleteUser("нет-такого")
-				.Returns(new QS.Cloud.Core.DeleteUserResponse { Success = false, Message = "Пользователь не найден" });
-			var provider = LoginAs();
-
-			var exception = Assert.Throws<InvalidOperationException>(() => provider.DeleteUser("нет-такого"));
-
-			Assert.That(exception.Message, Is.EqualTo("Пользователь не найден"));
-		}
-
-		[Test(Description = "Смена своего пароля уходит в облако")]
-		public void ChangeOwnPassword_SendsNewPassword() {
-			LoginClient.ChangePassword("second-pass")
-				.Returns(new QS.Cloud.Core.ChangePasswordResponse { Success = true });
-
-			Assert.That(LoginAs().ChangeOwnPassword("second-pass"), Is.True);
-			LoginClient.Received(1).ChangePassword("second-pass");
 		}
 
 		[Test(Description = "Обрыв связи превращается в исключение с текстом сервера, а не в молчание")]

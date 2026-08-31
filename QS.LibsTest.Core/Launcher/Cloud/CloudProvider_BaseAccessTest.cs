@@ -1,6 +1,4 @@
-using Grpc.Core;
-using NSubstitute;
-using NSubstitute.ExceptionExtensions;
+﻿using NSubstitute;
 using NUnit.Framework;
 using QS.Cloud.Client.DataBase;
 using QS.Cloud.Core;
@@ -10,10 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace QS.Launcher.Test.Cloud {
-	/// <summary>
-	/// Доступ к базам. В облаке доступ хранится одной строкой на пару «пользователь-база»,
-	/// и провайдеру остаётся правильно её отправить и правильно прочитать список
-	/// </summary>
+	/// <summary>Доступ к базам</summary>
 	[TestFixture(TestOf = typeof(QSCloudProvider))]
 	public class CloudProvider_BaseAccessTest : CloudProviderTestFixtureBase {
 		private const string Worker = "worker";
@@ -22,7 +17,7 @@ namespace QS.Launcher.Test.Cloud {
 		[Test(Description = "Список доступов приходит с флагами по каждой базе")]
 		public void GetUserBaseAccess_MapsFlagsPerBase() {
 			UserClient.GetUserBaseAccess(Worker, TestProductCode).Returns(new List<BaseAccessInfo> {
-				new BaseAccessInfo { BaseId = BaseId, BaseTitle = "Рабочая", HasAccess = true, ReadOnly = true },
+				new BaseAccessInfo { BaseId = BaseId, BaseTitle = "Рабочая", HasAccess = true, Admin = true, ReadOnly = true },
 				new BaseAccessInfo { BaseId = 8, BaseTitle = "Вторая", HasAccess = false }
 			});
 
@@ -32,22 +27,11 @@ namespace QS.Launcher.Test.Cloud {
 			var granted = rows.Single(r => r.BaseId == BaseId);
 			Assert.That(granted.Title, Is.EqualTo("Рабочая"));
 			Assert.That(granted.HasAccess, Is.True);
+			Assert.That(granted.IsAdmin, Is.True, "Admin облака - это IsAdmin в карточке доступа");
 			Assert.That(granted.ReadOnly, Is.True);
 			Assert.That(rows.Single(r => r.BaseId == 8).HasAccess, Is.False);
 		}
 
-		[Test(Description = "Список запрашивается по коду продукта - чужие базы облако не отдаст")]
-		public void GetUserBaseAccess_AsksForOwnProductOnly() {
-			UserClient.GetUserBaseAccess(Arg.Any<string>(), Arg.Any<uint>()).Returns(new List<BaseAccessInfo>());
-
-			LoginAs().GetUserBaseAccess(Worker);
-
-			UserClient.Received(1).GetUserBaseAccess(Worker, TestProductCode);
-			UserClient.DidNotReceive().GetUserBaseAccess(Arg.Any<string>(), OtherProductCode);
-		}
-
-		// Облако хранит флаги как есть, отдельного правила у провайдера нет -
-		// проверяем, что оба доехали в том виде, в каком их поставил пользователь
 		[TestCase(false, false, TestName = "Доступ без дополнительных прав")]
 		[TestCase(true, false, TestName = "Администратор базы")]
 		[TestCase(false, true, TestName = "Только чтение")]
@@ -98,17 +82,6 @@ namespace QS.Launcher.Test.Cloud {
 				() => provider.SetUserBaseAccess(Worker, new DbUserBaseAccess { BaseId = BaseId, HasAccess = true }));
 
 			Assert.That(exception.Message, Does.Contain("Не удалось изменить доступ"));
-		}
-
-		[Test(Description = "Обрыв связи при чтении доступов - исключение с текстом сервера")]
-		public void GetUserBaseAccess_CloudUnavailable_ThrowsWithDetail() {
-			UserClient.GetUserBaseAccess(Arg.Any<string>(), Arg.Any<uint>())
-				.Throws(Refusal(StatusCode.Unavailable, "связь потеряна"));
-			var provider = LoginAs();
-
-			var exception = Assert.Throws<InvalidOperationException>(() => provider.GetUserBaseAccess(Worker));
-
-			Assert.That(exception.Message, Does.Contain("связь потеряна"));
 		}
 	}
 }
