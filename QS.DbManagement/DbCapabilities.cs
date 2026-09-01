@@ -1,4 +1,4 @@
-using QS.DBScripts;
+﻿using QS.DBScripts;
 
 namespace QS.DbManagement {
 	/// <summary>
@@ -7,7 +7,7 @@ namespace QS.DbManagement {
 	public class DbCapabilities {
 		private readonly IDbScriptsConfiguration scripts;
 
-		public DbCapabilities(IDbScriptsConfiguration scripts) {
+		public DbCapabilities(IDbScriptsConfiguration scripts = null) {
 			this.scripts = scripts;
 		}
 

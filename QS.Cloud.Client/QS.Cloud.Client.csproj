@@ -14,11 +14,6 @@
       </PackageReference>
       <PackageReference Include="NLog" Version="6.1.1" />
     </ItemGroup>
-
-	<ItemGroup>
-		<None Remove="Scripts\*.sql" />
-		<EmbeddedResource Include="Scripts\*.sql" />
-	</ItemGroup>
 	
     <ItemGroup>
       <None Remove="Protos\BaseManagement.proto" />
