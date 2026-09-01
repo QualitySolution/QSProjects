@@ -2,6 +2,7 @@ using System;
 using System.Linq.Expressions;
 using Gamma.GtkWidgets.Cells;
 using Gamma.Binding;
+using Gtk;
 
 namespace Gamma.ColumnConfig
 {
@@ -73,6 +74,15 @@ namespace Gamma.ColumnConfig
 		public NumberRendererMapping<TNode> AddNumericRenderer(Expression<Func<TNode, object>> dataProperty, IValueConverter converter, bool expand = true)
 		{
 			return myColumn.AddNumericRenderer (dataProperty, converter, expand);
+		}
+		
+		public NumberRendererMapping<TNode> AddNumericRenderer(
+			Expression<Func<TNode, object>> dataProperty,
+			EditedHandler editedHandler,
+			bool withThousandsSeparator = false,
+			bool expand = true)
+		{
+			return myColumn.AddNumericRenderer(dataProperty, editedHandler, withThousandsSeparator, expand);
 		}
 		
 		public PixbufRendererMapping<TNode> AddPixbufRenderer (Expression<Func<TNode, Gdk.Pixbuf>> dataProperty, bool expand = true)
