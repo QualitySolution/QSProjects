@@ -7,6 +7,10 @@ namespace QS.DbManagement.Creation {
 	{
 		private Dictionary<Type, Func<DbCreationResources, object>> _map = new Dictionary<Type, Func<DbCreationResources, object>>();
 
+		public bool Contains(Type target) {
+			return _map.ContainsKey(target);
+		}
+
 		public void Register(Type resource, Type creator)
 		{
 			if(!typeof(DbCreationResources).IsAssignableFrom(resource))
