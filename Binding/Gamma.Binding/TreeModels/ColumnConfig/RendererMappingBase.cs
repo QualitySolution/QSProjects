@@ -92,6 +92,15 @@ namespace Gamma.ColumnConfig
 			return myColumn.AddNumericRenderer (dataProperty, converter, expand);
 		}
 		
+		public NumberRendererMapping<TNode> AddNumericRenderer(
+			Expression<Func<TNode, object>> dataProperty,
+			EditedHandler editedHandler,
+			bool withThousandsSeparator = false,
+			bool expand = true)
+		{
+			return myColumn.AddNumericRenderer(dataProperty, editedHandler, withThousandsSeparator, expand);
+		}
+
 		public PixbufRendererMapping<TNode> AddPixbufRenderer (Expression<Func<TNode, Gdk.Pixbuf>> dataProperty, bool expand = true)
 		{
 			return myColumn.AddPixbufRenderer (dataProperty, expand);
@@ -162,4 +171,3 @@ namespace Gamma.ColumnConfig
 		}
 	}
 }
-
