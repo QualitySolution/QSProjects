@@ -1,4 +1,6 @@
-﻿using QS.DBScripts;
+using QS.DbManagement.Creation;
+using QS.DBScripts;
+using QS.DBScripts.Models;
 
 namespace QS.DbManagement {
 	/// <summary>
@@ -6,9 +8,10 @@ namespace QS.DbManagement {
 	/// </summary>
 	public class DbCapabilities {
 		private readonly IDbScriptsConfiguration scripts;
-
-		public DbCapabilities(IDbScriptsConfiguration scripts = null) {
+		private readonly DbResourcesCreationMap creationMap;
+		public DbCapabilities(IDbScriptsConfiguration scripts = null, DbResourcesCreationMap creationMap = null) {
 			this.scripts = scripts;
+			this.creationMap = creationMap;
 		}
 
 		/// <summary>Провайдер отвечает за то, что разрешает сервер</summary>
@@ -17,10 +20,13 @@ namespace QS.DbManagement {
 				return DbCapabilitySet.None;
 
 			return new DbCapabilitySet {
-				// создание из встроенного скрипта: и сервер разрешает, и скрипт зарегистрирован
-				CanCreate = provider.CanCreateDatabase && scripts?.HasCreationScript() == true,
-				// наполнению дампом скрипт не нужен - хватает права на создание
-				CanImport = provider.CanCreateDatabase,
+				CanCreate = provider.CanCreateDatabase
+					&& scripts?.HasCreationScript() == true
+					&& creationMap != null
+					&& creationMap.Contains(typeof(EmbeddedCreationResources)),
+				CanImport = provider.CanCreateDatabase
+					&& creationMap != null
+					&& creationMap.Contains(typeof(DbDumpResources)),
 				CanDrop = provider.CanDropDatabase,
 				CanBackup = provider.CanBackupDatabase,
 				CanRefreshMetadata = provider.CanRefreshMetadata,
