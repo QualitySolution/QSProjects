@@ -4,10 +4,6 @@ using QS.Launcher.ViewModels.PageViewModels.DataBase;
 using QS.ViewModels;
 
 namespace QS.Launcher.ViewModels {
-	/// <summary>
-	/// Оболочка окна: знает корневые страницы и умеет сохранить подключения при закрытии.
-	/// Сам стек страниц ведёт <see cref="LauncherNavigation"/>
-	/// </summary>
 	public class MainWindowVM : ViewModelBase {
 		private readonly LoginVM login;
 

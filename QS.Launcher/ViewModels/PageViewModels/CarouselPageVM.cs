@@ -7,13 +7,6 @@ using ReactiveUI;
 
 namespace QS.Launcher.ViewModels.PageViewModels {
 	public class CarouselPageVM : ViewModelBase {
-		/// <summary>
-		/// Стек страниц. Приходит конструктором, а не проставляется снаружи: пока навигация
-		/// была набором свойств-команд, незаполненная команда молча ничего не делала -
-		/// «нажал, и ничего не произошло». Обязательная зависимость превращает это
-		/// в ошибку сборки контейнера, то есть в ошибку разработчика, а не в тихое
-		/// поведение у пользователя
-		/// </summary>
 		protected LauncherNavigation Navigation { get; }
 
 		protected CarouselPageVM(LauncherNavigation navigation) {
