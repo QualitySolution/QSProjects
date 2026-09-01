@@ -20,9 +20,8 @@ namespace Gamma.GtkWidgets.Cells
 
 		public void RenderNode(object node)
 		{
-			if(node is TNode)
+			if(node is TNode typpedNode)
 			{
-				var typpedNode = (TNode)node;
 				LambdaSetters.ForEach (a => a.Invoke (this, typpedNode));
 			}
 		}

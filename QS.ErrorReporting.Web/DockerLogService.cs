@@ -12,6 +12,12 @@ namespace QS.ErrorReporting
 	/// Для работы необходимо пробросить сокет в контейнер:
 	///   volumes:
 	///     - /var/run/docker.sock:/var/run/docker.sock:ro
+	/// Если приложение запускается не от root, контейнерный пользователь должен состоять
+	/// в группе, которой принадлежит docker.sock на хосте. Для переносимого деплоя
+	/// вычисляйте GID на целевом сервере и передавайте его в compose через .env:
+	///   DOCKER_SOCK_GID=$(stat -c %g /var/run/docker.sock)
+	///   group_add:
+	///     - "${DOCKER_SOCK_GID}"
 	/// </summary>
 	public class DockerLogService : IAsyncLogService
 	{

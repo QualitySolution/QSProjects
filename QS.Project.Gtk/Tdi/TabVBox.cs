@@ -84,7 +84,7 @@ namespace QS.Tdi
 		{
 			TabWidget.Destroy();
 			titleLabel.Destroy();
-			
+
 			if(Tab is ITdiTabWithPath tdiTabWithPath)
 			{
 				tdiTabWithPath.PathChanged -= OnPathUpdated;
@@ -97,4 +97,3 @@ namespace QS.Tdi
 		}
 	}
 }
-

@@ -7,8 +7,8 @@ using Gtk;
 
 namespace Gamma.GtkWidgets.Cells
 {
-	public class NodeCellRendererCombo<TNode, TItem> : CellRendererCombo, INodeCellRendererCombo
-	{
+	public class NodeCellRendererCombo<TNode, TItem> : CellRendererCombo, INodeCellRendererCombo {
+		private readonly ListStore _comboListStore;
 		public List<Action<NodeCellRendererCombo<TNode, TItem>, TNode>> LambdaSetters = new List<Action<NodeCellRendererCombo<TNode, TItem>, TNode>>();
 
 		public PropertyInfo DataPropertyInfo { get; set; }
@@ -34,6 +34,8 @@ namespace Gamma.GtkWidgets.Cells
 		public NodeCellRendererCombo()
 		{
 			HasEntry = false;
+			_comboListStore = new ListStore(typeof(TItem), typeof(string));
+			Model = _comboListStore;
 		}
 
 		public void RenderNode(object node)
@@ -52,7 +54,7 @@ namespace Gamma.GtkWidgets.Cells
 		public override CellEditable StartEditing(Event evnt, Widget widget, string path, Rectangle background_area, Rectangle cell_area, CellRendererState flags)
 		{
 			if(IsDynamicallyFillList) {
-				object obj = MyTreeView.YTreeModel.NodeAtPath(new TreePath(path));
+				var obj = MyTreeView.YTreeModel.NodeAtPath(new TreePath(path));
 				UpdateComboList((TNode)obj);
 			}
 			
@@ -61,10 +63,10 @@ namespace Gamma.GtkWidgets.Cells
 
 		public void UpdateComboList(TNode node)
 		{
-			ListStore comboListStore = new ListStore(typeof(TItem), typeof(string));
-
+			_comboListStore.Clear();
+			
 			if(EmptyValueTitle != null)
-				comboListStore.AppendValues(default(TItem), EmptyValueTitle);
+				_comboListStore.AppendValues(default(TItem), EmptyValueTitle);
 
 			var items = ItemsListFunc?.Invoke(node) ?? Items;
 
@@ -74,15 +76,21 @@ namespace Gamma.GtkWidgets.Cells
 					continue;
 
 				if(DisplayListFunc != null)
-					comboListStore.AppendValues(item, DisplayListFunc(item));
+					_comboListStore.AppendValues(item, DisplayListFunc(item));
 				else if(DisplayFunc != null)
-					comboListStore.AppendValues(item, DisplayFunc(item));
+					_comboListStore.AppendValues(item, DisplayFunc(item));
 				else
-					comboListStore.AppendValues(item, item.ToString());
+					_comboListStore.AppendValues(item, item.ToString());
 			}
 
 			TextColumn = (int)NodeCellRendererColumns.title;
-			Model = comboListStore;
+		}
+
+		public override void Dispose() {
+			_comboListStore.Clear();
+			_comboListStore.Dispose();
+			
+			base.Dispose();
 		}
 	}
 

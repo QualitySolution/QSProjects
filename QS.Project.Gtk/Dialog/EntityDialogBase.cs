@@ -244,6 +244,14 @@ namespace QS.Dialog.Gtk
 				cancelButton.Clicked += OnButtonCancelClicked;
 			}
 		}
+
+		protected override void OnDestroyed() {
+			if(Entity is INotifyPropertyChanged notifySubject) {
+				notifySubject.PropertyChanged -= Subject_TitlePropertyChanged;
+				notifySubject.PropertyChanged -= Subject_NamePropertyChanged;
+			}
+
+			base.OnDestroyed();
+		}
 	}
 }
-

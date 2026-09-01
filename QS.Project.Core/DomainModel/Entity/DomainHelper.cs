@@ -115,6 +115,19 @@ namespace QS.DomainModel.Entity
 		}
 
 		/// <summary>
+		/// Метод сравнивает два объекта доменной модели по типу и <c>Id</c>, считая два значения <c>null</c> равными.
+		/// Удобен для сравнения необязательных ссылок на доменные объекты, например размера или роста.
+		/// </summary>
+		/// <returns><c>true</c>, если оба объекта отсутствуют или одинаковые, иначе <c>false</c>.</returns>
+		public static bool EqualDomainObjectsOrNull(object obj1, object obj2)
+		{
+			if(obj1 == null && obj2 == null)
+				return true;
+
+			return EqualDomainObjects(obj1, obj2);
+		}
+
+		/// <summary>
 		/// Метод возвращает все наименования тип сущности указанные через атрибут <c>AppellativeAttribute</c>
 		/// </summary>
 		/// <param name="subject">Экземпляр сущности</param>
@@ -244,4 +257,3 @@ namespace QS.DomainModel.Entity
 		}
 	}
 }
-
