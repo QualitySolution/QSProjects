@@ -3,13 +3,13 @@ using System.ComponentModel.DataAnnotations;
 using QS.DomainModel.Entity;
 using QS.DomainModel.Entity.EntityPermissions;
 
-namespace QS.BusinessCommon.Domain
+namespace QS.Measurement.Domain
 {
 	[Appellative (Gender = GrammaticalGender.Feminine,
 		NominativePlural = "единицы измерения",
 		Nominative = "единица измерения")]
 	[EntityPermission]
-	public class MeasurementUnits : PropertyChangedBase, IDomainObject
+	public class MeasurementUnit : PropertyChangedBase, IDomainObject
 	{
 		#region Свойства
 
@@ -60,10 +60,9 @@ namespace QS.BusinessCommon.Domain
 
 		#endregion
 
-		public MeasurementUnits ()
+		public MeasurementUnit ()
 		{
 			Name = String.Empty;
 		}
 	}
 }
-

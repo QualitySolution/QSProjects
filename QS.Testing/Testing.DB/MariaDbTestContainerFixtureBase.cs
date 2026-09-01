@@ -138,6 +138,9 @@ namespace QS.Testing.DB
 			}
 		}
 
+		protected virtual void ConfigureOrmBeforeConfigure() {
+		}
+
 		/// <summary>
 		/// Создание схемы базы данных с помощью SchemaExport
 		/// </summary>

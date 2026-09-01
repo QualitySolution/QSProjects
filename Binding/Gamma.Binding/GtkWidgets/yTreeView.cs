@@ -24,6 +24,7 @@ namespace Gamma.GtkWidgets {
 		public static ITreeModelProvider TreeModelProvider { get; set; } = new TreeModelProvider();
 
 		public event EventHandler AfterModelChanged;
+		private bool _disposed = false;
 
 		public BindingControler<yTreeView> Binding { get; private set; }
 
@@ -75,7 +76,8 @@ namespace Gamma.GtkWidgets {
 			get { return itemsDataSource; }
 			set {
 				if(value == null) {
-					Model = null;
+					itemsDataSource = null;
+					YTreeModel = null;
 					return;
 				}
 
@@ -94,7 +96,7 @@ namespace Gamma.GtkWidgets {
 			set {
 				if(yTreeModel == value)
 					return;
-				IDisposable toDispose = yTreeModel as IDisposable;
+				var toDispose = yTreeModel as IDisposable;
 				if(yTreeModel != null) {
 					yTreeModel.RenewAdapter -= YTreeModel_RenewAdapter;
 				}
@@ -102,7 +104,7 @@ namespace Gamma.GtkWidgets {
 				yTreeModel = value;
 				if(yTreeModel != null)
 					yTreeModel.RenewAdapter += YTreeModel_RenewAdapter;
-				Model = yTreeModel == null ? null : yTreeModel.Adapter;
+				Model = yTreeModel is null ? null : yTreeModel.Adapter;
 				toDispose?.Dispose();
 				AfterModelChanged?.Invoke(this, EventArgs.Empty);
 			}
@@ -352,8 +354,7 @@ namespace Gamma.GtkWidgets {
 		}
 		#endregion
 
-		private void NodeRenderColumnFunc(Gtk.TreeViewColumn aColumn, Gtk.CellRenderer aCell,
-			Gtk.TreeModel aModel, Gtk.TreeIter aIter)
+		private void NodeRenderColumnFunc(Gtk.TreeViewColumn aColumn, Gtk.CellRenderer aCell, Gtk.TreeModel aModel, Gtk.TreeIter aIter)
 		{
 			if(aIter.Equals(TreeIter.Zero as object))
 				return;
@@ -362,12 +363,11 @@ namespace Gamma.GtkWidgets {
 				throw new InvalidOperationException($"{nameof(YTreeModel)} can not be null");
 			}
 
-			object node = YTreeModel.NodeFromIter(aIter);
-			var nodeCell = aCell as INodeCellRenderer;
-			if(nodeCell != null) {
+			var node = YTreeModel.NodeFromIter(aIter);
+			if(aCell is INodeCellRenderer nodeCell) {
 				try {
-					if(nodeCell is INodeCellRendererHighlighter)
-						(nodeCell as INodeCellRendererHighlighter).RenderNode(node, SearchHighlightTexts);
+					if(nodeCell is INodeCellRendererHighlighter highlighter)
+						highlighter.RenderNode(node, SearchHighlightTexts);
 					else
 						nodeCell.RenderNode(node);
 				} catch(Exception ex) {
@@ -458,8 +458,11 @@ namespace Gamma.GtkWidgets {
 			if(columnConf != null && columnConf.HasToolTip) {
 				object node = YTreeModel.NodeAtPath(path);
 				var text = columnConf.GetTooltipText(node);
+				if(text == null)
+					return false;
+
 				tooltip.Text = text;
-				return text != null;
+				return true;
 			}
 
 			return base.OnQueryTooltip(x, y, keyboard_tooltip, tooltip);
@@ -467,18 +470,58 @@ namespace Gamma.GtkWidgets {
 
 		#endregion
 
-		public override void Destroy() {
+		protected override void OnDestroyed() {
+			Dispose();
+			base.OnDestroyed();
+		}
+
+		public override void Dispose() {
+			if(_disposed) return;
+			
+			UnsubscribeAll();
+			Binding.CleanSources();
+			ItemsDataSource = null;
+
+			_disposed = true;
+		}
+		
+
+		private void UnsubscribeAll() {
+
+			if(yTreeModel != null) {
+				yTreeModel.RenewAdapter -= YTreeModel_RenewAdapter;
+			}
+			
 			if(ColumnsConfig != null) {
 				foreach(var col in ColumnsConfig.ConfiguredColumns) {
-					col.ClearProperties();
-				}
-			}
+					
+					var treeViewColumn = col.TreeViewColumn;
 
-			base.Destroy();
-			if(YTreeModel is IDisposable model) {
-				model.Dispose();
+					foreach(var render in col.ConfiguredRenderers) {
+						var cell = render.GetRenderer() as CellRenderer;
+						if(cell is CellRendererSpin rendererSpin && render is ICustomRendererMapping rendererMap && !rendererMap.Custom) {
+							rendererSpin.EditingStarted -= OnNumbericNodeCellEditingStarted;
+							rendererSpin.Edited -= NumericNodeCellEdited;
+						}
+						else if(cell is CellRendererCombo rendererCombo) {
+							rendererCombo.Edited -= ComboNodeCellEdited;
+							(cell as INodeCellRendererCombo).MyTreeView = null;
+						}
+						else if(cell is CellRendererToggle rendererToggle) {
+							rendererToggle.Toggled -= OnToggledCell;
+						}
+
+						if(cell is INodeCellRendererCanGoNextCell canNextCell && (canNextCell.IsEnterToNextCell || col.IsEnterToNextCell)) {
+							canNextCell.EditingStarted -= CanNextCell_EditingStarted;
+						}
+
+						render.Dispose();
+						treeViewColumn.SetCellDataFunc(cell, (TreeCellDataFunc)null);
+					}
+
+					col.Dispose();
+				}
 			}
 		}
 	}
 }
-

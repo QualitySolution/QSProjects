@@ -9,24 +9,23 @@ namespace Gamma.ColumnConfig
 {
 	public class NumberRendererMapping<TNode> : RendererMappingBase<NodeCellRendererSpin<TNode>, TNode>, ICustomRendererMapping
 	{
-		private NodeCellRendererSpin<TNode> cellRenderer = new NodeCellRendererSpin<TNode>();
-		
+		private readonly NodeCellRendererSpin<TNode> _cellRenderer = new NodeCellRendererSpin<TNode>();
 
 		public NumberRendererMapping (ColumnMapping<TNode> column, Expression<Func<TNode, object>> getDataExp)
 			: base(column)
 		{
-			cellRenderer.DataPropertyInfo = PropertyUtil.GetPropertyInfo<TNode> (getDataExp);
+			_cellRenderer.DataPropertyInfo = PropertyUtil.GetPropertyInfo<TNode> (getDataExp);
 			var getter = getDataExp.Compile();
-			cellRenderer.LambdaSetters.Add ((c, n) => c.Text = String.Format ("{0:" + String.Format ("F{0}", c.Digits) + "}", getter (n)));
+			_cellRenderer.LambdaSetters.Add ((c, n) => c.Text = String.Format ("{0:" + String.Format ("F{0}", c.Digits) + "}", getter (n)));
 		}
 
 		public NumberRendererMapping (ColumnMapping<TNode> column, Expression<Func<TNode, object>> getDataExp, IValueConverter converter)
 			: base(column)
 		{
-			cellRenderer.DataPropertyInfo = PropertyUtil.GetPropertyInfo<TNode> (getDataExp);
-			cellRenderer.EditingValueConverter = converter;
+			_cellRenderer.DataPropertyInfo = PropertyUtil.GetPropertyInfo<TNode> (getDataExp);
+			_cellRenderer.EditingValueConverter = converter;
 			var getter = getDataExp.Compile();
-			cellRenderer.LambdaSetters.Add ((c, n) => 
+			_cellRenderer.LambdaSetters.Add ((c, n) => 
 				c.Text = String.Format ("{0:" + String.Format ("F{0}", c.Digits) + "}",
 			                            c.EditingValueConverter.Convert (getter (n), typeof(double), null, null)));
 		}
@@ -38,11 +37,12 @@ namespace Gamma.ColumnConfig
 			bool withThousandsSeparator) : base(column)
 		{
 			var getter = getDataExp.Compile();
-			cellRenderer.Edited += editedHandler;
+			_cellRenderer.Edited += editedHandler;
+			AddHandler(editedHandler);
 			Custom = true;
 
 			var numberFormat = withThousandsSeparator ? "N" : "F";
-			cellRenderer.LambdaSetters.Add((c, n) =>
+			_cellRenderer.LambdaSetters.Add((c, n) =>
 				c.Text = string.Format("{0:" + $"{numberFormat}{c.Digits}" + "}", getter(n)));
 		}
 
@@ -58,12 +58,12 @@ namespace Gamma.ColumnConfig
 
 		public override INodeCellRenderer GetRenderer ()
 		{
-			return cellRenderer;
+			return _cellRenderer;
 		}
 
 		protected override void SetSetterSilent (Action<NodeCellRendererSpin<TNode>, TNode> commonSet)
 		{
-			cellRenderer.LambdaSetters.Insert(0, commonSet);
+			_cellRenderer.LambdaSetters.Insert(0, commonSet);
 		}
 
 		#endregion
@@ -76,7 +76,7 @@ namespace Gamma.ColumnConfig
 
 		public NumberRendererMapping<TNode> AddSetter(Action<NodeCellRendererSpin<TNode>, TNode> setter)
 		{
-			cellRenderer.LambdaSetters.Add (setter);
+			_cellRenderer.LambdaSetters.Add (setter);
 			return this;
 		}
 
@@ -84,19 +84,19 @@ namespace Gamma.ColumnConfig
 
 		public NumberRendererMapping<TNode> Digits(uint digits)
 		{
-			cellRenderer.Digits = digits;
+			_cellRenderer.Digits = digits;
 			return this;
 		}
 
 		public NumberRendererMapping<TNode> Background(string color)
 		{
-			cellRenderer.Background = color;
+			_cellRenderer.Background = color;
 			return this;
 		}
 
 		public NumberRendererMapping<TNode> Adjustment(Adjustment adjustment)
 		{
-			cellRenderer.Adjustment = adjustment;
+			_cellRenderer.Adjustment = adjustment;
 			return this;
 		}
 
@@ -105,7 +105,7 @@ namespace Gamma.ColumnConfig
 		/// </summary>
 		public NumberRendererMapping<TNode> Editing (bool on = true)
 		{
-			cellRenderer.Editable = on;
+			_cellRenderer.Editable = on;
 			return this;
 		}
 
@@ -113,54 +113,69 @@ namespace Gamma.ColumnConfig
 		/// If you enable editing don't forget add Adjustment
 		/// </summary>
 		public NumberRendererMapping<TNode> Editing(Func<TNode, bool> editingFunc) {
-			cellRenderer.LambdaSetters.Add((c, n) => c.Editable = editingFunc(n));
+			_cellRenderer.LambdaSetters.Add((c, n) => c.Editable = editingFunc(n));
 			return this;
 		}
 
 		public NumberRendererMapping<TNode> Editing (Adjustment adjustment, bool on = true)
 		{
-			cellRenderer.Adjustment = adjustment;
-			cellRenderer.Editable = on;
+			_cellRenderer.Adjustment = adjustment;
+			_cellRenderer.Editable = on;
 			return this;
 		}
 
 		public NumberRendererMapping<TNode> WidthChars(int widthChars)
 		{
-			cellRenderer.WidthChars = widthChars;
+			_cellRenderer.WidthChars = widthChars;
 			return this;
 		}
 
 		public NumberRendererMapping<TNode> EnterToNextCell()
 		{
-			cellRenderer.IsEnterToNextCell = true;
+			_cellRenderer.IsEnterToNextCell = true;
 			return this;
 		}
 
 		public NumberRendererMapping<TNode> XAlign(float alignment)
 		{
-			cellRenderer.Xalign = alignment;
+			_cellRenderer.Xalign = alignment;
 			return this;
 		}
 		
 		public NumberRendererMapping<TNode> YAlign(float alignment)
 		{
-			cellRenderer.Yalign = alignment;
+			_cellRenderer.Yalign = alignment;
 			return this;
 		}
 
 		public NumberRendererMapping<TNode> EditedEvent(EditedHandler handler)
 		{
-			cellRenderer.Edited += handler;
+			_cellRenderer.Edited += handler;
+			AddHandler(handler);
 			return this;
 		}
 		
 		public NumberRendererMapping<TNode> EditingStartedEvent(EditingStartedHandler handler)
 		{
-			cellRenderer.EditingStarted += handler;
+			_cellRenderer.EditingStarted += handler;
+			AddHandler(handler);
 			return this;
 		}
 
 		#endregion
+
+		public override void Dispose() {
+			if(_cellRenderer != null) {
+				foreach(var eventInfo in _cellRenderer.GetType().GetEvents()) {
+					if(EventHandlers.TryGetValue(eventInfo.EventHandlerType, out var handlers)) {
+						foreach(var handler in handlers) {
+							eventInfo.RemoveEventHandler(_cellRenderer, (Delegate)handler);
+						}
+					}
+				}
+
+				base.Dispose();
+			}
+		}
 	}
 }
-

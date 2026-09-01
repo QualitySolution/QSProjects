@@ -48,5 +48,10 @@ namespace Gamma.GtkWidgets
 			}
 			return base.OnOutput();
 		}
+
+		protected override void OnDestroyed() {
+			Binding.CleanSources();
+			base.OnDestroyed();
+		}
 	}
 }

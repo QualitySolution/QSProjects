@@ -4,7 +4,7 @@ using Gtk;
 
 namespace Gamma.ColumnConfig
 {
-	public interface IColumnMapping
+	public interface IColumnMapping : IDisposable
 	{
 		TreeViewColumn TreeViewColumn { get; }
 
@@ -19,7 +19,5 @@ namespace Gamma.ColumnConfig
 		bool HasToolTip { get; }
 
 		string GetTooltipText(object node);
-
-		void ClearProperties();
 	}
 }

@@ -1,12 +1,12 @@
 ﻿using System;
 using FluentNHibernate.Mapping;
-using QS.BusinessCommon.Domain;
+using QS.Measurement.Domain;
 
-namespace QS.BusinessCommon.HMap
+namespace QS.Measurement.HMap
 {
-	public class MeasurementUnitsMap : ClassMap<MeasurementUnits>
+	public class MeasurementUnitMap : ClassMap<MeasurementUnit>
 	{
-		public MeasurementUnitsMap ()
+		public MeasurementUnitMap ()
 		{
 			Table("measurement_units");
 			Not.LazyLoad ();
@@ -18,4 +18,3 @@ namespace QS.BusinessCommon.HMap
 		}
 	}
 }
-
