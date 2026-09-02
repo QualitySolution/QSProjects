@@ -1,13 +1,19 @@
-using QS.Launcher.ViewModels.PageViewModels;
-using ReactiveUI;
 using System;
+using System.Collections.ObjectModel;
+using QS.Launcher.ViewModels.PageViewModels;
+using QS.Launcher.ViewModels.PageViewModels.DataBase;
 using QS.ViewModels;
+using ReactiveUI;
 
 namespace QS.Launcher.ViewModels {
+	/// <summary>
+	/// Держит коллекцию страниц для Carousel и индекс активной
+	/// </summary>
 	public class MainWindowVM : ViewModelBase {
-		public int PagesCount { get; set; }
-
 		LoginVM login;
+		private readonly int rootPagesCount;
+
+		public ObservableCollection<CarouselPageVM> Pages { get; }
 
 		private int selectedPageIndex;
 		public int SelectedPageIndex {
@@ -15,16 +21,35 @@ namespace QS.Launcher.ViewModels {
 			set => this.RaiseAndSetIfChanged(ref selectedPageIndex, value);
 		}
 
-		public MainWindowVM(DataBasesVM dataBasesVM, LoginVM loginVM, BaseManagementVM baseManagementVM, UserManagementVM userManagementVM
-			, IServiceProvider provider)
+		public int PagesCount {
+			get => rootPagesCount;
+			set { }
+		}
+
+		public MainWindowVM(
+			DataBasesVM dataBasesVM,
+			LoginVM loginVM,
+			BaseManagementVM baseManagementVM,
+			UserManagementVM userManagementVM,
+			IServiceProvider provider)
 		{
-			CarouselPageVM[] pages = { dataBasesVM, loginVM, baseManagementVM, userManagementVM };
-			foreach (var page in pages) {
-				page.NextPageCommand = ReactiveCommand.Create(NextPage);
-				page.PreviousPageCommand = ReactiveCommand.Create(PreviousPage);
-				page.ChangePageCommand = ReactiveCommand.Create<int>(ChangePage);
-			}
+			Pages = new ObservableCollection<CarouselPageVM> {
+				loginVM, dataBasesVM
+			};
+			rootPagesCount = Pages.Count;
 			login = loginVM;
+
+			foreach(var page in Pages)
+				WirePage(page);
+		}
+
+		private void WirePage(CarouselPageVM page) {
+			page.NextPageCommand = ReactiveCommand.Create(NextPage);
+			page.PreviousPageCommand = ReactiveCommand.Create(PreviousPage);
+			page.ChangePageCommand = ReactiveCommand.Create<int>(ChangePage);
+			page.PushPageCommand = ReactiveCommand.Create<CarouselPageVM>(PushPage);
+			page.PopPageCommand = ReactiveCommand.Create(PopPage);
+			page.PopToRootCommand = ReactiveCommand.Create(PopToRoot);
 		}
 
 		public void SaveConnections() {
@@ -32,15 +57,53 @@ namespace QS.Launcher.ViewModels {
 		}
 
 		public void ChangePage(int index) {
+			if(index < 0 || index >= Pages.Count) return;
 			SelectedPageIndex = index;
 		}
 
 		public void NextPage() {
-			ChangePage((SelectedPageIndex + 1) % PagesCount);
+			PopToRoot();
+			ChangePage((SelectedPageIndex + 1) % rootPagesCount);
 		}
 
 		public void PreviousPage() {
-			ChangePage((SelectedPageIndex - 1 + PagesCount) % PagesCount);
+			PopToRoot();
+			ChangePage((SelectedPageIndex - 1 + rootPagesCount) % rootPagesCount);
+		}
+
+		public void PushPage(CarouselPageVM page) {
+			if(page == null) return;
+			WirePage(page);
+			Pages.Add(page);
+			SelectedPageIndex = Pages.Count - 1;
+		}
+
+		public void PopPage() {
+			if(Pages.Count <= rootPagesCount) return;
+			int last = Pages.Count - 1;
+			Pages.RemoveAt(last);
+			SelectedPageIndex = Pages.Count - 1;
+		}
+
+		public void PopToRoot() {
+			while(Pages.Count > rootPagesCount)
+				Pages.RemoveAt(Pages.Count - 1);
+			if(SelectedPageIndex >= rootPagesCount)
+				SelectedPageIndex = rootPagesCount - 1;
+		}
+
+		/// <summary>
+		/// Найти первую страницу указанного типа в стеке и переключиться на неё, сняв всё, что стоит выше
+		/// </summary>
+		public void PopToPage<TPage>() where TPage : CarouselPageVM {
+			int targetIdx = -1;
+			for(int i = 0; i < Pages.Count; i++) {
+				if(Pages[i] is TPage) { targetIdx = i; break; }
+			}
+			if(targetIdx < 0) return;
+			while(Pages.Count > targetIdx + 1)
+				Pages.RemoveAt(Pages.Count - 1);
+			SelectedPageIndex = targetIdx;
 		}
 	}
 }

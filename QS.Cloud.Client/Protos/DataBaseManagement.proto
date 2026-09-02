@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package QS.Cloud.Core;
+
+service DataBaseManagement{
+	// Создать пустую базу
+	rpc CreateDataBase (CreateDataBaseRequest) returns (CreateDataBaseResponse);
+}
+
+message CreateDataBaseRequest{
+	string name = 1;
+	string title = 2;
+	uint32 product_id = 3;
+}
+
+message CreateDataBaseResponse{
+	int32 base_id = 1;
+	string base_guid = 2;
+}

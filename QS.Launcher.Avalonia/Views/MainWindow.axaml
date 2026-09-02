@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:views="clr-namespace:QS.Launcher.Views"
         xmlns:vm="clr-namespace:QS.Launcher.ViewModels;assembly=QS.Launcher"
         Title="QS.Лаунчер"
         Width="450"
@@ -17,7 +16,9 @@
         mc:Ignorable="d">
     <ScrollViewer>
         <Panel>
-            <Carousel x:Name="carousel" SelectedIndex="{Binding SelectedPageIndex}">
+            <Carousel x:Name="carousel"
+                      ItemsSource="{Binding Pages}"
+                      SelectedIndex="{Binding SelectedPageIndex}">
                 <Carousel.PageTransition>
                     <PageSlide Orientation="Horizontal" Duration="0.25" />
                 </Carousel.PageTransition>

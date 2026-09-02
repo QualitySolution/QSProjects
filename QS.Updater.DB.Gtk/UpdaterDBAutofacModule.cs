@@ -1,6 +1,5 @@
-﻿using Autofac;
+using Autofac;
 using QS.DBScripts.Controllers;
-using QS.DBScripts.Models;
 using QS.Updater.DB;
 using QS.Updater.DB.ViewModels;
 using QS.ViewModels;
@@ -13,7 +12,6 @@ namespace QS.Updater
 		{
 			builder.RegisterType<SQLDBUpdater>().As<IDBUpdater>();
 			#region Models
-			builder.RegisterType<MySqlDbCreateModel>().AsSelf();
 			builder.RegisterType<DatabaseCharsetChecker>().AsSelf();
 			#endregion
 			#region Desktop

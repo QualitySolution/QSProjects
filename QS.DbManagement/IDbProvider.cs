@@ -10,8 +10,8 @@ namespace QS.DbManagement
 		string UserName { get; }
 	
 		bool ChangePassword(string username, string oldPassword, string newPassword);
-		
-		bool CreateDatabase(string databaseName);
+
+		bool CreateDatabase(string databaseName, string title, IServiceProvider services = null);
 		
 		bool DropDatabase(string databaseName);
 		
@@ -26,5 +26,6 @@ namespace QS.DbManagement
 		bool IsConnected { get; }
 
 		bool IsAdmin { get; }
+		bool CanCreateDatabase { get; }
 	}
 }

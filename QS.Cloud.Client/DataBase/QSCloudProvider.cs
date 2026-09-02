@@ -8,35 +8,42 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System;
+using System.Threading;
+using QS.Cloud.Client.Clients;
+using QS.DBScripts.Controllers;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace QS.Cloud.Client
+namespace QS.Cloud.Client.DataBase
 {
 	public class QSCloudProvider : IDbProvider {
-		public string ConnectionString { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-		public bool IsConnected => throw new NotImplementedException();
+		public int BaseId { get; private set; }
+		public BasicAuthInfoProvider AuthInfo { get; private set; }
+
+		public bool IsConnected { get; private set; }
 
 		public bool IsAdmin { get; protected set; }
 
 		#region Параметры подключени
 		public string Account { get; private set; }
-		
 
 		#endregion
 		public string UserName { get; private set; }
 
-		private CloudFeaturesClient featuresClient;
+		public bool CanCreateDatabase => dbClient.CanConnect;
+
 		private LoginManagementCloudClient loginClient;
-		private SessionManagementCloudClient sessionClient;
-		private UserManagementCloudClient userClient;
+		private DataBaseManagementCloudClient dbClient;
 
 
 		public QSCloudProvider(IList<ConnectionParameterValue> parameters, string password = null) {
 			Account = parameters.First(p => p.Name == "Account").Value;
 			UserName = parameters.First(p => p.Name == "Login").Value;
-			BasicAuthInfoProvider authInfo = new BasicAuthInfoProvider($@"{Account}\{UserName}", password);
+			AuthInfo = new BasicAuthInfoProvider($@"{Account}\{UserName}", password);
 			
-			loginClient = new LoginManagementCloudClient(authInfo);
+			loginClient = new LoginManagementCloudClient(AuthInfo);
+			dbClient = new DataBaseManagementCloudClient(AuthInfo);
 		}
 
 		public bool AddUser(string username, string password)
@@ -49,9 +56,12 @@ namespace QS.Cloud.Client
 			throw new NotImplementedException();
 		}
 	
-		public bool CreateDatabase(string databaseName)
+		public bool CreateDatabase(string databaseName, string title, IServiceProvider services)
 		{
-			throw new NotImplementedException();
+			IApplicationInfo applicationInfo = services.GetService<IApplicationInfo>();
+			CreateDataBaseResponse response = dbClient.CreateDataBase(databaseName, title, applicationInfo);
+			BaseId = response.BaseId;
+			return true;
 		}
 	
 		public void Dispose()
