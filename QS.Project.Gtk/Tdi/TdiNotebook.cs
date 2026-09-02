@@ -799,11 +799,6 @@ namespace QS.Tdi.Gtk
 
 			Remove(tabBox);
 			var maybeSliderActiveDialog = (tab as TdiSliderTab)?.ActiveDialog;
-			if(maybeSliderActiveDialog != null) {
-				OnTabClosed(maybeSliderActiveDialog, CloseSource.WithParentPage);
-			}
-			OnTabClosed(tab, source);
-			tab.OnTabClosed();
 
 			//TODO проверить работу Destroy
 			//после вызова Destroy у родительского элемента-контейнера,
@@ -817,6 +812,12 @@ namespace QS.Tdi.Gtk
 			
 			tabBox?.Destroy();
 			tabHeader?.Destroy();
+
+			if(maybeSliderActiveDialog != null) {
+				OnTabClosed(maybeSliderActiveDialog, CloseSource.WithParentPage);
+			}
+			OnTabClosed(tab, source);
+			tab.OnTabClosed();
 
 			tab.TabNameChanged -= OnTabNameChanged;
 			
