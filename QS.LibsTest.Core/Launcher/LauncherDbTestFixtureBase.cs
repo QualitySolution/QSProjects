@@ -389,6 +389,15 @@ namespace QS.Launcher.Test {
 			LogStep("на сервере выданы права {0} на {1} пользователю {2}@{3}", privileges, dbName, login, host);
 		}
 
+		/// <summary>Права на весь сервер - в отличие от <see cref="GrantOnDatabase"/>, где область одна база</summary>
+		protected async Task GrantOnServer(string login, string privileges, string host = "%") {
+			using(var connection = CreateConnection(withoutDb: true)) {
+				await connection.OpenAsync();
+				await connection.ExecuteAsync($"GRANT {privileges} ON *.* TO '{login}'@'{host}';");
+			}
+			LogStep("на сервере выданы права {0} пользователю {1}@{2}", privileges, login, host);
+		}
+
 		protected async Task<List<string>> ReadServerGrants(string login, string host = "%") {
 			using(var connection = CreateConnection(withoutDb: true)) {
 				await connection.OpenAsync();

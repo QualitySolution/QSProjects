@@ -269,7 +269,7 @@ namespace QS.DbManagement {
 				CanManageBaseAccess = MySqlGrants.HasGlobalGrantOption(grants);
 
 				var privileges = new HashSet<string>(grants
-					.Where(g => MySqlGrants.Scope(g) != null)
+					.Where(g => MySqlGrants.Scope(g) == "*")
 					.SelectMany(MySqlGrants.Privileges), StringComparer.Ordinal);
 
 				CanCreateDatabase = IsAdmin || HasPrivilege(privileges, "CREATE");

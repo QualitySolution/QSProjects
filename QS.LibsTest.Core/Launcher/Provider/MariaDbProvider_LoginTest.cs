@@ -12,7 +12,7 @@ namespace QS.Launcher.Test.Provider {
 		[Test(Description = "Права на создание и удаление считаются по реальным грантам")]
 		public async Task LoginToServer_UserWithCreateGrant_CanCreateButNotManageUsers() {
 			await CreateServerLogin("creator", "creator-pass");
-			await GrantOnDatabase("creator", "%", "CREATE, DROP"); // права на базы, но не на сервер
+			await GrantOnServer("creator", "CREATE, DROP"); // права на все базы, но не администратор
 
 			var provider = CreateProvider("creator", "creator-pass");
 			provider.LoginToServer();
@@ -21,6 +21,25 @@ namespace QS.Launcher.Test.Provider {
 			Assert.That(provider.CanDropDatabase, Is.True);
 			Assert.That(provider.IsAdmin, Is.False, "гранты на базы - не глобальный админ");
 			Assert.That(provider.CanManageUsers, Is.False);
+		}
+
+		[Test(Description = "Грант на одну базу не даёт права создавать и удалять базы на сервере")]
+		public async Task LoginToServer_GrantOnSingleDatabase_GivesNoServerWideRights() {
+			await CreateApplicationDatabase("base_of_worker");
+			await CreateServerLogin("worker", "worker-pass");
+			// ровно то, что выдаёт форма доступов при полном доступе к базе
+			await GrantOnDatabase("worker", "base_of_worker", "ALL PRIVILEGES");
+
+			var provider = CreateProvider("worker", "worker-pass");
+			provider.LoginToServer();
+
+			Assert.Multiple(() => {
+				Assert.That(provider.CanCreateDatabase, Is.False,
+					"права на своей базе не позволяют завести новую");
+				Assert.That(provider.CanDropDatabase, Is.False,
+					"иначе пункт «Удалить базу» появляется у всех строк списка");
+				Assert.That(provider.IsAdmin, Is.False);
+			});
 		}
 
 		[Test(Description = "Конструктор не должен ходить в сеть — иначе интерфейс замирает на выборе подключения")]
@@ -62,7 +81,7 @@ namespace QS.Launcher.Test.Provider {
 			provider.LoginToServer();
 			Assert.That(provider.CanCreateDatabase, Is.False, "предусловие: прав ещё нет");
 
-			await GrantOnDatabase("grower", "%", "CREATE"); // выдаём уже после первого входа
+			await GrantOnServer("grower", "CREATE"); // выдаём уже после первого входа
 
 			provider.LoginToServer();
 
