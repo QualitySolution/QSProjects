@@ -1,4 +1,4 @@
-﻿using Autofac;
+using Autofac;
 using Microsoft.Extensions.DependencyInjection;
 using QS.DBScripts.Controllers;
 using QS.DbManagement;

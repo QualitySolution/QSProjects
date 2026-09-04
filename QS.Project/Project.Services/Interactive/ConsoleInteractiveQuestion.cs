@@ -1,7 +1,6 @@
-using System;
+﻿using System;
 using QS.Dialog;
 using System.Linq;
-using System.Threading.Tasks;
 namespace QS.Project.Services.Interactive
 {
 	public class ConsoleInteractiveQuestion : IInteractiveQuestion

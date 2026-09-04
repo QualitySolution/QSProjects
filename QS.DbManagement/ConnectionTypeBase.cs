@@ -1,4 +1,4 @@
-﻿using QS.DbManagement.Entities;
+using QS.DbManagement.Entities;
 using System.Collections.Generic;
 
 namespace QS.DbManagement {

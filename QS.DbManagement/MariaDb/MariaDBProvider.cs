@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using MySqlConnector;
 using QS.DbManagement.Entities;
 using QS.DbManagement.MariaDb;

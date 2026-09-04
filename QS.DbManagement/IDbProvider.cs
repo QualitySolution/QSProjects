@@ -1,4 +1,4 @@
-﻿using QS.Dialog;
+using QS.Dialog;
 using QS.Project.Versioning;
 using System.Collections.Generic;
 using System.Threading;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Grpc.Core;
 
 namespace QS.Cloud.Client
