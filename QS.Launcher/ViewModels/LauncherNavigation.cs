@@ -102,6 +102,7 @@ namespace QS.Launcher.ViewModels {
 			RemovePagesAbove(targetIndex);
 		}
 
+		/// <summary>Только после смены SelectedIndex, иначе снятая видимая страница оставляет пустой экран</summary>
 		private void RemovePagesAbove(int keepIndex)
 		{
 			while(Pages.Count > keepIndex + 1) {
