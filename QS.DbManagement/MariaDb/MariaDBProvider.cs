@@ -21,7 +21,7 @@ namespace QS.DbManagement {
 		private const string LocalHost = "localhost";
 		private const int ER_NONEXISTING_GRANT = 1141;
 
-		private readonly MySqlConnection connection;
+		private MySqlConnection connection;
 
 		/// <summary>
 		/// Публичный - в типе подключения нужен доступ, реализацию он знает и так
@@ -513,6 +513,7 @@ namespace QS.DbManagement {
 			OnConnection(c => c.Execute($"SET PASSWORD = PASSWORD('{MySqlHelper.EscapeString(newPassword)}')"));
 
 			ConnectionStringBuilder.Password = newPassword;
+			connection = new MySqlConnection(ConnectionStringBuilder.ConnectionString);
 
 			return true;
 		}
