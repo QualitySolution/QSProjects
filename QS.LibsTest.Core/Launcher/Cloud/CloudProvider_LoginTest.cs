@@ -3,6 +3,7 @@ using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using NUnit.Framework;
 using QS.Cloud.Client.DataBase;
+using QS.Cloud.Core;
 
 namespace QS.Launcher.Test.Cloud {
 	/// <summary>Вход в облако</summary>
@@ -31,6 +32,32 @@ namespace QS.Launcher.Test.Cloud {
 			Assert.That(response.Success, Is.False);
 			Assert.That(response.ErrorMessage, Does.Contain("Неверные данные для входа"));
 			Assert.That(response.ErrorMessage, Does.Contain("нет доступа"), "текст сервера должен дойти до пользователя");
+		}
+
+		[Test(Description = "Смена пароля переподписывает все клиенты, а не только тот, через который меняли")]
+		public void ChangeOwnPassword_Succeeded_UpdatesEveryClient() {
+			LoginClient.ChangePassword("n3w").Returns(new ChangePasswordResponse { Success = true });
+			var provider = LoginAs();
+
+			Assert.That(provider.ChangeOwnPassword("n3w"), Is.True);
+
+			// пропущенный клиент отвалится с Unauthenticated на первом же запросе
+			LoginClient.Received(1).UpdatePassword("n3w");
+			DbClient.Received(1).UpdatePassword("n3w");
+			UserClient.Received(1).UpdatePassword("n3w");
+		}
+
+		[Test(Description = "Облако пароль не сменило - заголовки остаются прежними")]
+		public void ChangeOwnPassword_Refused_KeepsOldHeaders() {
+			LoginClient.ChangePassword(Arg.Any<string>()).Returns(new ChangePasswordResponse { Success = false });
+			var provider = LoginAs();
+
+			Assert.That(provider.ChangeOwnPassword("n3w"), Is.False);
+
+			// иначе клиент подписался бы паролем, которого в облаке нет
+			LoginClient.DidNotReceive().UpdatePassword(Arg.Any<string>());
+			DbClient.DidNotReceive().UpdatePassword(Arg.Any<string>());
+			UserClient.DidNotReceive().UpdatePassword(Arg.Any<string>());
 		}
 
 		[Test(Description = "Облако недоступно - отдельное сообщение")]

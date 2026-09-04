@@ -22,12 +22,23 @@ namespace QS.Launcher.Test.Cloud {
 				string header = probe.AuthorizationHeader;
 
 				Assert.That(header, Does.StartWith("Basic "));
-				string decoded = Encoding.UTF8.GetString(
-					Convert.FromBase64String(header.Substring("Basic ".Length)));
-				Assert.That(decoded, Is.EqualTo(@"testaccount\admin:s3cret"),
+				Assert.That(Decode(header), Is.EqualTo(@"testaccount\admin:s3cret"),
 					"облако разбирает пару как «аккаунт\\логин:пароль»");
 			}
 		}
+
+		[Test(Description = "После смены пароля клиент подписывается новым - со старым облако ответит Unauthenticated")]
+		public void UpdatePassword_RebuildsAuthorizationHeader() {
+			using(var probe = NewProbe(new BasicAuthInfoProvider(@"testaccount\admin", "old"))) {
+				probe.UpdatePassword("n3w");
+
+				Assert.That(Decode(probe.AuthorizationHeader), Is.EqualTo(@"testaccount\admin:n3w"));
+			}
+		}
+
+		private static string Decode(string authorizationHeader) =>
+			Encoding.UTF8.GetString(
+				Convert.FromBase64String(authorizationHeader.Substring("Basic ".Length)));
 
 		private static Probe NewProbe(IBasicAuthInfoProvider auth) =>
 			new Probe(auth, "core.cloud.qsolution.ru", 443);
