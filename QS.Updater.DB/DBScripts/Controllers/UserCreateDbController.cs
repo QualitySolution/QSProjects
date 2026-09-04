@@ -74,8 +74,11 @@ namespace QS.DBScripts.Controllers
 			if(parts.Length == 0)
 				throw new InvalidOperationException("Имя сервера не корректно.");
 			host = parts[0];
-			if(parts.Length > 1)
-				uint.TryParse(parts[1], out port);
+			if(parts.Length > 1) {
+				if(!ushort.TryParse(parts[1], out var parsed))
+					throw new InvalidOperationException($"Порт сервера не корректен: {parts[1]}");
+				port = parsed;
+			}
 		}
 
 		#region IDbCreatorInteraction
