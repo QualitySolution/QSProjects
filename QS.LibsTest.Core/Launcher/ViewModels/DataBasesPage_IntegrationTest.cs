@@ -44,6 +44,30 @@ namespace QS.Launcher.Test.ViewModels {
 			Assert.That(page.Capabilities.CanManageDatabases, Is.True);
 		}
 
+		[Test(Description = "Без скрипта создания гаснет только создание - импорт дампа скрипта не требует")]
+		public async Task Capabilities_WithoutCreationScript_HidesCreateOnly() {
+			Pages.ScriptsConfiguration.HasCreationScript().Returns(false); // приложение скрипт не принесло
+
+			var page = await Pages.OpenDatabasesPage(LoginAs());
+
+			Assert.Multiple(() => {
+				Assert.That(page.Capabilities.CanCreate, Is.False, "создавать базу нечем - наполнять её будет некому");
+				Assert.That(page.Capabilities.CanImport, Is.True);
+			});
+		}
+
+		[Test(Description = "Без зарегистрированной модели наполнения гаснут и создание, и импорт")]
+		public async Task Capabilities_WithoutCreationModel_HidesCreateAndImport() {
+			Pages.CreationMap = null; // приложение не зарегистрировало ни одной модели
+
+			var page = await Pages.OpenDatabasesPage(LoginAs());
+
+			Assert.Multiple(() => {
+				Assert.That(page.Capabilities.CanCreate, Is.False);
+				Assert.That(page.Capabilities.CanImport, Is.False, "принять дамп тоже некому");
+			});
+		}
+
 		[Test(Description = "Пользователю без прав кнопки управления недоступны")]
 		public async Task Capabilities_ForLimitedUser_ManagementDisabled() {
 			await CreateServerLogin("viewer", "viewer-pass");

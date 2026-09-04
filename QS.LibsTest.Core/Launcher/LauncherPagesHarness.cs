@@ -1,6 +1,9 @@
 ﻿using NSubstitute;
 using QS.DbManagement;
+using QS.DbManagement.Creation;
 using QS.DBScripts;
+using QS.DBScripts.Controllers;
+using QS.DBScripts.Models;
 using QS.Dialog;
 using QS.Launcher.AppRunner;
 using QS.Launcher.ViewModels;
@@ -40,6 +43,12 @@ namespace QS.Launcher.Test {
 			ScriptsConfiguration = Substitute.For<IDbScriptsConfiguration>();
 			ScriptsConfiguration.HasCreationScript().Returns(true);
 
+			// Скрипт создания и модели наполнения приносит приложение, а не файлы рядом с тестами:
+			// странице важно только то, что они настроены
+			CreationMap = new DbResourcesCreationMap();
+			CreationMap.Register(typeof(EmbeddedCreationResources), typeof(NoOpCreationModel));
+			CreationMap.Register(typeof(DbDumpResources), typeof(NoOpCreationModel));
+
 			Options = new LauncherOptions { AppTitle = "Тест", IsStandalone = true };
 
 			ErrorHandling = new ErrorHandlingService(
@@ -62,6 +71,9 @@ namespace QS.Launcher.Test {
 		public IAppRunner AppRunner { get; }
 		public IApplicationInfo ApplicationInfo { get; }
 		public IDbScriptsConfiguration ScriptsConfiguration { get; }
+
+		/// <summary>Модели наполнения, известные приложению; null - оно не зарегистрировало ни одной</summary>
+		public DbResourcesCreationMap CreationMap { get; set; }
 		public IServiceProvider ServiceProvider { get; }
 		public LauncherOptions Options { get; }
 		public IErrorHandlingService ErrorHandling { get; }
@@ -97,7 +109,7 @@ namespace QS.Launcher.Test {
 
 		public DataBasesVM BuildDataBasesVM() =>
 			AsRootIfFirst(new DataBasesVM(AppRunner, Navigation, InteractiveMessage, InteractiveQuestion,
-				Options, ServiceProvider, new DbCapabilities(ScriptsConfiguration), ErrorHandling));
+				Options, ServiceProvider, new DbCapabilities(ScriptsConfiguration, CreationMap), ErrorHandling));
 
 		public UsersVM BuildUsersVM() =>
 			AsRootIfFirst(new UsersVM(Navigation, InteractiveMessage, InteractiveQuestion, ServiceProvider, ErrorHandling));
@@ -134,6 +146,16 @@ namespace QS.Launcher.Test {
 			await vm.RefreshUsersCommand.IsExecuting.Where(executing => !executing).FirstAsync();
 			await vm.RefreshUsersCommand.Execute();
 			return vm;
+		}
+
+		/// <summary>
+		/// Наполнения в тестах страницы не происходит - карте важно лишь то, что модель зарегистрирована
+		/// </summary>
+		private sealed class NoOpCreationModel : IDbCreatorModel {
+			private readonly DbCreationResources resources;
+			public NoOpCreationModel(DbCreationResources resources) => this.resources = resources;
+
+			public bool RunCreation(string dbName, string dbTitle) => resources != null;
 		}
 
 		private T AsRootIfFirst<T>(T vm) where T : CarouselPageVM {
