@@ -1,5 +1,4 @@
 using QS.Dialog;
-using System.Threading.Tasks;
 
 namespace QS.Project.Services.GtkUI {
 	public class GtkInteractiveService : IInteractiveService

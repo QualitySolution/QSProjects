@@ -1,4 +1,4 @@
-using Autofac;
+﻿using Autofac;
 using QS.DBScripts.Controllers;
 using QS.Updater.DB;
 using QS.Updater.DB.ViewModels;

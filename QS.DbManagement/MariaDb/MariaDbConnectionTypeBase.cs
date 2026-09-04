@@ -1,4 +1,4 @@
-﻿using QS.DbManagement.Entities;
+using QS.DbManagement.Entities;
 using QS.Utilities.Extensions;
 using System.Collections.Generic;
 using System.Linq;

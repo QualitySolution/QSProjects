@@ -1,6 +1,6 @@
-﻿namespace QS.Dialog;
-public class AvaloniaInteractiveService(AvaloniaInteractiveMessage interactiveMessage, AvaloniaInteractiveQuestion interactiveQuestion) : IInteractiveService
-{
+namespace QS.Dialog;
+public class AvaloniaInteractiveService(AvaloniaInteractiveMessage interactiveMessage, AvaloniaInteractiveQuestion interactiveQuestion) : IInteractiveService {
+
 	public bool Question(string message, string title = null) {
 		return interactiveQuestion.Question(message, title);
 	}

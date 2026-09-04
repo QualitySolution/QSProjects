@@ -1,4 +1,4 @@
-﻿using QS.DbManagement;
+using QS.DbManagement;
 using QS.DbManagement.Entities;
 using QS.Dialog;
 using QS.ErrorReporting;

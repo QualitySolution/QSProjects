@@ -23,7 +23,7 @@ namespace QS.Testing.DB
 	public abstract class MariaDbTestContainerFixtureBase
 	{
 		protected MariaDbContainer MariaDbContainer;
-		protected NHibernate.Cfg.Configuration Configuration;
+		protected Configuration Configuration;
 		protected ISessionFactory SessionFactory;
 		protected ISessionProvider SessionProvider;
 		protected IUnitOfWorkFactory UnitOfWorkFactory;

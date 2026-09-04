@@ -1,4 +1,4 @@
-﻿using QS.DbManagement;
+using QS.DbManagement;
 using QS.Dialog;
 using QS.ErrorReporting;
 using QS.Launcher.ViewModels.PageViewModels.DataBase;
