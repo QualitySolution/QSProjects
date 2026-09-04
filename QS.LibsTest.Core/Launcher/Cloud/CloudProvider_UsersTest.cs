@@ -8,6 +8,7 @@ using QS.DbManagement.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OperationRefusedException = QS.ErrorReporting.OperationRefusedException;
 
 namespace QS.Launcher.Test.Cloud {
 	/// <summary>Управление пользователями</summary>
@@ -79,12 +80,23 @@ namespace QS.Launcher.Test.Cloud {
 				.Returns(new CreateUserResponse { Success = false, Message = "Логин уже занят" });
 			var provider = LoginAs();
 
-			var exception = Assert.Throws<InvalidOperationException>(
+			var exception = Assert.Throws<OperationRefusedException>(
 				() => provider.CreateUser(new DbUserInfo { Login = "occupied" }, "pass"));
 
 			Assert.That(exception.Message, Is.EqualTo("Логин уже занят"));
 		}
 
+		[Test(Description = "Нехватка прав приходит тем же типом, что и от MariaDBProvider - иначе её не разберёт NotEnoughRights")]
+		public void CreateUser_PermissionDenied_ThrowsUnauthorizedAccess() {
+			UserClient.CreateUser(Arg.Any<UserInfo>(), Arg.Any<string>())
+				.Throws(Refusal(StatusCode.PermissionDenied, "Недостаточно прав для добавления пользователя"));
+			var provider = LoginAs();
+
+			var exception = Assert.Throws<UnauthorizedAccessException>(
+				() => provider.CreateUser(new DbUserInfo { Login = "newbie" }, "pass"));
+
+			Assert.That(exception.Message, Is.EqualTo("Недостаточно прав для добавления пользователя"));
+		}
 		[Test(Description = "Обрыв связи превращается в исключение с текстом сервера, а не в молчание")]
 		public void GetUsers_CloudUnavailable_ThrowsWithServerDetail() {
 			UserClient.GetUsers().Throws(Refusal(StatusCode.Unavailable, "связь потеряна"));
