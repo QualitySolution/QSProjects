@@ -9,7 +9,9 @@ namespace QS.Cloud.Client
 
 		public string UserName { get; }
 
-		public string Password { get; }
+		public string Password { get; private set; }
+
+		public void UpdatePassword(string newPassword) => Password = newPassword;
 	}
 
 	public interface IBasicAuthInfoProvider
@@ -17,5 +19,7 @@ namespace QS.Cloud.Client
 		string UserName { get; }
 
 		string Password { get; }
+
+		void UpdatePassword(string newPassword);
 	}
 }

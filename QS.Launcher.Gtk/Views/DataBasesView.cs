@@ -33,7 +33,7 @@ namespace QS.Launcher.Views {
 		}
 
 		protected void OnButtonBackClicked(object sender, EventArgs e) {
-			ViewModel.PreviousPageCommand.Execute(null);
+			ViewModel.BackCommand.Execute(null);
 		}
 
 		protected void OnButtonLoginInBaseClicked(object sender, EventArgs e) {

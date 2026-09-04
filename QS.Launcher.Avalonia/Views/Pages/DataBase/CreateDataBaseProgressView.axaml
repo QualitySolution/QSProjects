@@ -1,0 +1,59 @@
+<UserControl x:Class="QS.Launcher.Views.Pages.DataBase.CreateDataBaseProgressView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:QS.Launcher.ViewModels.PageViewModels.DataBase;assembly=QS.Launcher"
+             d:DesignHeight="650"
+             d:DesignWidth="450"
+             x:DataType="vm:CreateDataBaseProgressVM"
+             Loaded="OnLoaded"
+             mc:Ignorable="d">
+    <Grid Margin="20" VerticalAlignment="Center" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
+        <Label Grid.Row="0" Margin="5" FontSize="16" FontWeight="Bold" Content="{Binding OperationTitle}" />
+
+        <StackPanel Grid.Row="1" Margin="5,15,5,5" Orientation="Horizontal" HorizontalAlignment="Center"
+                    IsVisible="{Binding !IsFailed}">
+            <Image x:Name="cogwheel" Height="32" RenderTransformOrigin="50%,50%"
+                   Source="avares://QS.Launcher.Avalonia/Assets/cogwheel.ico">
+                <Image.Styles>
+                    <Style Selector="Image">
+                        <Style.Animations>
+                            <Animation Duration="0:0:2.00" IterationCount="INFINITE">
+                                <KeyFrame Cue="0%">
+                                    <Setter Property="RotateTransform.Angle" Value="0.0" />
+                                </KeyFrame>
+                                <KeyFrame Cue="100%">
+                                    <Setter Property="RotateTransform.Angle" Value="360.0" />
+                                </KeyFrame>
+                            </Animation>
+                        </Style.Animations>
+                    </Style>
+                </Image.Styles>
+            </Image>
+            <Label Margin="10,0,0,0" VerticalAlignment="Center" Content="{Binding CurrentText}" />
+        </StackPanel>
+
+        <ProgressBar Grid.Row="2" Margin="5,10,5,5"
+                     IsVisible="{Binding !IsFailed}"
+                     Minimum="{Binding MinValue}"
+                     Maximum="{Binding MaxValue}"
+                     Value="{Binding Value}" />
+
+        <!--  Отказ остаётся на странице: пользователь читает причину и уходит сам. Увести  -->
+        <!--  его отсюда сразу нельзя - переход между страницами ещё анимируется            -->
+        <SelectableTextBlock Grid.Row="3" Margin="5,15,5,5"
+                             IsVisible="{Binding IsFailed}"
+                             Text="{Binding FailureMessage}"
+                             TextAlignment="Center"
+                             TextWrapping="Wrap" />
+
+        <Button Grid.Row="5" Margin="5,15,5,5" HorizontalAlignment="Stretch"
+                IsVisible="{Binding !IsFailed}"
+                Command="{Binding CancelCommand}" Content="Отмена" />
+
+        <Button Grid.Row="5" Margin="5,15,5,5" HorizontalAlignment="Stretch"
+                IsVisible="{Binding IsFailed}"
+                Command="{Binding CloseCommand}" Content="Закрыть" />
+    </Grid>
+</UserControl>

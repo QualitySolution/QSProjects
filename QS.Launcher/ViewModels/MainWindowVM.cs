@@ -1,46 +1,29 @@
-using QS.Launcher.ViewModels.PageViewModels;
-using ReactiveUI;
 using System;
+using QS.Launcher.ViewModels.PageViewModels;
+using QS.Launcher.ViewModels.PageViewModels.DataBase;
 using QS.ViewModels;
 
 namespace QS.Launcher.ViewModels {
 	public class MainWindowVM : ViewModelBase {
-		public int PagesCount { get; set; }
+		private readonly LoginVM login;
 
-		LoginVM login;
+		public LauncherNavigation Navigation { get; }
 
-		private int selectedPageIndex;
-		public int SelectedPageIndex {
-			get => selectedPageIndex;
-			set => this.RaiseAndSetIfChanged(ref selectedPageIndex, value);
-		}
-
-		public MainWindowVM(DataBasesVM dataBasesVM, LoginVM loginVM, BaseManagementVM baseManagementVM, UserManagementVM userManagementVM
-			, IServiceProvider provider)
+		public MainWindowVM(
+			LauncherNavigation navigation,
+			DataBasesVM dataBasesVM,
+			LoginVM loginVM)
 		{
-			CarouselPageVM[] pages = { dataBasesVM, loginVM, baseManagementVM, userManagementVM };
-			foreach (var page in pages) {
-				page.NextPageCommand = ReactiveCommand.Create(NextPage);
-				page.PreviousPageCommand = ReactiveCommand.Create(PreviousPage);
-				page.ChangePageCommand = ReactiveCommand.Create<int>(ChangePage);
-			}
-			login = loginVM;
+			Navigation = navigation ?? throw new ArgumentNullException(nameof(navigation));
+			login = loginVM ?? throw new ArgumentNullException(nameof(loginVM));
+
+			// корни ставим здесь, а не конструктором навигатора: иначе страницы, которые
+			// сами зависят от навигатора, замкнули бы граф зависимостей
+			Navigation.SetRoots(loginVM, dataBasesVM);
 		}
 
 		public void SaveConnections() {
 			login.SaveConnections();
-		}
-
-		public void ChangePage(int index) {
-			SelectedPageIndex = index;
-		}
-
-		public void NextPage() {
-			ChangePage((SelectedPageIndex + 1) % PagesCount);
-		}
-
-		public void PreviousPage() {
-			ChangePage((SelectedPageIndex - 1 + PagesCount) % PagesCount);
 		}
 	}
 }

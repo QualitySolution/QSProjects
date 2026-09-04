@@ -1,7 +1,10 @@
-using System;
 using QS.DbManagement;
 using QS.Dialog;
+using QS.ErrorReporting;
+using QS.Launcher.ViewModels.PageViewModels.DataBase;
+using QS.Project.Versioning;
 using ReactiveUI;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -10,6 +13,8 @@ using System.Windows.Input;
 
 namespace QS.Launcher.ViewModels.PageViewModels {
 	public class LoginVM : CarouselPageVM {
+		private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
 		private byte[] companyImage;
 		public byte[] CompanyImage {
 			get => companyImage;
@@ -26,8 +31,6 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			set {
 				this.RaiseAndSetIfChanged(ref selectedConnection, value);
 				this.RaisePropertyChanged(nameof(CanLogin));
-				this.RaisePropertyChanged(nameof(Connections));
-				this.RaisePropertyChanged(nameof(SelectedConnection.CustomParameters));
 			}
 		}
 
@@ -47,6 +50,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			Password.Where(c => char.IsLetter(c)).All(c => c <= '~');
 
 		protected IDbProvider dbProvider;
+		private readonly IApplicationInfo applicationInfo;
 
 		public ICommand LoginCommand { get; }
 		public ICommand AddCommand { get; }
@@ -59,29 +63,38 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 
 		private readonly Configurator configurator;
 		private readonly DataBasesVM dbVM;
+		private readonly IErrorHandlingService errorHandling;
 
 		public LoginVM(
-			IEnumerable<ConnectionTypeBase> connectionTypes,
+			LauncherNavigation navigation,
 			LauncherOptions options,
 			Configurator configurator,
+			IApplicationInfo applicationInfo,
 			DataBasesVM dbVM,
-			IInteractiveMessage interactiveMessage) : base()
+			IInteractiveMessage interactiveMessage,
+			IErrorHandlingService errorHandling) : base(navigation)
 		{
 			this.configurator = configurator ?? throw new ArgumentNullException(nameof(configurator));
 			this.dbVM = dbVM;
 			this.interactiveMessage = interactiveMessage;
+			this.errorHandling = errorHandling ?? throw new ArgumentNullException(nameof(errorHandling));
 			CompanyImage = options.LogoImage;
 			AppTitle = options.AppTitle;
 
-			ConnectionTypes = connectionTypes.ToList();
-			Connections = new ObservableCollection<Connection>(configurator.ReadConnections()); 
+			this.applicationInfo = applicationInfo;
+			// типы подключений берём у конфигуратора: он же по ним и разбирает файл,
+			// и второй список тех же типов означал бы два источника правды
+			ConnectionTypes = configurator.ConnectionTypes.ToList();
+			Connections = new ObservableCollection<Connection>(configurator.ReadConnections());
 			SelectedConnection = Connections.FirstOrDefault(c => c.Last);
 			
-			LoginCommand = ReactiveCommand.Create(Login);
+			LoginCommand = ReactiveCommand.CreateFromTask(Login);
 			NewCommand = ReactiveCommand.Create(CreateNewConnection);
 			DeleteCommand = ReactiveCommand.Create(DeleteSelectedConnection);
 			CloneCommand = ReactiveCommand.Create(CloneConnection);
 			SaveCommand = ReactiveCommand.Create(SaveConnections);
+
+			TrackBusy(LoginCommand);
 		}
 
 		public void DeleteSelectedConnection() {
@@ -104,22 +117,26 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			SelectedConnection = newCon;
 		}
 
-		public void Login() {
-			if(SelectedConnection is null)
+		public async Task Login() {
+			var connection = SelectedConnection;
+			if(connection is null)
 				return;
-			
-			dbProvider = SelectedConnection.CreateProvider(Password);
-			var resp = dbProvider.LoginToServer();
 
-			Task.Run(() => SaveCommand.Execute(null));
+			try {
+				dbProvider = connection.CreateProvider(Password, applicationInfo.ProductCode);
+				var resp = await Task.Run(() => dbProvider.LoginToServer());
+				SaveConnections();
 
-			if(resp.Success) {
-				dbVM.SetProvider(dbProvider, SelectedConnection, SaveConnections);
-				dbVM.IsAdmin = resp.IsAdmin;
-				NextPageCommand?.Execute(null);
+				if(resp.Success) {
+					await dbVM.SetProviderAsync(dbProvider, connection, SaveConnections);
+					Navigation.Next();
+				}
+				else
+					interactiveMessage.ShowMessage(ImportanceLevel.Error, resp.ErrorMessage, "Не удалось войти");
 			}
-			else
-				interactiveMessage.ShowMessage(ImportanceLevel.Error, resp.ErrorMessage, "Не удалось войти");
+			catch(Exception ex) {
+				errorHandling.Handle(ex, "Не удалось войти");
+			}
 		}
 
 		public bool CanLogin => SelectedConnection != null &&

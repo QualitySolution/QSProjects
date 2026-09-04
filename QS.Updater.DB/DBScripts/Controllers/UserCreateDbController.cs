@@ -1,5 +1,7 @@
+using Gamma.Utilities;
 using System;
-using Autofac;
+using System.Linq;
+using System.Threading;
 using QS.DBScripts.Models;
 using QS.DBScripts.ViewModels;
 using QS.Dialog;
@@ -8,22 +10,25 @@ using QS.Navigation;
 
 namespace QS.DBScripts.Controllers
 {
-	public class UserCreateDbController : IDBCreator, IDbCreateController
+	public class UserCreateDbController : IDBCreator, IDbCreatorInteraction
 	{
 		static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 		private readonly INavigationManager navigation;
-		private readonly ILifetimeScope autofacScope;
 		private readonly IInteractiveService interactive;
 		private readonly IGuiDispatcher guiDispatcher;
+		private readonly CreationScript creationScript;
 
-		public UserCreateDbController(INavigationManager navigation, ILifetimeScope autofacScope, IInteractiveService interactive, IGuiDispatcher guiDispatcher)
+		public UserCreateDbController(
+			INavigationManager navigation,
+			IInteractiveService interactive,
+			IGuiDispatcher guiDispatcher,
+			CreationScript creationScript)
 		{
-
 			this.navigation = navigation ?? throw new ArgumentNullException(nameof(navigation));
-			this.autofacScope = autofacScope ?? throw new ArgumentNullException(nameof(autofacScope));
 			this.interactive = interactive ?? throw new ArgumentNullException(nameof(interactive));
 			this.guiDispatcher = guiDispatcher ?? throw new ArgumentNullException(nameof(guiDispatcher));
+			this.creationScript = creationScript ?? throw new ArgumentNullException(nameof(creationScript));
 		}
 
 		public void RunCreation(string server, string dbname)
@@ -39,11 +44,23 @@ namespace QS.DBScripts.Controllers
 
 		void StartCreation(string server, string dbname, string login, string password)
 		{
-			var createModel = autofacScope.Resolve<MySqlDbCreateModel>(new TypedParameter(typeof(IDbCreateController), this));
 			try {
-				bool success = createModel.RunCreation(server, dbname, login, password);
-				if (success)
+				ParseServer(server, out string host, out uint port);
+
+				var createModel = new MySqlDbCreateModel(
+					host, port, login, password,
+					creationScript,
+					Progress,
+					interaction: this,
+					cancellationToken: CancellationToken.None);
+
+				bool success = createModel.RunCreation(dbname, null);
+				if(success)
 					interactive.ShowMessage(ImportanceLevel.Info, "Создание базы успешно завершено.\nЗайдите в программу под администратором для добавления пользователей.");
+			}
+			catch(Exception ex) {
+				logger.Error(ex, "Ошибка создания базы.");
+				interactive.ShowMessage(ImportanceLevel.Error, ex.Message);
 			}
 			finally {
 				if(progressPage != null)
@@ -51,18 +68,44 @@ namespace QS.DBScripts.Controllers
 			}
 		}
 
-		#region Взаимодействие с моделью
-		public void WasError(string text, string lastSqlCommand)
+		private static void ParseServer(string server, out string host, out uint port) {
+			port = 3306;
+			var parts = (server ?? string.Empty).Split(new[] { ':' }, 2, StringSplitOptions.RemoveEmptyEntries);
+			if(parts.Length == 0)
+				throw new InvalidOperationException("Имя сервера не корректно.");
+			host = parts[0];
+			if(parts.Length > 1) {
+				if(!ushort.TryParse(parts[1], out var parsed))
+					throw new InvalidOperationException($"Порт сервера не корректен: {parts[1]}");
+				port = parsed;
+			}
+		}
+
+		#region IDbCreatorInteraction
+		//Создание идет в GUI-потоке (как и раньше), прогресс сам прокачивает событийный цикл,
+		//поэтому диалоги показываем напрямую.
+
+		public ToDoWithExistingDatabase AskDropExistingDatabase(string dbName)
+		{
+			var options = new[] { ToDoWithExistingDatabase.Rewrite, ToDoWithExistingDatabase.Recreate, ToDoWithExistingDatabase.Nothing };
+			var buttons = options.Select(o => o.GetEnumTitle()).ToArray();
+			string response = interactive.Question(buttons,
+				$"База с именем `{dbName}` уже существует на сервере.\n" +
+				"Перезаписать - заменить содержимое базы, сохранив пользователей.\n" +
+				"Пересоздать - полностью удалить базу и создать заново.",
+				"Создание базы данных");
+			int idx = Array.IndexOf(buttons, response);
+			// null при закрытии окна крестиком
+			return idx >= 0 ? options[idx] : ToDoWithExistingDatabase.Nothing;
+		}
+
+		public void ReportError(string text, string lastExecutedStatement)
 		{
 			interactive.ShowMessage(ImportanceLevel.Error, text);
 		}
+		#endregion
 
-		public bool NeedDropDatabaseIfExists(string dbname)
-		{
-			return interactive.Question($"База с именем `{dbname}` уже существует на сервере. Удалить существующую базу перед созданием новой?");
-		}
-
-		#region Свойства процесса
+		#region Progress page
 
 		IPage<ProgressWindowViewModel> progressPage;
 		public IProgressBarDisplayable Progress {
@@ -75,7 +118,6 @@ namespace QS.DBScripts.Controllers
 				return progressPage.ViewModel.Progress;
 			}
 		}
-		#endregion
 		#endregion
 	}
 }

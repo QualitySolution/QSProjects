@@ -47,14 +47,29 @@
     <Compile Update="LauncherApp.axaml.cs">
       <DependentUpon>LauncherApp.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\Pages\BaseManagementView.axaml.cs">
-      <DependentUpon>BaseManagementView.axaml</DependentUpon>
-    </Compile>
     <Compile Update="Views\Pages\LoginView.axaml.cs">
       <DependentUpon>LoginView.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\Pages\DataBasesView.axaml.cs">
+    <Compile Update="Views\Pages\DataBase\DataBasesView.axaml.cs">
       <DependentUpon>DataBasesView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Pages\DataBase\CreateDbSettingsView.axaml.cs">
+      <DependentUpon>CreateDbSettingsView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Pages\DataBase\ImportDbSettingsView.axaml.cs">
+      <DependentUpon>ImportDbSettingsView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Pages\DataBase\BackupDbSettingsView.axaml.cs">
+      <DependentUpon>BackupDbSettingsView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Pages\DataBase\CreateDataBaseProgressView.axaml.cs">
+      <DependentUpon>CreateDataBaseProgressView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Pages\ChangePasswordView.axaml.cs">
+      <DependentUpon>ChangePasswordView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Pages\UsersView.axaml.cs">
+      <DependentUpon>UsersView.axaml</DependentUpon>
     </Compile>
     <Compile Update="Views\Pages\UserManagementView.axaml.cs">
       <DependentUpon>UserManagementView.axaml</DependentUpon>

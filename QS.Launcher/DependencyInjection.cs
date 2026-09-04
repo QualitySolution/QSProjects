@@ -1,19 +1,47 @@
 using Autofac;
 using Microsoft.Extensions.DependencyInjection;
+using QS.DBScripts.Controllers;
 using QS.DbManagement;
+using QS.ErrorReporting;
+using QS.ErrorReporting.Handlers;
 using QS.Launcher.AppRunner;
+using QS.Launcher.Services;
 using QS.Launcher.ViewModels;
 using QS.Launcher.ViewModels.PageViewModels;
+using QS.Launcher.ViewModels.PageViewModels.DataBase;
+using QS.DbManagement.Creation;
+using System;
+using System.Collections.Generic;
 
 namespace QS.Launcher {
 	public static partial class DependencyInjection {
+		public static IServiceCollection AddLauncherDataBaseCreation(this IServiceCollection services, List<(Type res,Type creator)> resourceCratorMap)
+		{
+			var map = new DbResourcesCreationMap();
+			foreach(var resourceCrator in resourceCratorMap) {
+				map.Register(resourceCrator.res, resourceCrator.creator);
+			}
+
+			return services
+				.AddSingleton(map)
+				.AddSingleton<DbCreationFactory>();
+		}
+
 		public static IServiceCollection AddLauncherViewModels(this IServiceCollection services) {
 			return services
+				// стек базовых страниц
+				.AddSingleton<LauncherNavigation>()
 				.AddSingleton<MainWindowVM>()
 				.AddSingleton<LoginVM>()
 				.AddSingleton<DataBasesVM>()
-				.AddSingleton<UserManagementVM>()
-				.AddSingleton<BaseManagementVM>();
+				.AddSingleton<UsersVM>()
+				// Страницы разовой операции создаются заново на каждый вызов
+				.AddTransient<UserManagementVM>()
+				.AddTransient<ChangePasswordVM>()
+				.AddTransient<CreateDataBaseProgressVM>()
+				.AddSingleton<IDbCreatorInteraction, LauncherDbCreatorInteraction>()
+				
+				.AddSingleton<DbCapabilities>();
 		}
 
 		public static IServiceCollection AddLauncherOptions(this IServiceCollection services, LauncherOptions launcherOptions) {
@@ -23,7 +51,22 @@ namespace QS.Launcher {
 		public static IServiceCollection AddLauncherDependencies(this IServiceCollection services) {
 			return services
 				.AddSingleton<Configurator>();
-		} 
+		}
+
+		/// <summary>
+		/// Разбор ошибок лаунчера
+		/// </summary>
+		public static IServiceCollection AddLauncherErrorHandling(this IServiceCollection services) {
+			return services
+				//обработчики просматриваются в порядке регистрации
+				//широкие условия лучше ставить ниже
+				.AddSingleton<IErrorHandler, NotEnoughRights>()
+				.AddSingleton<IErrorHandler, OperationRefused>()
+				.AddSingleton<IErrorHandler, MySqlExceptionLoginFailed>()
+				.AddSingleton<IErrorHandler, ConnectionIsLost>()
+				.AddSingleton<IErrorHandler, MySqlExceptionAccessDenied>()
+				.AddSingleton<IErrorHandlingService, ErrorHandlingService>();
+		}
 
 		public static IServiceCollection AddConnectionType(this IServiceCollection services, ConnectionTypeBase connectionType) {
 			services.AddSingleton(connectionType);

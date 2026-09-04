@@ -4,18 +4,110 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:QS.Launcher.ViewModels.PageViewModels;assembly=QS.Launcher"
-             d:DesignHeight="450"
-             d:DesignWidth="800"
+             xmlns:dbme="clr-namespace:QS.DbManagement.Entities;assembly=QS.DbManagement"
+             d:DesignHeight="650"
+             d:DesignWidth="450"
              x:DataType="vm:UserManagementVM"
              mc:Ignorable="d">
-    <ScrollViewer>
-        <Grid>
-            <Label Content="Управление пользователями" />
-            <Button Command="{Binding ChangePageCommand}" Content="Назад">
-                <Button.CommandParameter>
-                    <x:Int32>1</x:Int32>
-                </Button.CommandParameter>
-            </Button>
-        </Grid>
-    </ScrollViewer>
+    <DockPanel>
+        <Border DockPanel.Dock="Bottom" BorderThickness="0,1,0,0" BorderBrush="#30808080">
+            <Grid Margin="15,10" ColumnDefinitions="*,*">
+                <Button Grid.Column="0" Margin="5,0" HorizontalAlignment="Stretch"
+                        Command="{Binding BackCommand}" Content="Назад" />
+                <Button Grid.Column="1" Margin="5,0" HorizontalAlignment="Stretch" Classes="accent"
+                        Command="{Binding SaveCommand}" Content="Сохранить изменения" />
+            </Grid>
+        </Border>
+
+        <ScrollViewer>
+        <StackPanel Margin="20,20,20,10" VerticalAlignment="Center">
+            <Label Margin="5" FontSize="16" FontWeight="Bold" Content="Управление пользователями" />
+
+            <!-- Управление другими пользователями - только при наличии прав -->
+            <StackPanel IsVisible="{Binding CanManageUsers}">
+                <!-- Форма редактирования -->
+                <StackPanel IsVisible="{Binding ShowEditForm}">
+                    <Label Margin="5,10,5,0" Content="Логин:" />
+                    <TextBox Margin="5" Text="{Binding Card.Login}" IsEnabled="{Binding Card.IsNew}" />
+
+                    <StackPanel IsVisible="{Binding Card.ShowName}">
+                        <Label Margin="5,5,5,0" Content="Имя:" />
+                        <TextBox Margin="5" Text="{Binding Card.Name}" />
+                    </StackPanel>
+
+                    <StackPanel IsVisible="{Binding Card.ShowEmail}">
+                        <Label Margin="5,5,5,0" Content="Email:" />
+                        <TextBox Margin="5" Text="{Binding Card.Email}" />
+                    </StackPanel>
+
+                    <StackPanel IsVisible="{Binding Card.ShowPhone}">
+                        <Label Margin="5,5,5,0" Content="Телефон:" />
+                        <TextBox Margin="5" Text="{Binding Card.Phone}" />
+                    </StackPanel>
+
+                    <StackPanel IsVisible="{Binding Card.ShowPost}">
+                        <Label Margin="5,5,5,0" Content="Должность:" />
+                        <TextBox Margin="5" Text="{Binding Card.Post}" />
+                    </StackPanel>
+
+                    <StackPanel IsVisible="{Binding Card.ShowComment}">
+                        <Label Margin="5,5,5,0" Content="Комментарий:" />
+                        <TextBox Margin="5" AcceptsReturn="True" MaxHeight="60" Text="{Binding Card.Comment}" />
+                    </StackPanel>
+
+                    <CheckBox Margin="5,5,5,0" Content="Администратор"
+                              ToolTip.Tip="Управление пользователями и их доступами. Право не на отдельную базу, а целиком"
+                              IsChecked="{Binding Card.IsAdmin}" IsVisible="{Binding Card.ShowAdminFlag}" />
+                    <CheckBox Margin="5,0" Content="Отключён"
+                              IsChecked="{Binding Card.Disabled}" IsVisible="{Binding Card.ShowDisabling}" />
+
+                    <Label Margin="5,5,5,0" Content="Пароль:" />
+                    <TextBox Margin="5" PasswordChar="•" Text="{Binding Card.NewPassword}" Watermark="{Binding Card.PasswordWatermark}" />
+
+                    <!-- Доступ к базам -->
+                    <StackPanel IsVisible="{Binding HasSelectedUser}">
+                        <Label Margin="5,15,5,0" FontWeight="Bold" Content="Доступ к базам" />
+
+                        <Grid Margin="5,0" ColumnDefinitions="*,88,80,80">
+                            <TextBlock Grid.Column="1" HorizontalAlignment="Center" FontSize="12" Opacity="0.6" Text="Пользование"
+                                       ToolTip.Tip="Работа с данными базы и обновление её структуры" />
+                            <TextBlock Grid.Column="2" HorizontalAlignment="Center" FontSize="12" Opacity="0.6" Text="Все права"
+                                       ToolTip.Tip="Все права на эту базу" />
+                            <TextBlock Grid.Column="3" HorizontalAlignment="Center" FontSize="12" Opacity="0.6" Text="Просмотр"
+                                       ToolTip.Tip="Только просмотр: ни менять данные, ни обновлять базу нельзя"
+                                       IsVisible="{Binding ShowReadOnly}" />
+                        </Grid>
+
+                        <ItemsControl ItemsSource="{Binding BaseAccesses}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:BaseAccessRowVM">
+                                    <!-- Background нужен для срабатывания подсказки: прозрачная сетка событий мыши не ловит -->
+                                    <Grid Margin="5,2" ColumnDefinitions="*,88,80,80" Background="Transparent"
+                                          ToolTip.Tip="{Binding LevelDescription}">
+                                        <TextBlock Grid.Column="0" VerticalAlignment="Center"
+                                                   TextTrimming="CharacterEllipsis" Text="{Binding Title}" />
+                                        <CheckBox Grid.Column="1" MinWidth="0" Padding="0" HorizontalAlignment="Center"
+                                                  IsChecked="{Binding HasAccess}" IsEnabled="{Binding CanEdit}" />
+                                        <CheckBox Grid.Column="2" MinWidth="0" Padding="0" HorizontalAlignment="Center"
+                                                  IsChecked="{Binding IsAdmin}" IsEnabled="{Binding CanEdit}" />
+                                        <CheckBox Grid.Column="3" MinWidth="0" Padding="0" HorizontalAlignment="Center"
+                                                  IsChecked="{Binding ReadOnly}" IsVisible="{Binding ShowReadOnly}" IsEnabled="{Binding CanEdit}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <TextBlock Margin="5,4,5,0" FontSize="12" Opacity="0.6" TextWrapping="Wrap"
+                                   Text="У пользователя глобальные права на весь сервер — доступ к отдельным базам не настраивается"
+                                   IsVisible="{Binding BaseAccessLocked}" />
+
+                        <TextBlock Margin="5,0,5,5" FontSize="12" Opacity="0.6" TextWrapping="Wrap"
+                                   Text="Недостаточно прав для изменения доступов"
+                                   IsVisible="{Binding !CanManageBaseAccess}" />
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+        </ScrollViewer>
+    </DockPanel>
 </UserControl>

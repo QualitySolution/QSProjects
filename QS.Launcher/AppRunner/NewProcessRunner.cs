@@ -1,7 +1,6 @@
-using System;
 using System.Diagnostics;
 using System.IO;
-using QS.DbManagement.Responces;
+using QS.DbManagement.Entities;
 
 namespace QS.Launcher.AppRunner {
 	public class NewProcessRunner : IAppRunner {
@@ -13,7 +12,7 @@ namespace QS.Launcher.AppRunner {
 
 		public void Run(LoginToDatabaseResponse loginToDatabase) {
 			if (!File.Exists(this.exeFileName))
-				throw new ArgumentException($"Запускаемого файла {exeFileName} не существует.");
+				throw new FileNotFoundException($"Запускаемого файла {exeFileName} не существует.", exeFileName);
 
 			var startInfo = new ProcessStartInfo {
 				WorkingDirectory = Path.GetDirectoryName(exeFileName),
@@ -27,7 +26,7 @@ namespace QS.Launcher.AppRunner {
 			foreach (var par in loginToDatabase.Parameters)
 				startInfo.Environment["QS_" + par.Key] = par.Value;
 
-			Process.Start(startInfo);
+			using(Process.Start(startInfo)) { }
 		}
 	}
 }
