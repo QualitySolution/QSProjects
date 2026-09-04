@@ -3,9 +3,9 @@ using NUnit.Framework;
 using QS.Cloud.Client.DataBase;
 using QS.Cloud.Core;
 using QS.DbManagement.Entities;
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using OperationRefusedException = QS.ErrorReporting.OperationRefusedException;
 
 namespace QS.Launcher.Test.Cloud {
 	/// <summary>Доступ к базам</summary>
@@ -65,7 +65,9 @@ namespace QS.Launcher.Test.Cloud {
 				.Returns(new ChangeBaseAccessResponse { Success = false, Message = "База не найдена" });
 			var provider = LoginAs();
 
-			var exception = Assert.Throws<InvalidOperationException>(
+			// тип важен не меньше текста: по нему цепочка IErrorHandler отличает отказ по делу
+			// от поломки и не предлагает пользователю отправить отчёт об ошибке
+			var exception = Assert.Throws<OperationRefusedException>(
 				() => provider.SetUserBaseAccess(Worker, new DbUserBaseAccess { BaseId = 9999, HasAccess = true }));
 
 			Assert.That(exception.Message, Is.EqualTo("База не найдена"));
@@ -78,7 +80,7 @@ namespace QS.Launcher.Test.Cloud {
 				.Returns(new ChangeBaseAccessResponse { Success = false, Message = string.Empty });
 			var provider = LoginAs();
 
-			var exception = Assert.Throws<InvalidOperationException>(
+			var exception = Assert.Throws<OperationRefusedException>(
 				() => provider.SetUserBaseAccess(Worker, new DbUserBaseAccess { BaseId = BaseId, HasAccess = true }));
 
 			Assert.That(exception.Message, Does.Contain("Не удалось изменить доступ"));

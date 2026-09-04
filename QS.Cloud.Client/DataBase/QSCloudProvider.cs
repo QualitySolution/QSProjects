@@ -285,6 +285,14 @@ namespace QS.Cloud.Client.DataBase {
 
 			try {
 				var cloudResponse = loginClient.StartSession(dbInfo.BaseId);
+				if(!cloudResponse.Success || cloudResponse.Db == null)
+					return new LoginToDatabaseResponse {
+						Success = false,
+						ErrorMessage = string.IsNullOrEmpty(cloudResponse.Description)
+							? "Облако не открыло сессию к базе"
+							: cloudResponse.Description
+					};
+
 				var builder = new MySqlConnectionStringBuilder {
 					Server = cloudResponse.Db.Server,
 					Port = cloudResponse.Db.Port,

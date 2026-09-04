@@ -35,7 +35,10 @@ namespace QS.Cloud.Client
 						.GetAwaiter().GetResult();
 					return true;
 				}
-				catch {
+				catch(Exception ex) {
+					// Недоступное облако здесь - штатный ответ «нельзя», операцию не валим.
+					// Но причину молча терять нельзя: без неё непонятно, почему пропали кнопки.
+					logger.Debug(ex, "Нет соединения с облаком QS");
 					return false;
 				}
 			}
