@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using QS.DbManagement;
 using QS.DbManagement.Entities;
+using QS.ErrorReporting;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -93,6 +94,27 @@ namespace QS.Launcher.Test.Provider {
 
 			Assert.That(row?.HasAccess, Is.True,
 				"пользователя нет в метабазе - доступы приходят из прямого чтения грантов");
+		}
+
+		[Test(Description = "Учётку удалили мимо лаунчера - на запрос её данных отвечаем отказом, а не пустотой")]
+		public async Task UserOnlyInMetabase_DataRequests_AreRefusedLoudly() {
+			await CreateApplicationDatabase("base_ghost_user");
+			int baseId = await SeedMetabase("base_ghost_user");
+			await SeedMetabaseUser("vanished", name: "Пропавший"); // учётки на сервере нет
+
+			var provider = LoginAs();
+			Assume.That(provider.GetUsers().Any(u => u.Login == "vanished"), Is.True,
+				"предусловие: в списке из метабазы он есть, и админ на него нажмёт");
+
+			Assert.Multiple(() => {
+				Assert.Throws<OperationRefusedException>(() => provider.GetUserBaseAccess("vanished"),
+					"пустой список доступов выглядел бы как «прав просто не выдали»");
+				Assert.Throws<OperationRefusedException>(
+					() => provider.UpdateUser(new DbUserInfo { Login = "vanished", Name = "Другое имя" }),
+					"иначе пользователю прилетает сырое «Operation ALTER USER failed»");
+				Assert.Throws<OperationRefusedException>(() => provider.SetUserBaseAccess("vanished",
+					new DbUserBaseAccess { BaseName = "base_ghost_user", BaseId = baseId, HasAccess = true }));
+			});
 		}
 
 		[Test(Description = "Метабаза пропала посреди сессии - следующая операция уходит в прямой режим")]

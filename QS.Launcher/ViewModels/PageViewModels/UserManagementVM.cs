@@ -152,9 +152,9 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 				var byBase = rows.OrderBy(r => r.BaseName, StringComparer.Ordinal).ToList();
 
 				if(string.IsNullOrEmpty(Card.Name))
-					Card.Name = byBase.FirstOrDefault(n => !string.IsNullOrEmpty(n.Name)).Name;
+					Card.Name = byBase.FirstOrDefault(n => !string.IsNullOrEmpty(n.Name))?.Name;
 				if(string.IsNullOrEmpty(Card.Email))
-					Card.Email = byBase.FirstOrDefault(e => !string.IsNullOrEmpty(e.Email)).Email;
+					Card.Email = byBase.FirstOrDefault(e => !string.IsNullOrEmpty(e.Email))?.Email;
 			}
 			catch(Exception ex) {
 				errorHandling.Handle(ex, AccessTitle);

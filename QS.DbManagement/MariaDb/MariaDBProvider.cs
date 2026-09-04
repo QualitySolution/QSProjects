@@ -5,6 +5,7 @@ using QS.DbManagement.MariaDb;
 using QS.DbManagement.MariaDb.QSLauncher;
 using QS.DBScripts.Controllers;
 using QS.Dialog;
+using QS.ErrorReporting;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -622,8 +623,9 @@ namespace QS.DbManagement {
 		public bool UpdateUser(DbUserInfo user, string newPassword = null) {
 			ValidateLogin(user?.Login);
 
+			var grantsByHost = RequireGrantsByHost(user.Login);
 			bool isAdminNow = SupportsAdminFlag
-				&& MySqlGrants.HasGlobalAdmin(ReadGrantsByHost(user.Login).Values.SelectMany(g => g));
+				&& grantsByHost.Values.Any(MySqlGrants.HasGlobalAdmin);
 
 			var statements = HostsOf(user.Login)
 				.SelectMany(host => UserChangeStatements(user, host, newPassword, isAdminNow))
@@ -637,11 +639,6 @@ namespace QS.DbManagement {
 			return true;
 		}
 
-		/// <summary>
-		/// Профиль пишется сам по себе, а не попутно с выдачей доступа: правка одного имени
-		/// должна доходить до баз, даже если доступы не трогали. Строку не заводим - обновляем
-		/// там, где пользователь уже есть, остальные базы UPDATE просто не заденет
-		/// </summary>
 		private void ReflectProfileInBases(DbUserInfo user) {
 			if(string.IsNullOrEmpty(user.Name) && string.IsNullOrEmpty(user.Email))
 				return;
@@ -671,7 +668,9 @@ namespace QS.DbManagement {
 		public bool DeleteUser(string login) {
 			ValidateLogin(login);
 
-			var userBases = GetUserBaseAccess(login).ConvertAll(a => a.BaseName);
+			// строку гасим во всех базах каталога, а не только там, где были гранты: удаляют
+			// и пропавшую с сервера учётку, у которой грантов уже нет
+			var userBases = GetUserDatabases().ConvertAll(db => db.BaseName);
 
 			OnConnection(c => c.Execute(string.Join(";", HostsOf(login)
 				.Select(host => $"DROP USER IF EXISTS {MySqlAccess.UserOf(login, host)}"))));
@@ -691,7 +690,7 @@ namespace QS.DbManagement {
 
 		public List<DbUserBaseAccess> GetUserBaseAccess(string login)
 		{
-			var grants = ReadGrantsByHost(login).Values.SelectMany(g => g).ToList();
+			var grants = RequireGrantsByHost(login).Values.SelectMany(g => g).ToList();
 			bool globalAdmin = MySqlGrants.HasGlobalAdmin(grants);
 
 			// каталог берём из метабазы одним запросом, а не читая параметры каждой базы
@@ -724,9 +723,7 @@ namespace QS.DbManagement {
 			if(string.IsNullOrWhiteSpace(access?.BaseName))
 				throw new ArgumentException("Не указано имя базы", nameof(access));
 
-			var grantsByHost = ReadGrantsByHost(login);
-			if(!grantsByHost.Any())
-				throw new InvalidOperationException($"Пользователь {login} не найден на сервере.");
+			var grantsByHost = RequireGrantsByHost(login);
 
 			if(MySqlGrants.HasGlobalAdmin(grantsByHost.Values.SelectMany(g => g)))
 				throw new InvalidOperationException($"У пользователя {login} глобальные права на весь сервер");
@@ -752,23 +749,31 @@ namespace QS.DbManagement {
 			return true;
 		}
 
-		private Dictionary<string, List<string>> ReadGrantsByHost(string login)
+		private Dictionary<string, IEnumerable<string>> RequireGrantsByHost(string login)
 		{
-			var hosts = HostsOf(login).ToList();
-			var result = new Dictionary<string, List<string>>(StringComparer.Ordinal);
+			var hosts = HostsOf(login);
+			var result = new Dictionary<string, IEnumerable<string>>(StringComparer.Ordinal);
 			string sql = string.Join(";", hosts
 				.Select(host => $"SHOW GRANTS FOR {MySqlAccess.UserOf(login, host)}"));
-			try {
+			try
+			{
 				OnConnection(c => {
-					using(var multi = c.QueryMultiple(sql)) {
+					using(var multi = c.QueryMultiple(sql))
+					{
 						foreach(var host in hosts)
-							result[host] = multi.Read<string>().ToList();
+							result[host] = multi.Read<string>();
 					}
 				});
 			}
-			catch(MySqlException ex) when(ex.Number == ER_NONEXISTING_GRANT) {
+			catch(MySqlException ex) when(ex.Number == ER_NONEXISTING_GRANT)
+			{
 				logger.Debug(ex, "Не удалось получить гранты пользователя {0}", login);
 			}
+
+			if(!result.Any())
+				throw new OperationRefusedException($"Учётной записи {login} на сервере нет. "
+					+ "Возможно, её удалили в обход лаунчера - обновите список пользователей.");
+
 			return result;
 		}
 

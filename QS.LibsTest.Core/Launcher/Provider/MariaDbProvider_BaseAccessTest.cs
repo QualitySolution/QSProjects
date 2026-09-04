@@ -3,6 +3,7 @@ using MySqlConnector;
 using NUnit.Framework;
 using QS.DbManagement;
 using QS.DbManagement.Entities;
+using QS.ErrorReporting;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -177,7 +178,7 @@ namespace QS.Launcher.Test.Provider
 
 		[Test(Description = "Доступ несуществующему пользователю - явная ошибка")]
 		public void SetUserBaseAccess_UnknownLogin_Throws() {
-			Assert.Throws<InvalidOperationException>(
+			Assert.Throws<OperationRefusedException>(
 				() => provider.SetUserBaseAccess("who_is_this", Access()));
 		}
 
