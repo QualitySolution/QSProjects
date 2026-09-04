@@ -76,7 +76,15 @@ namespace QS.Cloud.Client.DataBase {
 		public bool CanChangeOwnPassword => true;
 
 		public bool ChangeOwnPassword(string newPassword) => Call(() =>
-			loginClient.ChangePassword(newPassword).Success);
+		{
+			if(!loginClient.ChangePassword(newPassword).Success)
+				return false;
+
+			loginClient.UpdatePassword(newPassword);
+			dbClient.UpdatePassword(newPassword);
+			userClient.UpdatePassword(newPassword);
+			return true;
+		});
 
 		public List<DbUserInfo> GetUsers() => Call(() =>
 			userClient.GetUsers().Select(ToDbUserInfo).ToList());
@@ -292,6 +300,15 @@ namespace QS.Cloud.Client.DataBase {
 						{"SessionId", cloudResponse.SessionId},
 						{"BaseTitle", dbInfo.Title}
 					}
+				};
+			}
+			// ErrorMessage уходит прямо в окно пользователю, а ex.Message у RpcException - это
+			// строка вида Status(StatusCode="PermissionDenied", Detail="Нет доступа к базе"):
+			// человеку читать в ней нечего. Берём Detail, как и во всех остальных вызовах
+			catch(RpcException ex) {
+				resp = new LoginToDatabaseResponse {
+					Success = false,
+					ErrorMessage = Describe(ex)
 				};
 			}
 			catch(Exception ex) {
