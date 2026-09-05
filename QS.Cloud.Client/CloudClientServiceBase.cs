@@ -8,14 +8,22 @@ namespace QS.Cloud.Client
 		private readonly ISessionInfoProvider sessionInfoProvider;
 		private readonly string serviceAddress;
 		private readonly int servicePort;
+		private readonly ChannelCredentials credentials;
 
 		protected readonly Metadata Headers;
         
-		public CloudClientServiceBase(ISessionInfoProvider sessionInfoProvider, string serviceAddress, int servicePort)
+		public CloudClientServiceBase(
+			ISessionInfoProvider sessionInfoProvider,
+			string serviceAddress,
+			int servicePort,
+			ChannelCredentials credentials = null)
 		{
 			this.sessionInfoProvider = sessionInfoProvider ?? throw new ArgumentNullException(nameof(sessionInfoProvider));
 			this.serviceAddress = serviceAddress;
 			this.servicePort = servicePort;
+			this.credentials = credentials ?? (servicePort == 443
+				? (ChannelCredentials)new SslCredentials()
+				: ChannelCredentials.Insecure);
 			Headers = new Metadata {{"Authorization", $"Bearer {this.sessionInfoProvider.SessionId}"}};
 		}
 
@@ -28,7 +36,7 @@ namespace QS.Cloud.Client
 						new ChannelOption(ChannelOptions.MaxReceiveMessageLength, 10 * 1024 * 1024), // 10MB
 						new ChannelOption(ChannelOptions.MaxSendMessageLength, 10 * 1024 * 1024) // 10MB
 					};
-					channel = new Channel(serviceAddress, servicePort, ChannelCredentials.Insecure, channelOptions);
+					channel = new Channel(serviceAddress, servicePort, credentials, channelOptions);
 				}
 				if (channel.State == ChannelState.TransientFailure)
 					channel.ConnectAsync();
