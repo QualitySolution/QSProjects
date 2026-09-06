@@ -65,7 +65,7 @@ namespace Gamma.ColumnConfig
 		/// <summary>
 		/// Set render function, always before call FillItems.
 		/// </summary>
-		public ComboRendererMapping<TNode, TItem> SetDisplayFunc(Func<TItem, string> displayFunc)
+		public ComboRendererMapping<TNode, TItem> SetDisplayFunc(Func<TNode, TItem, string> displayFunc)
 		{
 			_cellRenderer.DisplayFunc = displayFunc;
 			return this;
@@ -134,7 +134,7 @@ namespace Gamma.ColumnConfig
 			return this;
 		}
 
-		public ComboRendererMapping<TNode, TItem> DynamicFillListFunc(Func<TNode, IList<TItem>> func)
+		public ComboRendererMapping<TNode, TItem> DynamicFillListFunc(Func<TNode, IEnumerable<TItem>> func)
 		{
 			_cellRenderer.IsDynamicallyFillList = true;
 			_cellRenderer.ItemsListFunc = func;

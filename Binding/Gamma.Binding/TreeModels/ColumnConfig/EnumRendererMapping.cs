@@ -23,7 +23,7 @@ namespace Gamma.ColumnConfig
 
 			_cellRenderer.DataPropertyInfo = prop;
 
-			_cellRenderer.DisplayFunc = e => (e as Enum).GetEnumTitle();
+			_cellRenderer.DisplayFunc = (node, item) => (item as Enum).GetEnumTitle();
 			_cellRenderer.Items = GetEnumItems(prop.PropertyType, excludeItems);
 			_cellRenderer.UpdateComboList(default(TNode));
 		}

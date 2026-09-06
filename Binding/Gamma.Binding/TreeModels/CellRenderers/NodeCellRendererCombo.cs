@@ -15,7 +15,7 @@ namespace Gamma.GtkWidgets.Cells
 
 		public IValueConverter EditingValueConverter { get; set; }
 
-		public Func<TItem, string> DisplayFunc { get; set; }
+		public Func<TNode, TItem, string> DisplayFunc { get; set; }
 
 		public Func<TItem, string> DisplayListFunc { get; set; }
 
@@ -25,9 +25,9 @@ namespace Gamma.GtkWidgets.Cells
 
 		public bool IsDynamicallyFillList { get; set; }
 
-		public Func<TNode, IList<TItem>> ItemsListFunc;
+		public Func<TNode, IEnumerable<TItem>> ItemsListFunc;
 
-		public IList<TItem> Items { get; set; }
+		public IEnumerable<TItem> Items { get; set; }
 
 		public string EmptyValueTitle { get; set; }
 
@@ -43,7 +43,7 @@ namespace Gamma.GtkWidgets.Cells
 			if(node is TNode typpedNode) {
 				var propValue = (TItem)DataPropertyInfo.GetValue(typpedNode, null);
 				if(propValue != null)
-					Text = DisplayFunc == null ? propValue.ToString() : DisplayFunc(propValue);
+					Text = DisplayFunc == null ? propValue.ToString() : DisplayFunc(typpedNode, propValue);
 				else
 					Text = string.Empty;
 
@@ -78,7 +78,7 @@ namespace Gamma.GtkWidgets.Cells
 				if(DisplayListFunc != null)
 					_comboListStore.AppendValues(item, DisplayListFunc(item));
 				else if(DisplayFunc != null)
-					_comboListStore.AppendValues(item, DisplayFunc(item));
+					_comboListStore.AppendValues(item, DisplayFunc(node, item));
 				else
 					_comboListStore.AppendValues(item, item.ToString());
 			}
