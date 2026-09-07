@@ -110,7 +110,9 @@ public partial class EntityEntryView : UserControl
             return Task.FromResult(Enumerable.Empty<object>());
 
         var waiting = new TaskCompletionSource<IEnumerable<object>>();
-        pendingAutocomplete = waiting;
+        var displaced = Interlocked.Exchange(ref pendingAutocomplete, waiting);
+        if (displaced != null)
+            CompleteOnGuiThread(displaced, Array.Empty<object>());
         token.Register(() => CompleteOnGuiThread(waiting, Array.Empty<object>()));
         viewModel.AutocompleteTextEdited(search ?? String.Empty);
         return waiting.Task;
