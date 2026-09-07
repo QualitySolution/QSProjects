@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using Gtk;
 using Gamma.Binding.Core;
+using QS.Extensions;
 
 namespace QS.Widgets
 {
@@ -131,6 +132,12 @@ namespace QS.Widgets
 					break;
 			}
 			push_in = true;
+		}
+
+		protected override void OnDestroyed()
+		{
+			Image?.DisposeImagePixbuf();
+			base.OnDestroyed();
 		}
 	}
 

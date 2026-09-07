@@ -33,6 +33,11 @@ namespace Gamma.GtkWidgets
 			Binding.FireChange (w => w.Active);
 			base.OnToggled ();
 		}
+
+		protected override void OnDestroyed() {
+			Binding.CleanSources();
+			base.OnDestroyed();
+		}
 	}
 }
 

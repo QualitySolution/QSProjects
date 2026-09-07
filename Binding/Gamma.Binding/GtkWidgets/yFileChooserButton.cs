@@ -39,6 +39,11 @@ namespace Gamma.GtkWidgets
 				w => w.Filenames);
 			base.OnSelectionChanged();
         }
-    }
+
+		protected override void OnDestroyed() {
+			Binding?.CleanSources();
+			base.OnDestroyed();
+		}
+	}
 }
 

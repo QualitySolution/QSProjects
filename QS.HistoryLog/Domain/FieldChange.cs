@@ -1,9 +1,12 @@
+using NHibernate;
 using NHibernate.Event;
+using NHibernate.Proxy;
 using NHibernate.Type;
 using QS.DomainModel.Entity;
 using QS.DomainModel.Tracking;
 using QS.Project.DB;
 using QS.Utilities.Extensions;
+using QS.Utilities.Text;
 using System;
 using System.Reflection;
 
@@ -89,19 +92,31 @@ namespace QS.HistoryLog.Domain {
 		}
 
 		private static bool EntityCompare(ref FieldChange change, object valueOld, object valueNew) {
-			if(DomainHelper.EqualDomainObjects(valueOld, valueNew))
+			var oldId = DomainHelper.GetIdOrNull(valueOld);
+			var newId = DomainHelper.GetIdOrNull(valueNew);
+			if(oldId == newId)
 				return false;
 
 			change = new FieldChange();
 			if(valueOld != null) {
-				change.OldValue = GetObjectTitle(valueOld);
-				change.OldId = DomainHelper.GetId(valueOld);
+				change.OldValue = GetSafeObjectTitle(valueOld, oldId);
+				change.OldId = oldId;
 			}
 			if(valueNew != null) {
-				change.NewValue = GetObjectTitle(valueNew);
-				change.NewId = DomainHelper.GetId(valueNew);
+				change.NewValue = GetSafeObjectTitle(valueNew, newId);
+				change.NewId = newId;
 			}
 			return true;
+		}
+
+		private static string GetSafeObjectTitle(object value, int? id) {
+			if(NHibernateUtil.IsInitialized(value))
+				return GetObjectTitle(value);
+
+			var objectType = NHibernateProxyHelper.GuessClass(value);
+			var objectTypeTitle = DomainHelper.GetSubjectNames(objectType)?.Nominative.StringToTitleCase()
+				?? objectType.Name;
+			return $"[{objectTypeTitle}, ID: {id}]";
 		}
 
 		private static bool DateTimeCompare(ref FieldChange change, PropertyInfo info, object valueOld, object valueNew) {

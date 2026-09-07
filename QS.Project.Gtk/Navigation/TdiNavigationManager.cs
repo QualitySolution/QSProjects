@@ -47,6 +47,9 @@ namespace QS.Navigation
 
 		public bool AskClosePage(IPage page, CloseSource source = CloseSource.External)
 		{
+			if(!CanClosePage(page, source))
+				return false;
+
 			if (page is ITdiPage tdiPage)
 				return tdiNotebook.AskToCloseTab(tdiPage.TdiTab, source);
 			else
@@ -56,6 +59,9 @@ namespace QS.Navigation
 
 		public void ForceClosePage(IPage page, CloseSource source = CloseSource.External)
 		{
+			if(!CanClosePage(page, source))
+				return;
+
 			if (page is ITdiPage tdiPage)
 				tdiNotebook.ForceCloseTab(tdiPage.TdiTab, source);
 			else
@@ -391,6 +397,11 @@ namespace QS.Navigation
 		void GtkDialog_DeleteEvent(object o, DeleteEventArgs args)
 		{
 			var page = FindPage(args.Event.Window) ?? throw new InvalidOperationException("Закрыто окно которое не зарегистрировано как страницы в навигаторе");
+			if(!CanClosePage(page, CloseSource.ClosePage)) {
+				args.RetVal = true;
+				return;
+			}
+
 			ClosePage(page, CloseSource.ClosePage);
 		}
 

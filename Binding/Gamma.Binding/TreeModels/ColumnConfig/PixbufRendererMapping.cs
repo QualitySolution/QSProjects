@@ -8,14 +8,14 @@ namespace Gamma.ColumnConfig
 {
 	public class PixbufRendererMapping<TNode> : RendererMappingBase<NodeCellRendererPixbuf<TNode>, TNode>
 	{
-		private NodeCellRendererPixbuf<TNode> cellRenderer = new NodeCellRendererPixbuf<TNode> ();
+		private readonly NodeCellRendererPixbuf<TNode> _cellRenderer = new NodeCellRendererPixbuf<TNode> ();
 
 		public PixbufRendererMapping (ColumnMapping<TNode> column, Expression<Func<TNode, Pixbuf>> getDataExp)
 			: base(column)
 		{
-			cellRenderer.DataPropertyInfo = PropertyUtil.GetPropertyInfo (getDataExp);
+			_cellRenderer.DataPropertyInfo = PropertyUtil.GetPropertyInfo (getDataExp);
 			var getter = getDataExp.Compile();
-			cellRenderer.LambdaSetters.Add ((c, n) => c.Pixbuf = getter (n));
+			_cellRenderer.LambdaSetters.Add ((c, n) => c.Pixbuf = getter (n));
 		}
 
 		public PixbufRendererMapping (ColumnMapping<TNode> column)
@@ -28,12 +28,12 @@ namespace Gamma.ColumnConfig
 
 		public override INodeCellRenderer GetRenderer ()
 		{
-			return cellRenderer;
+			return _cellRenderer;
 		}
 
 		protected override void SetSetterSilent (Action<NodeCellRendererPixbuf<TNode>, TNode> commonSet)
 		{
-			cellRenderer.LambdaSetters.Insert(0, commonSet);
+			_cellRenderer.LambdaSetters.Insert(0, commonSet);
 		}
 
 		#endregion
@@ -46,13 +46,13 @@ namespace Gamma.ColumnConfig
 
 		public PixbufRendererMapping<TNode> Sensitive(bool on=true)
 		{
-			cellRenderer.Sensitive = on;
+			_cellRenderer.Sensitive = on;
 			return this;
 		}
 
 		public PixbufRendererMapping<TNode> AddSetter(Action<NodeCellRendererPixbuf<TNode>, TNode> setter)
 		{
-			cellRenderer.LambdaSetters.Add (setter);
+			_cellRenderer.LambdaSetters.Add (setter);
 			return this;
 		}
 	}

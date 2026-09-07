@@ -1,6 +1,7 @@
 using System;
 using System.Windows.Input;
 using Gamma.Binding.Core;
+using Gamma.Extensions;
 using Gtk;
 
 namespace Gamma.GtkWidgets
@@ -46,13 +47,15 @@ namespace Gamma.GtkWidgets
 			Sensitive = command.CanExecute(commandArgument);
 		}
 
-		public override void Destroy() 
-		{
-			command.CanExecuteChanged -= CommandCanExecuteChanged;
-			base.Destroy();
-		}
-
 		protected override void OnDestroyed() {
+			if(command != null) {
+				command.CanExecuteChanged -= CommandCanExecuteChanged;
+			}
+
+			if(Image is Image image) {
+				image.DisposeImagePixbuf();
+			}
+			
 			Binding.CleanSources();
 			base.OnDestroyed();
 		}

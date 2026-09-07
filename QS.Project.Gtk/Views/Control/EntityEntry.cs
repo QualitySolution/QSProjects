@@ -122,6 +122,7 @@ namespace QS.Views.Control
 
 		private bool isInternalTextSet;
 		private ListStore completionListStore;
+		private CellRendererText _entryCompletionCell;
 		uint timerId;
 
 		private void ConfigureEntryComplition()
@@ -129,9 +130,9 @@ namespace QS.Views.Control
 			entryObject.Completion = new EntryCompletion();
 			entryObject.Completion.MatchSelected += Completion_MatchSelected;
 			entryObject.Completion.MatchFunc = Completion_MatchFunc;
-			var cell = new CellRendererText();
-			entryObject.Completion.PackStart(cell, true);
-			entryObject.Completion.SetCellDataFunc(cell, OnCellLayoutDataFunc);
+			_entryCompletionCell = new CellRendererText();
+			entryObject.Completion.PackStart(_entryCompletionCell, true);
+			entryObject.Completion.SetCellDataFunc(_entryCompletionCell, OnCellLayoutDataFunc);
 		}
 
 		bool Completion_MatchFunc(EntryCompletion completion, string key, TreeIter iter)
@@ -141,6 +142,9 @@ namespace QS.Views.Control
 
 		void OnCellLayoutDataFunc(CellLayout cell_layout, CellRenderer cell, TreeModel tree_model, TreeIter iter)
 		{
+			if(viewModel == null)
+				return;
+
 			var title =  viewModel.GetAutocompleteTitle(tree_model.GetValue(iter, 0)) ?? String.Empty;
 			var words = entryObject.Text.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 			foreach(var word in words) {
@@ -231,6 +235,11 @@ namespace QS.Views.Control
 		
 		protected override void OnDestroyed()
 		{
+			if(entryObject?.Completion != null) {
+				entryObject.Completion.MatchFunc = null;
+				entryObject.Completion.SetCellDataFunc(_entryCompletionCell, null);
+			}
+
 			if(viewModel != null) {
 				ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
 				viewModel.AutoCompleteListUpdated -= ViewModel_AutoCompleteListUpdated;
@@ -240,6 +249,7 @@ namespace QS.Views.Control
 					viewModel = null;
 				}
 			}
+			entryObject.Completion.Model = null;
 
 			Binding.CleanSources();
 			var viewImage = buttonViewEntity.Image as Gtk.Image;
@@ -250,7 +260,7 @@ namespace QS.Views.Control
 			clearImage.DisposeImagePixbuf();
 
 			GLib.Source.Remove(timerId);
-			
+
 			base.OnDestroyed();
 		}
 	}

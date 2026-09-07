@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using Gamma.GtkWidgets;
 using Gtk;
@@ -17,6 +18,9 @@ namespace QS.Views.Dialog
 		}
 
 		private Button saveButton, cancelButton;
+		private bool busyStateApplied;
+		private bool saveButtonSensitiveBeforeBusy;
+		private bool cancelButtonSensitiveBeforeBusy;
 		
 		/// <summary>
 		/// Метод можно вызывать в конструкторе вьюшки для автоматической подписки на кнопки buttonSave и buttonCancel
@@ -34,6 +38,42 @@ namespace QS.Views.Dialog
 				cancelButton.Clicked += OnButtonCancelClicked;
 			}
 			SetupISaveCancelManagement();
+			ViewModel.PropertyChanged -= ViewModelOnPropertyChanged;
+			ViewModel.PropertyChanged += ViewModelOnPropertyChanged;
+			UpdateBusyState();
+		}
+
+		private void ViewModelOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+		{
+			if(e.PropertyName == nameof(ViewModel.IsBusy)
+				|| e.PropertyName == nameof(ViewModel.CanCancelBusyOperation))
+				UpdateBusyState();
+		}
+
+		private void UpdateBusyState()
+		{
+			if(ViewModel.IsBusy) {
+				if(!busyStateApplied) {
+					saveButtonSensitiveBeforeBusy = saveButton?.Sensitive ?? false;
+					cancelButtonSensitiveBeforeBusy = cancelButton?.Sensitive ?? false;
+					busyStateApplied = true;
+				}
+
+				if(saveButton != null)
+					saveButton.Sensitive = false;
+				if(cancelButton != null)
+					cancelButton.Sensitive = ViewModel.CanCancelBusyOperation;
+				return;
+			}
+
+			if(!busyStateApplied)
+				return;
+
+			if(saveButton != null)
+				saveButton.Sensitive = saveButtonSensitiveBeforeBusy;
+			if(cancelButton != null)
+				cancelButton.Sensitive = cancelButtonSensitiveBeforeBusy;
+			busyStateApplied = false;
 		}
 
 		/// <summary>
@@ -55,19 +95,16 @@ namespace QS.Views.Dialog
 		
 		protected void OnButtonSaveClicked(object sender, EventArgs e)
 		{
-			saveButton.Sensitive = false;
-			bool isClosed = false;
-			try {
-				isClosed = ViewModel.SaveAndClose();
-			} finally
-			{
-				if(!isClosed)
-					saveButton.Sensitive = true;
-			}
+			ViewModel.SaveAndClose();
 		}
 
 		protected void OnButtonCancelClicked(object sender, EventArgs e)
 		{
+			if(ViewModel.IsBusy) {
+				ViewModel.RequestCancelBusyOperation();
+				return;
+			}
+
 			ViewModel.Close(false, CloseSource.Cancel);
 		}
 	}

@@ -14,6 +14,7 @@ namespace QS.Widgets.GtkUI {
 		public event EventHandler TimeChanged;
 		public event EventHandler TimeChangedByUser;
 		public Func<TimeSpan> GetDefaultTime;
+		private bool _destroyed;
 
 		public TimePicker() {
 			Build();
@@ -126,6 +127,17 @@ namespace QS.Widgets.GtkUI {
 			#region Destroy
 			selectTime.Destroy();
 			#endregion
+		}
+		
+		protected override void OnDestroyed() {
+			if(_destroyed) {
+				return;
+			}
+
+			Binding.CleanSources();
+			base.OnDestroyed();
+			
+			_destroyed = true;
 		}
 	}
 }

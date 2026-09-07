@@ -11,6 +11,8 @@ namespace Gamma.Widgets
 	[Obsolete("Используйте новый виджет QS.Widgets.GtkUI.TimeEntry")]
 	public class yTimeEntry : TimeEntry
 	{
+		private bool _destroyed;
+		
 		public BindingControler<yTimeEntry> Binding { get; private set;}
 
 		public yTimeEntry ()
@@ -29,6 +31,17 @@ namespace Gamma.Widgets
 			});
 
 			base.OnChanged ();
+		}
+		
+		protected override void OnDestroyed() {
+			if(_destroyed) {
+				return;
+			}
+
+			Binding.CleanSources();
+			base.OnDestroyed();
+			
+			_destroyed = true;
 		}
 	}
 }

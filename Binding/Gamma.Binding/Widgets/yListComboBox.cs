@@ -83,7 +83,7 @@ namespace Gamma.Widgets
 					if (AddIfNotExist == false)
 						return;
 
-					iter = comboListStore.AppendValues (
+					comboListStore.AppendValues (
 						RenderTextFunc == null ? value.ToString () : RenderTextFunc(value),
 						WrapValueIfNeed (value)
 					);
@@ -121,8 +121,7 @@ namespace Gamma.Widgets
 			Model = comboListStore;
 		}
 
-		protected virtual void ResetLayout ()
-		{
+		protected virtual void ResetLayout () {
 			comboListStore.Clear();
 
 			if (ItemsList == null)
@@ -188,7 +187,7 @@ namespace Gamma.Widgets
 				Value = value;
 			}
 		}
-
+		
 		protected override void OnDestroyed() {
 			if(_destroyed) {
 				return;
@@ -196,6 +195,7 @@ namespace Gamma.Widgets
 
 			Binding.CleanSources();
 			Model = null;
+
 			comboListStore.Clear();
 			comboListStore.Dispose();
 			base.OnDestroyed();

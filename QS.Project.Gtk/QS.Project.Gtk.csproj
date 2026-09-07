@@ -69,6 +69,7 @@
     <Compile Include="Journal.Views\OneEntrySearchView.cs" />
     <Compile Include="Journal.Views\SearchView.cs" />
     <Compile Include="Project.Services\GtkApplicationQuitService.cs" />
+	<Compile Include="Dialog\GtkClipboardService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Views\Resolve\GtkViewFactory.cs" />
     <Compile Include="Widgets.GtkUI\FieldCompletionEntry.cs" />

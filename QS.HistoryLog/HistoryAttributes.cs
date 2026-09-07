@@ -29,9 +29,17 @@ namespace QS.HistoryLog
 	{
 	}
 
+	/// <summary>
+	/// Позволяет журналировать обычное поле с идентификатором как ссылку на доменный объект.
+	/// При изменении значения HistoryLog загружает объект типа <see cref="TargetType"/> по идентификатору
+	/// и сохраняет в истории идентификатор вместе с заголовком объекта.
+	/// </summary>
 	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property,
 					AllowMultiple = false, Inherited = true)]
 	public class HistoryIdentifierAttribute : Attribute {
+		/// <summary>
+		/// Тип доменного объекта, идентификатор которого хранится в отмеченном поле.
+		/// </summary>
 		public Type TargetType { get; set; }
 	}
 }

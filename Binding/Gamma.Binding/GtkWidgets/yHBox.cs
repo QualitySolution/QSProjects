@@ -14,6 +14,11 @@ namespace Gamma.GtkWidgets
 		{
 			Binding = new BindingControler<yHBox> (this);
 		}
+
+		protected override void OnDestroyed() {
+			Binding.CleanSources();
+			base.OnDestroyed();
+		}
 	}
 }
 

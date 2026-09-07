@@ -9,14 +9,14 @@ namespace Gamma.ColumnConfig
 {
 	public class ToggleRendererMapping<TNode> : RendererMappingBase<NodeCellRendererToggle<TNode>, TNode>
 	{
-		private NodeCellRendererToggle<TNode> cellRenderer = new NodeCellRendererToggle<TNode>();
+		private readonly NodeCellRendererToggle<TNode> _cellRenderer = new NodeCellRendererToggle<TNode>();
 
 		public ToggleRendererMapping (ColumnMapping<TNode> column, Expression<Func<TNode, bool>> getDataExp)
 			: base(column)
 		{
-			cellRenderer.DataPropertyInfo = PropertyUtil.GetPropertyInfo (getDataExp);
+			_cellRenderer.DataPropertyInfo = PropertyUtil.GetPropertyInfo (getDataExp);
 			var getter = getDataExp.Compile();
-			cellRenderer.LambdaSetters.Add ((c, n) => c.Active = getter(n));
+			_cellRenderer.LambdaSetters.Add ((c, n) => c.Active = getter(n));
 		}
 
 		public ToggleRendererMapping (ColumnMapping<TNode> column)
@@ -29,12 +29,12 @@ namespace Gamma.ColumnConfig
 
 		public override INodeCellRenderer GetRenderer ()
 		{
-			return cellRenderer;
+			return _cellRenderer;
 		}
 
 		protected override void SetSetterSilent (Action<NodeCellRendererToggle<TNode>, TNode> commonSet)
 		{
-			cellRenderer.LambdaSetters.Insert(0, commonSet);
+			_cellRenderer.LambdaSetters.Insert(0, commonSet);
 		}
 
 		#endregion
@@ -49,47 +49,62 @@ namespace Gamma.ColumnConfig
 
 		public ToggleRendererMapping<TNode> AddSetter(Action<NodeCellRendererToggle<TNode>, TNode> setter)
 		{
-			cellRenderer.LambdaSetters.Add (setter);
+			_cellRenderer.LambdaSetters.Add (setter);
 			return this;
 		}
 			
 		public ToggleRendererMapping<TNode> Editing (bool on = true)
 		{
-			cellRenderer.Activatable = on;
+			_cellRenderer.Activatable = on;
 			return this;
 		}
 
 		public ToggleRendererMapping<TNode> Radio(bool on = true)
 		{
-			cellRenderer.Radio = on;
+			_cellRenderer.Radio = on;
 			return this;
 		}
 
 		public ToggleRendererMapping<TNode> ToggledEvent (ToggledHandler handler)
 		{
-			cellRenderer.Toggled += handler;
+			_cellRenderer.Toggled += handler;
+			AddHandler(handler);
 			return this;
 		}
 
 		public ToggleRendererMapping<TNode> ChangeSetProperty(PropertyInfo property)
 		{
-			cellRenderer.DataPropertyInfo = property;
+			_cellRenderer.DataPropertyInfo = property;
 			return this;
 		}
 
 		public ToggleRendererMapping<TNode> XAlign(float alignment)
 		{
-			cellRenderer.Xalign = alignment;
+			_cellRenderer.Xalign = alignment;
 			return this;
 		}
 		
 		public ToggleRendererMapping<TNode> YAlign(float alignment)
 		{
-			cellRenderer.Yalign = alignment;
+			_cellRenderer.Yalign = alignment;
 			return this;
 		}
 
 		#endregion
+		
+		public override void Dispose() {
+			if(_cellRenderer != null) {
+				foreach(var eventInfo in _cellRenderer.GetType().GetEvents()) {
+					if(EventHandlers.TryGetValue(eventInfo.EventHandlerType, out var handlers)) {
+						foreach(var handler in handlers) {
+							eventInfo.RemoveEventHandler(_cellRenderer, (Delegate)handler);
+						}
+					}
+				}
+				
+				base.Dispose();
+			}
+		}
 	}
 }
 

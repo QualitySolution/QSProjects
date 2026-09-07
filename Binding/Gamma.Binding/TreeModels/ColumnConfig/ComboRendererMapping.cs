@@ -9,7 +9,7 @@ namespace Gamma.ColumnConfig
 {
 	public class ComboRendererMapping<TNode, TItem> : RendererMappingBase<NodeCellRendererCombo<TNode, TItem>, TNode>
 	{
-		private NodeCellRendererCombo<TNode,TItem> cellRenderer = new NodeCellRendererCombo<TNode, TItem>();
+		private readonly NodeCellRendererCombo<TNode,TItem> _cellRenderer = new NodeCellRendererCombo<TNode, TItem>();
 
 		public ComboRendererMapping (ColumnMapping<TNode> column, Expression<Func<TNode, TItem>> dataProperty)
 			: base(column)
@@ -19,7 +19,7 @@ namespace Gamma.ColumnConfig
 			if(prop == null)
 				throw new InvalidProgramException ();
 
-			cellRenderer.DataPropertyInfo = prop;
+			_cellRenderer.DataPropertyInfo = prop;
 		}
 
 		public ComboRendererMapping (ColumnMapping<TNode> column)
@@ -30,14 +30,14 @@ namespace Gamma.ColumnConfig
 
 		#region implemented abstract members of RendererMappingBase
 
-		public override INodeCellRenderer GetRenderer ()
+		public override INodeCellRenderer GetRenderer()
 		{
-			return cellRenderer;
+			return _cellRenderer;
 		}
 
 		protected override void SetSetterSilent (Action<NodeCellRendererCombo<TNode, TItem>, TNode> commonSet)
 		{
-			cellRenderer.LambdaSetters.Insert(0, commonSet);
+			_cellRenderer.LambdaSetters.Insert(0, commonSet);
 		}
 
 		#endregion
@@ -52,13 +52,13 @@ namespace Gamma.ColumnConfig
 		
 		public ComboRendererMapping<TNode, TItem> WrapWidth(int width)
         {
-        	cellRenderer.WrapWidth = width;
+        	_cellRenderer.WrapWidth = width;
         	return this;
         }
 
 		public ComboRendererMapping<TNode, TItem> AddSetter(Action<NodeCellRendererCombo<TNode, TItem>, TNode> setter)
 		{
-			cellRenderer.LambdaSetters.Add (setter);
+			_cellRenderer.LambdaSetters.Add (setter);
 			return this;
 		}
 
@@ -67,43 +67,44 @@ namespace Gamma.ColumnConfig
 		/// </summary>
 		public ComboRendererMapping<TNode, TItem> SetDisplayFunc(Func<TItem, string> displayFunc)
 		{
-			cellRenderer.DisplayFunc = displayFunc;
+			_cellRenderer.DisplayFunc = displayFunc;
 			return this;
 		}
 
 		public ComboRendererMapping<TNode, TItem> SetDisplayListFunc(Func<TItem, string> displayListFunc)
 		{
-			cellRenderer.DisplayListFunc = displayListFunc;
+			_cellRenderer.DisplayListFunc = displayListFunc;
 			return this;
 		}
 
 		public ComboRendererMapping<TNode, TItem> Editing (bool on = true)
 		{
-			cellRenderer.Editable = on;
+			_cellRenderer.Editable = on;
 			return this;
 		}
 		
 		public ComboRendererMapping<TNode, TItem> EditedEvent(EditedHandler handler)
 		{
-			cellRenderer.Edited += handler;
+			_cellRenderer.Edited += handler;
+			AddHandler(handler);
 			return this;
 		}
 
 		public ComboRendererMapping<TNode, TItem> HasEntry (bool on = true)
 		{
-			cellRenderer.HasEntry = on;
+			_cellRenderer.HasEntry = on;
 			return this;
 		}
 
 		public ComboRendererMapping<TNode, TItem> XAlign(float alignment)
 		{
-			cellRenderer.Xalign = alignment;
+			_cellRenderer.Xalign = alignment;
 			return this;
 		}
 		
 		public ComboRendererMapping<TNode, TItem> YAlign(float alignment)
 		{
-			cellRenderer.Yalign = alignment;
+			_cellRenderer.Yalign = alignment;
 			return this;
 		}
 
@@ -114,8 +115,8 @@ namespace Gamma.ColumnConfig
 		/// <param name="func">Func</param>
 		public ComboRendererMapping<TNode, TItem> HideCondition(Func<TNode, TItem, bool> func)
 		{
-			cellRenderer.IsDynamicallyFillList = true;
-			cellRenderer.HideItemFunc = func;
+			_cellRenderer.IsDynamicallyFillList = true;
+			_cellRenderer.HideItemFunc = func;
 			return this;
 		}
 
@@ -126,22 +127,38 @@ namespace Gamma.ColumnConfig
 		/// <param name="emptyValueTitle">Title for empty value, if set combobox display first item with default value of type(for class is null), and can user set empty value</param>
 		public ComboRendererMapping<TNode, TItem> FillItems(IList<TItem> itemsList, string emptyValueTitle = null)
 		{
-			cellRenderer.EmptyValueTitle = emptyValueTitle;
-			cellRenderer.Items = itemsList;
-			cellRenderer.UpdateComboList(default(TNode));
+			_cellRenderer.EmptyValueTitle = emptyValueTitle;
+			_cellRenderer.Items = itemsList;
+			_cellRenderer.UpdateComboList(default(TNode));
 
 			return this;
 		}
 
 		public ComboRendererMapping<TNode, TItem> DynamicFillListFunc(Func<TNode, IList<TItem>> func, string emptyValueTitle = null)
 		{
-			cellRenderer.EmptyValueTitle = emptyValueTitle;
-			cellRenderer.IsDynamicallyFillList = true;
-			cellRenderer.ItemsListFunc = func;
+			_cellRenderer.EmptyValueTitle = emptyValueTitle;
+			_cellRenderer.IsDynamicallyFillList = true;
+			_cellRenderer.ItemsListFunc = func;
 
 			return this;
 		}
 
 		#endregion
+		
+		public override void Dispose() {
+			if(_cellRenderer != null) {
+				_cellRenderer.Dispose();
+				
+				foreach(var eventInfo in _cellRenderer.GetType().GetEvents()) {
+					if(EventHandlers.TryGetValue(eventInfo.EventHandlerType, out var handlers)) {
+						foreach(var handler in handlers) {
+							eventInfo.RemoveEventHandler(_cellRenderer, (Delegate)handler);
+						}
+					}
+				}
+				
+				base.Dispose();
+			}
+		}
 	}
 }

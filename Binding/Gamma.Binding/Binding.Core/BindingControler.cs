@@ -222,7 +222,6 @@ namespace Gamma.Binding.Core
 		public BindingControler<TWidget> CleanSources()
 		{
 			Sources.ForEach(x => x.ClearBindings());
-
 			Sources.Clear();
 			return this;
 		}

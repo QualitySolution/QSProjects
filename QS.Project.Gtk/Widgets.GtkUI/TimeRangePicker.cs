@@ -17,6 +17,7 @@ namespace QS.Widgets.GtkUI
 		public event EventHandler TimePeriodChanged;
 		public event EventHandler TimePeriodChangedByUser;
 		protected Gtk.Dialog editRange;
+		private bool _destroyed;
 
 		public TimeRangePicker()
 		{
@@ -170,5 +171,15 @@ namespace QS.Widgets.GtkUI
 			#endregion
 		}
 
+		protected override void OnDestroyed() {
+			if(_destroyed) {
+				return;
+			}
+
+			Binding.CleanSources();
+			base.OnDestroyed();
+			
+			_destroyed = true;
+		}
 	}
 }

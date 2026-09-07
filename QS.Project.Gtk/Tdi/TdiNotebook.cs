@@ -616,6 +616,17 @@ namespace QS.Tdi.Gtk
 			if(slider != null)
 				return slider.AskToCloseTab(tab, source);
 
+			// Временный адаптер для ViewModel-страниц, пока приложение работает через TDI-контейнер.
+			// Само состояние длительной операции не зависит от TDI.
+			var viewModelTab = tab as ViewModelTdiTab
+				?? (tab as TdiSliderTab)?.ActiveDialog as ViewModelTdiTab;
+			var busyViewModel = viewModelTab?.ViewModel as IBusyViewModel;
+			if(busyViewModel?.IsBusy == true) {
+				if(busyViewModel.CanCancelBusyOperation)
+					busyViewModel.RequestCancelBusyOperation();
+				return false;
+			}
+
 			if (CheckClosingSlaveTabs(tab))
 				return false;
 			
@@ -785,15 +796,10 @@ namespace QS.Tdi.Gtk
 			
 			if(IsCurrent)
 				PrevPage();
-			
+
 			Remove(tabBox);
 			var maybeSliderActiveDialog = (tab as TdiSliderTab)?.ActiveDialog;
-			if(maybeSliderActiveDialog != null) {
-				OnTabClosed(maybeSliderActiveDialog, CloseSource.WithParentPage);
-			}
-			OnTabClosed(tab, source);
-			tab.OnTabClosed();
-			
+
 			//TODO проверить работу Destroy
 			//после вызова Destroy у родительского элемента-контейнера,
 			//должны произойти вызовы этого метода у всех присоединенных потомков по цепочке
@@ -806,6 +812,12 @@ namespace QS.Tdi.Gtk
 			
 			tabBox?.Destroy();
 			tabHeader?.Destroy();
+
+			if(maybeSliderActiveDialog != null) {
+				OnTabClosed(maybeSliderActiveDialog, CloseSource.WithParentPage);
+			}
+			OnTabClosed(tab, source);
+			tab.OnTabClosed();
 
 			tab.TabNameChanged -= OnTabNameChanged;
 			

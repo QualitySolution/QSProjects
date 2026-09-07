@@ -3,7 +3,7 @@ using Gamma.GtkWidgets.Cells;
 
 namespace Gamma.ColumnConfig
 {
-	public interface IRendererMapping
+	public interface IRendererMapping : IDisposable
 	{
 		INodeCellRenderer GetRenderer();
 		object tag { get; }
