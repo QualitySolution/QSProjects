@@ -51,6 +51,10 @@ public class AvaloniaNavigationManager : NavigationManagerBase, INavigationManag
 	}
 
 	public void ForceClosePage(IPage page, CloseSource source = CloseSource.External) {
+		if(!Dispatcher.UIThread.CheckAccess()) {
+			Dispatcher.UIThread.Invoke(() => ForceClosePage(page, source));
+			return;
+		}
 		if(page is IAvaloniaWindowPage) {
 			ClosePage(page, source);
 			return;
@@ -111,6 +115,10 @@ public class AvaloniaNavigationManager : NavigationManagerBase, INavigationManag
 	}
 
 	protected override void OpenPage(IPage masterPage, IPage page) {
+		if(!Dispatcher.UIThread.CheckAccess()) {
+			Dispatcher.UIThread.Invoke(() => OpenPage(masterPage, page));
+			return;
+		}
 		pages.Add(page);
 
 		if(page is IAvaloniaWindowPage windowPage) {
