@@ -25,6 +25,13 @@ internal class AvaloniaPageWindow : Window {
 		CanResize = settings?.Resizable ?? true;
 		ShowInTaskbar = settings?.EnableMinimizeMaximize ?? false;
 		WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
+		var screen = Screens.Primary;
+		if(screen != null) {
+			MaxWidth = screen.WorkingArea.Width / screen.Scaling;
+			MaxHeight = screen.WorkingArea.Height / screen.Scaling;
+		}
+
 		page.ViewModel.PropertyChanged += (s, e) => Title = page.ViewModel.Title;
 	}
 
