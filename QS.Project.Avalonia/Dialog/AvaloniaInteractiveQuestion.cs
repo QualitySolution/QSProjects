@@ -25,32 +25,12 @@ public class AvaloniaInteractiveQuestion : IInteractiveQuestion {
 		return Ask(buttons, message, title).GetAwaiter().GetResult();
 	}
 
-	static Task<string?> Ask(string[] buttons, string message, string? title) {
+	private static Task<string?> Ask(string[] buttons, string message, string? title) {
 		var tcs = new TaskCompletionSource<string?>();
 
 		Dispatcher.UIThread.Post(() => {
 			try {
-				var dialogButtons = buttons.Select(label => new Button { Content = label }).ToArray();
-				var window = new DialogWindow(message, title ?? "Вопрос", ImportanceLevel.Info, dialogButtons);
-				window.closeButton.IsVisible = false;
-
-				foreach(var button in dialogButtons)
-					button.Click += (_, _) =>
-					{
-						tcs.TrySetResult((string?)button.Content);
-						window.Close();
-					};
-
-				window.Closed += (_, _) => tcs.TrySetResult(null);
-
-				// пока предыдущее модальное закрывается, активным успевает числиться оно, и вопрос уходит за главное окно и перестаёт отвечать
-				var lifetime = Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
-				var owner = lifetime?.Windows.LastOrDefault(w => w.IsVisible) ?? lifetime?.MainWindow;
-
-				if(owner != null)
-					_ = window.ShowDialog(owner);
-				else
-					window.Show();
+				ShowQuestion(buttons, message, title, tcs);
 			}
 			catch(Exception ex) {
 				tcs.TrySetException(ex);
@@ -58,5 +38,32 @@ public class AvaloniaInteractiveQuestion : IInteractiveQuestion {
 		}, DispatcherPriority.Background);
 
 		return tcs.Task;
+	}
+
+	private static void ShowQuestion(string[] buttons, string message, string? title, TaskCompletionSource<string?> tcs)
+	{
+		var dialogButtons = buttons.Select(label => new Button { Content = label }).ToArray();
+		var window = new DialogWindow(message, title ?? "Вопрос", ImportanceLevel.Info, dialogButtons);
+		window.HideCloseButton();
+
+		foreach(var button in dialogButtons)
+			button.Click += (_, _) =>
+			{
+				tcs.TrySetResult((string?)button.Content);
+				window.Close();
+			};
+
+		window.Closed += (_, _) => tcs.TrySetResult(null);
+
+		// последнее показанное видимое окно — оно и сверху; IsActive не годится:
+		// у неактивного приложения активного окна нет вовсе
+		var lifetime = Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
+		var owner = lifetime?.Windows.LastOrDefault(w => w.IsVisible) ?? lifetime?.MainWindow;
+
+		// ShowDialog требует показанного владельца, а MainWindow из фолбэка может быть ещё не показан
+		if(owner != null && owner.IsVisible)
+			_ = window.ShowDialog(owner);
+		else
+			window.Show();
 	}
 }
