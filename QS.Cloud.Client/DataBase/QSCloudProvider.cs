@@ -257,7 +257,7 @@ namespace QS.Cloud.Client.DataBase {
 		}
 
 		public bool DropDatabase(DbInfo database) => Call(() =>
-			dbClient.DropDataBase(database.BaseId).Success);
+			EnsureSuccess(dbClient.DropDataBase(database.BaseId).Success, "Облако не удалило базу"));
 
 		public void BackupDatabase(DbInfo database, string filePath, IProgressBarDisplayable progress, CancellationToken cancellation) {
 			try {

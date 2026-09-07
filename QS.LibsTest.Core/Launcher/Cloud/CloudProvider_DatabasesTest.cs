@@ -10,6 +10,7 @@ using QS.DBScripts.Controllers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OperationRefusedException = QS.ErrorReporting.OperationRefusedException;
 
 namespace QS.Launcher.Test.Cloud {
 	/// <summary>
@@ -86,6 +87,16 @@ namespace QS.Launcher.Test.Cloud {
 
 			Assert.That(dropped, Is.True);
 			DbClient.Received(1).DropDataBase(5);
+		}
+
+		[Test(Description = "Отказ облака в удалении не выдаётся за успех")]
+		public void DropDatabase_CloudRefused_Throws() {
+			DbClient.DropDataBase(7).Returns(new DropDataBaseResponse { Success = false });
+			var provider = LoginAs();
+
+			// иначе страница показала бы «База данных удалена», а база осталась бы на месте
+			Assert.Throws<OperationRefusedException>(
+				() => provider.DropDatabase(new DbInfo { BaseId = 7, BaseName = "kept" }));
 		}
 
 		[Test(Description = "Подключение отдаёт строку из облака и идентификатор сессии")]
