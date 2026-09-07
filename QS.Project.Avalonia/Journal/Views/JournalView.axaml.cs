@@ -65,22 +65,7 @@ public partial class JournalView : UserControl
 	{
 		if (ViewModel == null) return;
 
-		// 1. Попытка загрузить кастомную таблицу (GridView) через резолвер
-		// Для каждого журнала ДОЛЖНА существовать соответствующая GridView
-		if (viewResolver == null)
-		{
-			throw new InvalidOperationException($"ViewResolver не установлен для журнала {ViewModel.GetType().Name}. Невозможно загрузить таблицу.");
-		}
-		
-		var customTable = viewResolver.Resolve(ViewModel, "GridView");
-		if (customTable == null)
-		{
-			throw new InvalidOperationException(
-				$"Не найдена View с суффиксом 'GridView' для ViewModel типа '{ViewModel.GetType().FullName}'. " +
-				$"Необходимо создать соответствующий UserControl (например, {{Name}}GridView) с таблицей данных.");
-		}
-		
-		TableContent = customTable;
+		TableContent = MakeTable();
 
 		// Подписываемся на события
 		ViewModel.DataLoader.ItemsListUpdated += ViewModel_ItemsListUpdated;
@@ -103,6 +88,22 @@ public partial class JournalView : UserControl
 		// Загружаем данные
 		Console.WriteLine("JournalView: Вызываем Refresh...");
 		ViewModel.Refresh();
+	}
+
+	/// <summary>
+	/// Колонки журнала описаны кодом — собираем таблицу сами. Если нет, ищем вью таблицы
+	/// по суффиксу GridView: так устроены журналы, которые описывают колонки разметкой.
+	/// </summary>
+	private Control MakeTable()
+	{
+		var columns = columnsRegistry!.Resolve(ViewModel!);
+		if (columns != null)
+			return columns.MakeTable();
+
+		return viewResolver?.Resolve(ViewModel!, "GridView")
+			?? throw new InvalidOperationException(
+				$"Не найдены колонки для журнала '{ViewModel!.GetType().FullName}'. " +
+				$"Опишите их в JournalColumnsRegistry либо создайте UserControl {{Name}}GridView с таблицей данных.");
 	}
 
 	private void ConfigureFilter()
