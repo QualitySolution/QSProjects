@@ -1,7 +1,8 @@
-﻿using Autofac;
+using Autofac;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Threading;
 using QS.Dialog;
 using QS.Tdi;
 using QS.ViewModels.Extension;
@@ -55,19 +56,23 @@ public class AvaloniaNavigationManager : NavigationManagerBase, INavigationManag
 			return;
 		}
 		var avaloniaPage = (IAvaloniaPage)page;
-		bool wasCurrent = CurrentPage == page;
-		var master = SlavePages.FirstOrDefault(x => x.SlavePage == page)?.MasterPage;
-		int index = Pages.IndexOf(avaloniaPage);
+
+		if(CurrentPage == page)
+			CurrentPage = NextCurrentPage(avaloniaPage);
+
 		Pages.Remove(avaloniaPage);
 		ClosePage(page, source);
-		if(!wasCurrent)
-			return;
+	}
 
-		// после закрытия подчиненной возвращаемся на хозяйскую, иначе на соседнюю вкладку
+	// после закрытия подчинённой возвращаемся на хозяйскую, иначе на соседнюю вкладку
+	IPage? NextCurrentPage(IAvaloniaPage closing) {
+		var master = SlavePages.FirstOrDefault(x => x.SlavePage == closing)?.MasterPage;
 		if(master is IAvaloniaPage masterTab && Pages.Contains(masterTab))
-			CurrentPage = master;
-		else
-			CurrentPage = Pages.Count > 0 ? Pages[Math.Max(0, Math.Min(index, Pages.Count - 1))] : null;
+			return master;
+
+		// на место закрытой встаёт соседняя справа, а у последней вкладки — соседняя слева
+		var rest = Pages.Where(x => x != closing).ToList();
+		return rest.ElementAtOrDefault(Math.Min(Pages.IndexOf(closing), rest.Count - 1));
 	}
 
 	bool CanClosePage(IPage page) {
