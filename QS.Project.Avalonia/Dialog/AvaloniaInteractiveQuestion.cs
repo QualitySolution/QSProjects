@@ -28,29 +28,34 @@ public class AvaloniaInteractiveQuestion : IInteractiveQuestion {
 	static Task<string?> Ask(string[] buttons, string message, string? title) {
 		var tcs = new TaskCompletionSource<string?>();
 
-		Dispatcher.UIThread.InvokeAsync(() =>
-		{
-			var dialogButtons = buttons.Select(label => new Button { Content = label }).ToArray();
-			var window = new DialogWindow(message, title ?? "Вопрос", ImportanceLevel.Info, dialogButtons);
-			window.closeButton.IsVisible = false;
+		Dispatcher.UIThread.Post(() => {
+			try {
+				var dialogButtons = buttons.Select(label => new Button { Content = label }).ToArray();
+				var window = new DialogWindow(message, title ?? "Вопрос", ImportanceLevel.Info, dialogButtons);
+				window.closeButton.IsVisible = false;
 
-			foreach(var button in dialogButtons)
-				button.Click += (_, _) =>
-				{
-					tcs.TrySetResult((string?)button.Content);
-					window.Close();
-				};
+				foreach(var button in dialogButtons)
+					button.Click += (_, _) =>
+					{
+						tcs.TrySetResult((string?)button.Content);
+						window.Close();
+					};
 
-			window.Closed += (_, _) => tcs.TrySetResult(null);
+				window.Closed += (_, _) => tcs.TrySetResult(null);
 
-			var lifetime = Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
-			var owner = lifetime?.Windows.FirstOrDefault(w => w.IsActive) ?? lifetime?.MainWindow;
+				// пока предыдущее модальное закрывается, активным успевает числиться оно, и вопрос уходит за главное окно и перестаёт отвечать
+				var lifetime = Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
+				var owner = lifetime?.Windows.LastOrDefault(w => w.IsVisible) ?? lifetime?.MainWindow;
 
-			if(owner != null)
-				_ = window.ShowDialog(owner);
-			else
-				window.Show();
-		});
+				if(owner != null)
+					_ = window.ShowDialog(owner);
+				else
+					window.Show();
+			}
+			catch(Exception ex) {
+				tcs.TrySetException(ex);
+			}
+		}, DispatcherPriority.Background);
 
 		return tcs.Task;
 	}
