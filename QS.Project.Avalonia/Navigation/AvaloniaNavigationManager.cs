@@ -136,10 +136,16 @@ public class AvaloniaNavigationManager : NavigationManagerBase, INavigationManag
 
 	IAvaloniaPage ResolveView(IPage page) {
 		var avaloniaPage = (IAvaloniaPage)page;
-		avaloniaPage.View = viewResolver.Resolve(page.ViewModel);
-		if(avaloniaPage.View == null)
-			throw new InvalidOperationException($"View для {page.ViewModel.GetType()} не создано через {viewResolver.GetType()}.");
+		avaloniaPage.View = MakePageContent(page);
 		return avaloniaPage;
+	}
+
+	Control MakePageContent(IPage page) {
+		var view = viewResolver.Resolve(page.ViewModel);
+		if(view == null)
+			throw new InvalidOperationException($"View для {page.ViewModel.GetType()} не создано через {viewResolver.GetType()}.");
+
+		return PageView.Wrap(view);
 	}
 
 	#region WindowDialogs
@@ -181,9 +187,7 @@ public class AvaloniaNavigationManager : NavigationManagerBase, INavigationManag
 	}
 
 	void OpenWindowPage(IPage? masterPage, IAvaloniaWindowPage page) {
-		page.View = viewResolver.Resolve(page.ViewModel);
-		if(page.View == null)
-			throw new InvalidOperationException($"View для {page.ViewModel.GetType()} не создано через {viewResolver.GetType()}.");
+		page.View = MakePageContent(page);
 
 		var window = new AvaloniaPageWindow(page, CanClosePage, closing => ClosePage(closing, CloseSource.ClosePage));
 		page.Window = window;
@@ -211,6 +215,7 @@ public class AvaloniaNavigationManager : NavigationManagerBase, INavigationManag
 			AskClosePage(pair.SlavePage, CloseSource.WithMasterPage);
 
 		base.ClosePage(page, source);
+		PageView.DisposeOnClose(page);
 
 		if(!(page is IAvaloniaWindowPage windowPage) || windowPage.Window == null)
 			return;

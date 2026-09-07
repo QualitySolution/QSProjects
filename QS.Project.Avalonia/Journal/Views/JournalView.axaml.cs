@@ -2,7 +2,8 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
+using QS.Dialog;
+using QS.Journal.Columns;
 using QS.Navigation;
 using QS.Project.Journal;
 
@@ -11,9 +12,13 @@ namespace QS.Journal.Views;
 /// <summary>
 /// Базовый класс для отображения журналов в Avalonia
 /// </summary>
-public partial class JournalView : UserControl
+public partial class JournalView : UserControl, IDisposable
 {
+	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
 	private IJournalViewModel? viewModel;
+	private readonly IGuiDispatcher? guiDispatcher;
+	private readonly JournalColumnsRegistry? columnsRegistry;
 	protected IAvaloniaViewResolver? viewResolver;
 
 	public JournalView()
@@ -21,9 +26,12 @@ public partial class JournalView : UserControl
 		InitializeComponent();
 	}
 
-	public JournalView(IJournalViewModel viewModel, IAvaloniaViewResolver? viewResolver) : this()
+	public JournalView(IJournalViewModel viewModel, IAvaloniaViewResolver? viewResolver, IGuiDispatcher guiDispatcher,
+		JournalColumnsRegistry columnsRegistry) : this()
 	{
 		this.viewResolver = viewResolver;
+		this.guiDispatcher = guiDispatcher ?? throw new ArgumentNullException(nameof(guiDispatcher));
+		this.columnsRegistry = columnsRegistry ?? throw new ArgumentNullException(nameof(columnsRegistry));
 		ViewModel = viewModel;
 		ConfigureJournal();
 	}
@@ -34,12 +42,8 @@ public partial class JournalView : UserControl
 	/// </summary>
 	public Control? TableContent
 	{
-		get => this.FindControl<ContentControl>("TablePlaceholder")?.Content as Control;
-		set {
-			var placeholder = this.FindControl<ContentControl>("TablePlaceholder");
-			if (placeholder != null)
-				placeholder.Content = value;
-		}
+		get => TablePlaceholder.Content as Control;
+		set => TablePlaceholder.Content = value;
 	}
 
 
@@ -53,14 +57,6 @@ public partial class JournalView : UserControl
 		}
 	}
 
-	// Поля buttonRefresh, checkShowFilter, filterContainer, searchContainer, 
-	// dataGrid, labelFooter, actionsPanel генерируются автоматически Avalonia из XAML (x:Name)
-
-	private void InitializeComponent()
-	{
-		AvaloniaXamlLoader.Load(this);
-	}
-
 	private void ConfigureJournal()
 	{
 		if (ViewModel == null) return;
@@ -71,6 +67,8 @@ public partial class JournalView : UserControl
 		ViewModel.DataLoader.ItemsListUpdated += ViewModel_ItemsListUpdated;
 		ViewModel.DataLoader.LoadingStateChanged += DataLoader_LoadingStateChanged;
 		ViewModel.PropertyChanged += OnViewModelPropertyChanged;
+
+		UpdateFooter();
 
 		// Настраиваем режим выбора
 		SetSelectionMode(ViewModel.TableSelectionMode);
@@ -86,7 +84,6 @@ public partial class JournalView : UserControl
 
 
 		// Загружаем данные
-		Console.WriteLine("JournalView: Вызываем Refresh...");
 		ViewModel.Refresh();
 	}
 
@@ -108,9 +105,7 @@ public partial class JournalView : UserControl
 
 	private void ConfigureFilter()
 	{
-		var filterContainer = this.FindControl<ContentControl>("filterContainer");
-		
-		if (ViewModel?.JournalFilter == null || filterContainer == null || viewResolver == null)
+		if (ViewModel?.JournalFilter == null || viewResolver == null)
 		{
 			return;
 		}
@@ -128,9 +123,7 @@ public partial class JournalView : UserControl
 
 	private void ConfigureSearch()
 	{
-		var searchContainer = this.FindControl<ContentControl>("searchContainer");
-		
-		if (ViewModel?.Search == null || searchContainer == null || viewResolver == null || !ViewModel.SearchEnabled)
+		if (ViewModel?.Search == null || viewResolver == null || !ViewModel.SearchEnabled)
 			return;
 
 		// Проверяем, что поиск является ViewModelBase
@@ -206,7 +199,7 @@ public partial class JournalView : UserControl
 	{
 		if (e.PropertyName == nameof(ViewModel.FooterInfo))
 		{
-			// Обновление footer происходит через биндинг
+			guiDispatcher!.RunInGuiTread(UpdateFooter);
 		}
 		else if (e.PropertyName == nameof(ViewModel.TableSelectionMode))
 		{
@@ -217,44 +210,32 @@ public partial class JournalView : UserControl
 	private void ViewModel_ItemsListUpdated(object? sender, EventArgs e)
 	{
 		// Событие может вызываться из фонового потока, поэтому переключаемся на UI поток
-		Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+		guiDispatcher!.RunInGuiTread(() =>
 		{
-			var itemsCount = ViewModel?.Items?.Count ?? 0;
-			Console.WriteLine($"JournalView: ItemsListUpdated, количество элементов: {itemsCount}");
-			
-			// Проверим DataGrid
 			var grid = GetDataGrid();
-			if (grid != null)
+			if (grid == null || ViewModel == null)
 			{
-				// Принудительно обновляем ItemsSource, так как автоматический биндинг может не подхватить изменение
-				// если коллекция не Observable или NotifyPropertyChanged не сработал как надо
-				if (ViewModel != null)
-				{
-					// Вариант 1: Сброс и установка заново
-					// grid.ItemsSource = null;
-					grid.ItemsSource = ViewModel.Items;
-				}
+				logger.Warn("Таблица журнала {0} не найдена, обновлять нечего.", ViewModel?.GetType().Name);
+				return;
+			}
 
-				Console.WriteLine($"JournalView: DataGrid обновлен, ItemsSource count: {(grid.ItemsSource as System.Collections.IList)?.Count ?? -1}");
-				Console.WriteLine($"JournalView: DataGrid.Columns.Count = {grid.Columns.Count}");
-			}
-			else
-			{
-				Console.WriteLine("JournalView: DataGrid не найден в ItemsListUpdated!");
-			}
+			// Принудительно обновляем ItemsSource
+			grid.ItemsSource = ViewModel.Items;
+			UpdateFooter();
 		});
 	}
+
+	// FooterInfo считается по загруженным строкам и об изменении не уведомляет
+	private void UpdateFooter() => labelFooter.Text = ViewModel!.FooterInfo;
 
 	private void DataLoader_LoadingStateChanged(object? sender, QS.Project.Journal.DataLoader.LoadingStateChangedEventArgs e)
 	{
-		// Событие может вызываться из фонового потока, поэтому переключаемся на UI поток
-		Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+		// Событие может вызываться из фонового потока
+		guiDispatcher!.RunInGuiTread(() =>
 		{
-			Console.WriteLine($"JournalView: LoadingStateChanged, состояние: {e.LoadingState}");
-			// TODO: Добавить индикатор загрузки
+			loadingIndicator.IsVisible = e.LoadingState == QS.Project.Journal.DataLoader.LoadingState.InProgress;
 		});
 	}
-
 
 	protected object[] GetSelectedItems()
 	{
@@ -265,19 +246,13 @@ public partial class JournalView : UserControl
 		return grid.SelectedItems.Cast<object>().ToArray();
 	}
 
-	protected DataGrid? GetDataGrid()
-	{
-		var placeholder = this.FindControl<ContentControl>("TablePlaceholder");
-		if (placeholder?.Content is Control content)
-		{
-			var grid = content.FindControl<DataGrid>("dataGrid");
-			if (grid != null) return grid;
-		}
-		
-		return this.FindControl<DataGrid>("dataGrid");
-	}
+	protected DataGrid? GetDataGrid() =>
+		// Таблицу мы собрали сами по описанию колонок — она и лежит в подставке
+		// если журнал описывает колонки разметкой, таблица внутри чужой вью, ищем её по имени
+		TablePlaceholder.Content as DataGrid
+			?? (TablePlaceholder.Content as Control)?.FindControl<DataGrid>("dataGrid");
 
-	public void Dispose()
+	public virtual void Dispose()
 	{
 		if (ViewModel != null)
 		{
@@ -295,4 +270,3 @@ public partial class JournalView : UserControl
 		}
 	}
 }
-
