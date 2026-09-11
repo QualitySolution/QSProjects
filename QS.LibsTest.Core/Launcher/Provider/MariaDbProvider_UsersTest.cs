@@ -1,0 +1,231 @@
+﻿using NUnit.Framework;
+using QS.DbManagement;
+using QS.DbManagement.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace QS.Launcher.Test.Provider {
+	[TestFixture(TestOf = typeof(MariaDBProvider))]
+	public class MariaDbProvider_UsersTest : LauncherDbTestFixtureBase
+	{
+		private static bool HasGlobalPrivileges(IEnumerable<string> grants) =>
+			grants.Any(g => g.IndexOf("ALL PRIVILEGES ON *.*", StringComparison.OrdinalIgnoreCase) >= 0);
+
+		[Test(Description = "Созданный пользователь заводится на сервере под обоими хостами и попадает в метабазу")]
+		public async Task CreateUser_CreatesServerAccountsAndMetabaseRecord() {
+			var provider = LoginAs();
+
+			bool created = provider.CreateUser(new DbUserInfo {
+				Login = "newbie", Name = "Новичок", Email = "newbie@example.com"
+			}, "newbie-pass");
+
+			// три места, где пользователь должен появиться: сервер, метабаза, а профиль - в users базы
+			var hosts = await ReadServerLoginHosts("newbie");
+			var metabaseRow = await ReadMetabaseUser("newbie");
+
+			Assert.That(created, Is.True);
+			Assert.That(hosts, Is.EquivalentTo(new[] { "%", "localhost" }),
+				"учётка заводится и для удалённых подключений, и для локальных");
+			Assert.That(metabaseRow, Is.Not.Null, "пользователь должен отразиться в метабазе");
+			Assert.That(metabaseRow?.Name, Is.EqualTo("Новичок"));
+			Assert.That(metabaseRow?.Email, Is.EqualTo("newbie@example.com"));
+		}
+
+		[Test(Description = "Новому пользователю выдаётся чтение метабазы - иначе он не увидит список баз")]
+		public async Task CreateUser_GrantsReadAccessToMetabase() {
+			var provider = LoginAs();
+			provider.CreateUser(new DbUserInfo { Login = "reader" }, "reader-pass");
+
+			var grants = await ReadServerGrants("reader");
+
+			Assert.That(GrantsMentionDatabase(grants, LauncherDbName), Is.True,
+				"без чтения QSLauncher новый пользователь не увидит ни одной базы");
+		}
+
+		[Test(Description = "Пользователь-администратор получает глобальные права")]
+		public async Task CreateUser_AdminFlag_GrantsGlobalPrivileges() {
+			var provider = LoginAs();
+			provider.CreateUser(new DbUserInfo { Login = "chief", IsAdmin = true }, "chief-pass"); // сразу админом
+
+			var grants = await ReadServerGrants("chief");
+
+			Assert.That(HasGlobalPrivileges(grants), Is.True,
+				"администратору выдаются права на весь сервер");
+		}
+
+		[Test(Description = "Смена пароля пользователя пускает его по новому паролю")]
+		public void UpdateUser_NewPassword_TakesEffect() {
+			var provider = LoginAs();
+			provider.CreateUser(new DbUserInfo { Login = "repass" }, "old-pass");
+
+			provider.UpdateUser(new DbUserInfo { Login = "repass" }, "new-pass");
+
+			Assert.That(CreateProvider("repass", "new-pass").LoginToServer().Success, Is.True,
+				"новый пароль должен работать");
+			Assert.That(CreateProvider("repass", "old-pass").LoginToServer().Success, Is.False,
+				"старый пароль должен перестать работать");
+		}
+
+		[Test(Description = "Блокировка пользователя закрывает ему вход")]
+		public void UpdateUser_Disabled_BlocksLogin() {
+			var provider = LoginAs();
+			provider.CreateUser(new DbUserInfo { Login = "block" }, "block-pass");
+
+			provider.UpdateUser(new DbUserInfo {
+				Login = "block", Disabled = true
+			});
+
+			Assert.That(CreateProvider("blockme", "blockme-pass").LoginToServer().Success, Is.False,
+				"заблокированная учётка входить не должна");
+		}
+
+		[Test(Description = "Снятие блокировки возвращает вход")]
+		public void UpdateUser_Enabled_RestoresLogin() {
+			var provider = LoginAs();
+			provider.CreateUser(new DbUserInfo { Login = "unblockme", Disabled = true }, "unblock-pass"); // создан заблокированным
+
+			provider.UpdateUser(new DbUserInfo {
+				Login = "unblockme", Disabled = false
+			});
+
+			Assert.That(CreateProvider("unblockme", "unblock-pass").LoginToServer().Success, Is.True);
+		}
+
+		[Test(Description = "Выдача и снятие флага администратора меняет глобальные гранты")]
+		public async Task UpdateUser_AdminFlag_TogglesGlobalGrants() {
+			var provider = LoginAs();
+			provider.CreateUser(new DbUserInfo { Login = "promoted" }, "promoted-pass");
+
+			provider.UpdateUser(new DbUserInfo {
+				Login = "promoted", IsAdmin = true
+			});
+			var afterPromotion = await ReadServerGrants("promoted"); // сняли гранты после повышения
+
+			provider.UpdateUser(new DbUserInfo {
+				Login = "promoted", IsAdmin = false
+			});
+			var afterDemotion = await ReadServerGrants("promoted"); // и после понижения
+
+			Assert.That(HasGlobalPrivileges(afterPromotion),
+				Is.True, "после повышения должны появиться глобальные права");
+			Assert.That(HasGlobalPrivileges(afterDemotion),
+				Is.False, "после понижения глобальные права должны уйти");
+		}
+
+		[Test(Description = "Правка профиля без изменения учётки отражается в метабазе")]
+		public async Task UpdateUser_Profile_ReflectedInMetabase() {
+			var provider = LoginAs();
+			provider.CreateUser(new DbUserInfo { Login = "profiled", Name = "Было" }, "profiled-pass");
+
+			provider.UpdateUser(new DbUserInfo {
+				Login = "profiled", Name = "Стало", Email = "stalo@example.com"
+			});
+
+			var row = await ReadMetabaseUser("profiled");
+			Assert.That(row?.Name, Is.EqualTo("Стало"));
+			Assert.That(row?.Email, Is.EqualTo("stalo@example.com"));
+		}
+
+		// телефон - единственное поле карточки, которого нет на сервере: он живёт только
+		// в метабазе, и потерять его можно молча, не сломав ничего остального
+		[Test(Description = "Телефон сохраняется при создании и меняется при правке")]
+		public async Task CreateAndUpdateUser_Phone_StoredInMetabase() {
+			var provider = LoginAs();
+			provider.CreateUser(new DbUserInfo { Login = "dialed", Phone = "+7-900-000" }, "dialed-pass");
+
+			Assert.That((await ReadMetabaseUser("dialed"))?.Phone, Is.EqualTo("+7-900-000"),
+				"телефон из карточки должен попасть в метабазу");
+
+			provider.UpdateUser(new DbUserInfo { Login = "dialed", Phone = "+7-911-111" });
+
+			Assert.That((await ReadMetabaseUser("dialed"))?.Phone, Is.EqualTo("+7-911-111"));
+		}
+
+		[Test(Description = "Удаление пользователя убирает учётки со всех хостов и запись из метабазы")]
+		public async Task DeleteUser_RemovesServerAccountsAndMetabaseRecord() {
+			var provider = LoginAs();
+			provider.CreateUser(new DbUserInfo { Login = "condemned" }, "condemned-pass");
+
+			bool deleted = provider.DeleteUser("condemned");
+
+			bool existsOnServer = await ServerLoginExists("condemned");
+			var metabaseRow = await ReadMetabaseUser("condemned");
+
+			Assert.That(deleted, Is.True);
+			Assert.That(existsOnServer, Is.False, "учётки должны исчезнуть по всем хостам");
+			Assert.That(metabaseRow, Is.Null, "явное удаление из метабазы жёсткое, а не мягкое");
+		}
+
+		[Test(Description = "Удаление пользователя деактивирует его строку в users каждой базы продукта")]
+		public async Task DeleteUser_DeactivatesRowsInApplicationDatabases() {
+			await CreateApplicationDatabase("base_alpha");
+			await CreateApplicationDatabase("base_beta");
+
+			var provider = LoginAs();
+			int alphaId = await SeedMetabase("base_alpha");
+			int betaId = await SeedMetabase("base_beta");
+
+			provider.CreateUser(new DbUserInfo { Login = "wanderer", Name = "Странник" }, "wanderer-pass");
+			provider.SetUserBaseAccess("wanderer",
+				new DbUserBaseAccess { BaseName = "base_alpha", BaseId = alphaId, HasAccess = true, Name = "Странник" });
+			provider.SetUserBaseAccess("wanderer",
+				new DbUserBaseAccess { BaseName = "base_beta", BaseId = betaId, HasAccess = true, Name = "Странник" });
+
+			provider.DeleteUser("wanderer");
+
+			// проверяем обе базы: обход не должен обрываться на первой
+			var inAlpha = await ReadBaseUser("base_alpha", "wanderer");
+			var inBeta = await ReadBaseUser("base_beta", "wanderer");
+
+			Assert.That(inAlpha, Is.Not.Null, "строку в базе не удаляем - помечаем");
+			Assert.That(inAlpha?.Deactivated, Is.True, "в base_alpha пользователь должен быть отключён");
+			Assert.That(inBeta, Is.Not.Null);
+			Assert.That(inBeta?.Deactivated, Is.True, "во второй базе тоже - обход не должен обрываться на первой");
+		}
+
+		[Test(Description = "Список пользователей приходит из метабазы")]
+		public async Task GetUsers_FromMetabase_ReturnsAccountUsers() {
+			await SeedMetabaseUser("meta_only_user", name: "Только в метабазе"); // учётки на сервере нет
+
+			var provider = LoginAs();
+			var users = provider.GetUsers();
+
+			var found = users.FirstOrDefault(u => u.Login == "meta_only_user");
+			Assert.That(found, Is.Not.Null, "пользователей показываем из метабазы");
+			Assert.That(found?.Name, Is.EqualTo("Только в метабазе"));
+		}
+
+		[Test(Description = "Смена своего пароля пускает на сервер с новым паролем")]
+		public void ChangeOwnPassword_Admin_NewPasswordWorks() {
+			var admin = LoginAs();
+			admin.CreateUser(new DbUserInfo { Login = "selfadmin", IsAdmin = true }, "first-pass");
+			var self = LoginAs("selfadmin", "first-pass");
+
+			bool changed = self.ChangeOwnPassword("second-pass");
+
+			Assert.That(changed, Is.True);
+			// метабаза пароля не хранит - проверять там нечего, пускает на сервер сам MariaDB
+			Assert.That(CreateProvider("selfadmin", "second-pass").LoginToServer().Success, Is.True);
+		}
+
+		[Test(Description = "Операции с пользователями работают и без метабазы")]
+		public async Task UserLifecycle_WithoutMetabase_WorksOnServerOnly() {
+			await DropMetabase();
+			try {
+				var provider = LoginAs();
+
+				Assert.DoesNotThrow(() => provider.CreateUser(new DbUserInfo { Login = "lonely" }, "lonely-pass"),
+					"метабаза необязательна - создание пользователя обязано пройти");
+				Assert.That(await ServerLoginExists("lonely"), Is.True);
+
+				Assert.DoesNotThrow(() => provider.DeleteUser("lonely"));
+				Assert.That(await ServerLoginExists("lonely"), Is.False);
+			}
+			finally {
+				await DeployMetabase();
+			}
+		}
+	}
+}

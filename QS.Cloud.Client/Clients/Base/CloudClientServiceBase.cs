@@ -5,6 +5,8 @@ namespace QS.Cloud.Client
 {
 	public abstract class CloudClientServiceBase : IDisposable
 	{
+		private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
 		private readonly string serviceAddress;
 		private readonly int servicePort;
 		private readonly ChannelCredentials credentials;
@@ -39,10 +41,20 @@ namespace QS.Cloud.Client
 		
 		public abstract bool CanConnect { get; }
 		
-		public virtual async void Dispose()
+		public virtual void Dispose()
 		{
-			if(channel != null)
-				await channel.ShutdownAsync();
+			var opened = channel;
+			channel = null;
+			if(opened == null)
+				return;
+
+			try {
+				opened.ShutdownAsync().GetAwaiter().GetResult();
+			}
+			catch(Exception ex) {
+				// исключение из Dispose подменяет собой настоящую причину, по которой закрывались.
+				logger.Debug(ex, "Не удалось закрыть канал к облаку QS");
+			}
 		}
 	}
 }

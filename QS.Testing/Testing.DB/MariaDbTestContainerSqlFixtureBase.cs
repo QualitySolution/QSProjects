@@ -63,7 +63,9 @@ namespace QS.Testing.DB
 			MariaDbContainer = new MariaDbBuilder()
 				.WithUsername("root")
 				.WithPassword("root")
-				.WithCommand("--character-set-server=utf8mb4", "--collation-server=utf8mb4_general_ci")
+				.WithCommand("--character-set-server=utf8mb4"
+					, "--collation-server=utf8mb4_general_ci"
+					, "--skip-name-resolve")
 				.Build();
 
 			await MariaDbContainer.StartAsync();

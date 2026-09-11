@@ -1,4 +1,4 @@
-using QS.DbManagement.Responces;
+using QS.DbManagement.Entities;
 
 namespace QS.Launcher.AppRunner {
 	public interface IAppRunner {

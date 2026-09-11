@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
 using QS.DbManagement;
+using QS.DbManagement.Entities;
 using QS.Dialog;
 using QS.Launcher;
 
@@ -96,21 +97,13 @@ namespace QS.Test.Launcher {
 			var connections = new List<Connection>();
 			
 			configurator.SaveConnections(connections);
-			
-			Assert.That(File.Exists(testConfigFile + ".tmp"), Is.False, "Временный файл должен быть удален");
+
+			// имя временного файла уникально на запись, поэтому ищем любые остатки
+			Assert.That(Directory.GetFiles(Path.GetDirectoryName(testConfigFile), "*.tmp"), Is.Empty,
+				"временных файлов после успешной записи остаться не должно");
 		}
 		
-		[Test(Description = "Проверка что файл блокировки удаляется после записи")]
-		public void SaveConnections_RemovesLockFile_AfterCompletion() {
-			var configurator = new Configurator(options, interactive, connectionTypes);
-			var connections = new List<Connection>();
-			
-			configurator.SaveConnections(connections);
-			
-			Assert.That(File.Exists(testConfigFile + ".lock"), Is.False, "Файл блокировки должен быть удален");
-		}
-		
-		[Test(Description = "Проверка восстановления из backup при пустом основном файле")]
+[Test(Description = "Проверка восстановления из backup при пустом основном файле")]
 		public void ReadConnections_RestoresFromBackup_WhenMainFileIsEmpty() {
 			// Создаем backup с пустым массивом
 			CreateTestConfig(@"[]");
@@ -146,14 +139,13 @@ namespace QS.Test.Launcher {
 			Assert.That(fileInfo.Length, Is.GreaterThan(0), "Файл конфигурации не должен быть пустым");
 		}
 		
-		[Test(Description = "Проверка защиты от конкурентного доступа")]
-		public void SaveConnections_PreventsRaceCondition_WithFileLock() {
+		[Test(Description = "Конкурентная запись не роняет вызывающего и не портит файл")]
+		public void SaveConnections_ConcurrentWrites_LeaveFileValid() {
 			var configurator1 = new Configurator(options, interactive, connectionTypes);
 			var configurator2 = new Configurator(options, interactive, connectionTypes);
-			
+
 			var connections = new List<Connection>();
-			
-			// Первая запись создает блокировку
+
 			var task1 = Task.Run(() => {
 				for(int i = 0; i < 5; i++) {
 					configurator1.SaveConnections(connections);
@@ -162,7 +154,7 @@ namespace QS.Test.Launcher {
 			});
 			
 			var task2 = Task.Run(() => {
-				Thread.Sleep(5); // Небольшая задержка чтобы первый поток успел создать блокировку
+				Thread.Sleep(5); // чтобы записи наверняка пересеклись
 				for(int i = 0; i < 5; i++) {
 					configurator2.SaveConnections(connections);
 					Thread.Sleep(10);
@@ -426,7 +418,7 @@ namespace QS.Test.Launcher {
 
 			public override bool CanConnect(IEnumerable<ConnectionParameterValue> parameters) => true;
 
-			public override IDbProvider CreateProvider(IList<ConnectionParameterValue> parameters, string password = null)
+			public override IDbProvider CreateProvider(IList<ConnectionParameterValue> parameters, byte productCode, string password = null)
 				=> Substitute.For<IDbProvider>();
 		}
 	}

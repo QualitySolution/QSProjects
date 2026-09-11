@@ -20,7 +20,7 @@
             <Image x:Name="icon" Height="30" Margin="12" VerticalAlignment="Top" />
 
             <StackPanel x:Name="buttonContainer" Grid.Row="1" Grid.Column="1" Margin="12" HorizontalAlignment="Right" Orientation="Horizontal">
-                <Button Click="OnCloseClick" Content="Закрыть" />
+                <Button x:Name="closeButton" Click="OnCloseClick" Content="Закрыть" />
             </StackPanel>
 
             <ScrollViewer Grid.Column="1" Margin="12" IsScrollChainingEnabled="True">

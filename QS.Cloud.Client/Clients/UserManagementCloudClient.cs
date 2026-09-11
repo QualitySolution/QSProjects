@@ -1,63 +1,81 @@
+using System.Collections.Generic;
+using System.Linq;
 using QS.Cloud.Core;
 
 namespace QS.Cloud.Client
 {
-	public class UserManagementCloudClient : CloudClientBySession
+	public class UserManagementCloudClient : CloudClientByBasicAuth
 	{
-		public UserManagementCloudClient(ISessionInfoProvider sessionInfoProvider)
-                        : base(sessionInfoProvider, "core.cloud.qsolution.ru", 443) { }
+		public UserManagementCloudClient(IBasicAuthInfoProvider basicAuthInfoProvider)
+			: base(basicAuthInfoProvider, "core.cloud.qsolution.ru", 443) { }
 
-
-		public CreateUserResponse CreateUser(string login, string userName, string email, string password)
+		public virtual List<UserInfo> GetUsers()
 		{
 			var client = new UserManagement.UserManagementClient(Channel);
+			var response = client.GetUsers(new GetUsersRequest(), headers);
+			return response.Users.ToList();
+		}
 
-			var request = new CreateUserRequest
-			{
-				Login = login, Name = userName, Email = email, Password = password
+		public virtual CreateUserResponse CreateUser(UserInfo user, string password)
+		{
+			var client = new UserManagement.UserManagementClient(Channel);
+			var request = new CreateUserRequest {
+				Login = user.Login,
+				Name = user.Name ?? "",
+				Email = user.Email ?? "",
+				Password = password ?? "",
+				Phone = user.Phone ?? "",
+				Post = user.Post ?? "",
+				Comment = user.Comment ?? "",
+				IsAccountAdmin = user.IsAccountAdmin
 			};
-
-			var response = client.CreateUser(request, headers);
-
-			return response;
+			return client.CreateUser(request, headers);
 		}
 
-		public DeleteUserResponse DeleteUser(string login)
+		public virtual UpdateUserResponse UpdateUser(UserInfo user, string newPassword)
 		{
 			var client = new UserManagement.UserManagementClient(Channel);
+			var request = new UpdateUserRequest {
+				Login = user.Login,
+				Name = user.Name ?? "",
+				Email = user.Email ?? "",
+				Phone = user.Phone ?? "",
+				Post = user.Post ?? "",
+				Comment = user.Comment ?? "",
+				Disabled = user.Disabled,
+				IsAccountAdmin = user.IsAccountAdmin,
+				NewPassword = newPassword ?? ""
+			};
+			return client.UpdateUser(request, headers);
+		}
 
+		public virtual DeleteUserResponse DeleteUser(string login)
+		{
+			var client = new UserManagement.UserManagementClient(Channel);
 			var request = new DeleteUserRequest { User = login };
-			var response = client.DeleteUser(request, headers);
-
-			return response;
+			return client.DeleteUser(request, headers);
 		}
 
-		// strange, but protobuf has the same signature
-		public UpdateUserResponse UpdateUser()
+		public virtual List<BaseAccessInfo> GetUserBaseAccess(string login, uint productId)
 		{
 			var client = new UserManagement.UserManagementClient(Channel);
-
-			var request = new UpdateUserRequest();
-			var response = client.UpdateUser(request, headers);
-
-			return response;
+			var request = new GetUserBaseAccessRequest { User = login, ProductId = productId };
+			var response = client.GetUserBaseAccess(request, headers);
+			return response.Bases.ToList();
 		}
 
-		public bool ChangeBaseAccess(string user, int baseId, bool grant, bool admin)
+		public virtual ChangeBaseAccessResponse ChangeBaseAccess(string user, int baseId, bool grant, bool admin, bool readOnly, uint productId)
 		{
 			var client = new UserManagement.UserManagementClient(Channel);
-
-			var request = new ChangeBaseAccessRequest
-			{
+			var request = new ChangeBaseAccessRequest {
 				User = user,
 				BaseId = baseId,
 				Grant = grant,
-				Admin = admin
+				Admin = admin,
+				ReadOnly = readOnly,
+				ProductId = productId
 			};
-
-			var response = client.ChangeBaseAccess(request);
-
-			return response.Success;
+			return client.ChangeBaseAccess(request, headers);
 		}
 	}
 }

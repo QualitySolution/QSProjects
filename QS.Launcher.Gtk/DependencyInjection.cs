@@ -7,7 +7,7 @@ namespace QS.Launcher {
 			return services
 				.AddSingleton<MainWindow>()
 				.AddSingleton<LoginView>()
-				.AddSingleton<DataBasesView>();
+				.AddSingleton<DatabasesView>();
 		}
 	}
 }

@@ -9,7 +9,7 @@ namespace QS.Launcher.Views {
 		
 		public MainWindowVM ViewModel { get; }
 		
-		public MainWindow(MainWindowVM viewModel, LauncherOptions options, LoginView loginView, DataBasesView dataBasesView) :
+		public MainWindow(MainWindowVM viewModel, LauncherOptions options, LoginView loginView, DatabasesView dataBasesView) :
 				base(Gtk.WindowType.Toplevel) {
 			this.Build();
 

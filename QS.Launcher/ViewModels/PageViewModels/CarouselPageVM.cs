@@ -1,12 +1,28 @@
+using System;
+using System.Linq;
+using System.Reactive.Linq;
 using System.Windows.Input;
 using QS.ViewModels;
+using ReactiveUI;
 
 namespace QS.Launcher.ViewModels.PageViewModels {
 	public class CarouselPageVM : ViewModelBase {
-		public ICommand NextPageCommand { get; set; }
+		protected LauncherNavigation Navigation { get; }
 
-		public ICommand PreviousPageCommand { get; set; }
+		protected CarouselPageVM(LauncherNavigation navigation) {
+			Navigation = navigation ?? throw new ArgumentNullException(nameof(navigation));
+		}
 
-		public ICommand ChangePageCommand { get; set; }
+		private bool isBusy;
+		public bool IsBusy {
+			get => isBusy;
+			private set => this.RaiseAndSetIfChanged(ref isBusy, value);
+		}
+
+		protected void TrackBusy(params ICommand[] commands) =>
+			commands.Cast<IReactiveCommand>().Select(command => command.IsExecuting)
+				.CombineLatest(running => running.Any(busy => busy))
+				.Subscribe(busy => IsBusy = busy);
+
 	}
 }

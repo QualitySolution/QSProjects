@@ -10,11 +10,11 @@ using QS.Dialog;
 
 namespace QS.Launcher {
 	public class Configurator {
-		private NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+		private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 		
 		private readonly LauncherOptions options;
 		private readonly IInteractiveMessage interactive;
-		private readonly IList<ConnectionTypeBase> connectionTypes;
+		private readonly List<ConnectionTypeBase> connectionTypes;
 		
 		readonly JsonSerializerOptions serializerOptions = new JsonSerializerOptions() { WriteIndented = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
 
@@ -23,6 +23,7 @@ namespace QS.Launcher {
 			this.interactive = interactive ?? throw new ArgumentNullException(nameof(interactive));
 			this.connectionTypes = connectionTypes?.ToList() ?? throw new ArgumentNullException(nameof(connectionTypes));
 		}
+		public IReadOnlyList<ConnectionTypeBase> ConnectionTypes => connectionTypes;
 
 		public IList<Connection> ReadConnections() {
 			List<Dictionary<string, string>> connectionDefinitions = new List<Dictionary<string, string>>();
