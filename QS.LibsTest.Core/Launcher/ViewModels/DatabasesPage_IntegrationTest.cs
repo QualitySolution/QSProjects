@@ -3,7 +3,7 @@ using NUnit.Framework;
 using QS.DbManagement.Entities;
 using QS.Dialog;
 using QS.Launcher.ViewModels.PageViewModels;
-using QS.Launcher.ViewModels.PageViewModels.DataBase;
+using QS.Launcher.ViewModels.PageViewModels.Database;
 using ReactiveUI;
 using System.Linq;
 using System.Reactive;
@@ -12,8 +12,8 @@ using System.Threading.Tasks;
 
 namespace QS.Launcher.Test.ViewModels {
 	/// <summary>от нажатия кнопки до состояния сервера и метабазы</summary>
-	[TestFixture(TestOf = typeof(DataBasesVM))]
-	public class DataBasesPage_IntegrationTest : LauncherViewModelTestFixtureBase {
+	[TestFixture(TestOf = typeof(DatabasesVM))]
+	public class DatabasesPage_IntegrationTest : LauncherViewModelTestFixtureBase {
 
 		/// <summary>База на сервере и её запись в каталоге метабазы</summary>
 		private async Task<int> SeedBaseWithAccess(string baseName, string title) {

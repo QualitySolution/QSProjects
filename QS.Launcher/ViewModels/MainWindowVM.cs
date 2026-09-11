@@ -1,6 +1,6 @@
 using System;
 using QS.Launcher.ViewModels.PageViewModels;
-using QS.Launcher.ViewModels.PageViewModels.DataBase;
+using QS.Launcher.ViewModels.PageViewModels.Database;
 using QS.ViewModels;
 
 namespace QS.Launcher.ViewModels {
@@ -11,7 +11,7 @@ namespace QS.Launcher.ViewModels {
 
 		public MainWindowVM(
 			LauncherNavigation navigation,
-			DataBasesVM dataBasesVM,
+			DatabasesVM dataBasesVM,
 			LoginVM loginVM)
 		{
 			Navigation = navigation ?? throw new ArgumentNullException(nameof(navigation));

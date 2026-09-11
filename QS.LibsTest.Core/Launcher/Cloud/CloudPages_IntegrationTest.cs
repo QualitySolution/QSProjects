@@ -1,17 +1,17 @@
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using NUnit.Framework;
-using QS.Cloud.Client.DataBase;
+using QS.Cloud.Client.Database;
 using QS.Cloud.Core;
 using QS.DbManagement.Entities;
 using QS.Dialog;
-using QS.Launcher.ViewModels.PageViewModels.DataBase;
+using QS.Launcher.ViewModels.PageViewModels.Database;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace QS.Launcher.Test.Cloud {
-	[TestFixture(TestOf = typeof(DataBasesVM))]
+	[TestFixture(TestOf = typeof(DatabasesVM))]
 	public class CloudPages_IntegrationTest : CloudProviderTestFixtureBase {
 		private LauncherPagesHarness Pages { get; set; }
 

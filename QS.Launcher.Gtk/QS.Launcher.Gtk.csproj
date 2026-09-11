@@ -48,8 +48,8 @@
     <Compile Include="gtk-gui\QS.Launcher.Views.MainWindow.cs" />
     <Compile Include="Views\LoginView.cs" />
     <Compile Include="gtk-gui\QS.Launcher.Views.LoginView.cs" />
-    <Compile Include="Views\DataBasesView.cs" />
-    <Compile Include="gtk-gui\QS.Launcher.Views.DataBasesView.cs" />
+    <Compile Include="Views\DatabasesView.cs" />
+    <Compile Include="gtk-gui\QS.Launcher.Views.DatabasesView.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Binding\Gamma.Binding\Gamma.Binding.csproj">

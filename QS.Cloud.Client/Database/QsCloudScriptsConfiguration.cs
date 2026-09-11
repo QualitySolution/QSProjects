@@ -7,7 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace QS.Cloud.Client.DataBase {
+namespace QS.Cloud.Client.Database {
 	public class QsCloudScriptsConfiguration : IDbScriptsConfiguration {
 		private string ResourceName = "QS.Cloud.Client.Scripts.new_empty.sql";
 		public bool HasCreationScript() {

@@ -1,7 +1,7 @@
 using Avalonia.Controls;
-using QS.Launcher.ViewModels.PageViewModels.DataBase;
+using QS.Launcher.ViewModels.PageViewModels.Database;
 
-namespace QS.Launcher.Views.Pages.DataBase;
+namespace QS.Launcher.Views.Pages.Database;
 
 public partial class CreateDbSettingsView : UserControl {
 	public CreateDbSettingsView(CreateDbSettingsVM viewModel) {

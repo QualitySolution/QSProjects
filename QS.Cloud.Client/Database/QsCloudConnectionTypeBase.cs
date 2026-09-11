@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace QS.Cloud.Client.DataBase {
+namespace QS.Cloud.Client.Database {
 	public class QsCloudConnectionTypeBase : ConnectionTypeBase {
 
 		public QsCloudConnectionTypeBase() {

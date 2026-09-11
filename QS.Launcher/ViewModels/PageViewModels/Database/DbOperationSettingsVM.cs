@@ -8,7 +8,7 @@ using QS.DbManagement.Entities;
 using QS.Dialog;
 using ReactiveUI;
 
-namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
+namespace QS.Launcher.ViewModels.PageViewModels.Database {
 	public abstract class DbOperationSettingsVM : CarouselPageVM {
 		protected IDbManager Provider { get; }
 		protected Connection Connection { get; }
@@ -50,7 +50,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 				return;
 			}
 
-			var progress = Services.GetRequiredService<CreateDataBaseProgressVM>();
+			var progress = Services.GetRequiredService<CreateDatabaseProgressVM>();
 			progress.OperationTitle = Title;
 			progress.SetPipeline(Provider, Connection, BuildPipeline());
 			progress.OperationCompleted += () => OperationCompleted?.Invoke();

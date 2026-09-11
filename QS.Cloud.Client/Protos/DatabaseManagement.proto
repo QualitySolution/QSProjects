@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package QS.Cloud.Core;
+
+service DatabaseManagement{
+	rpc CheckDatabaseExists (CheckDatabaseExistsRequest) returns (CheckDatabaseExistsResponse);
+	rpc ClearDatabase (ClearDatabaseRequest) returns (ClearDatabaseResponse);
+	// Создать пустую базу
+	rpc CreateDatabase (CreateDatabaseRequest) returns (CreateDatabaseResponse);
+	// Удалить базу и очистить реестр
+	rpc DropDatabase (DropDatabaseRequest) returns (DropDatabaseResponse);
+}
+
+message ClearDatabaseRequest{
+	int32 base_id = 1;
+	uint32 product_id = 2;
+}
+
+message ClearDatabaseResponse{
+	bool success = 1;
+}
+
+message CheckDatabaseExistsRequest{
+	string name = 1;
+	uint32 product_id = 2;
+}
+
+message CheckDatabaseExistsResponse{
+	bool exists = 1;
+	optional int32 base_id = 2;
+}
+
+message CreateDatabaseRequest{
+	string name = 1;
+	string title = 2;
+	uint32 product_id = 3;
+}
+
+message CreateDatabaseResponse{
+	int32 base_id = 1;
+	string base_guid = 2;
+}
+
+message DropDatabaseRequest{
+	int32 base_id = 1;
+	uint32 product_id = 2;
+}
+
+message DropDatabaseResponse{
+	bool success = 1;
+}
