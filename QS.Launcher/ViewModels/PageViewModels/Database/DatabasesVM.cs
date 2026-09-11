@@ -172,7 +172,6 @@ namespace QS.Launcher.ViewModels.PageViewModels.Database {
 		}
 
 		private void ChangePassword() {
-			throw new NullReferenceException("тестовая ошибка");
 			if(Provider == null)
 				return;
 
