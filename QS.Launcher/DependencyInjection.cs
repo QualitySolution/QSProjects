@@ -8,14 +8,14 @@ using QS.Launcher.AppRunner;
 using QS.Launcher.Services;
 using QS.Launcher.ViewModels;
 using QS.Launcher.ViewModels.PageViewModels;
-using QS.Launcher.ViewModels.PageViewModels.DataBase;
+using QS.Launcher.ViewModels.PageViewModels.Database;
 using QS.DbManagement.Creation;
 using System;
 using System.Collections.Generic;
 
 namespace QS.Launcher {
 	public static partial class DependencyInjection {
-		public static IServiceCollection AddLauncherDataBaseCreation(this IServiceCollection services, List<(Type res,Type creator)> resourceCratorMap)
+		public static IServiceCollection AddLauncherDatabaseCreation(this IServiceCollection services, List<(Type res,Type creator)> resourceCratorMap)
 		{
 			var map = new DbResourcesCreationMap();
 			foreach(var resourceCrator in resourceCratorMap) {
@@ -33,12 +33,12 @@ namespace QS.Launcher {
 				.AddSingleton<LauncherNavigation>()
 				.AddSingleton<MainWindowVM>()
 				.AddSingleton<LoginVM>()
-				.AddSingleton<DataBasesVM>()
+				.AddSingleton<DatabasesVM>()
 				.AddSingleton<UsersVM>()
 				// Страницы разовой операции создаются заново на каждый вызов
 				.AddTransient<UserManagementVM>()
 				.AddTransient<ChangePasswordVM>()
-				.AddTransient<CreateDataBaseProgressVM>()
+				.AddTransient<CreateDatabaseProgressVM>()
 				.AddSingleton<IDbCreatorInteraction, LauncherDbCreatorInteraction>()
 				
 				.AddSingleton<DbCapabilities>();

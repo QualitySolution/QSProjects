@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using QS.Dialog;
 using QS.Launcher.Views;
 using QS.Launcher.Views.Pages;
-using QS.Launcher.Views.Pages.DataBase;
+using QS.Launcher.Views.Pages.Database;
 
 namespace QS.Launcher;
 public static partial class DependencyInjection {

@@ -5,9 +5,9 @@ using QS.Views;
 
 namespace QS.Launcher.Views {
 	[System.ComponentModel.ToolboxItem(true)]
-	public partial class DataBasesView : ViewBase<DataBasesVM> {
+	public partial class DatabasesView : ViewBase<DatabasesVM> {
 
-		public DataBasesView(DataBasesVM viewModel) : base(viewModel) {
+		public DatabasesView(DatabasesVM viewModel) : base(viewModel) {
 			this.Build();
 
 			treeBases.CreateFluentColumnsConfig<DbInfo>()

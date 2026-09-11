@@ -1,6 +1,6 @@
 ﻿using NSubstitute;
 using NUnit.Framework;
-using QS.Cloud.Client.DataBase;
+using QS.Cloud.Client.Database;
 using QS.Cloud.Core;
 using QS.DbManagement.Entities;
 using System.Collections.Generic;

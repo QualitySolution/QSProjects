@@ -9,7 +9,7 @@ using ReactiveUI;
 using System;
 using System.Collections.Generic;
 
-namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
+namespace QS.Launcher.ViewModels.PageViewModels.Database {
 	public class ImportDbSettingsVM : DbOperationSettingsVM {
 		public ImportDbSettingsVM(LauncherNavigation navigation, IDbManager provider, Connection connection,
 			IServiceProvider services, IInteractiveMessage interactiveMessage)

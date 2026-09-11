@@ -3,7 +3,7 @@ using MySqlConnector;
 using QS.Cloud.Client.Clients;
 using QS.Cloud.Core;
 
-namespace QS.Cloud.Client.DataBase {
+namespace QS.Cloud.Client.Database {
 	/// <summary>
 	/// Временное подключение к облачной базе
 	/// </summary>

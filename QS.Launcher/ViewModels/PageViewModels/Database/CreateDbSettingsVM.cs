@@ -11,7 +11,7 @@ using ReactiveUI;
 using System;
 using System.Collections.Generic;
 
-namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
+namespace QS.Launcher.ViewModels.PageViewModels.Database {
 	public class CreateDbSettingsVM : DbOperationSettingsVM {
 		public CreateDbSettingsVM(LauncherNavigation navigation, IDbManager provider, Connection connection,
 			IServiceProvider services, IInteractiveMessage interactiveMessage)

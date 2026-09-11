@@ -3,7 +3,7 @@ using NSubstitute;
 using NUnit.Framework;
 using QS.Cloud.Client;
 using QS.Cloud.Client.Clients;
-using QS.Cloud.Client.DataBase;
+using QS.Cloud.Client.Database;
 using QS.Cloud.Core;
 
 namespace QS.Launcher.Test.Cloud {
@@ -13,7 +13,7 @@ namespace QS.Launcher.Test.Cloud {
 		protected const byte TestProductCode = 1;
 
 		protected LoginManagementCloudClient LoginClient { get; private set; }
-		protected DataBaseManagementCloudClient DbClient { get; private set; }
+		protected DatabaseManagementCloudClient DbClient { get; private set; }
 		protected UserManagementCloudClient UserClient { get; private set; }
 
 		[SetUp]
@@ -21,7 +21,7 @@ namespace QS.Launcher.Test.Cloud {
 			var auth = new BasicAuthInfoProvider($@"{AccountName}\{AdminLogin}", "pass");
 
 			LoginClient = Substitute.For<LoginManagementCloudClient>(auth);
-			DbClient = Substitute.For<DataBaseManagementCloudClient>(auth, (uint)TestProductCode);
+			DbClient = Substitute.For<DatabaseManagementCloudClient>(auth, (uint)TestProductCode);
 			UserClient = Substitute.For<UserManagementCloudClient>(auth);
 
 			DbClient.CanConnect.Returns(true);

@@ -2,7 +2,7 @@
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using NUnit.Framework;
-using QS.Cloud.Client.DataBase;
+using QS.Cloud.Client.Database;
 using QS.Cloud.Core;
 using QS.DbManagement.Creation;
 using QS.DbManagement.Entities;
@@ -81,17 +81,17 @@ namespace QS.Launcher.Test.Cloud {
 
 		[Test(Description = "Удаление базы отправляет её идентификатор в облако")]
 		public void DropDatabase_SendsBaseIdToCloud() {
-			DbClient.DropDataBase(5).Returns(new DropDataBaseResponse { Success = true });
+			DbClient.DropDatabase(5).Returns(new DropDatabaseResponse { Success = true });
 
 			bool dropped = LoginAs().DropDatabase(new DbInfo { BaseId = 5, BaseName = "to_drop" });
 
 			Assert.That(dropped, Is.True);
-			DbClient.Received(1).DropDataBase(5);
+			DbClient.Received(1).DropDatabase(5);
 		}
 
 		[Test(Description = "Отказ облака в удалении не выдаётся за успех")]
 		public void DropDatabase_CloudRefused_Throws() {
-			DbClient.DropDataBase(7).Returns(new DropDataBaseResponse { Success = false });
+			DbClient.DropDatabase(7).Returns(new DropDatabaseResponse { Success = false });
 			var provider = LoginAs();
 
 			// иначе страница показала бы «База данных удалена», а база осталась бы на месте
@@ -125,14 +125,14 @@ namespace QS.Launcher.Test.Cloud {
 
 		[Test(Description = "Новой базы в облаке нет - заводим запись и наполняем")]
 		public void CreateDatabase_NewBase_RegistersInCloudAndFillsIt() {
-			DbClient.CheckDataBaseExists("fresh_base").Returns(new CheckDataBaseExistsResponse { Exists = false });
-			DbClient.CreateDataBase("fresh_base", "Свежая").Returns(new CreateDataBaseResponse { BaseId = 11 });
+			DbClient.CheckDatabaseExists("fresh_base").Returns(new CheckDatabaseExistsResponse { Exists = false });
+			DbClient.CreateDatabase("fresh_base", "Свежая").Returns(new CreateDatabaseResponse { BaseId = 11 });
 			SessionOpens(11, "fresh_base");
 
 			bool created = LoginAs().CreateDatabase(CreationRequest("fresh_base", "Свежая"));
 
 			Assert.That(created, Is.True);
-			DbClient.Received(1).CreateDataBase("fresh_base", "Свежая");
+			DbClient.Received(1).CreateDatabase("fresh_base", "Свежая");
 			Assert.That(FakeCreationModel.WasRun, Is.True, "наполнение должно запуститься");
 			Assert.That(FakeCreationModel.ConnectionStringSeen, Does.Contain("fresh_base"),
 				"наполнение идёт по строке подключения из сессии облака");
@@ -140,50 +140,50 @@ namespace QS.Launcher.Test.Cloud {
 
 		[Test(Description = "Пересоздать сносит запись в облаке и заводит новую")]
 		public void CreateDatabase_Recreate_DropsThenCreates() {
-			DbClient.CheckDataBaseExists("busy_base").Returns(new CheckDataBaseExistsResponse { Exists = true, BaseId = 12 });
-			DbClient.DropDataBase(12).Returns(new DropDataBaseResponse { Success = true });
-			DbClient.CreateDataBase("busy_base", "busy_base").Returns(new CreateDataBaseResponse { BaseId = 13 });
+			DbClient.CheckDatabaseExists("busy_base").Returns(new CheckDatabaseExistsResponse { Exists = true, BaseId = 12 });
+			DbClient.DropDatabase(12).Returns(new DropDatabaseResponse { Success = true });
+			DbClient.CreateDatabase("busy_base", "busy_base").Returns(new CreateDatabaseResponse { BaseId = 13 });
 			SessionOpens(13, "busy_base");
 			interaction.AskDropExistingDatabase("busy_base").Returns(ToDoWithExistingDatabase.Recreate);
 
 			Assert.That(LoginAs().CreateDatabase(CreationRequest("busy_base")), Is.True);
 
 			Received.InOrder(() => {
-				DbClient.DropDataBase(12);
-				DbClient.CreateDataBase("busy_base", "busy_base");
+				DbClient.DropDatabase(12);
+				DbClient.CreateDatabase("busy_base", "busy_base");
 			});
 		}
 
 		[Test(Description = "Перезаписать чистит базу, сохраняя запись реестра и доступы")]
 		public void CreateDatabase_Rewrite_ClearsAndKeepsRegistry() {
-			DbClient.CheckDataBaseExists("keep_base").Returns(new CheckDataBaseExistsResponse { Exists = true, BaseId = 14 });
-			DbClient.ClearDataBase(14).Returns(new ClearDataBaseResponse { Success = true });
+			DbClient.CheckDatabaseExists("keep_base").Returns(new CheckDatabaseExistsResponse { Exists = true, BaseId = 14 });
+			DbClient.ClearDatabase(14).Returns(new ClearDatabaseResponse { Success = true });
 			SessionOpens(14, "keep_base");
 			interaction.AskDropExistingDatabase("keep_base").Returns(ToDoWithExistingDatabase.Rewrite);
 
 			Assert.That(LoginAs().CreateDatabase(CreationRequest("keep_base")), Is.True);
 
-			DbClient.Received(1).ClearDataBase(14);
-			DbClient.DidNotReceive().DropDataBase(Arg.Any<int>());
-			DbClient.DidNotReceive().CreateDataBase(Arg.Any<string>(), Arg.Any<string>());
+			DbClient.Received(1).ClearDatabase(14);
+			DbClient.DidNotReceive().DropDatabase(Arg.Any<int>());
+			DbClient.DidNotReceive().CreateDatabase(Arg.Any<string>(), Arg.Any<string>());
 		}
 
 		[Test(Description = "Ничего не делать")]
 		public void CreateDatabase_Nothing_LeavesEverythingAlone() {
-			DbClient.CheckDataBaseExists("untouched").Returns(new CheckDataBaseExistsResponse { Exists = true, BaseId = 15 });
+			DbClient.CheckDatabaseExists("untouched").Returns(new CheckDatabaseExistsResponse { Exists = true, BaseId = 15 });
 			interaction.AskDropExistingDatabase("untouched").Returns(ToDoWithExistingDatabase.Nothing);
 
 			Assert.That(LoginAs().CreateDatabase(CreationRequest("untouched")), Is.False);
 
-			DbClient.DidNotReceive().DropDataBase(Arg.Any<int>());
-			DbClient.DidNotReceive().ClearDataBase(Arg.Any<int>());
+			DbClient.DidNotReceive().DropDatabase(Arg.Any<int>());
+			DbClient.DidNotReceive().ClearDatabase(Arg.Any<int>());
 			Assert.That(FakeCreationModel.WasRun, Is.False, "наполнение запускаться не должно");
 		}
 
 		[Test(Description = "Не удалось очистить базу - пользователь получает объяснение, наполнение не идёт")]
 		public void CreateDatabase_ClearFailed_ReportsErrorAndStops() {
-			DbClient.CheckDataBaseExists("stuck").Returns(new CheckDataBaseExistsResponse { Exists = true, BaseId = 16 });
-			DbClient.ClearDataBase(16).Returns(new ClearDataBaseResponse { Success = false });
+			DbClient.CheckDatabaseExists("stuck").Returns(new CheckDatabaseExistsResponse { Exists = true, BaseId = 16 });
+			DbClient.ClearDatabase(16).Returns(new ClearDatabaseResponse { Success = false });
 			interaction.AskDropExistingDatabase("stuck").Returns(ToDoWithExistingDatabase.Rewrite);
 
 			Assert.That(LoginAs().CreateDatabase(CreationRequest("stuck")), Is.False);
@@ -194,8 +194,8 @@ namespace QS.Launcher.Test.Cloud {
 
 		[Test(Description = "Нет прав администратора базы - наполнение не начинается, пользователь получает объяснение")]
 		public void CreateDatabase_SessionWithoutAdmin_ReportsErrorAndStops() {
-			DbClient.CheckDataBaseExists("no_rights").Returns(new CheckDataBaseExistsResponse { Exists = false });
-			DbClient.CreateDataBase(Arg.Any<string>(), Arg.Any<string>()).Returns(new CreateDataBaseResponse { BaseId = 17 });
+			DbClient.CheckDatabaseExists("no_rights").Returns(new CheckDatabaseExistsResponse { Exists = false });
+			DbClient.CreateDatabase(Arg.Any<string>(), Arg.Any<string>()).Returns(new CreateDatabaseResponse { BaseId = 17 });
 			SessionOpens(17, "no_rights", isAdmin: false);
 
 			Assert.That(LoginAs().CreateDatabase(CreationRequest("no_rights")), Is.False);
@@ -207,8 +207,8 @@ namespace QS.Launcher.Test.Cloud {
 
 		[Test(Description = "Облако не открыло сессию - тоже объяснение")]
 		public void CreateDatabase_SessionRefused_ReportsError() {
-			DbClient.CheckDataBaseExists("no_session").Returns(new CheckDataBaseExistsResponse { Exists = false });
-			DbClient.CreateDataBase(Arg.Any<string>(), Arg.Any<string>()).Returns(new CreateDataBaseResponse { BaseId = 18 });
+			DbClient.CheckDatabaseExists("no_session").Returns(new CheckDatabaseExistsResponse { Exists = false });
+			DbClient.CreateDatabase(Arg.Any<string>(), Arg.Any<string>()).Returns(new CreateDatabaseResponse { BaseId = 18 });
 			LoginClient.StartSession(18)
 				.Returns(new StartSessionResponse { Success = false, Description = "сессия недоступна" });
 
@@ -226,7 +226,7 @@ namespace QS.Launcher.Test.Cloud {
 
 		[Test(Description = "Сбой облака при создании превращается в исключение с текстом сервера")]
 		public void CreateDatabase_CloudFailure_ThrowsWithServerDetail() {
-			DbClient.CheckDataBaseExists(Arg.Any<string>())
+			DbClient.CheckDatabaseExists(Arg.Any<string>())
 				.Throws(Refusal(StatusCode.Internal, "реестр баз недоступен"));
 			var provider = LoginAs();
 

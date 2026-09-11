@@ -386,7 +386,7 @@ namespace QS.DbManagement {
 		/// false - пользователь отказался что-либо делать с существующей базой
 		/// </summary>
 		private bool PrepareEmptyDatabase(DbCreationRequest request) {
-			if(!DoesDataBaseExist(request.DbName)) {
+			if(!DoesDatabaseExist(request.DbName)) {
 				CreateEmptyDatabase(request.DbName);
 				return true;
 			}
@@ -414,7 +414,7 @@ namespace QS.DbManagement {
 		private void CreateEmptyDatabase(string dbName) =>
 			OnConnection(c => c.Execute($"CREATE DATABASE `{MySqlEscape.Identifier(dbName)}`"));
 
-		private bool DoesDataBaseExist(string dbName) =>
+		private bool DoesDatabaseExist(string dbName) =>
 			OnConnection(c => c.ExecuteScalar<int>(
 				"SELECT COUNT(*) FROM information_schema.SCHEMATA WHERE SCHEMA_NAME = @name;",
 				new { name = dbName })) > 0;

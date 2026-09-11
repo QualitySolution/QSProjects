@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using Avalonia.Controls;
 using QS.Launcher.ViewModels.PageViewModels;
-using QS.Launcher.ViewModels.PageViewModels.DataBase;
+using QS.Launcher.ViewModels.PageViewModels.Database;
 using QS.Launcher.Views.Pages;
-using QS.Launcher.Views.Pages.DataBase;
+using QS.Launcher.Views.Pages.Database;
 
 namespace QS.Launcher.Views;
 
@@ -18,14 +18,14 @@ public class PageViewLocator {
 	public PageViewLocator() {
 		factories = new Dictionary<Type, Func<CarouselPageVM, UserControl>> {
 			[typeof(LoginVM)] = vm => new LoginView((LoginVM)vm),
-			[typeof(DataBasesVM)] = vm => new DataBasesView((DataBasesVM)vm),
+			[typeof(DatabasesVM)] = vm => new DatabasesView((DatabasesVM)vm),
 			[typeof(UsersVM)] = vm => new UsersView((UsersVM)vm),
 			[typeof(ChangePasswordVM)] = vm => new ChangePasswordView((ChangePasswordVM)vm),
 			[typeof(UserManagementVM)] = vm => new UserManagementView((UserManagementVM)vm),
 			[typeof(CreateDbSettingsVM)] = vm => new CreateDbSettingsView((CreateDbSettingsVM)vm),
 			[typeof(ImportDbSettingsVM)] = vm => new ImportDbSettingsView((ImportDbSettingsVM)vm),
 			[typeof(BackupDbSettingsVM)] = vm => new BackupDbSettingsView((BackupDbSettingsVM)vm),
-			[typeof(CreateDataBaseProgressVM)] = vm => new CreateDataBaseProgressView((CreateDataBaseProgressVM)vm),
+			[typeof(CreateDatabaseProgressVM)] = vm => new CreateDatabaseProgressView((CreateDatabaseProgressVM)vm),
 		};
 	}
 

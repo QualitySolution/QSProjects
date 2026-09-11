@@ -1,7 +1,7 @@
 using QS.DbManagement;
 using QS.Dialog;
 using QS.ErrorReporting;
-using QS.Launcher.ViewModels.PageViewModels.DataBase;
+using QS.Launcher.ViewModels.PageViewModels.Database;
 using QS.Project.Versioning;
 using ReactiveUI;
 using System;
@@ -62,7 +62,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		protected IInteractiveMessage interactiveMessage;
 
 		private readonly Configurator configurator;
-		private readonly DataBasesVM dbVM;
+		private readonly DatabasesVM dbVM;
 		private readonly IErrorHandlingService errorHandling;
 
 		public LoginVM(
@@ -70,7 +70,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			LauncherOptions options,
 			Configurator configurator,
 			IApplicationInfo applicationInfo,
-			DataBasesVM dbVM,
+			DatabasesVM dbVM,
 			IInteractiveMessage interactiveMessage,
 			IErrorHandlingService errorHandling) : base(navigation)
 		{

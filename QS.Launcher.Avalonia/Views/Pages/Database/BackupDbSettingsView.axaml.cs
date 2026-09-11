@@ -2,9 +2,9 @@ using System.IO;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
-using QS.Launcher.ViewModels.PageViewModels.DataBase;
+using QS.Launcher.ViewModels.PageViewModels.Database;
 
-namespace QS.Launcher.Views.Pages.DataBase;
+namespace QS.Launcher.Views.Pages.Database;
 
 public partial class BackupDbSettingsView : UserControl {
 	public BackupDbSettingsView(BackupDbSettingsVM viewModel) {

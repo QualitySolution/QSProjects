@@ -8,7 +8,7 @@ using QS.Dialog;
 using QS.Launcher.AppRunner;
 using QS.Launcher.ViewModels;
 using QS.Launcher.ViewModels.PageViewModels;
-using QS.Launcher.ViewModels.PageViewModels.DataBase;
+using QS.Launcher.ViewModels.PageViewModels.Database;
 using QS.ErrorReporting;
 using QS.Project.Versioning;
 using QS.Testing.Gui;
@@ -63,7 +63,7 @@ namespace QS.Launcher.Test {
 			ServiceProvider = Substitute.For<IServiceProvider>();
 			ServiceProvider.GetService(typeof(UsersVM)).Returns(_ => BuildUsersVM());
 			ServiceProvider.GetService(typeof(UserManagementVM)).Returns(_ => BuildUserManagementVM());
-			ServiceProvider.GetService(typeof(CreateDataBaseProgressVM)).Returns(_ => BuildProgressVM());
+			ServiceProvider.GetService(typeof(CreateDatabaseProgressVM)).Returns(_ => BuildProgressVM());
 		}
 
 		public IInteractiveMessage InteractiveMessage { get; }
@@ -107,8 +107,8 @@ namespace QS.Launcher.Test {
 		public void AnswerNoToQuestions() =>
 			InteractiveQuestion.Question(Arg.Any<string>(), Arg.Any<string>()).Returns(false);
 
-		public DataBasesVM BuildDataBasesVM() =>
-			AsRootIfFirst(new DataBasesVM(AppRunner, Navigation, InteractiveMessage, InteractiveQuestion,
+		public DatabasesVM BuildDatabasesVM() =>
+			AsRootIfFirst(new DatabasesVM(AppRunner, Navigation, InteractiveMessage, InteractiveQuestion,
 				Options, ServiceProvider, new DbCapabilities(ScriptsConfiguration, CreationMap), ErrorHandling));
 
 		public UsersVM BuildUsersVM() =>
@@ -117,19 +117,19 @@ namespace QS.Launcher.Test {
 		public UserManagementVM BuildUserManagementVM() =>
 			AsRootIfFirst(new UserManagementVM(Navigation, InteractiveMessage, InteractiveQuestion, ErrorHandling));
 
-		public CreateDataBaseProgressVM BuildProgressVM() =>
-			AsRootIfFirst(new CreateDataBaseProgressVM(Navigation, new GuiDispatcherForTests(), ServiceProvider, ErrorHandling));
+		public CreateDatabaseProgressVM BuildProgressVM() =>
+			AsRootIfFirst(new CreateDatabaseProgressVM(Navigation, new GuiDispatcherForTests(), ServiceProvider, ErrorHandling));
 
 		/// <summary>Прогоняет открытую страницу прогресса</summary>
-		public async Task<CreateDataBaseProgressVM> RunLastProgressPage() {
-			var progress = (CreateDataBaseProgressVM)PushedPages.Last();
+		public async Task<CreateDatabaseProgressVM> RunLastProgressPage() {
+			var progress = (CreateDatabaseProgressVM)PushedPages.Last();
 			await progress.RunAsync();
 			return progress;
 		}
 
 		/// <summary>спискок баз когда пользователь только что вошёл</summary>
-		public async Task<DataBasesVM> OpenDatabasesPage(IDbProvider provider) {
-			var vm = BuildDataBasesVM();
+		public async Task<DatabasesVM> OpenDatabasesPage(IDbProvider provider) {
+			var vm = BuildDatabasesVM();
 			var connection = new Connection(connectionType,
 				new Dictionary<string, string> { { "Title", connectionTitle } });
 			await vm.SetProviderAsync(provider, connection, () => { });

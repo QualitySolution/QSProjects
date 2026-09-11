@@ -1,9 +1,9 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
-using QS.Launcher.ViewModels.PageViewModels.DataBase;
+using QS.Launcher.ViewModels.PageViewModels.Database;
 
-namespace QS.Launcher.Views.Pages.DataBase;
+namespace QS.Launcher.Views.Pages.Database;
 
 public partial class ImportDbSettingsView : UserControl {
 	public ImportDbSettingsView(ImportDbSettingsVM viewModel) {

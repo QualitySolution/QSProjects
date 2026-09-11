@@ -14,7 +14,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 
-namespace QS.Cloud.Client.DataBase {
+namespace QS.Cloud.Client.Database {
 	public class QSCloudProvider : IDbProvider {
 
 		public bool IsAdmin { get; protected set; }
@@ -28,7 +28,7 @@ namespace QS.Cloud.Client.DataBase {
 		private const string MessageTitle = "Создание базы в облаке";
 
 		private readonly LoginManagementCloudClient loginClient;
-		private readonly DataBaseManagementCloudClient dbClient;
+		private readonly DatabaseManagementCloudClient dbClient;
 		private readonly UserManagementCloudClient userClient;
 
 		/// <summary>Клиентов создали мы сами - значит нам их и закрывать</summary>
@@ -45,7 +45,7 @@ namespace QS.Cloud.Client.DataBase {
 		private QSCloudProvider(string account, string userName, byte productCode, IBasicAuthInfoProvider authInfo)
 			: this(account, userName, productCode,
 				new LoginManagementCloudClient(authInfo),
-				new DataBaseManagementCloudClient(authInfo, productCode),
+				new DatabaseManagementCloudClient(authInfo, productCode),
 				new UserManagementCloudClient(authInfo)) {
 			ownsClients = true;
 		}
@@ -54,7 +54,7 @@ namespace QS.Cloud.Client.DataBase {
 		/// Нужен тестам
 		/// </summary>
 		public QSCloudProvider(string account, string userName, byte productCode,
-			LoginManagementCloudClient loginClient, DataBaseManagementCloudClient dbClient, UserManagementCloudClient userClient) {
+			LoginManagementCloudClient loginClient, DatabaseManagementCloudClient dbClient, UserManagementCloudClient userClient) {
 			Account = account;
 			UserName = userName;
 			ProductCode = productCode;
@@ -207,21 +207,21 @@ namespace QS.Cloud.Client.DataBase {
 		}
 
 		private int? PrepareEmptyDatabase(DbCreationRequest request) {
-			var existing = dbClient.CheckDataBaseExists(request.DbName);
+			var existing = dbClient.CheckDatabaseExists(request.DbName);
 			if(!existing.Exists)
-				return dbClient.CreateDataBase(request.DbName, request.DbTitle).BaseId;
+				return dbClient.CreateDatabase(request.DbName, request.DbTitle).BaseId;
 
 			switch(request.Interaction.AskDropExistingDatabase(request.DbName)) {
 				case ToDoWithExistingDatabase.Recreate:
-					if(!dbClient.DropDataBase(existing.BaseId).Success) {
+					if(!dbClient.DropDatabase(existing.BaseId).Success) {
 						request.Interaction.ReportError("Не удалось удалить существующую базу: " + existing.BaseId, MessageTitle);
 						return null;
 					}
-					return dbClient.CreateDataBase(request.DbName, request.DbTitle).BaseId;
+					return dbClient.CreateDatabase(request.DbName, request.DbTitle).BaseId;
 
 				case ToDoWithExistingDatabase.Rewrite:
 					// облако пересоздаст пустую базу, сохранив записи реестра и права доступа
-					if(!dbClient.ClearDataBase(existing.BaseId).Success) {
+					if(!dbClient.ClearDatabase(existing.BaseId).Success) {
 						request.Interaction.ReportError("Не удалось очистить существующую базу: " + existing.BaseId, MessageTitle);
 						return null;
 					}
@@ -257,7 +257,7 @@ namespace QS.Cloud.Client.DataBase {
 		}
 
 		public bool DropDatabase(DbInfo database) => Call(() =>
-			EnsureSuccess(dbClient.DropDataBase(database.BaseId).Success, "Облако не удалило базу"));
+			EnsureSuccess(dbClient.DropDatabase(database.BaseId).Success, "Облако не удалило базу"));
 
 		public void BackupDatabase(DbInfo database, string filePath, IProgressBarDisplayable progress, CancellationToken cancellation) {
 			try {

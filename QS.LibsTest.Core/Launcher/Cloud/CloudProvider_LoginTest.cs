@@ -2,7 +2,7 @@
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using NUnit.Framework;
-using QS.Cloud.Client.DataBase;
+using QS.Cloud.Client.Database;
 using QS.Cloud.Core;
 
 namespace QS.Launcher.Test.Cloud {

@@ -334,7 +334,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Bin" id="QS.Launcher.Views.DataBasesView" design-size="300 300">
+  <widget class="Gtk.Bin" id="QS.Launcher.Views.DatabasesView" design-size="300 300">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
@@ -16,8 +16,8 @@ using QS.Launcher.ViewModels.PageViewModels;
 using QS.Project.Versioning;
 using ReactiveUI;
 
-namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
-	public class DataBasesVM : CarouselPageVM {
+namespace QS.Launcher.ViewModels.PageViewModels.Database {
+	public class DatabasesVM : CarouselPageVM {
 		private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 		private const string DropDatabaseTitle = "Удаление базы данных";
@@ -92,7 +92,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		private readonly DbCapabilities dbCapabilities;
 		private readonly IErrorHandlingService errorHandling;
 
-		public DataBasesVM(
+		public DatabasesVM(
 			IAppRunner appRunner,
 			LauncherNavigation navigation,
 			IInteractiveMessage interactiveMessage,
@@ -153,7 +153,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 				})
 			};
 
-			var progress = serviceProvider.GetRequiredService<CreateDataBaseProgressVM>();
+			var progress = serviceProvider.GetRequiredService<CreateDatabaseProgressVM>();
 			progress.OperationTitle = RefreshMetadataTitle;
 			progress.SetPipeline(Provider, currentConnection, phases);
 			progress.OperationCompleted += () => CompleteRefreshMetadata(syncedBases, syncedUsers);
@@ -172,6 +172,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		}
 
 		private void ChangePassword() {
+			throw new NullReferenceException("тестовая ошибка");
 			if(Provider == null)
 				return;
 

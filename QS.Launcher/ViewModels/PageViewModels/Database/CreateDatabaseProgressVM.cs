@@ -10,11 +10,11 @@ using QS.Dialog;
 using QS.ErrorReporting;
 using ReactiveUI;
 
-namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
+namespace QS.Launcher.ViewModels.PageViewModels.Database {
 	/// <summary>
 	/// последовательно выполняет пайплайн фаз в одном фоновом потоке
 	/// </summary>
-	public class CreateDataBaseProgressVM : CarouselPageVM, IProgressBarDisplayable, IDisposable {
+	public class CreateDatabaseProgressVM : CarouselPageVM, IProgressBarDisplayable, IDisposable {
 		private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 		public IDbManager Provider { get; private set; }
@@ -93,7 +93,7 @@ namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
 		public ReactiveCommand<Unit, Unit> CancelCommand { get; }
 		public ReactiveCommand<Unit, Unit> CloseCommand { get; }
 
-		public CreateDataBaseProgressVM(
+		public CreateDatabaseProgressVM(
 			LauncherNavigation navigation,
 			IGuiDispatcher guiDispatcher,
 			IServiceProvider services,

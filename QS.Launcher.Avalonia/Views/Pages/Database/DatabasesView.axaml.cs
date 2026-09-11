@@ -4,17 +4,17 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using QS.DbManagement.Entities;
-using QS.Launcher.ViewModels.PageViewModels.DataBase;
+using QS.Launcher.ViewModels.PageViewModels.Database;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace QS.Launcher.Views.Pages;
-public partial class DataBasesView : UserControl {
+public partial class DatabasesView : UserControl {
 	private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-	private readonly DataBasesVM ViewModel;
+	private readonly DatabasesVM ViewModel;
 
-	public DataBasesView(DataBasesVM viewModel) {
+	public DatabasesView(DatabasesVM viewModel) {
 		InitializeComponent();
 
 		DataContext = ViewModel = viewModel;

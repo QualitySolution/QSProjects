@@ -7,7 +7,7 @@ using QS.DbManagement.Entities;
 using QS.Dialog;
 using ReactiveUI;
 
-namespace QS.Launcher.ViewModels.PageViewModels.DataBase {
+namespace QS.Launcher.ViewModels.PageViewModels.Database {
 	public class BackupDbSettingsVM : DbOperationSettingsVM {
 		private readonly DbInfo database;
 
