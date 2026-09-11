@@ -14,10 +14,6 @@ namespace QS.DbManagement.Entities
 
 	public class ChangePasswordResponse : Response { }
 
-	public class CreateDatabaseResponse : Response { }
-
-	public class DropDatabaseResponse : Response { }
-
 	public class AddUserResponse : Response { }
 
 	public class DeleteUserResponse : Response { }
