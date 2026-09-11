@@ -66,6 +66,7 @@ public partial class JournalView : UserControl, IDisposable
 		// Подписываемся на события
 		ViewModel.DataLoader.ItemsListUpdated += ViewModel_ItemsListUpdated;
 		ViewModel.DataLoader.LoadingStateChanged += DataLoader_LoadingStateChanged;
+		ViewModel.DataLoader.LoadError += DataLoader_LoadError;
 		ViewModel.PropertyChanged += OnViewModelPropertyChanged;
 
 		UpdateFooter();
@@ -228,6 +229,11 @@ public partial class JournalView : UserControl, IDisposable
 	// FooterInfo считается по загруженным строкам и об изменении не уведомляет
 	private void UpdateFooter() => labelFooter.Text = ViewModel!.FooterInfo;
 
+	// Загрузчик работает в фоне и ошибку запроса только пишет в лог. Перебрасываем её
+	// на поток GUI — оттуда её подхватит общий обработчик, так же делает GTK-версия
+	private void DataLoader_LoadError(object? sender, QS.Project.Journal.DataLoader.LoadErrorEventArgs e) =>
+		guiDispatcher!.RunInGuiTread(() => throw e.Exception);
+
 	private void DataLoader_LoadingStateChanged(object? sender, QS.Project.Journal.DataLoader.LoadingStateChangedEventArgs e)
 	{
 		// Событие может вызываться из фонового потока
@@ -258,6 +264,7 @@ public partial class JournalView : UserControl, IDisposable
 		{
 			ViewModel.DataLoader.ItemsListUpdated -= ViewModel_ItemsListUpdated;
 			ViewModel.DataLoader.LoadingStateChanged -= DataLoader_LoadingStateChanged;
+			ViewModel.DataLoader.LoadError -= DataLoader_LoadError;
 			ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
 		}
 
