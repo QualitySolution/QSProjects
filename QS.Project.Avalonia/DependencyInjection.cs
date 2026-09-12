@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using QS.Dialog;
+using QS.Journal.Columns;
 
 namespace QS.Project;
 
@@ -16,6 +17,7 @@ public static partial class DependencyInjection {
 
 	public static IServiceCollection AddGuiClasses(this IServiceCollection services) {
 		return services
-			.AddSingleton<IGuiDispatcher, AvaloniaGuiDispatcher>();
+			.AddSingleton<IGuiDispatcher, AvaloniaGuiDispatcher>()
+			.AddSingleton(new JournalColumnsRegistry());
 	}
 }

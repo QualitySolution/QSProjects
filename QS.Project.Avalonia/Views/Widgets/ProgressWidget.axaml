@@ -1,0 +1,12 @@
+<UserControl x:Class="QS.Widgets.ProgressWidget"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             x:CompileBindings="False"
+             mc:Ignorable="d">
+    <StackPanel Spacing="8">
+        <TextBlock x:Name="progressText" IsVisible="False" TextWrapping="Wrap" />
+        <ProgressBar x:Name="progressBar" Height="18" Minimum="0" Maximum="1" ShowProgressText="True" />
+    </StackPanel>
+</UserControl>

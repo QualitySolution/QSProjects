@@ -1,0 +1,23 @@
+<UserControl x:Class="QS.Deletion.Views.PrepareDeletionView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             d:DesignWidth="420"
+             mc:Ignorable="d">
+	<StackPanel Margin="12" Spacing="8" MinWidth="400">
+		<TextBlock x:Name="textOperation" HorizontalAlignment="Center" />
+		<TextBlock Text="Найдено:" />
+		<Grid ColumnDefinitions="Auto,Auto,Auto,Auto" RowDefinitions="Auto,Auto">
+			<TextBlock Grid.Row="0" Grid.Column="0" Margin="3" HorizontalAlignment="Right" Text="Объектов для удаления:" />
+			<TextBlock Grid.Row="0" Grid.Column="1" Margin="3" x:Name="textToDelete" Text="0" />
+			<TextBlock Grid.Row="0" Grid.Column="2" Margin="3" HorizontalAlignment="Right" Text="Объектов в коллекциях:" />
+			<TextBlock Grid.Row="0" Grid.Column="3" Margin="3" x:Name="textToRemoveFrom" Text="0" />
+			<TextBlock Grid.Row="1" Grid.Column="0" Margin="3" HorizontalAlignment="Right" Text="Ссылок для очистки:" />
+			<TextBlock Grid.Row="1" Grid.Column="1" Margin="3" x:Name="textToClean" Text="0" />
+			<TextBlock Grid.Row="1" Grid.Column="2" Margin="3" HorizontalAlignment="Right" Text="Всего ссылок:" />
+			<TextBlock Grid.Row="1" Grid.Column="3" Margin="3" x:Name="textLinks" Text="0" />
+		</Grid>
+		<Button Content="Отмена" HorizontalAlignment="Center" Click="OnButtonCancelClicked" />
+	</StackPanel>
+</UserControl>

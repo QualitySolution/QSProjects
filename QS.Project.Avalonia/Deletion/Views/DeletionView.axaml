@@ -1,0 +1,38 @@
+<UserControl x:Class="QS.Deletion.Views.DeletionView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:QS.Deletion.ViewModels;assembly=QS.Project.Desktop"
+             xmlns:conv="clr-namespace:QS.Project.Converters"
+             Width="700" Height="460"
+             d:DesignWidth="700" d:DesignHeight="460"
+             mc:Ignorable="d">
+	<UserControl.Resources>
+		<conv:NumericIsNotZeroConverter x:Key="NumericIsNotZero" />
+		<TreeDataTemplate x:Key="TreeNodeTemplate" x:DataType="vm:TreeNode" ItemsSource="{Binding Childs}">
+			<StackPanel Orientation="Horizontal" Spacing="6">
+				<TextBlock Text="{Binding Title}" />
+				<TextBlock Text="{Binding TotalChildCount}" Foreground="Gray"
+				           IsVisible="{Binding TotalChildCount, Converter={StaticResource NumericIsNotZero}}" />
+			</StackPanel>
+		</TreeDataTemplate>
+	</UserControl.Resources>
+
+	<DockPanel Margin="12">
+		<TextBlock DockPanel.Dock="Top" TextWrapping="Wrap" Margin="0,0,0,8"
+		           Text="Вы уверены что хотите удалить объект? Операция необратима.&#x0a;Вместе с ним также будут удалены или очищены ссылки в следующих объектах:" />
+		<StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="6" Margin="0,8,0,0">
+			<Button Content="Отмена" Click="OnButtonCancelClicked" />
+			<Button Content="Удалить" Click="OnButtonDeleteClicked" />
+		</StackPanel>
+		<TabControl>
+			<TabItem Header="Удаляемые объекты">
+				<TreeView x:Name="treeObjects" ItemTemplate="{StaticResource TreeNodeTemplate}" />
+			</TabItem>
+			<TabItem Header="Дерево зависимостей">
+				<TreeView x:Name="treeDependence" ItemTemplate="{StaticResource TreeNodeTemplate}" />
+			</TabItem>
+		</TabControl>
+	</DockPanel>
+</UserControl>
