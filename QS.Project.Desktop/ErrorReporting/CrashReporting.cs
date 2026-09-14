@@ -67,11 +67,11 @@ namespace QS.ErrorReporting {
 				return false;
 			}
 
-			if(Settings != null && !Settings.SendAutomatically) {
-				logger.Debug("Автоотправка выключена, отчёт о падении не отправляем");
-				return false;
-			}
-			return true;
+			if(Settings == null || Settings.SendAutomatically)
+				return true;
+
+			logger.Debug("Автоотправка выключена, отчёт о падении не отправляем");
+			return false;
 		}
 
 		private Thread StartSend(Exception exception) {
