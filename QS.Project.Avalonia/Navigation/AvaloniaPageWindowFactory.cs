@@ -1,4 +1,4 @@
-﻿using Autofac;
+using Autofac;
 using QS.ViewModels.Dialog;
 using System;
 using System.Collections.Generic;

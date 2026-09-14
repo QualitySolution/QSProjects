@@ -41,7 +41,7 @@
                         IsVisible="{Binding SearchEnabled}" />
 
         <!-- Footer снизу -->
-        <TextBlock x:Name="labelFooter"
+        <TextBlock x:Name="labelFooter" 
                    DockPanel.Dock="Bottom"
                    Margin="5"
                    VerticalAlignment="Center" />

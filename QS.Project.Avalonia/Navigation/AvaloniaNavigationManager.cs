@@ -36,7 +36,8 @@ public class AvaloniaNavigationManager : NavigationManagerBase, INavigationManag
 		IAvaloniaViewResolver viewResolver,
 		IPageHashGenerator? hashGenerator = null,
 		IInteractiveQuestion? interactiveQuestion = null)
-		: base(interactive, hashGenerator) {
+		: base(interactive, hashGenerator)
+	{
 		this.tabFactory = tabFactory;
 		this.windowFactory = windowFactory;
 		this.viewResolver = viewResolver ?? throw new ArgumentNullException(nameof(viewResolver));
