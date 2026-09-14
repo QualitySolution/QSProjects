@@ -11,7 +11,7 @@ public class AvaloniaPageWindowFactory(ILifetimeScope container) : IViewModelsPa
 		IDialogViewModel master,
 		IDictionary<string, object> ctorArgs,
 		string hash,
-		Action<ContainerBuilder> addingRegistrations,
+		Action<ContainerBuilder>? addingRegistrations,
 		Action<TViewModel>? configureViewModel = null) where TViewModel : IDialogViewModel =>
 		AvaloniaPageBuilder.Create(container,
 			ctorArgs.Select(pair => new NamedParameter(pair.Key, pair.Value)),
@@ -21,9 +21,9 @@ public class AvaloniaPageWindowFactory(ILifetimeScope container) : IViewModelsPa
 	public IPage<TViewModel> CreateViewModelTypedArgs<TViewModel>(
 		IDialogViewModel master,
 		Type[] ctorTypes,
-		object[] ctorValues,
+		object?[] ctorValues,
 		string hash,
-		Action<ContainerBuilder> addingRegistrations,
+		Action<ContainerBuilder>? addingRegistrations,
 		Action<TViewModel>? configureViewModel = null) where TViewModel : IDialogViewModel =>
 		AvaloniaPageBuilder.Create(container,
 			ctorTypes.Zip(ctorValues, (type, val) => new TypedParameter(type, val)),

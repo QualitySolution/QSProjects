@@ -1,7 +1,5 @@
 using Autofac;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using QS.Dialog;
 using QS.Tdi;
@@ -45,15 +43,22 @@ public class AvaloniaNavigationManager : NavigationManagerBase, INavigationManag
 	}
 
 	public bool AskClosePage(IPage page, CloseSource source = CloseSource.External) {
-		if(source != CloseSource.WithMasterPage && !CanClosePage(page))
+		if(!CanClosePage(page, source))
 			return false;
-		ForceClosePage(page, source);
+		if(source != CloseSource.WithMasterPage && !ConfirmUnsavedChanges(page))
+			return false;
+		ClosePageNow(page, source);
 		return true;
 	}
 
 	public void ForceClosePage(IPage page, CloseSource source = CloseSource.External) {
+		if(CanClosePage(page, source))
+			ClosePageNow(page, source);
+	}
+
+	void ClosePageNow(IPage page, CloseSource source) {
 		if(!Dispatcher.UIThread.CheckAccess()) {
-			Dispatcher.UIThread.Invoke(() => ForceClosePage(page, source));
+			Dispatcher.UIThread.Invoke(() => ClosePageNow(page, source));
 			return;
 		}
 		if(page is IAvaloniaWindowPage) {
@@ -80,7 +85,7 @@ public class AvaloniaNavigationManager : NavigationManagerBase, INavigationManag
 		return rest.ElementAtOrDefault(Math.Min(Pages.IndexOf(closing), rest.Count - 1));
 	}
 
-	bool CanClosePage(IPage page) {
+	bool ConfirmUnsavedChanges(IPage page) {
 		var askSave = (page.ViewModel as IAskSaveOnCloseViewModel)?.AskSaveOnClose ?? true;
 		if(interactiveQuestion == null || !askSave)
 			return true;
@@ -109,7 +114,7 @@ public class AvaloniaNavigationManager : NavigationManagerBase, INavigationManag
 	}
 
 	protected override IViewModelsPageFactory GetPageFactory<TViewModel>() {
-		if(forceWindow || typeof(TViewModel).IsAssignableTo<IWindowDialogSettings>())
+		if(typeof(TViewModel).IsAssignableTo<IWindowDialogSettings>())
 			return windowFactory;
 		else
 			return tabFactory;
@@ -132,6 +137,10 @@ public class AvaloniaNavigationManager : NavigationManagerBase, INavigationManag
 	}
 
 	protected override void OpenSlavePage(IPage masterPage, IPage page) {
+		if(!Dispatcher.UIThread.CheckAccess()) {
+			Dispatcher.UIThread.Invoke(() => OpenSlavePage(masterPage, page));
+			return;
+		}
 		pages.Add(page);
 
 		if(page is IAvaloniaWindowPage windowPage) {
@@ -164,69 +173,47 @@ public class AvaloniaNavigationManager : NavigationManagerBase, INavigationManag
 
 	#region WindowDialogs
 
-	bool forceWindow;
-	Action<Window>? configureWindow;
-
 	public IPage<TViewModel> OpenViewModelAsWindow<TViewModel>(
 		IDialogViewModel master,
 		OpenPageOptions options = OpenPageOptions.None,
 		Action<TViewModel>? configureViewModel = null,
-		Action<Window>? configureWindow = null) where TViewModel : IDialogViewModel {
-		forceWindow = true;
-		this.configureWindow = configureWindow;
-		try {
-			return OpenViewModel<TViewModel>(master, options, configureViewModel);
-		}
-		finally {
-			forceWindow = false;
-			this.configureWindow = null;
-		}
-	}
+		Action<Window>? configureWindow = null) where TViewModel : IDialogViewModel =>
+		OpenAsWindow(master, Type.EmptyTypes, Array.Empty<object>(), options, configureViewModel, configureWindow);
 
 	public IPage<TViewModel> OpenViewModelAsWindow<TViewModel, TCtorArg1>(
 		IDialogViewModel master,
 		TCtorArg1 arg1,
 		OpenPageOptions options = OpenPageOptions.None,
 		Action<TViewModel>? configureViewModel = null,
-		Action<Window>? configureWindow = null) where TViewModel : IDialogViewModel {
-		forceWindow = true;
-		this.configureWindow = configureWindow;
-		try {
-			return OpenViewModel<TViewModel, TCtorArg1>(master, arg1, options, configureViewModel);
-		}
-		finally {
-			forceWindow = false;
-			this.configureWindow = null;
-		}
-	}
+		Action<Window>? configureWindow = null) where TViewModel : IDialogViewModel =>
+		OpenAsWindow(master, new[] { typeof(TCtorArg1) }, new object?[] { arg1 }, options, configureViewModel, configureWindow);
+
+	IPage<TViewModel> OpenAsWindow<TViewModel>(IDialogViewModel master, Type[] ctorTypes, object?[] ctorValues,
+		OpenPageOptions options, Action<TViewModel>? configureViewModel, Action<Window>? configureWindow)
+		where TViewModel : IDialogViewModel =>
+		(IPage<TViewModel>)OpenViewModelInternal(FindPage(master), options,
+			() => hashGenerator?.GetHash<TViewModel>(master, ctorTypes, ctorValues),
+			hash => {
+				var page = windowFactory.CreateViewModelTypedArgs(master, ctorTypes, ctorValues, hash, null, configureViewModel);
+				((IAvaloniaWindowPage)page).ConfigureWindow = configureWindow;
+				return page;
+			});
 
 	void OpenWindowPage(IPage? masterPage, IAvaloniaWindowPage page) {
 		page.View = MakePageContent(page);
 
-		var window = new AvaloniaPageWindow(page, CanClosePage, closing => ClosePage(closing, CloseSource.ClosePage));
+		var window = new AvaloniaPageWindow(page,
+			closing => CanClosePage(closing, CloseSource.ClosePage) && ConfirmUnsavedChanges(closing),
+			closing => ClosePage(closing, CloseSource.ClosePage));
 		page.Window = window;
-		configureWindow?.Invoke(window);
-
-		// VM без IWindowDialogSettings (открытые через OpenViewModelAsWindow) считаем модальными
-		ShowWindow(masterPage, window, (page.ViewModel as IWindowDialogSettings)?.IsModal ?? true);
-	}
-
-	// Если диалог открыт из другого оконного диалога — владелец он, а не главное окно:
-	// так модальность блокирует именно то окно, из которого открыли.
-	static void ShowWindow(IPage? masterPage, Window window, bool isModal) {
-		var owner = (masterPage as IAvaloniaWindowPage)?.Window
-			?? (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
-		if(owner == null)
-			window.Show();
-		else if(isModal)
-			_ = window.ShowDialog(owner);
-		else
-			window.Show(owner);
+		page.ConfigureWindow?.Invoke(window);
+		window.Open(masterPage);
 	}
 
 	protected override void ClosePage(IPage page, CloseSource source) {
+		// подчинённые уходят вместе с хозяйской без проверок, как ForceCloseTab в TdiNotebook
 		foreach(var pair in page.SlavePagesAll.ToList())
-			AskClosePage(pair.SlavePage, CloseSource.WithMasterPage);
+			ClosePageNow(pair.SlavePage, CloseSource.WithMasterPage);
 
 		base.ClosePage(page, source);
 		PageView.DisposeOnClose(page);

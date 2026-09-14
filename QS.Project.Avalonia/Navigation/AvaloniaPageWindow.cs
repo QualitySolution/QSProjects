@@ -1,5 +1,8 @@
 ﻿using System;
+using System.ComponentModel;
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using QS.ViewModels.Extension;
 
 namespace QS.Navigation;
@@ -10,6 +13,7 @@ internal class AvaloniaPageWindow : Window {
 	readonly Func<IPage, bool> canClose;
 	readonly Action<IPage> close;
 	readonly bool deletable;
+	readonly PropertyChangedEventHandler titleChanged;
 
 	public AvaloniaPageWindow(IAvaloniaWindowPage page, Func<IPage, bool> canClose, Action<IPage> close) {
 		this.page = page;
@@ -23,7 +27,10 @@ internal class AvaloniaPageWindow : Window {
 		Content = page.View;
 		SizeToContent = SizeToContent.WidthAndHeight;
 		CanResize = settings?.Resizable ?? true;
-		ShowInTaskbar = settings?.EnableMinimizeMaximize ?? false;
+		var minimizeMaximize = settings?.EnableMinimizeMaximize ?? false;
+		CanMinimize = minimizeMaximize;
+		CanMaximize = minimizeMaximize;
+		ShowInTaskbar = minimizeMaximize;
 		WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
 		var screen = Screens.Primary;
@@ -32,7 +39,24 @@ internal class AvaloniaPageWindow : Window {
 			MaxHeight = screen.WorkingArea.Height / screen.Scaling;
 		}
 
-		page.ViewModel.PropertyChanged += (s, e) => Title = page.ViewModel.Title;
+		titleChanged = (_, e) => {
+			if(e.PropertyName == nameof(IDialogViewModel.Title))
+				Title = page.ViewModel.Title;
+		};
+		page.ViewModel.PropertyChanged += titleChanged;
+	}
+
+	// Если диалог открыт из другого оконного диалога — владелец он, а не главное окно
+	// VM без IWindowDialogSettings считаем модальными
+	public void Open(IPage? masterPage) {
+		var owner = (masterPage as IAvaloniaWindowPage)?.Window
+			?? (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+		if(owner == null)
+			Show();
+		else if((page.ViewModel as IWindowDialogSettings)?.IsModal ?? true)
+			_ = ShowDialog(owner);
+		else
+			Show(owner);
 	}
 
 	protected override void OnClosing(WindowClosingEventArgs e) {
@@ -46,6 +70,7 @@ internal class AvaloniaPageWindow : Window {
 
 	protected override void OnClosed(EventArgs e) {
 		base.OnClosed(e);
+		page.ViewModel.PropertyChanged -= titleChanged;
 		if(page.Window == null)
 			return;
 
