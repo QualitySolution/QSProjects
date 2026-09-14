@@ -1,9 +1,9 @@
 using System;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using Avalonia.Controls;
 using QS.Dialog;
-using QS.Journal.Columns;
 using QS.Navigation;
 using QS.Project.Journal;
 
@@ -18,7 +18,6 @@ public partial class JournalView : UserControl, IDisposable
 
 	private IJournalViewModel? viewModel;
 	private readonly IGuiDispatcher? guiDispatcher;
-	private readonly JournalColumnsRegistry? columnsRegistry;
 	protected IAvaloniaViewResolver? viewResolver;
 
 	public JournalView()
@@ -26,12 +25,10 @@ public partial class JournalView : UserControl, IDisposable
 		InitializeComponent();
 	}
 
-	public JournalView(IJournalViewModel viewModel, IAvaloniaViewResolver? viewResolver, IGuiDispatcher guiDispatcher,
-		JournalColumnsRegistry columnsRegistry) : this()
+	public JournalView(IJournalViewModel viewModel, IAvaloniaViewResolver? viewResolver, IGuiDispatcher guiDispatcher) : this()
 	{
 		this.viewResolver = viewResolver;
 		this.guiDispatcher = guiDispatcher ?? throw new ArgumentNullException(nameof(guiDispatcher));
-		this.columnsRegistry = columnsRegistry ?? throw new ArgumentNullException(nameof(columnsRegistry));
 		ViewModel = viewModel;
 		ConfigureJournal();
 	}
@@ -61,7 +58,20 @@ public partial class JournalView : UserControl, IDisposable
 	{
 		if (ViewModel == null) return;
 
-		TableContent = MakeTable();
+		if (viewResolver == null)
+		{
+			throw new InvalidOperationException($"ViewResolver не установлен для журнала {ViewModel.GetType().Name}. Невозможно загрузить таблицу.");
+		}
+		
+		var customTable = viewResolver.Resolve(ViewModel, "GridView");
+		if (customTable == null)
+		{
+			throw new InvalidOperationException(
+				$"Не найдена View с суффиксом 'GridView' для ViewModel типа '{ViewModel.GetType().FullName}'. " +
+				$"Необходимо создать соответствующий UserControl (например, {{Name}}GridView) с таблицей данных.");
+		}
+		
+		TableContent = customTable;
 
 		// Подписываемся на события
 		ViewModel.DataLoader.ItemsListUpdated += ViewModel_ItemsListUpdated;
@@ -86,22 +96,6 @@ public partial class JournalView : UserControl, IDisposable
 
 		// Загружаем данные
 		ViewModel.Refresh();
-	}
-
-	/// <summary>
-	/// Колонки журнала описаны кодом — собираем таблицу сами. Если нет, ищем вью таблицы
-	/// по суффиксу GridView: так устроены журналы, которые описывают колонки разметкой.
-	/// </summary>
-	private Control MakeTable()
-	{
-		var columns = columnsRegistry!.Resolve(ViewModel!);
-		if (columns != null)
-			return columns.MakeTable();
-
-		return viewResolver?.Resolve(ViewModel!, "GridView")
-			?? throw new InvalidOperationException(
-				$"Не найдены колонки для журнала '{ViewModel!.GetType().FullName}'. " +
-				$"Опишите их в JournalColumnsRegistry либо создайте UserControl {{Name}}GridView с таблицей данных.");
 	}
 
 	private void ConfigureFilter()
@@ -230,7 +224,7 @@ public partial class JournalView : UserControl, IDisposable
 	private void UpdateFooter() => labelFooter.Text = ViewModel!.FooterInfo;
 
 	private void DataLoader_LoadError(object? sender, QS.Project.Journal.DataLoader.LoadErrorEventArgs e) =>
-		guiDispatcher!.RunInGuiTread(() => throw e.Exception);
+		guiDispatcher!.RunInGuiTread(() => ExceptionDispatchInfo.Capture(e.Exception).Throw());
 
 	private void DataLoader_LoadingStateChanged(object? sender, QS.Project.Journal.DataLoader.LoadingStateChangedEventArgs e)
 	{
@@ -250,11 +244,9 @@ public partial class JournalView : UserControl, IDisposable
 		return grid.SelectedItems.Cast<object>().ToArray();
 	}
 
+	// таблица лежит внутри вью {Name}GridView журнала и обязана называться dataGrid
 	protected DataGrid? GetDataGrid() =>
-		// Таблицу мы собрали сами по описанию колонок — она и лежит в подставке
-		// если журнал описывает колонки разметкой, таблица внутри чужой вью, ищем её по имени
-		TablePlaceholder.Content as DataGrid
-			?? (TablePlaceholder.Content as Control)?.FindControl<DataGrid>("dataGrid");
+		(TablePlaceholder.Content as Control)?.FindControl<DataGrid>("dataGrid");
 
 	public virtual void Dispose()
 	{
