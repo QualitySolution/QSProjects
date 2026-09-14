@@ -248,7 +248,19 @@ public partial class JournalView : UserControl, IDisposable
 	protected DataGrid? GetDataGrid() =>
 		(TablePlaceholder.Content as Control)?.FindControl<DataGrid>("dataGrid");
 
-	public virtual void Dispose()
+	public void Dispose()
+	{
+		Dispose(true);
+		GC.SuppressFinalize(this);
+	}
+
+	protected virtual void Dispose(bool disposing)
+	{
+		if (disposing)
+			Unsubscribe();
+	}
+
+	private void Unsubscribe()
 	{
 		if (ViewModel != null)
 		{
