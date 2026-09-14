@@ -2,7 +2,7 @@ using Autofac;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using QS.Dialog;
-using QS.Tdi;
+using QS.ViewModels.Dialog;
 using QS.ViewModels.Extension;
 using ReactiveUI;
 using System;
@@ -89,7 +89,7 @@ public class AvaloniaNavigationManager : NavigationManagerBase, INavigationManag
 		var askSave = (page.ViewModel as IAskSaveOnCloseViewModel)?.AskSaveOnClose ?? true;
 		if(interactiveQuestion == null || !askSave)
 			return true;
-		if(!(page.ViewModel is ISaveable saveable) || !(page.ViewModel is IHasChanges hasChanges) || !hasChanges.HasChanges)
+		if(!(page.ViewModel is UowDialogViewModelBase dialog) || !dialog.HasChanges)
 			return true;
 
 		string toSave = "Сохранить";
@@ -97,7 +97,7 @@ public class AvaloniaNavigationManager : NavigationManagerBase, INavigationManag
 		var answer = interactiveQuestion.Question(new[] { toSave, notToSave },
 			$"На вкладке есть изменения. {toSave} изменения перед закрытием?", page.ViewModel.Title);
 		if(answer == toSave)
-			return saveable.Save();
+			return dialog.Save();
 		return answer == notToSave;
 	}
 
