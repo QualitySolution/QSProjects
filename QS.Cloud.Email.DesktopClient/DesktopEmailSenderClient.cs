@@ -7,7 +7,7 @@ using QS.Project.Versioning;
 
 namespace QS.Cloud.Email.DesktopClient
 {
-	public class DesktopEmailSenderClient : CloudClientBySession
+	public class DesktopEmailSenderClient : CloudClientServiceBase
 	{
 		private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -38,7 +38,7 @@ namespace QS.Cloud.Email.DesktopClient
 		public string SendMessages(IEnumerable<DesktopEmailMessage> messages, IProgress<int>? progress = default, CancellationToken token = default)
 		{
 			var client = new DesktopEmailSender.DesktopEmailSenderClient(Channel);
-			using(var call = client.SendEmail(headers)) {
+			using(var call = client.SendEmail(Headers)) {
 				int i = 1;
 				foreach(var message in messages) {
 					token.ThrowIfCancellationRequested();
@@ -57,7 +57,7 @@ namespace QS.Cloud.Email.DesktopClient
 		public async Task<string> SendMessagesAsync(IEnumerable<DesktopEmailMessage> messages, IProgress<int>? progress = default, CancellationToken token = default)
 		{
 			var client = new DesktopEmailSender.DesktopEmailSenderClient(Channel);
-			using(var call = client.SendEmail(headers)) {
+			using(var call = client.SendEmail(Headers)) {
 				int i = 1;
 				foreach(var message in messages) {
 					token.ThrowIfCancellationRequested();
@@ -122,4 +122,3 @@ namespace QS.Cloud.Email.DesktopClient
 		}
 	}
 }
-
