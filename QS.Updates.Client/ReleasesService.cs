@@ -8,7 +8,10 @@ namespace QS.Updates
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger ();
         
         public static string ServiceAddress = "updates.cloud.qsolution.ru";
-        public static int ServicePort = 4203;
+        public static int ServicePort = 443;
+
+        private static ChannelCredentials Credentials =>
+            ServicePort == 443 ? (ChannelCredentials)new SslCredentials() : ChannelCredentials.Insecure;
 
         public ReleasesService()
         {
@@ -18,7 +21,7 @@ namespace QS.Updates
         private Channel Channel {
             get {
                 if(channel == null || channel.State == ChannelState.Shutdown)
-                    channel = new Channel(ServiceAddress, ServicePort, ChannelCredentials.Insecure);
+                    channel = new Channel(ServiceAddress, ServicePort, Credentials);
                 if (channel.State == ChannelState.TransientFailure)
                     channel.ConnectAsync();
                 return channel;
