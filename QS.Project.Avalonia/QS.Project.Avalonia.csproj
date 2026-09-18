@@ -38,6 +38,14 @@
       <DependentUpon>EntityEntryView.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\Widgets\ProgressWidget.axaml.cs">
+      <DependentUpon>ProgressWidget.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Dialog\Views\ProgressWindowView.axaml.cs">
+      <DependentUpon>ProgressWindowView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>

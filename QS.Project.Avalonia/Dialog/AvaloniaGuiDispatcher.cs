@@ -24,11 +24,30 @@ public class AvaloniaGuiDispatcher : IGuiDispatcher
 
 	public void WaitInMainLoop(Func<bool> checkStop, uint sleepMilliseconds = 20)
 	{
-		// Блокируем выполнение до тех пор, пока checkStop не вернет true
-		while (!checkStop())
-		{
-			WaitRedraw();
-			Thread.Sleep((int)sleepMilliseconds);
+		if(checkStop())
+			return;
+
+		// Не поток GUI крутить главный цикл нельзя и не нужно, просто ждём
+		if(!Dispatcher.UIThread.CheckAccess()) {
+			while(!checkStop())
+				Thread.Sleep((int)sleepMilliseconds);
+			return;
+		}
+
+		var frame = new DispatcherFrame();
+		var timer = new DispatcherTimer(
+			TimeSpan.FromMilliseconds(sleepMilliseconds),
+			DispatcherPriority.Background,
+			(_, _) => {
+				if(checkStop())
+					frame.Continue = false;
+			});
+		timer.Start();
+		try {
+			Dispatcher.UIThread.PushFrame(frame);
+		}
+		finally {
+			timer.Stop();
 		}
 	}
 
