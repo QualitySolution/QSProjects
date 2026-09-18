@@ -5,11 +5,8 @@ using Avalonia.Interactivity;
 using Avalonia.Threading;
 using QS.ViewModels.Control.EEVM;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace QS.Views.Widgets;
 
@@ -19,7 +16,6 @@ public partial class EntityEntryView : UserControl
     private const int autocompleteListSize = 20;
 
     private IEntityEntryViewModel? subscribedViewModel;
-    private TaskCompletionSource<IEnumerable<object>>? pendingAutocomplete;
 
     public static readonly StyledProperty<IEntityEntryViewModel?> ViewModelProperty =
         AvaloniaProperty.Register<EntityEntryView, IEntityEntryViewModel?>(nameof(ViewModel));
@@ -34,7 +30,7 @@ public partial class EntityEntryView : UserControl
     {
         InitializeComponent(true);
 
-        EntryText.AsyncPopulator = PopulateAutocompleteAsync;
+        EntryText.Populating += OnPopulating;
         EntryText.ItemSelector = (_, item) => ViewModel?.GetAutocompleteTitle(item) ?? String.Empty;
         EntryText.ItemTemplate = new FuncDataTemplate<object>(
             (item, _) => new TextBlock { Text = ViewModel?.GetAutocompleteTitle(item) ?? String.Empty });
@@ -101,30 +97,25 @@ public partial class EntityEntryView : UserControl
 
     #region Автодополнение
 
-    private Task<IEnumerable<object>> PopulateAutocompleteAsync(string? search, CancellationToken token)
+    private void OnPopulating(object? sender, PopulatingEventArgs e)
     {
+        e.Cancel = true;
         var viewModel = ViewModel;
-        if (viewModel == null || !viewModel.SensitiveAutoCompleteEntry || search == viewModel.EntityTitle)
-            return Task.FromResult(Enumerable.Empty<object>());
+        if (viewModel == null || !viewModel.SensitiveAutoCompleteEntry || !EntryText.IsKeyboardFocusWithin)
+            return;
 
-        var waiting = new TaskCompletionSource<IEnumerable<object>>();
-        var displaced = Interlocked.Exchange(ref pendingAutocomplete, waiting);
-        if (displaced != null)
-            CompleteOnGuiThread(displaced, Array.Empty<object>());
-        token.Register(() => CompleteOnGuiThread(waiting, Array.Empty<object>()));
-        viewModel.AutocompleteTextEdited(search ?? String.Empty);
-        return waiting.Task;
+        viewModel.AutocompleteTextEdited(e.Parameter ?? String.Empty);
     }
 
     private void OnAutocompleteListUpdated(object? sender, AutocompleteUpdatedEventArgs e)
     {
-        var waiting = Interlocked.Exchange(ref pendingAutocomplete, null);
-        if (waiting != null)
-            CompleteOnGuiThread(waiting, e.List.Cast<object>().ToArray());
+        var items = e.List.Cast<object>().ToArray();
+        Dispatcher.UIThread.Post(() =>
+        {
+            EntryText.ItemsSource = items;
+            EntryText.PopulateComplete();
+        });
     }
-
-    private static void CompleteOnGuiThread(TaskCompletionSource<IEnumerable<object>> waiting, IEnumerable<object> items)
-        => Dispatcher.UIThread.Post(() => waiting.TrySetResult(items));
 
     private void OnAutocompleteSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {

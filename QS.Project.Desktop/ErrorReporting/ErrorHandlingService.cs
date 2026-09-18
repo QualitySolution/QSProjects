@@ -64,9 +64,9 @@ namespace QS.ErrorReporting {
 			}
 
 			if(settings != null && settings.SendAutomatically) {
-				SendQuietly(exception, ErrorType.Automatic);
+				_ = Task.Run(() => SendQuietly(exception, ErrorType.Automatic));
 				interactiveMessage.ShowMessage(ImportanceLevel.Error,
-					exception.Message + "\n\nОтчёт об ошибке отправлен разработчикам.", title);
+					exception.Message + "\n\nОтчёт об ошибке отправляется разработчикам.", title);
 				return;
 			}
 
