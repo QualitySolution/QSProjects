@@ -6,9 +6,7 @@ using System.Runtime.ExceptionServices;
 
 namespace QS.Navigation;
 
-/// <param name="getService">Достаёт сервис из контейнера приложения или null, если такого нет</param>
-// Делегатом, а не контейнером, чтобы библиотека не зависела от конкретного DI
-public class AvaloniaViewFactory(Func<IAvaloniaViewResolver> getViewResolver, Func<Type, object?> getService)
+public class AvaloniaViewFactory(Func<IAvaloniaViewResolver> getViewResolver)
 {
 	public Control Create(Type viewClass, object viewModel) {
 		var constructor = FindConstructor(viewClass, viewModel);
@@ -50,21 +48,19 @@ public class AvaloniaViewFactory(Func<IAvaloniaViewResolver> getViewResolver, Fu
 		return suitable.FirstOrDefault();
 	}
 
-	/// <summary>Первый аргумент — сама ViewModel, остальные приходят из контейнера.</summary>
+	/// <summary>Первый аргумент — сама ViewModel, дальше вью может попросить только резолвер вложенных вью.</summary>
 	private object[] MakeArguments(Type viewClass, ConstructorInfo constructor, object viewModel) {
 		var parameters = constructor.GetParameters();
 		var arguments = new object[parameters.Length];
 		arguments[0] = viewModel;
 
 		for(int i = 1; i < parameters.Length; i++)
-			arguments[i] = GetService(parameters[i].ParameterType)
-				?? throw new InvalidOperationException(
-					$"View '{viewClass.FullName}' просит {parameters[i].ParameterType.Name}, а такой сервис в контейнере не зарегистрирован.");
+			arguments[i] = parameters[i].ParameterType == typeof(IAvaloniaViewResolver)
+				? getViewResolver()
+				: throw new InvalidOperationException(
+					$"View '{viewClass.FullName}' просит {parameters[i].ParameterType.Name}, а вью получает только ViewModel и {nameof(IAvaloniaViewResolver)}." +
+					" Нужное вью должно прийти из ViewModel.");
 
 		return arguments;
 	}
-
-	// Резолвер вью приходит отложенно
-	private object? GetService(Type serviceType) =>
-		serviceType == typeof(IAvaloniaViewResolver) ? getViewResolver() : getService(serviceType);
 }

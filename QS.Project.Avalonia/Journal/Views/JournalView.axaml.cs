@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.ExceptionServices;
 using Avalonia.Controls;
-using QS.Dialog;
+using Avalonia.Threading;
 using QS.Navigation;
 using QS.Project.Journal;
 
@@ -17,7 +17,6 @@ public partial class JournalView : UserControl, IDisposable
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 	private IJournalViewModel? viewModel;
-	private readonly IGuiDispatcher? guiDispatcher;
 	protected IAvaloniaViewResolver? viewResolver;
 
 	public JournalView()
@@ -25,10 +24,9 @@ public partial class JournalView : UserControl, IDisposable
 		InitializeComponent();
 	}
 
-	public JournalView(IJournalViewModel viewModel, IAvaloniaViewResolver? viewResolver, IGuiDispatcher guiDispatcher) : this()
+	public JournalView(IJournalViewModel viewModel, IAvaloniaViewResolver? viewResolver) : this()
 	{
 		this.viewResolver = viewResolver;
-		this.guiDispatcher = guiDispatcher ?? throw new ArgumentNullException(nameof(guiDispatcher));
 		ViewModel = viewModel;
 		ConfigureJournal();
 	}
@@ -194,7 +192,7 @@ public partial class JournalView : UserControl, IDisposable
 	{
 		if (e.PropertyName == nameof(ViewModel.FooterInfo))
 		{
-			guiDispatcher!.RunInGuiTread(UpdateFooter);
+			Dispatcher.UIThread.Post(UpdateFooter);
 		}
 		else if (e.PropertyName == nameof(ViewModel.TableSelectionMode))
 		{
@@ -205,7 +203,7 @@ public partial class JournalView : UserControl, IDisposable
 	private void ViewModel_ItemsListUpdated(object? sender, EventArgs e)
 	{
 		// Событие может вызываться из фонового потока, поэтому переключаемся на UI поток
-		guiDispatcher!.RunInGuiTread(() =>
+		Dispatcher.UIThread.Post(() =>
 		{
 			var grid = GetDataGrid();
 			if (grid == null || ViewModel == null)
@@ -224,12 +222,12 @@ public partial class JournalView : UserControl, IDisposable
 	private void UpdateFooter() => labelFooter.Text = ViewModel!.FooterInfo;
 
 	private void DataLoader_LoadError(object? sender, QS.Project.Journal.DataLoader.LoadErrorEventArgs e) =>
-		guiDispatcher!.RunInGuiTread(() => ExceptionDispatchInfo.Capture(e.Exception).Throw());
+		Dispatcher.UIThread.Post(() => ExceptionDispatchInfo.Capture(e.Exception).Throw());
 
 	private void DataLoader_LoadingStateChanged(object? sender, QS.Project.Journal.DataLoader.LoadingStateChangedEventArgs e)
 	{
 		// Событие может вызываться из фонового потока
-		guiDispatcher!.RunInGuiTread(() =>
+		Dispatcher.UIThread.Post(() =>
 		{
 			loadingIndicator.IsVisible = e.LoadingState == QS.Project.Journal.DataLoader.LoadingState.InProgress;
 		});

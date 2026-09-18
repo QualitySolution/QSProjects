@@ -2,7 +2,6 @@ using System;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using QS.Dialog.ViewModels;
-using QS.Widgets;
 
 namespace QS.Dialog.Views;
 
@@ -13,13 +12,10 @@ public partial class ProgressWindowView : UserControl {
 		InitializeComponent();
 	}
 
-	public ProgressWindowView(ProgressWindowViewModel viewModel, IGuiDispatcher guiDispatcher) : this() {
+	public ProgressWindowView(ProgressWindowViewModel viewModel) : this() {
 		this.viewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
 		DataContext = viewModel;
-
-		var widget = new ProgressWidget(guiDispatcher);
-		viewModel.Progress = widget;
-		progressPlaceholder.Content = widget;
+		viewModel.Progress = progressWidget;
 	}
 
 	private void OnCancelClicked(object? sender, RoutedEventArgs e) => viewModel?.CancellationTokenSource?.Cancel();

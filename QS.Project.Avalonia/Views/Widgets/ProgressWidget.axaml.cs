@@ -1,6 +1,6 @@
 using System;
-using System.Threading;
 using Avalonia.Controls;
+using Avalonia.Threading;
 using QS.Dialog;
 
 namespace QS.Widgets;
@@ -11,18 +11,11 @@ namespace QS.Widgets;
 public partial class ProgressWidget : UserControl, IProgressBarDisplayable {
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-	private readonly IGuiDispatcher? guiDispatcher;
-
 	// ProgressBar не выпускает значение за границы, и перебор остался бы незаметным
 	private double madeSteps;
 
-	/// <summary>Нужен XAML-компилятору Avalonia. Рабочий экземпляр создаётся с диспетчером.</summary>
 	public ProgressWidget() {
 		InitializeComponent();
-	}
-
-	public ProgressWidget(IGuiDispatcher guiDispatcher) : this() {
-		this.guiDispatcher = guiDispatcher ?? throw new ArgumentNullException(nameof(guiDispatcher));
 	}
 
 	public double Value => progressBar.Value;
@@ -72,16 +65,13 @@ public partial class ProgressWidget : UserControl, IProgressBarDisplayable {
 		progressText.IsVisible = !string.IsNullOrEmpty(text);
 	}
 
-	private void OnGuiThread(Action change) {
-		if(guiDispatcher == null)
-			throw new InvalidOperationException("Виджет прогресса создан без IGuiDispatcher — так его создаёт только XAML-превью.");
-
-		if(Thread.CurrentThread != guiDispatcher.GuiThread) {
-			guiDispatcher.RunInGuiTread(change);
+	private static void OnGuiThread(Action change) {
+		if(!Dispatcher.UIThread.CheckAccess()) {
+			Dispatcher.UIThread.Post(change);
 			return;
 		}
 
 		change();
-		guiDispatcher.WaitRedraw();
+		Dispatcher.UIThread.RunJobs(DispatcherPriority.Render);
 	}
 }
