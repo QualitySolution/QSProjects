@@ -137,13 +137,27 @@ namespace QS.ViewModels
 			if(!Validate()) {
 				return false;
 			}
+
             if(!BeforeSave())
             {
 				return false;
             }
-			bool result = base.Save(close);
+			
+			//т.к. теперь при закрытии вкладки все или большая часть очищается из памяти,
+			//то AfterSave не может вызываться после Close
+			var result = base.Save();
+
+			if(!result) {
+				return false;
+			}
+			
 			AfterSave();
-			return result;
+
+			if(close) {
+				Close(false, CloseSource.Save);
+			}
+			
+			return true;
 		}
 
 		protected virtual bool SaveBeforeContinue()

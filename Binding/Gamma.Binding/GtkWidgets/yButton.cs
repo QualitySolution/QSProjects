@@ -12,7 +12,7 @@ namespace Gamma.GtkWidgets
 	public class yButton : Button
 	{
 		private ICommand command;
-		private Func<object> commandArgument;
+		private object commandArgument;
 
 		public BindingControler<yButton> Binding { get; private set; }
 
@@ -22,7 +22,7 @@ namespace Gamma.GtkWidgets
 			Clicked += (sender, args) => GrabFocus();
 		}
 
-		public void BindCommand(ICommand command, Func<object> commandArgument = null)
+		public void BindCommand(ICommand command, object commandArgument = null)
 		{
 			if(this.command != null) {
 				throw new InvalidOperationException("Биндинг можно настроить только для одной команды");

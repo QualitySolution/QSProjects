@@ -34,7 +34,8 @@ namespace QS.ViewModels
 
 		public bool Save()
 		{
-			return Save(false);
+			SaveUoW();
+			return true;
 		}
 
 		public virtual bool Save(bool needClose)
