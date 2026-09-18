@@ -16,6 +16,7 @@ public partial class DeletionView : UserControl {
 		InitializeComponent();
 		this.viewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
 		// в разметке не биндятся
+		labelMessage.Text = viewModel.Message;
 		treeObjects.ItemsSource = viewModel.DeletedItems;
 		treeDependence.ItemsSource = viewModel.DependenceTree;
 	}

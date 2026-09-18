@@ -20,8 +20,7 @@
 	</UserControl.Resources>
 
 	<DockPanel Margin="12">
-		<TextBlock DockPanel.Dock="Top" TextWrapping="Wrap" Margin="0,0,0,8"
-		           Text="Вы уверены что хотите удалить объект? Операция необратима.&#x0a;Вместе с ним также будут удалены или очищены ссылки в следующих объектах:" />
+		<TextBlock x:Name="labelMessage" DockPanel.Dock="Top" TextWrapping="Wrap" Margin="0,0,0,8" />
 		<StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="6" Margin="0,8,0,0">
 			<Button Content="Отмена" Click="OnButtonCancelClicked" />
 			<Button Content="Удалить" Click="OnButtonDeleteClicked" />
@@ -31,7 +30,14 @@
 				<TreeView x:Name="treeObjects" ItemTemplate="{StaticResource TreeNodeTemplate}" />
 			</TabItem>
 			<TabItem Header="Дерево зависимостей">
-				<TreeView x:Name="treeDependence" ItemTemplate="{StaticResource TreeNodeTemplate}" />
+				<TreeView x:Name="treeDependence" ItemTemplate="{StaticResource TreeNodeTemplate}">
+					<!-- дерево читают целиком, чтобы увидеть, через что тянется удаление -->
+					<TreeView.Styles>
+						<Style Selector="TreeViewItem">
+							<Setter Property="IsExpanded" Value="True" />
+						</Style>
+					</TreeView.Styles>
+				</TreeView>
 			</TabItem>
 		</TabControl>
 	</DockPanel>
