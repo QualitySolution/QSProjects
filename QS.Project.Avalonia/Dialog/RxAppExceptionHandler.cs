@@ -6,11 +6,21 @@ using ReactiveUI;
 namespace QS.Dialog;
 
 /// <summary>
-/// Глобальная сеть под всё, что не поймали на месте
+/// перехват ошибок, выброшенных внутри команд, исключение из тела команды ReactiveUI ловит сам и отдаёт в её ThrownExceptions.
+/// заменяется разбором через <see cref="IErrorHandlingService"/>
 /// </summary>
+/// <remarks>
+/// пара к <see cref="DispatcherExceptionHandler"/>, который ловит ошибки потока GUI вне команд.
+/// вызывать в OnFrameworkInitializationCompleted сразу, без аргумента, и ещё раз после сборки контейнера — с <see cref="IErrorHandlingService"/>.
+/// повторный вызов заменяет обработчик.
+/// команда, подписанная на ThrownExceptions, сюда не попадает.
+/// </remarks>
 public static class RxAppExceptionHandler {
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
+	/// <param name="errorHandling">
+	/// цепочка обработчиков разбора ошибки и отправка отчёта. null - контейнер ещё не собран, пишем в лог и показываем сообщение
+	/// </param>
 	public static void Install(IErrorHandlingService? errorHandling = null) {
 		if(errorHandling == null) {
 			logger.Debug("Обработчик ошибок недоступен, ставим показ сообщения без разбора");
