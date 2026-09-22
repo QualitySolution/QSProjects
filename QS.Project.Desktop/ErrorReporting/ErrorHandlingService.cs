@@ -70,8 +70,9 @@ namespace QS.ErrorReporting {
 				return;
 			}
 
-			// Handle синхронно зовут обработчики необработанных исключений — не держим их, пока пользователь думает над вопросом
-			_ = Task.Run(() => AskAndSend(exception, title));
+			// Не переносим вопрос в пул потоков: GTK-реализация требует GUI-поток,
+			// а AvaloniaInteractiveQuestion сама переключается в UI-поток при необходимости.
+			AskAndSend(exception, title);
 		}
 
 		private void AskAndSend(Exception exception, string title) {
@@ -83,7 +84,7 @@ namespace QS.ErrorReporting {
 					title);
 
 				if(answer == SendButton)
-					SendQuietly(exception, ErrorType.User);
+					_ = Task.Run(() => SendQuietly(exception, ErrorType.User));
 			}
 			catch(Exception ex) {
 				logger.Error(ex, "Не удалось показать сообщение о непредвиденной ошибке");
