@@ -18,14 +18,17 @@ namespace QS.Deletion.ViewModels
 		public List<TreeNode> DeletedItems = new List<TreeNode>();
 		public List<TreeNode> DependenceTree = new List<TreeNode>();
 
+		public string Message { get; }
+
 		public DeletionViewModel(INavigationManager navigation, DeleteCore deletion) : base(navigation)
 		{
 			this.Deletion = deletion;
 			Title = "Выполнить удаление?";
+			Message = $"Удалить «{Deletion.RootEntity.Title}»? Операция необратима.\nЭто затронет следующие объекты:";
 
 			var deleteNode = new TreeNode();
 			deleteNode.CountedNode = false;
-			FillObgectGroups(deleteNode, Deletion.DeletedItems);
+			FillObgectGroups(deleteNode, Deletion.DeletedItems.Where(x => !x.Equals(Deletion.RootEntity)).ToList());
 			if(deleteNode.TotalChildCount > 0) {
 				deleteNode.Title = NumberToTextRus.FormatCase(deleteNode.Childs.Count,
 					"Будут удалены объекты {0} вида",
@@ -47,7 +50,7 @@ namespace QS.Deletion.ViewModels
 
 			var removeNode = new TreeNode();
 			removeNode.CountedNode = false;
-			FillObgectGroups(removeNode, Deletion.CleanedItems);
+			FillObgectGroups(removeNode, Deletion.RemoveFromItems);
 			if (removeNode.TotalChildCount > 0) {
 				removeNode.Title = NumberToTextRus.FormatCase(removeNode.Childs.Count,
 					"Будут очищены ссылки в коллекциях у {0} вида объектов",
@@ -81,7 +84,8 @@ namespace QS.Deletion.ViewModels
 
 		public TreeNode FillTreeDependence(EntityDTO entity, TreeNode parent = null)
 		{
-			var node = new TreeNode(entity.Title, parent, entity.Id);
+			var cleaned = Deletion.CleanedItems.Contains(entity) || Deletion.RemoveFromItems.Contains(entity);
+			var node = new TreeNode(cleaned ? entity.Title + " - ссылка будет очищена" : entity.Title, parent, entity.Id);
 			foreach(var item in entity.PullsUp) {
 				FillTreeDependence(item, node);
 			}
