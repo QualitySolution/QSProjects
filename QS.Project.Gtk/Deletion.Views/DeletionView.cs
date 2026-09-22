@@ -10,6 +10,7 @@ namespace QS.Deletion.Views
 		public DeletionView(DeletionViewModel viewModel) : base(viewModel)
 		{
 			this.Build();
+			label4.Text = ViewModel.Message;
 
 			var treeConfig = new RecursiveTreeConfig<TreeNode>
 				(x => x.Parrent, x => x.Childs);
