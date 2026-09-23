@@ -4,6 +4,7 @@ using QS.DbManagement;
 using QS.Launcher.AppRunner;
 using QS.Launcher.ViewModels;
 using QS.Launcher.ViewModels.PageViewModels;
+using System.Collections.Generic;
 
 namespace QS.Launcher {
 	public static partial class DependencyInjection {
@@ -45,6 +46,12 @@ namespace QS.Launcher {
 		
 		public static IServiceCollection UseNewProcessRunner(this IServiceCollection services, string executableFileName) {
 			return services.AddSingleton<IAppRunner>(c => new NewProcessRunner(executableFileName));
+		}
+
+		public static IServiceCollection UseNewProcessRunner(
+			this IServiceCollection services,
+			IEnumerable<ApplicationRunOption> applications) {
+			return services.AddSingleton<IAppRunner>(c => new NewProcessRunner(applications));
 		}
 
 		#endregion

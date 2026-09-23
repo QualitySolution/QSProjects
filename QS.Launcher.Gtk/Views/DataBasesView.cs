@@ -19,6 +19,14 @@ namespace QS.Launcher.Views {
 				.AddBinding(v => v.Databases, w => w.ItemsDataSource)
 				.AddBinding(v => v.SelectedDatabase, w => w.SelectedRow)
 				.InitializeFromSource();
+			yhboxApplication.Binding
+				.AddBinding(ViewModel, v => v.IsApplicationSelectionVisible, w => w.Visible)
+				.InitializeFromSource();
+			comboApplication.SetRenderTextFunc<QS.Launcher.AppRunner.ApplicationRunOption>(x => x.Title);
+			comboApplication.Binding
+				.AddBinding(ViewModel, v => v.Applications, w => w.ItemsList)
+				.AddBinding(ViewModel, v => v.SelectedApplication, w => w.SelectedItem)
+				.InitializeFromSource();
 			treeBases.RowActivated += (o, args) => ViewModel.Connect();
 			treeBases.KeyPressEvent += (o, args) => {
 				if(args.Event.Key == Gdk.Key.Return) {

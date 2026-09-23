@@ -64,6 +64,22 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		private readonly IAppRunner appRunner;
 		private readonly IApplicationInfo applicationInfo;
 
+		public IReadOnlyList<ApplicationRunOption> Applications =>
+			(appRunner as IMultipleAppRunner)?.Applications;
+		public bool IsApplicationSelectionVisible => Applications != null && Applications.Count > 1;
+
+		public ApplicationRunOption SelectedApplication {
+			get => (appRunner as IMultipleAppRunner)?.SelectedApplication;
+			set {
+				if(!(appRunner is IMultipleAppRunner multipleAppRunner)
+					|| multipleAppRunner.SelectedApplication == value)
+					return;
+
+				multipleAppRunner.SelectedApplication = value;
+				this.RaisePropertyChanged(nameof(SelectedApplication));
+			}
+		}
+
 		public DataBasesVM(IAppRunner appRunner, IApplicationInfo applicationInfo, IInteractiveMessage interactiveMessage, LauncherOptions launcherOptions) {
 			this.appRunner = appRunner ?? throw new ArgumentNullException(nameof(appRunner));
 			this.applicationInfo = applicationInfo ?? throw new ArgumentNullException(nameof(applicationInfo));
