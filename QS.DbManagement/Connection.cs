@@ -42,6 +42,7 @@ namespace QS.DbManagement {
 		public bool Last { get; set; } = false;
 
 		public int? LastBaseId { get; set; }
+		public string LastApplication { get; set; }
 
 		public Connection(ConnectionTypeBase connectionType, IDictionary<string, string> parameters) {
 			this.connectionType = connectionType;
@@ -49,6 +50,8 @@ namespace QS.DbManagement {
 			Last = parameters.ContainsKey("Last") && parameters["Last"] == "True";
 			if(parameters.ContainsKey("LastBaseId") && int.TryParse(parameters["LastBaseId"], out int lastBaseId))
 				LastBaseId = lastBaseId;
+			if(parameters.ContainsKey("LastApplication"))
+				LastApplication = parameters["LastApplication"];
 			foreach(var parameter in ConnectionType.Parameters)
 				CustomParameters.Add(new ConnectionParameterValue(parameter, parameters.ContainsKey(parameter.Name) ? parameters[parameter.Name] : null));
 		}
@@ -71,6 +74,8 @@ namespace QS.DbManagement {
 			};
 			if(LastBaseId.HasValue)
 				config.Add("LastBaseId", LastBaseId.Value.ToString());
+			if(!string.IsNullOrWhiteSpace(LastApplication))
+				config.Add("LastApplication", LastApplication);
 			foreach(var parameter in CustomParameters)
 				config.Add(parameter.Name, parameter.Value?.ToString());
 			return config;
