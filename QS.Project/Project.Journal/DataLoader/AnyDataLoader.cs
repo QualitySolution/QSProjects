@@ -51,7 +51,7 @@ namespace QS.Project.Journal.DataLoader
 			pagedLoading = true;
 		}
 
-		public IList Items { get; private set; }
+		public IList Items { get; private set; } = new List<TNode>();
 
 		public PostLoadProcessing PostLoadProcessingFunc { set => throw new NotImplementedException(); }
 		public bool DynamicLoadingEnabled { get; set; } = true;
