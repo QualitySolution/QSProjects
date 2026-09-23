@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -86,7 +86,23 @@ namespace Gamma.Widgets
 				chkButtons[i].Active = index == i;
 			}
 		}
-		
+
+		public void OnlySelectValue(Enum value, bool canSelectNotVisible = false) {
+			var enumType = value.GetType();
+			var chkButtons = Children.Cast<yCheckButton>().ToArray();
+			for(var i = 0; i < chkButtons.Length; i++) {
+				var chkButton = chkButtons[i];
+				if(chkButton.Tag.GetType() != enumType) {
+					throw new ArgumentException($"Value type {enumType} is not equal to EnumType {EnumType}");
+				}
+				if(!canSelectNotVisible && !chkButton.Visible) {
+					chkButtons[i].Active = false;
+					continue;
+				}
+				chkButtons[i].Active = chkButton.Tag.Equals(value);
+			}
+		}
+
 		public void SelectAll()
 		{
 			externalSet = true;
