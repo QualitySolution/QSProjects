@@ -1,6 +1,6 @@
 using System;
 using System.Linq;
-using Gamma.Utilities;
+using QS.Utilities.Enums;
 using QS.BaseParameters;
 using QS.Dialog;
 using QS.Navigation;

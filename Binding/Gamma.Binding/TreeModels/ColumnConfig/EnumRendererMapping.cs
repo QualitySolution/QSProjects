@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Gamma.GtkWidgets.Cells;
 using Gamma.Utilities;
+using QS.Utilities.Enums;
 
 namespace Gamma.ColumnConfig
 {
@@ -23,7 +24,7 @@ namespace Gamma.ColumnConfig
 
 			_cellRenderer.DataPropertyInfo = prop;
 
-			_cellRenderer.DisplayFunc = e => (e as Enum).GetEnumTitle();
+			_cellRenderer.DisplayFunc = e => EnumHelper.GetEnumTitle(e as Enum);
 			_cellRenderer.Items = GetEnumItems(prop.PropertyType, excludeItems);
 			_cellRenderer.UpdateComboList(default(TNode));
 		}

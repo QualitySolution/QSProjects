@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.ComponentModel;
-using Gamma.Utilities;
+using QS.Utilities.Enums;
 using Gtk;
 using NLog;
 using QS.DomainModel.Entity;
@@ -151,4 +151,3 @@ namespace Gamma.Widgets
 		}
 	}
 }
-

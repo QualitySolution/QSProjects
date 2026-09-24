@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
-using Gamma.Utilities;
+using QS.Utilities.Enums;
 using Gamma.Widgets;
 using Gtk;
 
@@ -95,4 +95,3 @@ namespace QSOrmProject
 		}
 	}
 }
-

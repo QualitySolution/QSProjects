@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using Gamma.Binding.Core;
 using Gamma.GtkWidgets;
-using Gamma.Utilities;
+using QS.Utilities.Enums;
 using Gamma.Widgets.Additions;
 using Gtk;
 

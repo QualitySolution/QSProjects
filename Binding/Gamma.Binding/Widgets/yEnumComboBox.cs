@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Reflection;
 using Gtk;
 using System.Collections.Generic;
-using Gamma.Utilities;
+using QS.Utilities.Enums;
 using Gamma.Binding.Core;
 using System.Linq.Expressions;
 using Gamma.GtkHelpers;
