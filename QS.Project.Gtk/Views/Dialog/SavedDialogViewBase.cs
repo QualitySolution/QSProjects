@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Linq;
 using Gamma.GtkWidgets;
 using Gtk;
-using QS.Navigation;
 using QS.Utilities;
 using QS.ViewModels.Dialog;
 using QS.ViewModels.Extension;
@@ -95,17 +94,20 @@ namespace QS.Views.Dialog
 		
 		protected void OnButtonSaveClicked(object sender, EventArgs e)
 		{
-			ViewModel.SaveAndClose();
+			if(ViewModel.SaveCommand.CanExecute(null))
+				ViewModel.SaveCommand.Execute(null);
 		}
 
 		protected void OnButtonCancelClicked(object sender, EventArgs e)
 		{
-			if(ViewModel.IsBusy) {
-				ViewModel.RequestCancelBusyOperation();
-				return;
-			}
+			if(ViewModel.CancelCommand.CanExecute(null))
+				ViewModel.CancelCommand.Execute(null);
+		}
 
-			ViewModel.Close(false, CloseSource.Cancel);
+		protected override void OnDestroyed()
+		{
+			ViewModel.PropertyChanged -= ViewModelOnPropertyChanged;
+			base.OnDestroyed();
 		}
 	}
 }

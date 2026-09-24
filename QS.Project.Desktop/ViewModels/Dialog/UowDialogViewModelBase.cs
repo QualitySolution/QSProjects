@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
+using System.Windows.Input;
 using QS.DomainModel.UoW;
 using QS.Navigation;
 using QS.Validation;
+using ReactiveUI;
 
 namespace QS.ViewModels.Dialog
 {
@@ -16,7 +19,20 @@ namespace QS.ViewModels.Dialog
 		{
 			UoW = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 			this.validator = validator;
+
+			var canSave = this.WhenAnyValue(viewModel => viewModel.IsBusy).Select(isBusy => !isBusy);
+			var canCancel = this.WhenAnyValue(
+				viewModel => viewModel.IsBusy,
+				viewModel => viewModel.CanCancelBusyOperation,
+				(isBusy, canCancelBusyOperation) => !isBusy || canCancelBusyOperation
+			);
+
+			SaveCommand = ReactiveCommand.Create(SaveAndClose, canSave);
+			CancelCommand = ReactiveCommand.Create(Cancel, canCancel);
 		}
+
+		public ICommand SaveCommand { get; }
+		public ICommand CancelCommand { get; }
 
 		public virtual IUnitOfWork UoW { get; private set; }
 
@@ -75,6 +91,16 @@ namespace QS.ViewModels.Dialog
 				return true;
 			}
 			return false;
+		}
+
+		private void Cancel()
+		{
+			if(IsBusy) {
+				RequestCancelBusyOperation();
+				return;
+			}
+
+			Close(false, CloseSource.Cancel);
 		}
 
 		/// <summary>
