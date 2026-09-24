@@ -31,8 +31,8 @@ namespace QS.ViewModels.Dialog
 			CancelCommand = ReactiveCommand.Create(Cancel, canCancel);
 		}
 
-		public ICommand SaveCommand { get; }
-		public ICommand CancelCommand { get; }
+		public ICommand SaveCommand { get; protected set; }
+		public ICommand CancelCommand { get; protected set; }
 
 		public virtual IUnitOfWork UoW { get; private set; }
 
