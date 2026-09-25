@@ -252,12 +252,15 @@ namespace QS.Navigation {
 
 		protected virtual void ClosePage(IPage page, CloseSource source)
 		{
+			var closingTimer = Stopwatch.StartNew();
+			var pageTitle = page?.Title?.EllipsizeMiddle(50);
 			if (page.ViewModel is IOnCloseActionViewModel onClose)
 				onClose.OnClose(source);
 
 			var closedPagePair = SlavePages.FirstOrDefault(x => x.SlavePage == page);
 			if (closedPagePair != null)
 				(closedPagePair.MasterPage as IPageInternal).RemoveSlavePage(closedPagePair.SlavePage);
+
 			var pageToRemove = pages.FirstOrDefault(x => x == page);
 			if (pageToRemove != null) {
 				pages.Remove(pageToRemove);
@@ -270,9 +273,9 @@ namespace QS.Navigation {
 					(childPair.ChildPage as IPageInternal).OnClosed(source);
 				}
 			}
-
 			if (page.ViewModel is IDisposable pd)
 				pd.Dispose();
+			logger.Debug($"Страница «{pageTitle}» закрыта за {closingTimer.Elapsed.TotalMilliseconds:F0} мс, источник {source}.");
 		}
 
 		/// <summary>

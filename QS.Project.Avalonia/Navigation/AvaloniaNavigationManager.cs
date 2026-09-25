@@ -7,17 +7,30 @@ using QS.ViewModels.Extension;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 
 namespace QS.Navigation;
 
 public class AvaloniaNavigationManager : NavigationManagerBase, INavigationManager {
+	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 	IPage? currentPage;
 	public IPage? CurrentPage
 	{
 		get => currentPage;
-		set => this.RaiseAndSetIfChanged(ref currentPage, value);
+		set {
+			if(ReferenceEquals(currentPage, value))
+				return;
+
+			var timer = Stopwatch.StartNew();
+			var previousTitle = PageTitle(currentPage);
+			var currentTitle = PageTitle(value);
+			this.RaiseAndSetIfChanged(ref currentPage, value);
+			Dispatcher.UIThread.Post(() =>
+				logger.Debug($"Avalonia navigation: переключение «{previousTitle}» -> «{currentTitle}» " +
+					$"достигло очереди Render за {timer.Elapsed.TotalMilliseconds:F0} мс."), DispatcherPriority.Render);
+		}
 	}
 
 	public ObservableCollection<IAvaloniaPage> Pages { get; protected set; } = [];
@@ -61,6 +74,9 @@ public class AvaloniaNavigationManager : NavigationManagerBase, INavigationManag
 			Dispatcher.UIThread.Invoke(() => ClosePageNow(page, source));
 			return;
 		}
+
+		var timer = Stopwatch.StartNew();
+		var pageTitle = PageTitle(page);
 		if(page is IAvaloniaWindowPage) {
 			ClosePage(page, source);
 			return;
@@ -69,9 +85,11 @@ public class AvaloniaNavigationManager : NavigationManagerBase, INavigationManag
 
 		if(CurrentPage == page)
 			CurrentPage = NextCurrentPage(avaloniaPage);
-
 		Pages.Remove(avaloniaPage);
 		ClosePage(page, source);
+		Dispatcher.UIThread.Post(() =>
+			logger.Debug($"Avalonia navigation: закрытие вкладки «{pageTitle}» достигло очереди Render за " +
+				$"{timer.Elapsed.TotalMilliseconds:F0} мс."), DispatcherPriority.Render);
 	}
 
 	// после закрытия подчинённой возвращаемся на хозяйскую, иначе на соседнюю вкладку
@@ -225,6 +243,8 @@ public class AvaloniaNavigationManager : NavigationManagerBase, INavigationManag
 		windowPage.Window = null;
 		window.Close();
 	}
+
+	private static string PageTitle(IPage? page) => page?.Title ?? "нет";
 
 	#endregion
 }
