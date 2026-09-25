@@ -1,4 +1,3 @@
-using QS.Banks.Contracts;
 using System;
 using System.IO;
 using System.Xml;

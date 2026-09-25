@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!--Центральный Банк Российской Федерации.
+Унифицированные форматы электронных банковских сообщений.
+
+Обмен САБС - УЭО по корпоративным картам
+
+Схемы с описанием прикладных частей электронных сообщений, используемых в расчетной сети Банка России.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ed="urn:cbr-ru:ed:v2.0" xmlns:lt="urn:cbr-ru:ed:leaftypes:v2.0" targetNamespace="urn:cbr-ru:ed:v2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2026.09.0">
+	<xs:include schemaLocation="cbr_ed_objects_v2026.09.0.xsd"/>
+	<xs:import namespace="urn:cbr-ru:ed:leaftypes:v2.0" schemaLocation="cbr_ed_leaftypes_v2026.09.0.xsd"/>
+	<xs:annotation>
+		<xs:documentation>Прикладные части ЭС</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="ReestrInfoType">
+		<xs:annotation>
+			<xs:documentation>Сведения о реестре.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="Number" type="lt:Max15TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Номер реестра.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Date" type="lt:DateType" use="required">
+			<xs:annotation>
+				<xs:documentation>Дата реестра.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ED650BankAccountDetailsType">
+		<xs:annotation>
+			<xs:documentation>Реквизиты банковского счета.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="BankName" type="lt:Max160TextType" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Наименование банка.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Note" type="lt:Max200TextType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Примечание.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="Account" type="lt:AccountNumberRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>Номер банковского счета.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="BIK" type="lt:BICRUIDType" use="required">
+			<xs:annotation>
+				<xs:documentation>БИК банка.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="NumOfficeIssCard" type="lt:Max55TextType">
+			<xs:annotation>
+				<xs:documentation>Номер офиса, в котором будет выдана карта.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="CardCount" type="lt:Max3NumberType2" use="required">
+			<xs:annotation>
+				<xs:documentation>Количество банковских карт для выдачи.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="IDDocInfoType">
+		<xs:annotation>
+			<xs:documentation>Информация о документе, удостоверяющий личность.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="DocType" type="lt:Max2TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Код документа, удостоверяющего личность.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DocSerial" type="lt:Max10TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Серия документа.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DocNumber" type="lt:Max10TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Номер документа.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DeptCdIssueBy" type="lt:Max6TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Код подразделения, выдавшего документ.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="IssuedBy" type="lt:Max255TextType" use="required">
+			<xs:annotation>
+				<xs:documentation>Кем выдан документ.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="DocDate" type="lt:DateType" use="required">
+			<xs:annotation>
+				<xs:documentation>Дата выдачи документа.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="CardRecipientsInfoType">
+		<xs:annotation>
+			<xs:documentation>Сведения о получателях карт.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Surname" type="lt:Max150TextType" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Фамилия.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="FirstName" type="lt:Max150TextType" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Имя.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Patronymic" type="lt:Max150TextType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Отчество.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="BirthDate" type="lt:DateType" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Дата рождения.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="IDDocInfo" type="ed:IDDocInfoType" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Информация о документе, удостоверяющий личность.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="RegAddress" type="lt:Max255TextType" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Адрес регистрации.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PhoneNum" type="lt:Max15TextType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Номер телефона.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="LineNumber" type="lt:Max3NumberType2" use="required">
+			<xs:annotation>
+				<xs:documentation>Номер получателя карты в списке получателей.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:element name="ED650" type="ed:ED650"/>
+	<xs:complexType name="ED650">
+		<xs:annotation>
+			<xs:documentation>Реестр на выпуск карт</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ed:ESID">
+				<xs:sequence>
+					<xs:element name="ReestrInfo" type="ed:ReestrInfoType" minOccurs="1">
+						<xs:annotation>
+							<xs:documentation>Сведения о реестре.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ServiceTOFK" type="ed:ServiceTOFKType" minOccurs="1">
+						<xs:annotation>
+							<xs:documentation>Обслуживающий ТОФК/ Расчетный центр.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ClientInfo" type="ed:CorpClientInfoType" minOccurs="1">
+						<xs:annotation>
+							<xs:documentation>Сведения о клиенте.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="BankAccountDetails" type="ed:ED650BankAccountDetailsType" minOccurs="1">
+						<xs:annotation>
+							<xs:documentation>Реквизиты банковского счета.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="CardRecipientsInfo" type="ed:CardRecipientsInfoType" minOccurs="1" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>Сведения о получателях карт.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>
