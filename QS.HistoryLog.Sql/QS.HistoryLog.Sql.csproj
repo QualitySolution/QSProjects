@@ -15,7 +15,7 @@
   <PropertyGroup Condition=" '$(UseNetStandardTarget)' != 'true'
     And '$(Configuration)' != 'DebugStandart'
     And '$(Configuration)' != 'ReleaseStandart' ">
-	  <TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
+	  <TargetFrameworks>netstandard2.0;net10.0</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
