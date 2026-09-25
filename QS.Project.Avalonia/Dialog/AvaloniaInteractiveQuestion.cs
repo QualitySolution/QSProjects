@@ -11,15 +11,19 @@ namespace QS.Dialog;
 
 public class AvaloniaInteractiveQuestion : IInteractiveQuestion {
 	public bool Question(string message, string? title = null) =>
-		Ask(new[] { "Да", "Нет" }, message, title) == "Да";
+		ShowModal(new[] { "Да", "Нет" }, message, title, ImportanceLevel.Info) == "Да";
 
 	// Возвращает подпись нажатой кнопки, null — если пользователь закрыл окно крестиком
 	public string? Question(string[] buttons, string message, string? title = null) =>
-		Ask(buttons, message, title);
+		ShowModal(buttons, message, title, ImportanceLevel.Info);
 
 	/// <summary>Ждёт ответа пользователя, с какого бы потока вопрос ни задали</summary>
-	private static string? Ask(string[] buttons, string message, string? title) {
-		var answer = Show(buttons, message, title);
+	internal static string? ShowModal(
+		string[] buttons,
+		string message,
+		string? title,
+		ImportanceLevel importanceLevel) {
+		var answer = Show(buttons, message, title, importanceLevel);
 
 		if(Dispatcher.UIThread.CheckAccess()) {
 			var frame = new DispatcherFrame();
@@ -31,12 +35,16 @@ public class AvaloniaInteractiveQuestion : IInteractiveQuestion {
 		return answer.GetAwaiter().GetResult();
 	}
 
-	private static Task<string?> Show(string[] buttons, string message, string? title) {
+	private static Task<string?> Show(
+		string[] buttons,
+		string message,
+		string? title,
+		ImportanceLevel importanceLevel) {
 		var tcs = new TaskCompletionSource<string?>();
 
 		Dispatcher.UIThread.Post(() => {
 			try {
-				ShowQuestion(buttons, message, title, tcs);
+				ShowDialog(buttons, message, title, importanceLevel, tcs);
 			}
 			catch(Exception ex) {
 				tcs.TrySetException(ex);
@@ -46,10 +54,15 @@ public class AvaloniaInteractiveQuestion : IInteractiveQuestion {
 		return tcs.Task;
 	}
 
-	private static void ShowQuestion(string[] buttons, string message, string? title, TaskCompletionSource<string?> tcs)
+	private static void ShowDialog(
+		string[] buttons,
+		string message,
+		string? title,
+		ImportanceLevel importanceLevel,
+		TaskCompletionSource<string?> tcs)
 	{
 		var dialogButtons = buttons.Select(label => new Button { Content = label }).ToArray();
-		var window = new DialogWindow(message, title ?? "Вопрос", ImportanceLevel.Info, dialogButtons);
+		var window = new DialogWindow(message, title ?? "Вопрос", importanceLevel, dialogButtons);
 		window.HideCloseButton();
 
 		foreach(var button in dialogButtons)
