@@ -198,7 +198,7 @@ namespace QS.Navigation {
 					openPage = MakePageAndCatchAborting(makePage, hash);
 					if (openPage == null)
 						return null;
-					logger.Debug($"Навигация: страница {openPage.ViewModel.GetType().Name} создана за {(openingTimer.Elapsed - beforeMakePage).TotalMilliseconds:F0} мс " +
+					logger.Debug($"Навигация: страница {openPage.ViewModel?.GetType().Name ?? openPage.GetType().Name} создана за {(openingTimer.Elapsed - beforeMakePage).TotalMilliseconds:F0} мс " +
 						$"(всего {openingTimer.Elapsed.TotalMilliseconds:F0} мс).");
 					(masterPage as IPageInternal).AddSlavePage(openPage);
 					logger.Debug($"Открываем подчиненную вкладку '{openPage.Title}' для основной '{masterPage.Title}'.");
@@ -218,7 +218,7 @@ namespace QS.Navigation {
 					openPage = MakePageAndCatchAborting(makePage, hash);
 					if (openPage == null)
 						return null;
-					logger.Debug($"Навигация: страница {openPage.ViewModel.GetType().Name} создана за {(openingTimer.Elapsed - beforeMakePage).TotalMilliseconds:F0} мс " +
+					logger.Debug($"Навигация: страница {openPage.ViewModel?.GetType().Name ?? openPage.GetType().Name} создана за {(openingTimer.Elapsed - beforeMakePage).TotalMilliseconds:F0} мс " +
 						$"(всего {openingTimer.Elapsed.TotalMilliseconds:F0} мс).");
 					logger.Debug($"Открываем вкладку '{openPage.Title}'.");
 					var beforeOpenPage = openingTimer.Elapsed;
