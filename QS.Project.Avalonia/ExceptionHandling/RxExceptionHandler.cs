@@ -1,7 +1,6 @@
 using System;
 using System.Diagnostics;
-using System.Reactive.Concurrency;
-using ReactiveUI;
+using Avalonia.Threading;
 
 namespace QS.Project.ExceptionHandling;
 public class RxExceptionHandler : IObserver<Exception>
@@ -19,7 +18,7 @@ public class RxExceptionHandler : IObserver<Exception>
 
 		OnExceptionAction?.Invoke(error);
 
-		RxApp.MainThreadScheduler.Schedule(() => { throw error; });
+		Dispatcher.UIThread.Post(() => throw error);
 	}
 
 	public void OnNext(Exception value)
@@ -28,6 +27,6 @@ public class RxExceptionHandler : IObserver<Exception>
 
 		OnExceptionAction?.Invoke(value);
 
-		RxApp.MainThreadScheduler.Schedule(() => { throw value; });
+		Dispatcher.UIThread.Post(() => throw value);
 	}
 }

@@ -14,7 +14,7 @@ public partial class NavigationManagerView : UserControl {
 
 	public AvaloniaNavigationManager? NavigationManager => DataContext as AvaloniaNavigationManager;
 
-	private void OnTabCloseRequested(TabView sender, TabViewTabCloseRequestedEventArgs args) {
+	private void OnTabCloseRequested(FATabView sender, FATabViewTabCloseRequestedEventArgs args) {
 		var page = args.Item as IAvaloniaPage;
 		if(page != null && NavigationManager != null) {
 			NavigationManager.AskClosePage(page, CloseSource.ClosePage);

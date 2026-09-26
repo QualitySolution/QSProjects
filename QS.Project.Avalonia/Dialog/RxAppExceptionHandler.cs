@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reactive;
 using QS.ErrorReporting;
-using ReactiveUI;
 
 namespace QS.Dialog;
 
@@ -12,23 +11,32 @@ namespace QS.Dialog;
 /// <remarks>
 /// пара к <see cref="DispatcherExceptionHandler"/>, который ловит ошибки потока GUI вне команд.
 /// вызывать в OnFrameworkInitializationCompleted сразу, без аргумента, и ещё раз после сборки контейнера — с <see cref="IErrorHandlingService"/>.
-/// повторный вызов заменяет обработчик.
+/// повторный вызов обновляет используемый сервис обработки ошибок.
 /// команда, подписанная на ThrownExceptions, сюда не попадает.
 /// </remarks>
 public static class RxAppExceptionHandler {
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+	private static IErrorHandlingService? errorHandlingService;
+
+	public static IObserver<Exception> Handler { get; } = Observer.Create<Exception>(Handle);
 
 	/// <param name="errorHandling">
 	/// цепочка обработчиков разбора ошибки и отправка отчёта. null - контейнер ещё не собран, пишем в лог и показываем сообщение
 	/// </param>
 	public static void Install(IErrorHandlingService? errorHandling = null) {
+		errorHandlingService = errorHandling;
+
 		if(errorHandling == null) {
 			logger.Debug("Обработчик ошибок недоступен, ставим показ сообщения без разбора");
-			RxApp.DefaultExceptionHandler = Observer.Create<Exception>(ShowWithoutHandling);
-			return;
 		}
 
-		RxApp.DefaultExceptionHandler = Observer.Create<Exception>(ex => errorHandling.Handle(ex));
+	}
+
+	private static void Handle(Exception ex) {
+		if(errorHandlingService != null)
+			errorHandlingService.Handle(ex);
+		else
+			ShowWithoutHandling(ex);
 	}
 
 	private static void ShowWithoutHandling(Exception ex) {

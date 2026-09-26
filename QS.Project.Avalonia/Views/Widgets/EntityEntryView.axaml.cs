@@ -80,7 +80,7 @@ public partial class EntityEntryView : UserControl
     {
         bool has = ViewModel != null;
 
-        if (EntryText    != null) EntryText.Watermark    = has ? "(не выбрано)" : "(нет модели)";
+        if (EntryText    != null) EntryText.PlaceholderText = has ? "(не выбрано)" : "(нет модели)";
         if (ButtonSelect != null) ButtonSelect.IsEnabled = has && ViewModel!.SensitiveSelectButton;
         if (ButtonView   != null) ButtonView.IsEnabled   = has && ViewModel!.SensitiveViewButton;
         if (ButtonClean  != null) ButtonClean.IsVisible  = has && ViewModel!.SensitiveCleanButton;

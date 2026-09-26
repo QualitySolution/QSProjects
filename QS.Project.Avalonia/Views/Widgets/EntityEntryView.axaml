@@ -16,7 +16,7 @@
             <AutoCompleteBox x:Name="EntryText"
                              MinWidth="150"
                              VerticalAlignment="Center"
-                             Watermark="(не выбрано)"
+                             PlaceholderText="(не выбрано)"
                              FilterMode="None"
                              MinimumPrefixLength="1"
                              MinimumPopulateDelay="0:0:0.4"

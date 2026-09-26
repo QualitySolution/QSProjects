@@ -10,17 +10,17 @@
              d:DesignWidth="800"
              x:DataType="navigation:AvaloniaNavigationManager"
              mc:Ignorable="d">
-    <fa:TabView x:Name="tabView" 
+    <fa:FATabView x:Name="tabView"
                 TabItems="{Binding Pages}" 
                 SelectedItem="{Binding CurrentPage}"
                 IsAddTabButtonVisible="False"
                 TabCloseRequested="OnTabCloseRequested">
-        <fa:TabView.TabItemTemplate>
+        <fa:FATabView.TabItemTemplate>
             <DataTemplate x:DataType="navigation:IAvaloniaPage">
-                <fa:TabViewItem Header="{Binding Title}" 
+                <fa:FATabViewItem Header="{Binding Title}"
                                 IsClosable="True"
                                 Content="{Binding View}" />
             </DataTemplate>
-        </fa:TabView.TabItemTemplate>
-    </fa:TabView>
+        </fa:FATabView.TabItemTemplate>
+    </fa:FATabView>
 </UserControl>

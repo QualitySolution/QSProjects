@@ -36,7 +36,7 @@ public partial class LoginView : UserControl
 
 		KeyDown += (s, e) => {
 			if(e.Key == Avalonia.Input.Key.Enter) {
-				TopLevel.GetTopLevel(this).FocusManager.ClearFocus();
+				TopLevel.GetTopLevel(this)?.FocusManager?.Focus(null);
 				viewModel.LoginCommand.Execute(null);
 			}
 		};

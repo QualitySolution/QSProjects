@@ -20,7 +20,7 @@ public partial class DataBasesView : UserControl {
 
 		KeyDown += (s, e) => {
 			if(e.Key == Key.Enter) {
-				TopLevel.GetTopLevel(this).FocusManager.ClearFocus();
+				TopLevel.GetTopLevel(this)?.FocusManager?.Focus(null);
 				viewModel.ConnectCommand.Execute(null);
 			}
 		};

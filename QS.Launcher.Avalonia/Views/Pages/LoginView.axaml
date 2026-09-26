@@ -49,7 +49,7 @@
                     Classes="invisible animated"
                     SizeChanged="Border_SizeChanged">
                 <StackPanel>
-                    <TextBox Margin="5" IsEnabled="{Binding SelectedConnection, Converter={x:Static ObjectConverters.IsNotNull}}" Text="{Binding SelectedConnection.ConnectionTitle, Mode=TwoWay}" Watermark="Название подключения" />
+                    <TextBox Margin="5" IsEnabled="{Binding SelectedConnection, Converter={x:Static ObjectConverters.IsNotNull}}" Text="{Binding SelectedConnection.ConnectionTitle, Mode=TwoWay}" PlaceholderText="Название подключения" />
                     <ComboBox x:Name="connectionType"
                               Margin="5"
                               HorizontalAlignment="Stretch"
@@ -71,7 +71,7 @@
                     <ItemsControl ItemsSource="{Binding SelectedConnection.CustomParameters}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <TextBox Margin="5" Text="{Binding Value}" Watermark="{Binding Title}" />
+                                <TextBox Margin="5" Text="{Binding Value}" PlaceholderText="{Binding Title}" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -106,7 +106,7 @@
             </Border>
 
             <ItemsControl x:Name="loginContainer" Grid.Row="4" Grid.ColumnSpan="2" Classes="animated up">
-                <TextBox x:Name="passwordTextBox" Margin="5" PasswordChar="•" Text="{Binding Password}" Watermark="Пароль" />
+                <TextBox x:Name="passwordTextBox" Margin="5" PasswordChar="•" Text="{Binding Password}" PlaceholderText="Пароль" />
                 <Label Margin="5,0,0,0" Content="Внимание: введены не английские символы" Foreground="Red" IsVisible="{Binding !IsPasswordEngOnly}" />
 
                 <Button Margin="5" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding LoginCommand}" Content="Войти" IsEnabled="{Binding CanLogin}" />
