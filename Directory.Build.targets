@@ -1,0 +1,9 @@
+<Project>
+  <Target Name="RemoveIncompatibleSystemReactiveAnalyzer"
+          BeforeTargets="CoreCompile"
+          Condition="'$(MSBuildRuntimeType)' != 'Core'">
+    <ItemGroup>
+      <Analyzer Remove="@(Analyzer)" Condition="'%(Filename)%(Extension)' == 'System.Reactive.Analyzers.dll'" />
+    </ItemGroup>
+  </Target>
+</Project>

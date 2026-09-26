@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks Condition="'$(MSBuildRuntimeType)' == 'Core'">netstandard2.0;net10.0</TargetFrameworks>
+    <TargetFramework Condition="'$(MSBuildRuntimeType)' != 'Core'">netstandard2.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,7 +16,8 @@
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.1.66" />
     <PackageReference Include="MySqlConnector" Version="2.5.0" />
-    <PackageReference Include="ReactiveUI" Version="22.3.1" />
+    <PackageReference Condition="'$(TargetFramework)' == 'netstandard2.0'" Include="ReactiveUI" Version="22.3.1" />
+    <PackageReference Condition="'$(TargetFramework)' == 'net10.0'" Include="ReactiveUI" Version="24.2.0" />
   </ItemGroup>
 
   <ItemGroup>

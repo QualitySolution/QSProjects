@@ -1,4 +1,3 @@
-using DynamicData.Kernel;
 using QS.DbManagement;
 using QS.Dialog;
 using ReactiveUI;
@@ -21,7 +20,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			get => provider;
 			set {
 				this.RaiseAndSetIfChanged(ref provider, value);
-				Databases = provider.GetUserDatabases(applicationInfo).AsList();
+				Databases = provider.GetUserDatabases(applicationInfo).ToList();
 				this.RaisePropertyChanged(nameof(Databases));
 				
 				// Загружаем и устанавливаем последнюю выбранную базу
