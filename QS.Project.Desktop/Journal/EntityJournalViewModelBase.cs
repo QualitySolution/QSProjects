@@ -99,7 +99,8 @@ namespace QS.Journal
 				selected => CreateEntityDialog(),
 				selected => canCreate,
 				selected => VisibleCreateAction,
-				"Insert"
+				"Insert",
+				JournalActionAppearance.Primary
 			);
 			actionsViewModel.AddAction(addAction);
 

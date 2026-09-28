@@ -7,6 +7,7 @@
              d:DesignHeight="450"
              d:DesignWidth="800"
              x:DataType="journal:IJournalViewModel"
+             Background="{DynamicResource QsBrushCanvas}"
              mc:Ignorable="d">
     <UserControl.Resources>
         <x:Double x:Key="DataGridSortIconMinWidth">0</x:Double>
@@ -24,26 +25,30 @@
         <!-- Панель действий сверху -->
         <ContentControl x:Name="actionsContainer"
                         DockPanel.Dock="Top"
-                        Margin="5"
+                        Margin="6,6,6,0"
+                        Padding="8"
+                        Background="{DynamicResource QsBrushSurface}"
                         Content="{Binding ActionsViewModel}"
                         IsVisible="{Binding ActionsViewModel, Converter={x:Static ObjectConverters.IsNotNull}}" />
 
         <!-- Фильтр -->
         <ContentControl x:Name="filterContainer" 
                         DockPanel.Dock="Top" 
-                        Margin="5"
+                        Margin="6,6,6,0"
                         IsVisible="{Binding IsFilterShow}" />
 
         <!-- Поиск -->
         <ContentControl x:Name="searchContainer" 
                         DockPanel.Dock="Top" 
-                        Margin="5"
+                        Margin="6"
+                        Padding="4"
+                        Background="{DynamicResource QsBrushSurface}"
                         IsVisible="{Binding SearchEnabled}" />
 
         <!-- Footer снизу -->
         <TextBlock x:Name="labelFooter" 
                    DockPanel.Dock="Bottom"
-                   Margin="5"
+                   Margin="8,2,8,5"
                    VerticalAlignment="Center" />
 
         <!-- Индикатор дозагрузки страницы -->
@@ -57,9 +62,10 @@
         <!-- Основная таблица -->
         <Border BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" 
                 BorderThickness="1" 
-                Margin="5">
+                Background="{DynamicResource QsBrushSurface}"
+                CornerRadius="6"
+                Margin="6,0,6,4">
             <ContentControl x:Name="TablePlaceholder" />
         </Border>
     </DockPanel>
 </UserControl>
-

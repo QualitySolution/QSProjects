@@ -23,6 +23,11 @@ namespace QS.Journal.Actions
 		/// Видимость действия
 		/// </summary>
 		bool Visible { get; }
+
+		/// <summary>
+		/// Semantic visual role of the action.
+		/// </summary>
+		JournalActionAppearance Appearance { get; }
 		
 		/// <summary>
 		/// Дочерние действия (для выпадающих меню)

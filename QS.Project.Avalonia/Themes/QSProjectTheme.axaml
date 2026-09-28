@@ -1,0 +1,148 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:fa="using:FluentAvalonia.UI.Controls">
+    <!--
+        Shared semantic styles for QS desktop applications.
+        Applications provide the QsBrush* resources in their own palette.
+    -->
+    <Style Selector="Window">
+        <Setter Property="Background" Value="{DynamicResource QsBrushCanvas}" />
+        <Setter Property="Foreground" Value="{DynamicResource QsBrushTextPrimary}" />
+    </Style>
+
+    <Style Selector="Button.primary">
+        <Setter Property="Background" Value="{DynamicResource QsBrushPrimary}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource QsBrushPrimary}" />
+        <Setter Property="Foreground" Value="{DynamicResource QsBrushOnPrimary}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Padding" Value="14,7" />
+    </Style>
+    <Style Selector="Button.primary /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource QsBrushPrimary}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource QsBrushPrimary}" />
+        <Setter Property="Foreground" Value="{DynamicResource QsBrushOnPrimary}" />
+    </Style>
+    <Style Selector="Button.primary:pointerover">
+        <Setter Property="Background" Value="{DynamicResource QsBrushPrimaryHover}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource QsBrushPrimaryHover}" />
+    </Style>
+    <Style Selector="Button.primary:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource QsBrushPrimaryHover}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource QsBrushPrimaryHover}" />
+        <Setter Property="Foreground" Value="{DynamicResource QsBrushOnPrimary}" />
+    </Style>
+    <Style Selector="Button.primary:pressed">
+        <Setter Property="Background" Value="{DynamicResource QsBrushPrimaryPressed}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource QsBrushPrimaryPressed}" />
+    </Style>
+    <Style Selector="Button.primary:pressed /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource QsBrushPrimaryPressed}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource QsBrushPrimaryPressed}" />
+        <Setter Property="Foreground" Value="{DynamicResource QsBrushOnPrimary}" />
+    </Style>
+    <Style Selector="DropDownButton.primary">
+        <Setter Property="Background" Value="{DynamicResource QsBrushPrimary}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource QsBrushPrimary}" />
+        <Setter Property="Foreground" Value="{DynamicResource QsBrushOnPrimary}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Padding" Value="14,7" />
+    </Style>
+    <Style Selector="DropDownButton.primary /template/ Border#RootBorder">
+        <Setter Property="Background" Value="{DynamicResource QsBrushPrimary}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource QsBrushPrimary}" />
+        <Setter Property="TextElement.Foreground" Value="{DynamicResource QsBrushOnPrimary}" />
+    </Style>
+    <Style Selector="DropDownButton.primary:pointerover /template/ Border#RootBorder">
+        <Setter Property="Background" Value="{DynamicResource QsBrushPrimaryHover}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource QsBrushPrimaryHover}" />
+        <Setter Property="TextElement.Foreground" Value="{DynamicResource QsBrushOnPrimary}" />
+    </Style>
+    <Style Selector="DropDownButton.primary:pressed /template/ Border#RootBorder">
+        <Setter Property="Background" Value="{DynamicResource QsBrushPrimaryPressed}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource QsBrushPrimaryPressed}" />
+        <Setter Property="TextElement.Foreground" Value="{DynamicResource QsBrushOnPrimary}" />
+    </Style>
+    <Style Selector="Button.quiet">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+    </Style>
+
+    <Style Selector="TextBox">
+        <Setter Property="Background" Value="{DynamicResource QsBrushSurface}" />
+        <Setter Property="Foreground" Value="{DynamicResource QsBrushTextPrimary}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource QsBrushBorder}" />
+        <Setter Property="CornerRadius" Value="6" />
+    </Style>
+    <Style Selector="TextBox:pointerover">
+        <Setter Property="BorderBrush" Value="{DynamicResource QsBrushBorderStrong}" />
+    </Style>
+
+    <Style Selector="Border.card">
+        <Setter Property="Background" Value="{DynamicResource QsBrushSurface}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource QsBrushBorder}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="16" />
+    </Style>
+    <Style Selector="TextBlock.section-title">
+        <Setter Property="Foreground" Value="{DynamicResource QsBrushPrimary}" />
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+    <Style Selector="fa|FANavigationViewItem:selected, fa|FANavigationViewItem.current">
+        <Setter Property="Background" Value="{DynamicResource QsBrushChromePressed}" />
+        <Setter Property="Foreground" Value="{DynamicResource QsBrushChromeText}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+    <Style Selector="DataGrid">
+        <Setter Property="Background" Value="{DynamicResource QsBrushSurface}" />
+        <Setter Property="Foreground" Value="{DynamicResource QsBrushTextPrimary}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource QsBrushBorder}" />
+        <Setter Property="HorizontalGridLinesBrush" Value="{DynamicResource QsBrushBorderSubtle}" />
+        <Setter Property="VerticalGridLinesBrush" Value="{DynamicResource QsBrushBorderSubtle}" />
+    </Style>
+    <Style Selector="DataGridColumnHeader">
+        <Setter Property="Background" Value="{DynamicResource QsBrushSurfaceMuted}" />
+        <Setter Property="Foreground" Value="{DynamicResource QsBrushTextSecondary}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource QsBrushBorder}" />
+    </Style>
+    <Style Selector="DataGridRow:selected">
+        <Setter Property="Background" Value="{DynamicResource QsBrushSelection}" />
+    </Style>
+    <Style Selector="DataGridRow:selected DataGridCell">
+        <Setter Property="Background" Value="{DynamicResource QsBrushSelection}" />
+        <Setter Property="Foreground" Value="{DynamicResource QsBrushSelectionText}" />
+    </Style>
+
+    <Style Selector="fa|FATabView#tabView">
+        <Setter Property="Background" Value="{DynamicResource QsBrushChrome}" />
+    </Style>
+    <Style Selector="fa|FATabViewItem">
+        <Setter Property="Background" Value="{DynamicResource QsBrushChrome}" />
+    </Style>
+    <Style Selector="fa|FATabViewItem /template/ Border#TabContainerBorder">
+        <Setter Property="Background" Value="{DynamicResource QsBrushChrome}" />
+    </Style>
+    <Style Selector="fa|FATabViewItem:pointerover /template/ Border#TabContainerBorder">
+        <Setter Property="Background" Value="{DynamicResource QsBrushChromeHover}" />
+    </Style>
+    <Style Selector="fa|FATabViewItem:pressed /template/ Border#TabContainerBorder">
+        <Setter Property="Background" Value="{DynamicResource QsBrushChromePressed}" />
+    </Style>
+    <Style Selector="fa|FATabViewItem:selected /template/ Path#SelectedBackgroundPath">
+        <Setter Property="Fill" Value="{DynamicResource QsBrushChrome}" />
+    </Style>
+    <Style Selector="fa|FATabViewItem:selected /template/ Border#TabContainerBorder">
+        <Setter Property="Background" Value="{DynamicResource QsBrushChrome}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource QsBrushAccent}" />
+        <Setter Property="BorderThickness" Value="0,3,0,0" />
+    </Style>
+    <Style Selector="fa|FATabViewItem /template/ Border#TabSeparator">
+        <Setter Property="Background" Value="{DynamicResource QsBrushChromeText}" />
+        <Setter Property="Opacity" Value="0.18" />
+    </Style>
+</Styles>

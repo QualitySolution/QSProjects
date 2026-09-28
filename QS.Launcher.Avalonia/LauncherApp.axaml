@@ -1,18 +1,26 @@
 <Application x:Class="QS.Launcher.LauncherApp"
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:styling="using:FluentAvalonia.Styling"
              xmlns:converters1="clr-namespace:QS.Project.Converters;assembly=QS.Project.Avalonia"
              x:CompileBindings="False"
              RequestedThemeVariant="Light">
     <!--  "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options.  -->
 
     <Application.Resources>
-        <converters1:NumericIsNotZeroConverter x:Key="NumericIsNotZeroConverter" />
-        <converters1:ByteArrayToBitmapConverter x:Key="ByteArrayToBitmapConverter" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="avares://QS.Project.Avalonia/Themes/QSProjectPalette.axaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <converters1:NumericIsNotZeroConverter x:Key="NumericIsNotZeroConverter" />
+            <converters1:ByteArrayToBitmapConverter x:Key="ByteArrayToBitmapConverter" />
+        </ResourceDictionary>
     </Application.Resources>
 
     <Application.Styles>
-        <FluentTheme />
+        <styling:FluentAvaloniaTheme PreferUserAccentColor="False"
+                                     CustomAccentColor="{StaticResource QsColorSystemAccent}" />
+        <StyleInclude Source="avares://QS.Project.Avalonia/Themes/QSProjectTheme.axaml" />
 
         <Style Selector=":is(Control).animated">
             <Setter Property="Transitions">

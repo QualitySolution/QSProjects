@@ -117,6 +117,7 @@ namespace QS.Journal.Views
 		private Button CreateButton(IJournalActionForView action)
 		{
 			var button = new Button();
+			ApplyAppearance(button, action.Appearance);
 			
 			// Создаем биндинги программно
 			button.Bind(Button.ContentProperty, 
@@ -135,6 +136,7 @@ namespace QS.Journal.Views
 		private DropDownButton CreateDropDownButton(IJournalActionForView action)
 		{
 			var dropDownButton = new DropDownButton();
+			ApplyAppearance(dropDownButton, action.Appearance);
 			
 			// Создаем биндинги программно
 			dropDownButton.Bind(DropDownButton.ContentProperty, 
@@ -184,6 +186,19 @@ namespace QS.Journal.Views
 			}
 
 			return menuItem;
+		}
+
+		private static void ApplyAppearance(Control control, JournalActionAppearance appearance)
+		{
+			switch(appearance)
+			{
+				case JournalActionAppearance.Primary:
+					control.Classes.Add("primary");
+					break;
+				case JournalActionAppearance.Danger:
+					control.Classes.Add("danger");
+					break;
+			}
 		}
 	}
 }

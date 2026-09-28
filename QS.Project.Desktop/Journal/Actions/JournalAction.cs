@@ -23,13 +23,15 @@ namespace QS.Journal.Actions
 			Action<IList<TNode>> executeAction,
 			Func<IList<TNode>, bool> sensitiveFunc = null,
 			Func<IList<TNode>, bool> visibleFunc = null,
-			string hotkeys = null)
+			string hotkeys = null,
+			JournalActionAppearance appearance = JournalActionAppearance.Default)
 		{
 			SensitiveFunc = sensitiveFunc;
 			VisibleFunc = visibleFunc;
 			this.title = title;
 			ExecuteAction = executeAction;
 			HotKeys = hotkeys;
+			Appearance = appearance;
 			ChildActions = new List<JournalAction<TNode>>();
 		}
 
@@ -46,13 +48,15 @@ namespace QS.Journal.Actions
 			Action<IList<TNode>> executeAction,
 			Func<IList<TNode>, bool> sensitiveFunc = null,
 			Func<IList<TNode>, bool> visibleFunc = null,
-			string hotkeys = null)
+			string hotkeys = null,
+			JournalActionAppearance appearance = JournalActionAppearance.Default)
 		{
 			TitleFunc = titleFunc;
 			SensitiveFunc = sensitiveFunc;
 			VisibleFunc = visibleFunc;
 			ExecuteAction = executeAction;
 			HotKeys = hotkeys;
+			Appearance = appearance;
 			ChildActions = new List<JournalAction<TNode>>();
 		}
 
@@ -108,6 +112,8 @@ namespace QS.Journal.Actions
 		public IList<JournalAction<TNode>> ChildActions { get; }
 		
 		public string HotKeys { get; }
+
+		public JournalActionAppearance Appearance { get; }
 
 		#region IJournalActionForView
 

@@ -9,6 +9,7 @@
              d:DesignHeight="450"
              d:DesignWidth="800"
              x:DataType="navigation:AvaloniaNavigationManager"
+             Background="{DynamicResource QsBrushCanvas}"
              mc:Ignorable="d">
     <fa:FATabView x:Name="tabView"
                   TabItemsSource="{Binding Pages}"
