@@ -92,7 +92,7 @@
         <Setter Property="FontWeight" Value="SemiBold" />
     </Style>
 
-    <Style Selector="fa|FANavigationViewItem:selected, fa|FANavigationViewItem.current">
+    <Style Selector="fa|FANavigationViewItem:selected">
         <Setter Property="Background" Value="{DynamicResource QsBrushChromePressed}" />
         <Setter Property="Foreground" Value="{DynamicResource QsBrushChromeText}" />
         <Setter Property="FontWeight" Value="SemiBold" />
