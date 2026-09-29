@@ -1,5 +1,5 @@
 using System;
-using Gamma.Utilities;
+using QS.Utilities.Enums;
 using QS.DomainModel.Entity;
 using QS.Utilities.Text;
 

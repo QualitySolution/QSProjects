@@ -8,39 +8,28 @@ namespace Gamma.Utilities
 	public static class AttributeUtil
 	{
 
+		[Obsolete("Use QS.Utilities.Enums.EnumHelper.GetEnumTitle instead.")]
 		public static string GetEnumTitle (this Enum aEnum)
 		{
-			string desc = aEnum.ToString();
-			FieldInfo fi = aEnum.GetType().GetField (desc);
-			return (fi.GetEnumTitle());
+			return QS.Utilities.Enums.EnumHelper.GetEnumTitle(aEnum);
 		}
 
+		[Obsolete("Use QS.Utilities.Enums.EnumHelper.GetEnumTitle instead.")]
 		public static string GetEnumTitle (this FieldInfo aFieldInfo)
 		{
-			var attrs = (DisplayAttribute[]) aFieldInfo.GetCustomAttributes (typeof(DisplayAttribute), false);
-			if ((attrs != null) && (attrs.Length > 0))
-				return (attrs[0].GetName ());
-			return (aFieldInfo.Name);
+			return QS.Utilities.Enums.EnumHelper.GetEnumTitle(aFieldInfo);
 		}
 
+		[Obsolete("Use QS.Utilities.Enums.EnumHelper.GetEnumShortTitle instead.")]
 		public static string GetEnumShortTitle (this Enum aEnum)
 		{
-			string desc = aEnum.ToString();
-			FieldInfo fi = aEnum.GetType().GetField (desc);
-			return (fi.GetShortTitle());
+			return QS.Utilities.Enums.EnumHelper.GetEnumShortTitle(aEnum);
 		}
 
+		[Obsolete("Use QS.Utilities.Enums.EnumHelper.GetShortTitle instead.")]
 		public static string GetShortTitle (this FieldInfo aFieldInfo)
 		{
-			var attrs = (DisplayAttribute[]) aFieldInfo.GetCustomAttributes (typeof(DisplayAttribute), false);
-			if ((attrs != null) && (attrs.Length > 0))
-			{
-				string shortname = attrs [0].GetShortName ();
-				if(String.IsNullOrWhiteSpace (shortname))
-					shortname = attrs [0].GetName ();
-				return (shortname);
-			}
-			return (aFieldInfo.Name);
+			return QS.Utilities.Enums.EnumHelper.GetShortTitle(aFieldInfo);
 		}
 
 		/// <summary>
@@ -92,4 +81,3 @@ namespace Gamma.Utilities
 		}
 	}
 }
-

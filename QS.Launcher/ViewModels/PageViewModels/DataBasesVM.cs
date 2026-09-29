@@ -26,6 +26,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 				
 				// Загружаем и устанавливаем последнюю выбранную базу
 				LoadLastSelectedDatabase();
+				LoadLastSelectedApplication();
 			}
 		}
 		
@@ -64,6 +65,22 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		private readonly IAppRunner appRunner;
 		private readonly IApplicationInfo applicationInfo;
 
+		public IReadOnlyList<ApplicationRunOption> Applications =>
+			(appRunner as IMultipleAppRunner)?.Applications;
+		public bool IsApplicationSelectionVisible => Applications != null && Applications.Count > 1;
+
+		public ApplicationRunOption SelectedApplication {
+			get => (appRunner as IMultipleAppRunner)?.SelectedApplication;
+			set {
+				if(!(appRunner is IMultipleAppRunner multipleAppRunner)
+					|| multipleAppRunner.SelectedApplication == value)
+					return;
+
+				multipleAppRunner.SelectedApplication = value;
+				this.RaisePropertyChanged(nameof(SelectedApplication));
+			}
+		}
+
 		public DataBasesVM(IAppRunner appRunner, IApplicationInfo applicationInfo, IInteractiveMessage interactiveMessage, LauncherOptions launcherOptions) {
 			this.appRunner = appRunner ?? throw new ArgumentNullException(nameof(appRunner));
 			this.applicationInfo = applicationInfo ?? throw new ArgumentNullException(nameof(applicationInfo));
@@ -90,6 +107,16 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 				SelectedDatabase = Databases.FirstOrDefault();
 		}
 
+		private void LoadLastSelectedApplication() {
+			if(!(appRunner is IMultipleAppRunner multipleAppRunner)
+				|| string.IsNullOrWhiteSpace(currentConnection?.LastApplication))
+				return;
+
+			SelectedApplication = multipleAppRunner.Applications
+				.FirstOrDefault(x => x.Title == currentConnection.LastApplication)
+				?? multipleAppRunner.SelectedApplication;
+		}
+
 		public void Connect() {
 
 			var resp = provider.LoginToDatabase(SelectedDatabase);
@@ -99,8 +126,8 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 				return;
 			}
 
-			// Сохраняем последнюю выбранную базу
-			SaveLastSelectedDatabase();
+			// Сохраняем последнюю выбранную базу и вариант запуска
+			SaveLastSelection();
 
 			// Определяем, нужно ли закрывать лаунчер через Shutdown
 			// В standalone режиме учитываем галочку ShouldCloseLauncherAfterStart
@@ -116,14 +143,14 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			appRunner.Run(resp);
 		}
 		
-		private void SaveLastSelectedDatabase() {
+		private void SaveLastSelection() {
 			if(SelectedDatabase == null || currentConnection == null)
 				return;
 			
-			// Сохраняем BaseId в текущее подключение
 			currentConnection.LastBaseId = SelectedDatabase.BaseId;
+			if(appRunner is IMultipleAppRunner multipleAppRunner)
+				currentConnection.LastApplication = multipleAppRunner.SelectedApplication?.Title;
 			
-			// Вызываем сохранение подключений
 			saveConnectionsAction?.Invoke();
 		}
 	}

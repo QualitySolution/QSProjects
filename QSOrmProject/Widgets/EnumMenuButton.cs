@@ -6,6 +6,7 @@ using System.Reflection;
 using Gamma.Utilities;
 using Gtk;
 using NLog;
+using QS.Utilities.Enums;
 using QSWidgetLib;
 
 namespace QSOrmProject
@@ -66,7 +67,7 @@ namespace QSOrmProject
 
 			foreach (FieldInfo info in ItemsEnum.GetFields()) {
 				if (info.Name.Equals("value__")) continue;
-				item = new ImageMenuItem(info.GetEnumTitle ());
+				item = new ImageMenuItem(EnumHelper.GetEnumTitle(info));
 				hint = info.GetFieldDescription ();
 				//p = (Gdk.Pixbuf) info.GetEnumIcon();
 				//if (p != null)
@@ -130,4 +131,3 @@ namespace QSOrmProject
 	}
 
 }
-

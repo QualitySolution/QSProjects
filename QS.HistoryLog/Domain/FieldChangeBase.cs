@@ -1,6 +1,6 @@
 using System;
 using System.Linq;
-using Gamma.Utilities;
+using QS.Utilities.Enums;
 using NHibernate.Mapping;
 using QS.DomainModel.Entity;
 

@@ -2,7 +2,7 @@
 using System.Collections;
 using System.ComponentModel;
 using Gamma.GtkHelpers;
-using Gamma.Utilities;
+using QS.Utilities.Enums;
 using Gamma.Widgets;
 using Gtk;
 using NLog;

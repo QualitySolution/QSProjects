@@ -89,6 +89,21 @@ namespace QS.Test.Launcher {
 			
 			Assert.That(reloadedConnections, Is.Not.Null, "После пересохранения список должен существовать");
 		}
+
+		[Test(Description = "Проверка сохранения последнего выбранного варианта запуска")]
+		public void SaveAndReadConnections_PreservesLastApplication() {
+			var configurator = new Configurator(options, interactive, connectionTypes);
+			var connection = new Connection(connectionTypes[0], new Dictionary<string, string> {
+				{"Title", "Тестовое подключение"}
+			}) {
+				LastApplication = "Новый интерфейс (бета)"
+			};
+
+			configurator.SaveConnections(new List<Connection> {connection});
+			var reloadedConnection = configurator.ReadConnections()[0];
+
+			Assert.That(reloadedConnection.LastApplication, Is.EqualTo(connection.LastApplication));
+		}
 		
 		[Test(Description = "Проверка что временный файл удаляется после успешной записи")]
 		public void SaveConnections_RemovesTempFile_AfterSuccess() {

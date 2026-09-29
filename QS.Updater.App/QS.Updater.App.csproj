@@ -12,6 +12,7 @@
       <ProjectReference Include="..\QS.Configuration\QS.Configuration.csproj" />
       <ProjectReference Include="..\QS.Updater.Desktop\QS.Updater.Desktop.csproj" />
       <ProjectReference Include="..\QS.Updates.Client\QS.Updates.Client.csproj" />
+      <ProjectReference Include="..\QS.Utilities\QS.Utilities.csproj" />
     </ItemGroup>
 
 </Project>

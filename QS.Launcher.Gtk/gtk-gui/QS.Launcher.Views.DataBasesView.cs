@@ -12,6 +12,12 @@ namespace QS.Launcher.Views
 
 		private global::Gamma.GtkWidgets.yTreeView treeBases;
 
+		private global::Gamma.GtkWidgets.yHBox yhboxApplication;
+
+		private global::Gamma.GtkWidgets.yLabel ylabelApplication;
+
+		private global::Gamma.Widgets.yListComboBox comboApplication;
+
 		private global::Gamma.GtkWidgets.yHBox yhbox1;
 
 		private global::Gamma.GtkWidgets.yButton buttonBack;
@@ -52,6 +58,28 @@ namespace QS.Launcher.Views
 			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.GtkScrolledWindow]));
 			w3.Position = 1;
 			// Container child vbox2.Gtk.Box+BoxChild
+			this.yhboxApplication = new global::Gamma.GtkWidgets.yHBox();
+			this.yhboxApplication.Name = "yhboxApplication";
+			this.yhboxApplication.Spacing = 6;
+			this.ylabelApplication = new global::Gamma.GtkWidgets.yLabel();
+			this.ylabelApplication.Name = "ylabelApplication";
+			this.ylabelApplication.LabelProp = global::Mono.Unix.Catalog.GetString("Версия приложения:");
+			this.yhboxApplication.Add(this.ylabelApplication);
+			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.yhboxApplication[this.ylabelApplication]));
+			w4.Position = 0;
+			w4.Expand = false;
+			w4.Fill = false;
+			this.comboApplication = new global::Gamma.Widgets.yListComboBox();
+			this.comboApplication.Name = "comboApplication";
+			this.yhboxApplication.Add(this.comboApplication);
+			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.yhboxApplication[this.comboApplication]));
+			w5.Position = 1;
+			this.vbox2.Add(this.yhboxApplication);
+			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.yhboxApplication]));
+			w6.Position = 2;
+			w6.Expand = false;
+			w6.Fill = false;
+			// Container child vbox2.Gtk.Box+BoxChild
 			this.yhbox1 = new global::Gamma.GtkWidgets.yHBox();
 			this.yhbox1.Name = "yhbox1";
 			this.yhbox1.Spacing = 6;
@@ -62,8 +90,8 @@ namespace QS.Launcher.Views
 			this.buttonBack.UseUnderline = true;
 			this.buttonBack.Label = global::Mono.Unix.Catalog.GetString("Назад");
 			this.yhbox1.Add(this.buttonBack);
-			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.yhbox1[this.buttonBack]));
-			w4.Position = 0;
+			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.yhbox1[this.buttonBack]));
+			w7.Position = 0;
 			// Container child yhbox1.Gtk.Box+BoxChild
 			this.buttonLoginInBase = new global::Gamma.GtkWidgets.yButton();
 			this.buttonLoginInBase.CanFocus = true;
@@ -71,13 +99,13 @@ namespace QS.Launcher.Views
 			this.buttonLoginInBase.UseUnderline = true;
 			this.buttonLoginInBase.Label = global::Mono.Unix.Catalog.GetString("Запустить");
 			this.yhbox1.Add(this.buttonLoginInBase);
-			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.yhbox1[this.buttonLoginInBase]));
-			w5.Position = 1;
+			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.yhbox1[this.buttonLoginInBase]));
+			w8.Position = 1;
 			this.vbox2.Add(this.yhbox1);
-			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.yhbox1]));
-			w6.Position = 2;
-			w6.Expand = false;
-			w6.Fill = false;
+			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.yhbox1]));
+			w9.Position = 3;
+			w9.Expand = false;
+			w9.Fill = false;
 			this.Add(this.vbox2);
 			if ((this.Child != null))
 			{

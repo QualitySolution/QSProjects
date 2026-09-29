@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Autofac;
 using QS.Dialog;
@@ -174,7 +175,7 @@ namespace QS.Navigation {
 
 		protected IPage OpenViewModelInternal(IPage masterPage, OpenPageOptions options, Func<string> makeHash, Func<string, IPage> makePage)
 		{
-			DateTime start = DateTime.Now;
+			var openingTimer = Stopwatch.StartNew();
 			logger.Info("Открываем...");
 			string hash = null;
 			if(!options.HasFlag(OpenPageOptions.IgnoreHash) && !options.HasFlag(OpenPageOptions.AsSlaveIgnoreHash))
@@ -193,12 +194,17 @@ namespace QS.Navigation {
 					SwitchOn(openPage);
 				}
 				else {
+					var beforeMakePage = openingTimer.Elapsed;
 					openPage = MakePageAndCatchAborting(makePage, hash);
 					if (openPage == null)
 						return null;
+					logger.Debug($"Навигация: страница {openPage.ViewModel?.GetType().Name ?? openPage.GetType().Name} создана за {(openingTimer.Elapsed - beforeMakePage).TotalMilliseconds:F0} мс " +
+						$"(всего {openingTimer.Elapsed.TotalMilliseconds:F0} мс).");
 					(masterPage as IPageInternal).AddSlavePage(openPage);
 					logger.Debug($"Открываем подчиненную вкладку '{openPage.Title}' для основной '{masterPage.Title}'.");
+					var beforeOpenPage = openingTimer.Elapsed;
 					OpenSlavePage(masterPage, openPage);
+					logger.Debug($"Навигация: представление подчиненной страницы открыто за {(openingTimer.Elapsed - beforeOpenPage).TotalMilliseconds:F0} мс.");
 				}
 			} else {
 				if(hash != null)
@@ -208,15 +214,20 @@ namespace QS.Navigation {
 					SwitchOn(openPage);
 				}
 				else {
+					var beforeMakePage = openingTimer.Elapsed;
 					openPage = MakePageAndCatchAborting(makePage, hash);
 					if (openPage == null)
 						return null;
+					logger.Debug($"Навигация: страница {openPage.ViewModel?.GetType().Name ?? openPage.GetType().Name} создана за {(openingTimer.Elapsed - beforeMakePage).TotalMilliseconds:F0} мс " +
+						$"(всего {openingTimer.Elapsed.TotalMilliseconds:F0} мс).");
 					logger.Debug($"Открываем вкладку '{openPage.Title}'.");
+					var beforeOpenPage = openingTimer.Elapsed;
 					OpenPage(masterPage, openPage);
+					logger.Debug($"Навигация: представление страницы открыто за {(openingTimer.Elapsed - beforeOpenPage).TotalMilliseconds:F0} мс.");
 				}
 			}
 			ViewModelOpened?.Invoke(this, new ViewModelOpenedEventArgs(openPage));
-			logger.Info($"Вкладка «{openPage.Title?.EllipsizeMiddle(50)}» открыта за {(DateTime.Now - start).TotalSeconds} сек.");
+			logger.Info($"Вкладка «{openPage.Title?.EllipsizeMiddle(50)}» открыта за {openingTimer.Elapsed.TotalSeconds} сек.");
 			return openPage;
 		}
 
@@ -241,12 +252,15 @@ namespace QS.Navigation {
 
 		protected virtual void ClosePage(IPage page, CloseSource source)
 		{
+			var closingTimer = Stopwatch.StartNew();
+			var pageTitle = page?.Title?.EllipsizeMiddle(50);
 			if (page.ViewModel is IOnCloseActionViewModel onClose)
 				onClose.OnClose(source);
 
 			var closedPagePair = SlavePages.FirstOrDefault(x => x.SlavePage == page);
 			if (closedPagePair != null)
 				(closedPagePair.MasterPage as IPageInternal).RemoveSlavePage(closedPagePair.SlavePage);
+
 			var pageToRemove = pages.FirstOrDefault(x => x == page);
 			if (pageToRemove != null) {
 				pages.Remove(pageToRemove);
@@ -259,9 +273,9 @@ namespace QS.Navigation {
 					(childPair.ChildPage as IPageInternal).OnClosed(source);
 				}
 			}
-
 			if (page.ViewModel is IDisposable pd)
 				pd.Dispose();
+			logger.Debug($"Страница «{pageTitle}» закрыта за {closingTimer.Elapsed.TotalMilliseconds:F0} мс, источник {source}.");
 		}
 
 		/// <summary>

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Logging;
@@ -60,13 +61,13 @@ namespace QS.Utilities.Debug
 
 		public void CheckPoint(NLog.Logger logger, string name = null) {
 			CheckPoint(name);
-			DateTime lastTime;
+			TimePoint previousPoint;
 			if(currentPointsList.Count > 1)
-				lastTime = currentPointsList[currentPointsList.Count - 2].Time;
+				previousPoint = currentPointsList[currentPointsList.Count - 2];
 			else
-				lastTime = currentGroupLevels.Last().Time;
+				previousPoint = currentGroupLevels.Last();
 			logger.Debug("Замер производительности [{0}] +{1} секунд.", currentPointsList.Last().Name,
-						(currentPointsList.Last().Time - lastTime).TotalSeconds);
+						TimePoint.GetElapsed(previousPoint, currentPointsList.Last()).TotalSeconds);
 		}
 
 		public void PrintAllPoints(NLog.Logger logger) {
@@ -86,44 +87,54 @@ namespace QS.Utilities.Debug
 			sb.Append($"\nНачало в {lastPoint.Time:hh:mm:ss}");
 
 			foreach(var point in currentPointsList.Skip(1)) {
-				sb.Append(lastPoint.GetText(0, point.Time));
+				sb.Append(lastPoint.GetText(0, point));
 				lastPoint = point;
 			}
 
-			sb.Append($"\nИтого {(lastPoint.Time - startPoint.Time).TotalSeconds} секунд.");
+			sb.Append($"\nИтого {TimePoint.GetElapsed(startPoint, lastPoint).TotalSeconds} секунд.");
 
 			return sb.ToString();
 		}
 		
-		public TimeSpan TotalTime => currentPointsList.Last().Time - currentPointsList.First().Time;
+		public TimeSpan TotalTime => TimePoint.GetElapsed(currentPointsList.First(), currentPointsList.Last());
 
-		public class TimePoint{
-			public string Name { get; set;}
-			public DateTime Time { get; set;}
-			
-			public List<TimePoint> InternalPoints;
+		internal class TimePoint{
+			internal string Name { get; }
+			/// <summary>
+			/// Время создания точки. Используется только для отображения;
+			/// интервалы рассчитываются по монотонному <see cref="Stopwatch"/>.
+			/// </summary>
+			internal DateTime Time { get; }
 
-			public TimePoint(string name) : this(name, DateTime.Now) 
-			{}
+			internal long Timestamp { get; }
 
-			public TimePoint(string name, DateTime time)
+			internal List<TimePoint> InternalPoints;
+
+			internal TimePoint(string name)
 			{
 				Name = name;
-				Time = time;
+				Time = DateTime.Now;
+				Timestamp = Stopwatch.GetTimestamp();
 			}
 
-			public string GetText(int level, DateTime endTime)
+			internal string GetText(int level, TimePoint endPoint)
 			{
-				var levelstext =  new string(' ', level * 2);
-				var text = $"\n{levelstext}[{Name}] +{(endTime - Time).TotalSeconds:N6} секунд.";
+				var levelstext = new string(' ', level * 2);
+				var text = $"\n{levelstext}[{Name}] +{GetElapsed(this, endPoint).TotalSeconds:N6} секунд.";
 				if(InternalPoints != null) {
 					var lastPoint = InternalPoints.First();
 					foreach(var point in InternalPoints.Skip(1)) {
-						text += lastPoint.GetText(level + 1, point.Time);
+						text += lastPoint.GetText(level + 1, point);
 						lastPoint = point;
 					}
 				}
 				return text;
+			}
+
+			internal static TimeSpan GetElapsed(TimePoint startPoint, TimePoint endPoint)
+			{
+				return TimeSpan.FromSeconds(
+					(double)(endPoint.Timestamp - startPoint.Timestamp) / Stopwatch.Frequency);
 			}
 		}
 
@@ -160,4 +171,3 @@ namespace QS.Utilities.Debug
 		#endregion
 	}
 }
-

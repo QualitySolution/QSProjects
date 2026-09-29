@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.ExceptionServices;
 using Avalonia.Controls;
@@ -15,6 +16,7 @@ namespace QS.Journal.Views;
 public partial class JournalView : UserControl, IDisposable
 {
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+	private readonly Stopwatch lifetimeTimer = Stopwatch.StartNew();
 
 	private IJournalViewModel? viewModel;
 	protected IAvaloniaViewResolver? viewResolver;
@@ -29,6 +31,7 @@ public partial class JournalView : UserControl, IDisposable
 		this.viewResolver = viewResolver;
 		ViewModel = viewModel;
 		ConfigureJournal();
+		logger.Debug($"Avalonia journal: {viewModel.GetType().Name} полностью настроен за {lifetimeTimer.Elapsed.TotalMilliseconds:F0} мс.");
 	}
 
 	/// <summary>
@@ -55,12 +58,12 @@ public partial class JournalView : UserControl, IDisposable
 	private void ConfigureJournal()
 	{
 		if (ViewModel == null) return;
-
 		if (viewResolver == null)
 		{
 			throw new InvalidOperationException($"ViewResolver не установлен для журнала {ViewModel.GetType().Name}. Невозможно загрузить таблицу.");
 		}
 		
+		var tableTimer = Stopwatch.StartNew();
 		var customTable = viewResolver.Resolve(ViewModel, "GridView");
 		if (customTable == null)
 		{
@@ -70,6 +73,7 @@ public partial class JournalView : UserControl, IDisposable
 		}
 		
 		TableContent = customTable;
+		logger.Debug($"Avalonia journal: таблица {customTable.GetType().Name} создана и подключена за {tableTimer.Elapsed.TotalMilliseconds:F0} мс.");
 
 		// Подписываемся на события
 		ViewModel.DataLoader.ItemsListUpdated += ViewModel_ItemsListUpdated;
@@ -202,9 +206,12 @@ public partial class JournalView : UserControl, IDisposable
 
 	private void ViewModel_ItemsListUpdated(object? sender, EventArgs e)
 	{
+		var dispatchTimer = Stopwatch.StartNew();
 		// Событие может вызываться из фонового потока, поэтому переключаемся на UI поток
 		Dispatcher.UIThread.Post(() =>
 		{
+			var uiUpdateTimer = Stopwatch.StartNew();
+			var uiWait = dispatchTimer.Elapsed;
 			var grid = GetDataGrid();
 			if (grid == null || ViewModel == null)
 			{
@@ -213,8 +220,11 @@ public partial class JournalView : UserControl, IDisposable
 			}
 
 			// Принудительно обновляем ItemsSource
-			grid.ItemsSource = ViewModel.Items;
+			var items = ViewModel.Items;
+			grid.ItemsSource = items;
 			UpdateFooter();
+			logger.Debug($"Avalonia journal: результат {ViewModel.GetType().Name} ждал UI-поток {uiWait.TotalMilliseconds:F0} мс, " +
+				$"ItemsSource ({items.Count} строк) обновлён за {uiUpdateTimer.Elapsed.TotalMilliseconds:F0} мс.");
 		});
 	}
 

@@ -3,6 +3,7 @@ using System.Globalization;
 using Avalonia.Data;
 using Avalonia.Data.Converters;
 using Gamma.Utilities;
+using QS.Utilities.Enums;
 
 namespace QS.Project.Converters;
 

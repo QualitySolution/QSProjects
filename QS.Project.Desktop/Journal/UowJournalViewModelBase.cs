@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
 using QS.DomainModel.NotifyChange;
 using QS.DomainModel.UoW;
@@ -9,6 +10,7 @@ namespace QS.Journal {
 	public class UowJournalViewModelBase<TNode> : JournalViewModelBase<TNode>, IDisposable
 		where TNode : class
 	{
+		private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 		public UowJournalViewModelBase(IUnitOfWorkFactory unitOfWorkFactory, INavigationManager navigation, IEntityChangeWatcher changeWatcher) : base(navigation) {
 			ChangeWatcher = changeWatcher;
@@ -22,8 +24,11 @@ namespace QS.Journal {
 
 		public virtual IUnitOfWork UoW { 
 			get {
-				if(unitOfWork == null)
+				if(unitOfWork == null) {
+					var timer = Stopwatch.StartNew();
 					unitOfWork = UnitOfWorkFactory.Create(Title);
+					logger.Debug($"Журнал {GetType().Name}: UnitOfWork создан за {timer.Elapsed.TotalMilliseconds:F0} мс.");
+				}
 
 				return unitOfWork;
 			}

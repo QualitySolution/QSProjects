@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Gamma.Utilities;
+using QS.Utilities.Enums;
 using Newtonsoft.Json;
 using QS.DomainModel.Entity;
 using QS.DomainModel.UoW;
@@ -52,7 +52,7 @@ namespace QSOrmProject.Permissions
 		{
 			Permissions = Enum.GetValues(typeof(TPermissionEnum)).Cast<TPermissionEnum>().ToArray();
 			permissionNames = Enum.GetValues(typeof(TPermissionEnum)).Cast<Enum>()
-	   			.Select(x => AttributeUtil.GetEnumTitle(x))
+					.Select(x => EnumHelper.GetEnumTitle(x))
 	   			.ToArray();
 			PermissionCount = PermissionNames.Length;
 
