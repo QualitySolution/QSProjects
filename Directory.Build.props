@@ -1,4 +1,13 @@
 <Project>
+  <PropertyGroup Condition="'$(MSBuildRuntimeType)' != 'Core'
+                            And ('$(MSBuildProjectName)' == 'QS.DbManagement'
+                              Or '$(MSBuildProjectName)' == 'QS.Project.Desktop'
+                              Or '$(MSBuildProjectName)' == 'QS.Launcher')">
+    <!-- Legacy MSBuild restores only netstandard2.0. Keep its NuGet assets separate
+         from the multi-target assets used by dotnet and Rider. -->
+    <MSBuildProjectExtensionsPath>obj/legacy/</MSBuildProjectExtensionsPath>
+  </PropertyGroup>
+
   <PropertyGroup>
     <Version>1.10</Version>
     <AssemblyVersion>1.10</AssemblyVersion>
