@@ -160,6 +160,7 @@
 
     <Style Selector="fa|FATabView#tabView">
         <Setter Property="Background" Value="{DynamicResource QsBrushChrome}" />
+        <Setter Property="Padding" Value="2,0,2,0" />
     </Style>
     <Style Selector="fa|FATabViewItem">
         <Setter Property="Background" Value="{DynamicResource QsBrushChrome}" />
