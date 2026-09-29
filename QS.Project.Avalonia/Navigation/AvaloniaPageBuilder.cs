@@ -1,6 +1,5 @@
 using Autofac;
 using Autofac.Core;
-using QS.ViewModels.Dialog;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
