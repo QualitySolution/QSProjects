@@ -9,18 +9,13 @@
 
     <Application.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceInclude Source="avares://QS.Project.Avalonia/Themes/QSProjectPalette.axaml" />
-            </ResourceDictionary.MergedDictionaries>
             <converters1:NumericIsNotZeroConverter x:Key="NumericIsNotZeroConverter" />
             <converters1:ByteArrayToBitmapConverter x:Key="ByteArrayToBitmapConverter" />
         </ResourceDictionary>
     </Application.Resources>
 
     <Application.Styles>
-        <styling:FluentAvaloniaTheme PreferUserAccentColor="False"
-                                     CustomAccentColor="{StaticResource QsColorSystemAccent}" />
-        <StyleInclude Source="avares://QS.Project.Avalonia/Themes/QSProjectTheme.axaml" />
+        <styling:FluentAvaloniaTheme />
 
         <Style Selector=":is(Control).animated">
             <Setter Property="Transitions">

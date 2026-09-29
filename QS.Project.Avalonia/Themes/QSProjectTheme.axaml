@@ -5,6 +5,46 @@
         Shared semantic styles for QS desktop applications.
         Applications provide the QsBrush* resources in their own palette.
     -->
+    <Styles.Resources>
+        <!-- Universal FluentAvalonia mappings. Applications provide only the
+             semantic QsBrush* resources and remain in full control of colors. -->
+        <Thickness x:Key="ButtonPadding">14,7</Thickness>
+        <CornerRadius x:Key="ControlCornerRadius">6</CornerRadius>
+        <StaticResource x:Key="ButtonBackground" ResourceKey="QsBrushSurface" />
+        <StaticResource x:Key="ButtonBackgroundPointerOver" ResourceKey="QsBrushSurfaceHover" />
+        <StaticResource x:Key="ButtonBackgroundPressed" ResourceKey="QsBrushSelection" />
+        <StaticResource x:Key="ButtonForeground" ResourceKey="QsBrushTextPrimary" />
+        <StaticResource x:Key="ButtonForegroundPointerOver" ResourceKey="QsBrushTextPrimary" />
+        <StaticResource x:Key="ButtonForegroundPressed" ResourceKey="QsBrushTextPrimary" />
+        <StaticResource x:Key="ButtonBorderBrush" ResourceKey="QsBrushBorder" />
+        <StaticResource x:Key="ButtonBorderBrushPointerOver" ResourceKey="QsBrushBorderStrong" />
+        <StaticResource x:Key="ButtonBorderBrushPressed" ResourceKey="QsBrushPrimary" />
+
+        <SolidColorBrush x:Key="NavigationViewItemBackground" Color="Transparent" />
+        <StaticResource x:Key="NavigationViewItemBackgroundPointerOver" ResourceKey="QsBrushChromeHover" />
+        <StaticResource x:Key="NavigationViewItemBackgroundPressed" ResourceKey="QsBrushChromePressed" />
+        <StaticResource x:Key="NavigationViewItemBackgroundSelected" ResourceKey="QsBrushChromePressed" />
+        <StaticResource x:Key="NavigationViewItemBackgroundSelectedPointerOver" ResourceKey="QsBrushChromeHover" />
+        <StaticResource x:Key="NavigationViewItemBackgroundSelectedPressed" ResourceKey="QsBrushChromePressed" />
+        <StaticResource x:Key="NavigationViewItemForeground" ResourceKey="QsBrushChromeText" />
+        <StaticResource x:Key="NavigationViewItemForegroundSelected" ResourceKey="QsBrushChromeText" />
+        <StaticResource x:Key="NavigationViewItemForegroundPointerOver" ResourceKey="QsBrushChromeText" />
+        <StaticResource x:Key="NavigationViewItemForegroundPressed" ResourceKey="QsBrushChromeText" />
+        <StaticResource x:Key="NavigationViewItemForegroundSelectedPointerOver" ResourceKey="QsBrushChromeText" />
+        <StaticResource x:Key="NavigationViewItemForegroundSelectedPressed" ResourceKey="QsBrushChromeText" />
+
+        <StaticResource x:Key="TabViewItemHeaderForeground" ResourceKey="QsBrushChromeTextMuted" />
+        <StaticResource x:Key="TabViewItemHeaderForegroundPointerOver" ResourceKey="QsBrushChromeText" />
+        <StaticResource x:Key="TabViewItemHeaderForegroundPressed" ResourceKey="QsBrushChromeText" />
+        <StaticResource x:Key="TabViewItemHeaderForegroundSelected" ResourceKey="QsBrushChromeText" />
+        <StaticResource x:Key="TabViewItemHeaderCloseButtonForeground" ResourceKey="QsBrushChromeTextMuted" />
+        <StaticResource x:Key="TabViewItemHeaderCloseButtonForegroundPointerOver" ResourceKey="QsBrushChromeText" />
+        <StaticResource x:Key="TabViewItemHeaderCloseButtonForegroundPressed" ResourceKey="QsBrushChromeText" />
+        <StaticResource x:Key="TabViewItemHeaderPointerOverCloseButtonForeground" ResourceKey="QsBrushChromeText" />
+        <StaticResource x:Key="TabViewItemHeaderPressedCloseButtonForeground" ResourceKey="QsBrushChromeText" />
+        <StaticResource x:Key="TabViewItemHeaderSelectedCloseButtonForeground" ResourceKey="QsBrushChromeText" />
+    </Styles.Resources>
+
     <Style Selector="Window">
         <Setter Property="Background" Value="{DynamicResource QsBrushCanvas}" />
         <Setter Property="Foreground" Value="{DynamicResource QsBrushTextPrimary}" />
