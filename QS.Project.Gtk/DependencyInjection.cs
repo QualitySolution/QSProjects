@@ -1,7 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using QS.Dialog;
 using QS.Dialog.GtkUI;
-using QS.Project.Services.GtkUI;
 using QS.Validation;
 
 namespace QS.Project.GtkSharp {
@@ -27,7 +26,7 @@ namespace QS.Project.GtkSharp {
 			services
 				.AddSingleton<IInteractiveMessage, GtkMessageDialogsInteractive>()
 				.AddSingleton<IInteractiveQuestion, GtkQuestionDialogsInteractive>()
-				.AddSingleton<IInteractiveService, GtkInteractiveService>()
+				.AddSingleton<IInteractiveService, InteractiveService>()
 				;
 			return services;
 		}

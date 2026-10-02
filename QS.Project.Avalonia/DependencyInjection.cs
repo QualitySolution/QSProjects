@@ -11,7 +11,7 @@ public static partial class DependencyInjection {
 		return services
 			.AddSingleton<IInteractiveMessage, AvaloniaInteractiveMessage>()
 			.AddSingleton<IInteractiveQuestion, AvaloniaInteractiveQuestion>()
-			.AddSingleton<IInteractiveService, AvaloniaInteractiveService>();
+			.AddSingleton<IInteractiveService, InteractiveService>();
 	}
 
 	public static IServiceCollection AddGuiClasses(this IServiceCollection services) {

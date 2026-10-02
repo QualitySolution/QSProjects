@@ -15,7 +15,7 @@ namespace QS.Project {
 			services
 				.AddSingleton<IInteractiveMessage, ConsoleInteractiveMessage>()
 				.AddSingleton<IInteractiveQuestion, ConsoleInteractiveQuestion>()
-				.AddSingleton<IInteractiveService, ConsoleInteractiveService>()
+				.AddSingleton<IInteractiveService, InteractiveService>()
 				;
 			return services;
 		}

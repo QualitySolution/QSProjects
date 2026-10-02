@@ -10,7 +10,6 @@ using QS.Project.DB;
 using QS.Project.Dialogs.GtkUI.ServiceDlg;
 using QS.Project.Domain;
 using QS.Project.Repositories;
-using QS.Project.Services.GtkUI;
 using QS.Widgets.GtkUI;
 
 namespace QS.Project.Dialogs.GtkUI
