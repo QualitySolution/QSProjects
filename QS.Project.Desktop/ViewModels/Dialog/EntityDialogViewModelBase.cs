@@ -16,7 +16,7 @@ namespace QS.ViewModels.Dialog
 	{
 		protected readonly IEntityChangeWatcher ChangeWatcher;
 
-		public TEntity Entity;
+		public TEntity Entity { get; set; }
 
 		public EntityDialogViewModelBase(
 			IEntityUoWBuilder uowBuilder,
