@@ -126,6 +126,30 @@
         <Setter Property="CornerRadius" Value="8" />
         <Setter Property="Padding" Value="16" />
     </Style>
+    <Style Selector="HeaderedContentControl.card">
+        <Setter Property="Padding" Value="16" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <DockPanel>
+                    <ContentPresenter DockPanel.Dock="Top"
+                                      Margin="2,0,0,6"
+                                      Content="{TemplateBinding Header}"
+                                      ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                      TextElement.FontSize="13"
+                                      TextElement.FontWeight="SemiBold"
+                                      TextElement.Foreground="{DynamicResource QsBrushTextSecondary}" />
+                    <Border Background="{DynamicResource QsBrushSurface}"
+                            BorderBrush="{DynamicResource QsBrushBorder}"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            Padding="{TemplateBinding Padding}">
+                        <ContentPresenter Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}" />
+                    </Border>
+                </DockPanel>
+            </ControlTemplate>
+        </Setter>
+    </Style>
     <Style Selector="TextBlock.section-title">
         <Setter Property="Foreground" Value="{DynamicResource QsBrushPrimary}" />
         <Setter Property="FontSize" Value="18" />
