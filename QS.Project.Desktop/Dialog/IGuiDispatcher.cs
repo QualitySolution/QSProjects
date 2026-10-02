@@ -14,6 +14,12 @@ namespace QS.Dialog {
 		/// </summary>
 		void WaitRedraw();
 		/// <summary>
+		/// То же что <see cref="WaitRedraw()"/>, но не чаще чем раз в указанное время. Если с прошлой перерисовки прошло
+		/// меньше, возвращает управление сразу. Удобно вызывать на каждом шаге долгой операции, не тормозя ее.
+		/// </summary>
+		/// <param name="milliseconds">Минимальный интервал между перерисовками в миллисекундах.</param>
+		void WaitRedraw(int milliseconds);
+		/// <summary>
 		/// Позволяет вызвать из стороннего потока, выполнение функции в основном потоке приложения. 
 		/// </summary>
 		void RunInGuiTread(Action action);

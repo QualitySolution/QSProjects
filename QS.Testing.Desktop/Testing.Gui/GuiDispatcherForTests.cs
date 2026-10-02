@@ -32,5 +32,10 @@ namespace QS.Testing.Gui {
 		{
 			throw new NotImplementedException();
 		}
+
+		public void WaitRedraw(int milliseconds)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

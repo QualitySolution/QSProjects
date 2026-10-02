@@ -31,5 +31,10 @@ namespace QS.Dialog
 		{
 			GtkHelper.WaitRedraw();
 		}
+
+		public void WaitRedraw(int milliseconds)
+		{
+			GtkHelper.WaitRedraw(milliseconds);
+		}
 	}
 }

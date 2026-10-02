@@ -30,7 +30,7 @@ public partial class ProgressWidget : UserControl, IProgressBarDisplayable {
 			madeSteps = startValue;
 			SetText(text);
 			IsStarted = true;
-		});
+		}, first: true);
 
 	public void Update(double curValue) =>
 		OnGuiThread(() => {
@@ -65,13 +65,16 @@ public partial class ProgressWidget : UserControl, IProgressBarDisplayable {
 		progressText.IsVisible = !string.IsNullOrEmpty(text);
 	}
 
-	private static void OnGuiThread(Action change) {
+	// Не ждем отрисовку чаще чем раз в это время, чтобы не тормозить быстрые операции с большим количеством шагов.
+	private const int redrawIntervalMilliseconds = 50;
+
+	private static void OnGuiThread(Action change, bool first = false) {
 		if(!Dispatcher.UIThread.CheckAccess()) {
 			Dispatcher.UIThread.Post(change);
 			return;
 		}
 
 		change();
-		Dispatcher.UIThread.RunJobs(DispatcherPriority.Render);
+		AvaloniaGuiDispatcher.WaitForRedraw(first ? 0 : redrawIntervalMilliseconds);
 	}
 }
