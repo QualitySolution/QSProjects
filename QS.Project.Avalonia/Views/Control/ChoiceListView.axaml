@@ -1,0 +1,74 @@
+<UserControl x:Class="QS.Views.Control.ChoiceListView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             x:Name="Root"
+             x:CompileBindings="False"
+             mc:Ignorable="d">
+    <Grid RowDefinitions="Auto,*" RowSpacing="4">
+        <!-- Всё управление в одной строке, чтобы не занимать вертикальное место: контрол часто стоит в небольшой области. -->
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,Auto,*" ColumnSpacing="4">
+            <Button Grid.Column="0" Classes="icon" Padding="6"
+                    Command="{Binding #Root.SelectAllCommand}"
+                    ToolTip.Tip="Выбрать все">
+                <Viewbox Width="16" Height="16">
+                    <Canvas Width="16" Height="16">
+                        <Path Data="M2,2 H7 V7 H2 Z M2,9 H7 V14 H2 Z M9,4.5 H15 M9,11.5 H15 M3,4.5 L4.2,5.7 L6,3.4 M3,11.5 L4.2,12.7 L6,10.4"
+                              Stroke="{Binding $parent[Button].Foreground}"
+                              StrokeThickness="1.2"
+                              StrokeLineCap="Round"
+                              StrokeJoin="Round" />
+                    </Canvas>
+                </Viewbox>
+            </Button>
+            <Button Grid.Column="1" Classes="icon" Padding="6"
+                    Command="{Binding #Root.UnSelectAllCommand}"
+                    ToolTip.Tip="Снять выбор со всех">
+                <Viewbox Width="16" Height="16">
+                    <Canvas Width="16" Height="16">
+                        <Path Data="M2,2 H7 V7 H2 Z M2,9 H7 V14 H2 Z M9,4.5 H15 M9,11.5 H15"
+                              Stroke="{Binding $parent[Button].Foreground}"
+                              StrokeThickness="1.2"
+                              StrokeLineCap="Round"
+                              StrokeJoin="Round" />
+                    </Canvas>
+                </Viewbox>
+            </Button>
+            <!-- Кнопка очистки внутри поля, как в поиске журнала. Видна только когда есть что очищать. -->
+            <Grid Grid.Column="2">
+                <TextBox x:Name="SearchText"
+                         VerticalAlignment="Center"
+                         PlaceholderText="Поиск"
+                         Padding="5,5,30,5" />
+                <Button HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Content="×"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        FontSize="18"
+                        Padding="8,0"
+                        Margin="0,0,5,0"
+                        Cursor="Hand"
+                        Command="{Binding #Root.ClearSearchCommand}"
+                        IsVisible="{Binding Text, ElementName=SearchText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                        ToolTip.Tip="Очистить поиск" />
+            </Grid>
+        </Grid>
+
+        <ScrollViewer Grid.Row="1"
+                      MaxHeight="220"
+                      HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding #Root.ViewModel.Items}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <CheckBox Content="{Binding Label}"
+                                  IsChecked="{Binding Select}"
+                                  IsEnabled="{Binding Highlighted}" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
