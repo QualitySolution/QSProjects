@@ -107,6 +107,11 @@
         <Setter Property="BorderBrush" Value="{DynamicResource QsBrushPrimaryPressed}" />
         <Setter Property="TextElement.Foreground" Value="{DynamicResource QsBrushOnPrimary}" />
     </Style>
+    <!-- Кнопка только с иконкой: одинаковые отступы со всех сторон, чтобы кнопка получалась квадратной. -->
+    <Style Selector="Button.icon">
+        <Setter Property="Padding" Value="7" />
+        <Setter Property="MinWidth" Value="0" />
+    </Style>
     <Style Selector="Button.quiet">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderBrush" Value="Transparent" />
