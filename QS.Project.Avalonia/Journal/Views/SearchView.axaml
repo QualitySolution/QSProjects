@@ -24,6 +24,7 @@
                 Padding="8,0"
                 Margin="0,0,5,0"
                 Cursor="Hand"
+                IsVisible="{Binding Text, ElementName=entrySearch, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
                 ToolTip.Tip="Очистить поиск" />
     </Grid>
 </UserControl>
