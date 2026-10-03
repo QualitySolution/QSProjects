@@ -2,7 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
-using QS.Project.Avalonia;
+using QS.Dialog.Windows;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -62,7 +62,7 @@ public class AvaloniaInteractiveQuestion : IInteractiveQuestion {
 		TaskCompletionSource<string?> tcs)
 	{
 		var dialogButtons = buttons.Select(label => new Button { Content = label }).ToArray();
-		var window = new DialogWindow(message, title ?? "Вопрос", importanceLevel, dialogButtons);
+		var window = new MessageWindow(message, title ?? "Вопрос", importanceLevel, dialogButtons);
 		window.HideCloseButton();
 
 		foreach(var button in dialogButtons)
