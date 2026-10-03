@@ -34,7 +34,7 @@
       <SubType>Code</SubType>
       <DependentUpon>ButtonJournalActionsView.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\Widgets\EntityEntryView.axaml.cs">
+    <Compile Update="Views\Control\EntityEntryView.axaml.cs">
       <DependentUpon>EntityEntryView.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>

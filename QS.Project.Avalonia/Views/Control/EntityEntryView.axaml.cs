@@ -8,7 +8,7 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 
-namespace QS.Views.Widgets;
+namespace QS.Views.Control;
 
 public partial class EntityEntryView : UserControl
 {
