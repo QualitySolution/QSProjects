@@ -16,6 +16,7 @@ public static partial class DependencyInjection {
 
 	public static IServiceCollection AddGuiClasses(this IServiceCollection services) {
 		return services
-			.AddSingleton<IGuiDispatcher, AvaloniaGuiDispatcher>();
+			.AddSingleton<IGuiDispatcher, AvaloniaGuiDispatcher>()
+			.AddSingleton<IClipboardService, AvaloniaClipboardService>();
 	}
 }
