@@ -15,7 +15,7 @@ public partial class ProgressWindowView : UserControl {
 	public ProgressWindowView(ProgressWindowViewModel viewModel) : this() {
 		this.viewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
 		DataContext = viewModel;
-		viewModel.Progress = progressWidget;
+		viewModel.Progress = progressPanel;
 	}
 
 	private void OnCancelClicked(object? sender, RoutedEventArgs e) => viewModel?.CancellationTokenSource?.Cancel();

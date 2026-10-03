@@ -3,18 +3,18 @@ using Avalonia.Controls;
 using Avalonia.Threading;
 using QS.Dialog;
 
-namespace QS.Widgets;
+namespace QS.Controls;
 
 /// <summary>
 /// Методы можно вызывать из любого потока — изменения переносятся на поток GUI
 /// </summary>
-public partial class ProgressWidget : UserControl, IProgressBarDisplayable {
+public partial class ProgressPanel : UserControl, IProgressBarDisplayable {
 	private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
 	// ProgressBar не выпускает значение за границы, и перебор остался бы незаметным
 	private double madeSteps;
 
-	public ProgressWidget() {
+	public ProgressPanel() {
 		InitializeComponent();
 	}
 
