@@ -1,3 +1,5 @@
+using QS.Dialog.Windows;
+
 namespace QS.Dialog;
 public class AvaloniaInteractiveMessage : IInteractiveMessage {
 	public void ShowMessage(ImportanceLevel level, string message, string title = null) {
@@ -5,6 +7,13 @@ public class AvaloniaInteractiveMessage : IInteractiveMessage {
 			new[] { "Закрыть" },
 			message,
 			title ?? "Сообщение",
-			level);
+			ToIcon(level));
 	}
+
+	private static MessageIcon ToIcon(ImportanceLevel level) => level switch {
+		ImportanceLevel.Warning => MessageIcon.Warning,
+		ImportanceLevel.Error => MessageIcon.Error,
+		ImportanceLevel.Success => MessageIcon.Success,
+		_ => MessageIcon.Info
+	};
 }

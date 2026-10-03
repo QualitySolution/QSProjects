@@ -11,19 +11,19 @@ namespace QS.Dialog;
 
 public class AvaloniaInteractiveQuestion : IInteractiveQuestion {
 	public bool Question(string message, string? title = null) =>
-		ShowModal(new[] { "Да", "Нет" }, message, title, ImportanceLevel.Info) == "Да";
+		ShowModal(new[] { "Да", "Нет" }, message, title, MessageIcon.Question) == "Да";
 
 	// Возвращает подпись нажатой кнопки, null — если пользователь закрыл окно крестиком
 	public string? Question(string[] buttons, string message, string? title = null) =>
-		ShowModal(buttons, message, title, ImportanceLevel.Info);
+		ShowModal(buttons, message, title, MessageIcon.Question);
 
 	/// <summary>Ждёт ответа пользователя, с какого бы потока вопрос ни задали</summary>
 	internal static string? ShowModal(
 		string[] buttons,
 		string message,
 		string? title,
-		ImportanceLevel importanceLevel) {
-		var answer = Show(buttons, message, title, importanceLevel);
+		MessageIcon icon) {
+		var answer = Show(buttons, message, title, icon);
 
 		if(Dispatcher.UIThread.CheckAccess()) {
 			var frame = new DispatcherFrame();
@@ -39,12 +39,12 @@ public class AvaloniaInteractiveQuestion : IInteractiveQuestion {
 		string[] buttons,
 		string message,
 		string? title,
-		ImportanceLevel importanceLevel) {
+		MessageIcon icon) {
 		var tcs = new TaskCompletionSource<string?>();
 
 		Dispatcher.UIThread.Post(() => {
 			try {
-				ShowDialog(buttons, message, title, importanceLevel, tcs);
+				ShowDialog(buttons, message, title, icon, tcs);
 			}
 			catch(Exception ex) {
 				tcs.TrySetException(ex);
@@ -58,11 +58,11 @@ public class AvaloniaInteractiveQuestion : IInteractiveQuestion {
 		string[] buttons,
 		string message,
 		string? title,
-		ImportanceLevel importanceLevel,
+		MessageIcon icon,
 		TaskCompletionSource<string?> tcs)
 	{
 		var dialogButtons = buttons.Select(label => new Button { Content = label }).ToArray();
-		var window = new MessageWindow(message, title ?? "Вопрос", importanceLevel, dialogButtons);
+		var window = new MessageWindow(message, title ?? "Вопрос", icon, dialogButtons);
 		window.HideCloseButton();
 
 		foreach(var button in dialogButtons)
