@@ -37,7 +37,7 @@ namespace QS.HistoryLog.Repositories
 			where T : IDomainObject
 		{
 			ChangedEntity changedEntityAlias = null;
-			var prop = Gamma.Utilities.PropertyUtil.GetName(field);
+			var prop = QS.Utilities.Reflection.PropertyUtil.GetName(field);
 
 			var changes = uow.Session.QueryOver<FieldChange>()
 			                 .Left.JoinAlias(fc => fc.Entity, () => changedEntityAlias)
