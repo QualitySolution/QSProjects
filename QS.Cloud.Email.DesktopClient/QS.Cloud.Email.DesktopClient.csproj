@@ -10,6 +10,7 @@
 
     <ItemGroup>
         <Protobuf Include="Protos\DesktopEmailSender.proto" GrpcServices="Client" />
+        <Protobuf Include="Protos\EmailTokenManager.proto" GrpcServices="Client" />
     </ItemGroup>
 
     <ItemGroup>

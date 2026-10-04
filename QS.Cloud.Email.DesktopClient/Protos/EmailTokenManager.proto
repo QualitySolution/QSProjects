@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package QS.Cloud.Email;
+
+// Управление токенами бэкенд-клиентов. Вызывается из Insider по сессии.
+service EmailTokenManager {
+    rpc GetTokens (GetTokensRequest) returns (GetTokensResponse);
+    rpc CreateToken (CreateTokenRequest) returns (BackendToken);
+    rpc UpdateToken (UpdateTokenRequest) returns (BackendToken);
+    rpc DeleteToken (DeleteTokenRequest) returns (DeleteTokenResponse);
+}
+
+message GetTokensRequest {
+    int32 application_id = 1;
+}
+
+message GetTokensResponse {
+    repeated BackendToken tokens = 1;
+}
+
+message CreateTokenRequest {
+    int32 application_id = 1;
+    string sender_name = 2;
+}
+
+message UpdateTokenRequest {
+    int32 id = 1;
+    string sender_name = 2;
+}
+
+message DeleteTokenRequest {
+    int32 id = 1;
+}
+
+message DeleteTokenResponse {
+}
+
+message BackendToken {
+    int32 id = 1;
+    string token = 2;
+    int32 application_id = 3;
+    string sender_name = 4;
+}
