@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using Gamma.Utilities;
+using QS.Utilities.Reflection;
 using NHibernate.Mapping;
 using QS.Project.DB;
 

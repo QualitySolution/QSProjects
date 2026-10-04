@@ -14,7 +14,7 @@ namespace QS.ViewModels.Control
 		public PropertyBinder(TBindedEntity bindedEntity, Expression<Func<TBindedEntity, TProperty>> bindedProperty)
 		{
 			this.bindedEntity = bindedEntity ?? throw new ArgumentNullException(nameof(bindedEntity));
-			propertyInfo = Gamma.Utilities.PropertyUtil.GetPropertyInfo(bindedProperty);
+			propertyInfo = QS.Utilities.Reflection.PropertyUtil.GetPropertyInfo(bindedProperty);
 			bindedEntity.PropertyChanged += BindedEntity_PropertyChanged;
 		}
 

@@ -3,7 +3,7 @@ using System.Linq;
 using System.Windows.Input;
 using System.Collections.Generic;
 using System.ComponentModel;
-using Gamma.Utilities;
+using QS.Utilities.Reflection;
 using System.Linq.Expressions;
 
 namespace QS.Commands

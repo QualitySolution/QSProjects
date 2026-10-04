@@ -1,7 +1,7 @@
 using System;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
-using Gamma.Utilities;
+using QS.Utilities.Reflection;
 using NHibernate.Event;
 
 [assembly:InternalsVisibleTo("QS.LibsTest.Core")]

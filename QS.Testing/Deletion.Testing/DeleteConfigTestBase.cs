@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using Gamma.Utilities;
+using QS.Utilities.Reflection;
 using NHibernate.Mapping;
 using NUnit.Framework;
 using QS.DomainModel.Entity;

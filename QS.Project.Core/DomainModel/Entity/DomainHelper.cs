@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Gamma.Utilities;
+using QS.Utilities.Reflection;
 using NHibernate;
 using NHibernate.Criterion;
 using QS.DomainModel.UoW;
@@ -182,7 +182,7 @@ namespace QS.DomainModel.Entity
 
 		public static string GetPropertyTitle<TEntity> (System.Linq.Expressions.Expression<Func<TEntity, object>> propertyRefExpr)
 		{
-			var propInfo = Gamma.Utilities.PropertyUtil.GetPropertyInfo (propertyRefExpr);
+			var propInfo = PropertyUtil.GetPropertyInfo (propertyRefExpr);
 			var att = propInfo.GetCustomAttributes (typeof(DisplayAttribute), true);
 
 			return att.Length > 0 ? (att [0] as DisplayAttribute).GetName () : null;

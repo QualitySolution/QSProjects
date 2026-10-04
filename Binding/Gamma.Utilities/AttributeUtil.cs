@@ -61,10 +61,11 @@ namespace Gamma.Utilities
 		/// </summary>
 		/// <returns>The attribute</returns>
 		/// <typeparam name="TAttribute">The type of Attribute.</typeparam>
+		[Obsolete("Use QS.Utilities.Reflection.AttributeUtil instead.")]
 		public static TAttribute GetAttribute<TAttribute>(this Type clazz, bool inherit)
 			where TAttribute : Attribute
 		{
-			return clazz.GetCustomAttributes(typeof(TAttribute), inherit).Cast<TAttribute>().FirstOrDefault();
+			return QS.Utilities.Reflection.AttributeUtil.GetAttribute<TAttribute>(clazz, inherit);
 		}
 
 		/// <summary>

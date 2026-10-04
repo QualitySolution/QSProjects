@@ -1,7 +1,7 @@
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
-using Gamma.Utilities;
+using QS.Utilities.Reflection;
 
 namespace QS.Deletion.Configuration
 {
