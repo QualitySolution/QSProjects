@@ -11,7 +11,7 @@ public static class PageView {
 	/// </summary>
 	public static Control Wrap(Control view) {
 		// Журнал прокручивает таблицу сам. На бесконечной высоте, которую даёт ScrollViewer, DataGrid строит все строки разом и теряет прилипшую шапку
-		if(view is JournalView)
+		if(view is JournalView || view is ISelfScrollingView)
 			return view;
 
 		return new ScrollViewer {
