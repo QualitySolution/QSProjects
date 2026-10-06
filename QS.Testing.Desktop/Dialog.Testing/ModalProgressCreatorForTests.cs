@@ -23,6 +23,9 @@ namespace QS.Dialog.Testing {
 
 		public override void Update(double curValue) {
 		}
+
+		public override void UpdateMax(double maxValue) {
+		}
 		
 		public override void Close() {
 			isStarted = false;

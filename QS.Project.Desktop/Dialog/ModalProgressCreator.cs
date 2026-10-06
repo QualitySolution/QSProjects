@@ -62,7 +62,7 @@ namespace QS.Dialog {
 			Progress.Update(curValue);
 		}
 
-		public void UpdateMax(double maxValue) {
+		public virtual void UpdateMax(double maxValue) {
 			Progress.UpdateMax(maxValue);
 		}
 
