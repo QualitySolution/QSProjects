@@ -76,8 +76,9 @@ namespace QS.Dialog {
 		/// Закрываем прогресс бар.
 		/// Если добавлен логер выводим все контрольные точки в лог.
 		/// </summary>
-		public void End() {
-			CheckPoint("Конец");
+		/// <param name="endName">Название последнего шага (интервала времени)</param>
+		public void End(string endName = "Завершение") {
+			CheckPoint(endName);
 			if(logger != null) {
 				base.PrintAllPoints(logger);
 			}
