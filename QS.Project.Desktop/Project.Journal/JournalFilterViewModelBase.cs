@@ -59,7 +59,7 @@ namespace QS.Project.Journal
 			Update();
 		}
 
-		public void Dispose() => UoW?.Dispose();
+		public void Dispose() => uow?.Dispose();
 
 		public void SetAndRefilterAtOnce<TJournalFilterViewModel>(Action<TJournalFilterViewModel> configuration) where TJournalFilterViewModel : class, IJournalFilterViewModel {
 			SetAndRefilterAtOnce(new Action<TFilter>[] {f => configuration(f as TJournalFilterViewModel)});
