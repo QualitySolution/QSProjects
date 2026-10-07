@@ -15,6 +15,7 @@ public partial class DataBasesView : UserControl {
 		InitializeComponent();
 
 		DataContext = ViewModel = viewModel;
+		viewModel.LaunchProgress = launchProgress;
 
 		viewModel.StartLaunchProgram += HandleStartMainProgram;
 
@@ -29,12 +30,21 @@ public partial class DataBasesView : UserControl {
 	public async void HandleStartMainProgram(bool shouldCloseLauncher) {
 		logger.Info($">>> HandleStartMainProgram: shouldCloseLauncher={shouldCloseLauncher}");
 		
-		loadingPanel.IsVisible = true;
+		// Приложение в этом же процессе само ведёт прогресс и закроет лаунчер, когда будет готово.
+		// Если оно шаги не передаёт, остаётся этот шаг по умолчанию.
+		if(ViewModel.RunsInProcess) {
+			loadingPanel.IsVisible = true;
+			launchProgress.StartIndeterminate("Запуск...");
+			return;
+		}
+
+		// Отдельный процесс: прогресс запуска нам недоступен, просто показываем что запуск пошёл
+		cogwheelPanel.IsVisible = true;
 		cogwheel.Classes.Add("rolled");
 
 		var transition = cogwheel.Transitions.OfType<TransformOperationsTransition>().FirstOrDefault();
 		await Task.Delay(transition.Duration);
-		loadingPanel.IsVisible = false;
+		cogwheelPanel.IsVisible = false;
 		
 		if(shouldCloseLauncher) {
 			logger.Info($">>> HandleStartMainProgram: Вызываем Shutdown!");

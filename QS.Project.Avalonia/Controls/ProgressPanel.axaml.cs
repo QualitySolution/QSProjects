@@ -24,12 +24,22 @@ public partial class ProgressPanel : UserControl, IProgressBarDisplayable {
 
 	public void Start(double maxValue = 1, double minValue = 0, string? text = null, double startValue = 0) =>
 		OnGuiThread(() => {
+			progressBar.IsIndeterminate = false;
 			progressBar.Minimum = minValue;
 			progressBar.Maximum = maxValue;
 			progressBar.Value = startValue;
 			madeSteps = startValue;
 			SetText(text);
 			IsStarted = true;
+		}, first: true);
+
+	/// <summary>
+	/// Прогресс без известного количества шагов. Пока кто-то не вызовет <see cref="Start"/>, показывает только текст.
+	/// </summary>
+	public void StartIndeterminate(string? text = null) =>
+		OnGuiThread(() => {
+			progressBar.IsIndeterminate = true;
+			SetText(text);
 		}, first: true);
 
 	public void Update(double curValue) =>

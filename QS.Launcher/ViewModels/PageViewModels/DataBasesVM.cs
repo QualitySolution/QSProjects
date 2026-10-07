@@ -46,6 +46,16 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		public bool IsAdmin { get; set; } = false;
 
 		public bool ShouldCloseLauncherAfterStart { get; set; } = true;
+
+		/// <summary>
+		/// Прогресс запуска приложения, его отображает представление.
+		/// </summary>
+		public IProgressBarDisplayable LaunchProgress { get; set; }
+
+		/// <summary>
+		/// Приложение запускается в этом же процессе, значит лаунчер закроет оно само, когда будет готово.
+		/// </summary>
+		public bool RunsInProcess => appRunner is InProcessRunner;
 		
 		private readonly LauncherOptions launcherOptions;
 		
@@ -138,6 +148,9 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			
 			logger.Info($">>> Connect: shouldCloseLauncher={shouldCloseLauncher}");
 			
+			if(appRunner is InProcessRunner inProcessRunner)
+				inProcessRunner.Progress = LaunchProgress;
+
 			StartLaunchProgram?.Invoke(shouldCloseLauncher);
 			appRunner.Run(resp);
 		}
