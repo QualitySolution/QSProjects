@@ -63,7 +63,7 @@ namespace QS.Serial.Widgets
 				Text = newStr;
 				int newPos = oldPos + newHyphens - oldHyphens;
 
-				if (newPos < newStr.Length && (newStr[newPos - 1] == '-' || newStr[newPos] == '-'))
+				if (newPos > 0 && newPos < newStr.Length && (newStr[newPos - 1] == '-' || newStr[newPos] == '-'))
 					newPos+=1;
 				SetPos = newPos;
 			}
