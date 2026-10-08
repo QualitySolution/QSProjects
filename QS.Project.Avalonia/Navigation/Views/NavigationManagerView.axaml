@@ -16,11 +16,18 @@
                   SelectedItem="{Binding CurrentPage}"
                   IsAddTabButtonVisible="False"
                   TabCloseRequested="OnTabCloseRequested">
+        <!-- В Content вкладки всегда сама страница, а её View выводит шаблон: при перетаскивании FATabView
+             переиспользует контейнер и подставляет в Content страницу, теряя привязку из TabItemTemplate. -->
+        <fa:FATabView.DataTemplates>
+            <DataTemplate x:DataType="navigation:IAvaloniaPage">
+                <ContentControl Content="{Binding View}" />
+            </DataTemplate>
+        </fa:FATabView.DataTemplates>
         <fa:FATabView.TabItemTemplate>
             <DataTemplate x:DataType="navigation:IAvaloniaPage">
                 <fa:FATabViewItem Header="{Binding Title}"
                                 IsClosable="True"
-                                Content="{Binding View}" />
+                                Content="{Binding}" />
             </DataTemplate>
         </fa:FATabView.TabItemTemplate>
     </fa:FATabView>
