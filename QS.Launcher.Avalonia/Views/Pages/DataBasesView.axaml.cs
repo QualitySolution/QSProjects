@@ -51,6 +51,10 @@ public partial class DataBasesView : UserControl {
 			// NewProcessRunner: закрываем всё приложение лаунчера (Shutdown)
 			(LauncherApp.Current!.ApplicationLifetime as ClassicDesktopStyleApplicationLifetime)?.Shutdown();
 		}
+		else if(ViewModel.VisibleShouldCloseLauncherCheckBox) {
+			// Пользователь попросил не закрывать лаунчер: после запуска можно снова выбрать базу
+			ViewModel.IsLaunching = false;
+		}
 		else {
 			logger.Info($">>> HandleStartMainProgram: Закрываем только окно");
 			// InProcessRunner: закрываем только окно лаунчера

@@ -47,6 +47,15 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 
 		public bool ShouldCloseLauncherAfterStart { get; set; } = true;
 
+		private bool isLaunching;
+		/// <summary>
+		/// Приложение запускается: повторный запуск и уход со страницы запрещены.
+		/// </summary>
+		public bool IsLaunching {
+			get => isLaunching;
+			set => this.RaiseAndSetIfChanged(ref isLaunching, value);
+		}
+
 		/// <summary>
 		/// Прогресс запуска приложения, его отображает представление.
 		/// </summary>
@@ -99,8 +108,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			logger.Info($">>> DataBasesVM constructor: launcherOptions={launcherOptions}, IsStandalone={launcherOptions?.IsStandalone}");
 
 			IObservable<bool> canExecute = this
-				.WhenAnyValue(x => x.SelectedDatabase)
-				.Select(x => x != null);
+				.WhenAnyValue(x => x.SelectedDatabase, x => x.IsLaunching, (db, launching) => db != null && !launching);
 			ConnectCommand = ReactiveCommand.Create(Connect, canExecute);
 		}
 		
@@ -127,10 +135,15 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		}
 
 		public void Connect() {
+			// Enter и двойной клик вызывают запуск в обход доступности команды
+			if(IsLaunching)
+				return;
+			IsLaunching = true;
 
 			var resp = provider.LoginToDatabase(SelectedDatabase);
 
 			if(!resp.Success) {
+				IsLaunching = false;
 				interactiveMessage.ShowMessage(ImportanceLevel.Error, resp.ErrorMessage, "Ошибка подключения к базе данных");
 				return;
 			}
@@ -152,7 +165,13 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 				inProcessRunner.Progress = LaunchProgress;
 
 			StartLaunchProgram?.Invoke(shouldCloseLauncher);
-			appRunner.Run(resp);
+			try {
+				appRunner.Run(resp);
+			}
+			catch {
+				IsLaunching = false;
+				throw;
+			}
 		}
 		
 		private void SaveLastSelection() {

@@ -27,6 +27,8 @@ namespace QS.Launcher.Views {
 				.AddBinding(ViewModel, v => v.Applications, w => w.ItemsList)
 				.AddBinding(ViewModel, v => v.SelectedApplication, w => w.SelectedItem)
 				.InitializeFromSource();
+			// Здесь лаунчер после запуска остаётся открытым, блокировка повторного запуска не нужна
+			ViewModel.StartLaunchProgram += _ => ViewModel.IsLaunching = false;
 			treeBases.RowActivated += (o, args) => ViewModel.Connect();
 			treeBases.KeyPressEvent += (o, args) => {
 				if(args.Event.Key == Gdk.Key.Return) {
