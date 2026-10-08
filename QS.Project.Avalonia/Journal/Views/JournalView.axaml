@@ -17,8 +17,13 @@
             <Setter Property="HorizontalAlignment" Value="Right" />
         </Style>
 
+        <!-- Отступы по краям ячеек и заголовков одинаковые и небольшие, чтобы в таблицах помещалось больше данных -->
+        <Style Selector="DataGridCell TextBlock#CellTextBlock">
+            <Setter Property="Margin" Value="8,0,8,0" />
+        </Style>
+
         <Style Selector="DataGridColumnHeader">
-            <Setter Property="Padding" Value="12,0,12,0" />
+            <Setter Property="Padding" Value="8,0,8,0" />
         </Style>
     </UserControl.Styles>
     <DockPanel>
