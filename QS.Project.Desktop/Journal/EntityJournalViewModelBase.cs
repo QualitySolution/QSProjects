@@ -33,7 +33,12 @@ namespace QS.Journal
 		/// Действие "Выбрать" для режима выбора
 		/// </summary>
 		protected JournalAction<TNode> SelectAction { get; set; }
-		
+
+		/// <summary>
+		/// Действие "Создать"
+		/// </summary>
+		protected JournalAction<TNode> CreateAction { get; set; }
+
 		/// <summary>
 		/// Действие "Изменить/Открыть" для редактирования
 		/// </summary>
@@ -62,7 +67,7 @@ namespace QS.Journal
 			CreateButtonActionsViewModel();
 			CreateNodeActions();
 			
-			// Подписываемся на изменение SelectionMode для обновления DoubleClickAction
+			// Подписываемся на изменение SelectionMode для обновления DoubleClickAction и акцентного действия
 			PropertyChanged += (sender, args) => {
 				if(args.PropertyName == nameof(SelectionMode)) {
 					UpdateDoubleClickAction();
@@ -94,15 +99,14 @@ namespace QS.Journal
 			bool canCreate = CurrentPermissionService == null || CurrentPermissionService.ValidateEntityPermission(typeof(TEntity)).CanCreate;
 
 			// Действие "Создать"
-			var addAction = new JournalAction<TNode>(
+			CreateAction = new JournalAction<TNode>(
 				"Создать",
 				selected => CreateEntityDialog(),
 				selected => canCreate,
 				selected => VisibleCreateAction,
-				"Insert",
-				JournalActionAppearance.Primary
+				"Insert"
 			);
-			actionsViewModel.AddAction(addAction);
+			actionsViewModel.AddAction(CreateAction);
 
 			// Действие "Изменить/Открыть"
 			EditAction = new JournalAction<TNode>(
@@ -158,11 +162,14 @@ namespace QS.Journal
 				return;
 				
 			// В режиме выбора - выбор элемента, иначе - редактирование
-			if(SelectionMode == JournalSelectionMode.Single || SelectionMode == JournalSelectionMode.Multiple) {
-				actionsViewModel.DoubleClickAction = SelectAction;
-			} else {
-				actionsViewModel.DoubleClickAction = EditAction;
-			}
+			bool selecting = SelectionMode == JournalSelectionMode.Single || SelectionMode == JournalSelectionMode.Multiple;
+			actionsViewModel.DoubleClickAction = selecting ? SelectAction : EditAction;
+
+			// Акцентируем основное действие журнала: в режиме выбора это «Выбрать», иначе «Создать»
+			if(SelectAction != null)
+				SelectAction.Appearance = selecting ? JournalActionAppearance.Primary : JournalActionAppearance.Default;
+			if(CreateAction != null)
+				CreateAction.Appearance = selecting ? JournalActionAppearance.Default : JournalActionAppearance.Primary;
 		}
 
 		private IEnumerable<IPermissionResult> CalculatePermission(object[] selected){

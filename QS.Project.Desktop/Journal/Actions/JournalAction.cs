@@ -113,7 +113,11 @@ namespace QS.Journal.Actions
 		
 		public string HotKeys { get; }
 
-		public JournalActionAppearance Appearance { get; }
+		private JournalActionAppearance appearance;
+		public JournalActionAppearance Appearance {
+			get => appearance;
+			set => SetField(ref appearance, value);
+		}
 
 		#region IJournalActionForView
 
