@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -147,6 +148,19 @@ public partial class JournalView : UserControl, IDisposable
 		
 		// Подписываемся на нажатие клавиш
 		grid.KeyDown += DataGrid_KeyDown;
+
+		// Дозагрузка следующей страницы при прокрутке до конца
+		grid.LoadingRow += DataGrid_LoadingRow;
+	}
+
+	private void DataGrid_LoadingRow(object? sender, DataGridRowEventArgs e)
+	{
+		var loader = ViewModel?.DataLoader;
+		if (loader == null || !loader.DynamicLoadingEnabled || loader.LoadInProgress || !loader.HasUnloadedItems)
+			return;
+
+		if (e.Row.Index >= ViewModel!.Items.Count - 1)
+			loader.LoadData(true);
 	}
 
 	private void DataGrid_SelectionChanged(object? sender, SelectionChangedEventArgs e)
@@ -221,7 +235,11 @@ public partial class JournalView : UserControl, IDisposable
 
 			// Принудительно обновляем ItemsSource
 			var items = ViewModel.Items;
+			// При дозагрузке страницы возвращаем прокрутку к последней ранее загруженной строке
+			var lastShownItem = ViewModel.DataLoader.FirstPage ? null : (grid.ItemsSource as IList)?.Cast<object>().LastOrDefault();
 			grid.ItemsSource = items;
+			if (lastShownItem != null)
+				grid.ScrollIntoView(lastShownItem, null);
 			UpdateFooter();
 			logger.Debug($"Avalonia journal: результат {ViewModel.GetType().Name} ждал UI-поток {uiWait.TotalMilliseconds:F0} мс, " +
 				$"ItemsSource ({items.Count} строк) обновлён за {uiUpdateTimer.Elapsed.TotalMilliseconds:F0} мс.");
@@ -284,6 +302,7 @@ public partial class JournalView : UserControl, IDisposable
 			grid.SelectionChanged -= DataGrid_SelectionChanged;
 			grid.DoubleTapped -= DataGrid_DoubleTapped;
 			grid.KeyDown -= DataGrid_KeyDown;
+			grid.LoadingRow -= DataGrid_LoadingRow;
 		}
 	}
 }
