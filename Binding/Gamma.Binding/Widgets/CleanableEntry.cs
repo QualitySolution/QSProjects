@@ -43,6 +43,14 @@ namespace Gamma.Widgets {
 					entry.Text = value;
 			}
 		}
+
+		public int WidthChars {
+			get => entry.WidthChars;
+			set {
+				if(entry.WidthChars != value)
+					entry.WidthChars = value;
+			}
+		}
 		#endregion
 
 		#region События
