@@ -1,9 +1,9 @@
 using System;
-using System.Collections;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.ExceptionServices;
+using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using QS.Navigation;
@@ -159,7 +159,7 @@ public partial class JournalView : UserControl, IDisposable
 		if (loader == null || !loader.DynamicLoadingEnabled || loader.LoadInProgress || !loader.HasUnloadedItems)
 			return;
 
-		if (e.Row.Index >= ViewModel!.Items.Count - 1)
+		if (sender is DataGrid { ItemsSource: AvaloniaList<object> shown } && e.Row.Index >= shown.Count - 1)
 			loader.LoadData(true);
 	}
 
@@ -233,13 +233,13 @@ public partial class JournalView : UserControl, IDisposable
 				return;
 			}
 
-			// Принудительно обновляем ItemsSource
+			// Загрузчик каждый раз отдаёт новую копию списка. При дозагрузке страницы дописываем в таблицу
+			// только новые строки, чтобы сохранились прокрутка и выделение, иначе заменяем список целиком.
 			var items = ViewModel.Items;
-			// При дозагрузке страницы возвращаем прокрутку к последней ранее загруженной строке
-			var lastShownItem = ViewModel.DataLoader.FirstPage ? null : (grid.ItemsSource as IList)?.Cast<object>().LastOrDefault();
-			grid.ItemsSource = items;
-			if (lastShownItem != null)
-				grid.ScrollIntoView(lastShownItem, null);
+			if (!ViewModel.DataLoader.FirstPage && grid.ItemsSource is AvaloniaList<object> shown && items.Count >= shown.Count)
+				shown.AddRange(items.Cast<object>().Skip(shown.Count));
+			else
+				grid.ItemsSource = new AvaloniaList<object>(items.Cast<object>());
 			UpdateFooter();
 			logger.Debug($"Avalonia journal: результат {ViewModel.GetType().Name} ждал UI-поток {uiWait.TotalMilliseconds:F0} мс, " +
 				$"ItemsSource ({items.Count} строк) обновлён за {uiUpdateTimer.Elapsed.TotalMilliseconds:F0} мс.");
