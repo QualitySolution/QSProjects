@@ -89,6 +89,7 @@ public partial class JournalView : UserControl, IDisposable
 
 		// Подписываемся на события таблицы для передачи в ActionsViewModel
 		ConfigureDataGridEvents();
+		UpdateActions();
 
 		// Настраиваем фильтр
 		ConfigureFilter();
@@ -163,13 +164,10 @@ public partial class JournalView : UserControl, IDisposable
 			loader.LoadData(true);
 	}
 
-	private void DataGrid_SelectionChanged(object? sender, SelectionChangedEventArgs e)
-	{
-		if (ViewModel?.ActionsViewModel == null) return;
+	private void DataGrid_SelectionChanged(object? sender, SelectionChangedEventArgs e) => UpdateActions();
 
-		var selectedItems = GetSelectedItems();
-		ViewModel.ActionsViewModel.OnSelectionChanged(selectedItems);
-	}
+	// Состояние действий зависит не только от выделения, но и от настроек журнала (например, «Выбрать» видна только в режиме выбора)
+	private void UpdateActions() => ViewModel?.ActionsViewModel?.OnSelectionChanged(GetSelectedItems());
 
 	private void DataGrid_DoubleTapped(object? sender, Avalonia.Input.TappedEventArgs e)
 	{
@@ -215,6 +213,7 @@ public partial class JournalView : UserControl, IDisposable
 		else if (e.PropertyName == nameof(ViewModel.TableSelectionMode))
 		{
 			SetSelectionMode(ViewModel!.TableSelectionMode);
+			UpdateActions();
 		}
 	}
 
