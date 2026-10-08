@@ -98,9 +98,10 @@ public class AvaloniaNavigationManager : NavigationManagerBase, INavigationManag
 		if(master is IAvaloniaPage masterTab && Pages.Contains(masterTab))
 			return master;
 
-		// на место закрытой встаёт соседняя справа, а у последней вкладки — соседняя слева
-		var rest = Pages.Where(x => x != closing).ToList();
-		return rest.ElementAtOrDefault(Math.Min(Pages.IndexOf(closing), rest.Count - 1));
+		// соседняя слева, ведь новые вкладки встают сразу за той, из которой открыты.
+		// У первой вкладки соседа слева нет — берём следующую.
+		var index = Pages.IndexOf(closing);
+		return index > 0 ? Pages[index - 1] : Pages.ElementAtOrDefault(1);
 	}
 
 	bool ConfirmUnsavedChanges(IPage page) {
@@ -150,8 +151,7 @@ public class AvaloniaNavigationManager : NavigationManagerBase, INavigationManag
 			return;
 		}
 
-		Pages.Add(ResolveView(page));
-		CurrentPage = page;
+		AddTab(masterPage, page);
 	}
 
 	protected override void OpenSlavePage(IPage masterPage, IPage page) {
@@ -166,6 +166,11 @@ public class AvaloniaNavigationManager : NavigationManagerBase, INavigationManag
 			return;
 		}
 
+		AddTab(masterPage, page);
+	}
+
+	// открытая из другой вкладки встаёт сразу за ней, из меню — в конец
+	void AddTab(IPage? masterPage, IPage page) {
 		var avaloniaPage = ResolveView(page);
 		int masterIndex = masterPage is IAvaloniaPage masterTab ? Pages.IndexOf(masterTab) : -1;
 		if(masterIndex >= 0)
@@ -229,7 +234,7 @@ public class AvaloniaNavigationManager : NavigationManagerBase, INavigationManag
 	}
 
 	protected override void ClosePage(IPage page, CloseSource source) {
-		// подчинённые уходят вместе с хозяйской без проверок, как ForceCloseTab в TdiNotebook
+		// подчинённые уходят вместе с хозяйской без проверок
 		foreach(var pair in page.SlavePagesAll.ToList())
 			ClosePageNow(pair.SlavePage, CloseSource.WithMasterPage);
 
