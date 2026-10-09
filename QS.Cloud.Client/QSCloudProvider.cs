@@ -121,7 +121,13 @@ namespace QS.Cloud.Client
 			catch(RpcException ex) when(ex.StatusCode == Grpc.Core.StatusCode.Unauthenticated || ex.StatusCode == Grpc.Core.StatusCode.PermissionDenied) {
 				resp = new LoginToServerResponse {
 					Success = false,
-					ErrorMessage = "Неверные данные для входа: " + ex.Message
+					ErrorMessage = "Неверный логин или пароль"
+				};
+			}
+			catch(RpcException ex) when(ex.StatusCode == Grpc.Core.StatusCode.Unavailable || ex.StatusCode == Grpc.Core.StatusCode.DeadlineExceeded) {
+				resp = new LoginToServerResponse {
+					Success = false,
+					ErrorMessage = "Сервер недоступен. Проверьте интернет и адрес подключения"
 				};
 			}
 

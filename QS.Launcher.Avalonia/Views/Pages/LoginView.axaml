@@ -107,6 +107,7 @@
 
             <ItemsControl x:Name="loginContainer" Grid.Row="4" Grid.ColumnSpan="2" Classes="animated up">
                 <TextBox x:Name="passwordTextBox" Margin="5" PasswordChar="•" Text="{Binding Password}" PlaceholderText="Пароль" />
+                <TextBlock Margin="8,0,5,0" Foreground="Red" IsVisible="{Binding HasError}" Text="{Binding ErrorText}" TextWrapping="Wrap" />
                 <Label Margin="5,0,0,0" Content="Внимание: введены не английские символы" Foreground="Red" IsVisible="{Binding !IsPasswordEngOnly}" />
 
                 <Button Margin="5" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Command="{Binding LoginCommand}" Content="Войти" IsEnabled="{Binding CanLogin}" />

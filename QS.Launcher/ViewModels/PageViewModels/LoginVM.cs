@@ -38,6 +38,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			get => password;
 			set {
 				this.RaiseAndSetIfChanged(ref password, value);
+				ErrorText = null;
 				this.RaisePropertyChanged(nameof(CanLogin));
 				this.RaisePropertyChanged(nameof(IsPasswordEngOnly));
 			}
@@ -45,6 +46,17 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 
 		public bool IsPasswordEngOnly => string.IsNullOrEmpty(Password) || 
 			Password.Where(c => char.IsLetter(c)).All(c => c <= '~');
+
+		private string errorText;
+		public string ErrorText {
+			get => errorText;
+			set {
+				this.RaiseAndSetIfChanged(ref errorText, value);
+				this.RaisePropertyChanged(nameof(HasError));
+			}
+		}
+
+		public bool HasError => !string.IsNullOrEmpty(ErrorText);
 
 		protected IDbProvider dbProvider;
 
@@ -107,7 +119,8 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		public void Login() {
 			if(SelectedConnection is null)
 				return;
-			
+
+			ErrorText = null;
 			dbProvider = SelectedConnection.CreateProvider(Password);
 			var resp = dbProvider.LoginToServer();
 
@@ -119,7 +132,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 				NextPageCommand?.Execute(null);
 			}
 			else
-				interactiveMessage.ShowMessage(ImportanceLevel.Error, resp.ErrorMessage, "Не удалось войти");
+				ErrorText = resp.ErrorMessage;
 		}
 
 		public bool CanLogin => SelectedConnection != null &&
