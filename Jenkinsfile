@@ -1,3 +1,4 @@
+properties([parameters([])])
 node {
    stage('QS.Libs') {
       checkout([
