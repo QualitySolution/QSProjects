@@ -4,6 +4,7 @@ using Gdk;
 using Gtk;
 using QS.Updater.App.ViewModels;
 using QS.Updates;
+using QS.Utilities.Processes;
 using QS.Views.Dialog;
 
 namespace QS.Updater.App.Views {
@@ -61,7 +62,7 @@ namespace QS.Updater.App.Views {
 				if(!String.IsNullOrEmpty(release.NewsLink)) {
 					var newsLabel = new Label{Markup = $"<b><a href=\"{release.NewsLink}\" title=\"Перейти на сайт компании\">Прочитать новость</a></b>"};
 					newsLabel.AddEvents ((int)EventMask.ButtonPressMask);
-					newsLabel.ButtonPressEvent += (o, args) => System.Diagnostics.Process.Start(release.NewsLink);
+					newsLabel.ButtonPressEvent += (o, args) => OpenHelper.OpenUrl(release.NewsLink);
 					tableReleases.Attach(newsLabel, 3, 4, baseRow + 1, baseRow + 2, AttachOptions.Fill, AttachOptions.Shrink, 0, 0);
 				}
 

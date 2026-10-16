@@ -75,6 +75,10 @@
       <Project>{08451b0a-4e72-4b12-b422-b36e9047dcaf}</Project>
       <Name>QS.Updates.Client</Name>
     </ProjectReference>
+    <ProjectReference Include="..\QS.Utilities\QS.Utilities.csproj">
+      <Project>{e2228a2b-4883-4dd8-8a05-23501f7b8a33}</Project>
+      <Name>QS.Utilities</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Google.Protobuf" Version="3.22.1" />
