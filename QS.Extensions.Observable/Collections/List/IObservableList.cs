@@ -16,8 +16,12 @@ namespace QS.Extensions.Observable.Collections.List {
 	/// collection has been persisted.
 	/// </remarks>
 	/// <typeparam name="T">Type of item to be stored in the list.</typeparam>
-	public interface IObservableList<T> : IList<T>, INotifyCollectionChanged, INotifyPropertyChanged, INotifyCollectionElementChanged { }
-
+	public interface IObservableList<T> : IList<T>, IObservableList {
+		new void Clear();
+		new int Count { get; }
+		new T this[int index] { get; set; }
+		new void RemoveAt(int index);
+	}
 
 	public interface IObservableList : IList, INotifyCollectionChanged, INotifyPropertyChanged, INotifyCollectionElementChanged { }
 }

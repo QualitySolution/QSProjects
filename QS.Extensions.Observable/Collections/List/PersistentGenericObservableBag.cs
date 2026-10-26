@@ -13,7 +13,7 @@ namespace QS.Extensions.Observable.Collections.List {
 	/// collection's contents have changed.
 	/// </summary>
 	/// <typeparam name="T">Type of item to be stored in the list.</typeparam>
-	public class PersistentGenericObservableBag<T> : PersistentGenericBag<T>, IObservableList<T>, IObservableList, IReadOnlyCollection<T>, IReadOnlyList<T> {
+	public class PersistentGenericObservableBag<T> : PersistentGenericBag<T>, IObservableList<T>, IReadOnlyList<T> {
 
 		public event PropertyChangedEventHandler PropertyChanged;
 

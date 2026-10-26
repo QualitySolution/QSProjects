@@ -49,6 +49,15 @@ namespace QS.DomainModel.Entity
 		/// </summary>
 		public string PrepositionalPlural { get; set; }
 
+		/// <summary>
+		/// Дательный падеж (Кому? Чему?)
+		/// </summary>
+		public string Dative { get; set; }
+
+		/// <summary>
+		/// Дательный падеж (Кому? Чему?) множественное число.
+		/// </summary>
+		public string DativePlural { get; set; }
 	}
 
 	public enum GrammaticalGender
