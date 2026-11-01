@@ -38,6 +38,9 @@ namespace QS.HistoryLog
 		public void OnPostDelete(IUnitOfWorkTracked uow, PostDeleteEvent deleteEvent)
 		{
 			var entity = deleteEvent.Entity as IDomainObject;
+			// Мы умеем трекать только объекты реализующие IDomainObject, иначе далее будем падать на получении Id.
+			if(entity == null)
+				return;
 
 			var type = NHibernateProxyHelper.GuessClass(entity);
 			if(!NeedTrace(type))
