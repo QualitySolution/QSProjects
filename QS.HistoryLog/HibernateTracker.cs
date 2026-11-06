@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -311,7 +312,14 @@ namespace QS.HistoryLog
 			return NeedTrace(type);
 		}
 
+		private static readonly ConcurrentDictionary<Type, bool> _needTraceCache = new ConcurrentDictionary<Type, bool>();
+
 		public static bool NeedTrace(Type entityClass)
+		{
+			return _needTraceCache.GetOrAdd(entityClass, CalculateNeedTrace);
+		}
+
+		private static bool CalculateNeedTrace(Type entityClass)
 		{
 			if (entityClass.GetInterface(typeof(NHibernate.Proxy.DynamicProxy.IProxy).FullName) != null || entityClass.GetInterface(typeof(INHibernateProxy).FullName) != null)
 				entityClass = entityClass.BaseType;
