@@ -26,6 +26,11 @@ namespace QS.HistoryLog
 		private static ReadOnlyCollection<char> DIRECTORY_SEPARATORS = new ReadOnlyCollection<char>(new List<char>() { '\\', '/' });
 
 		readonly List<ChangedEntity> changes = new List<ChangedEntity>();
+		/// <summary>
+		/// Ключи уже зарегистрированных изменений из <see cref="changes"/>, для быстрой проверки дублей.
+		/// </summary>
+		readonly HashSet<(EntityChangeOperation Operation, string EntityClassName, int EntityId)> registeredChanges =
+			new HashSet<(EntityChangeOperation Operation, string EntityClassName, int EntityId)>();
 
 		public HibernateTracker(MySqlConnectionStringBuilder connectionStringBuilder) {
 			if(!connectionStringBuilder.AllowUserVariables) {
@@ -48,26 +53,31 @@ namespace QS.HistoryLog
 
 			EnsureCurrentUserDefined();
 
-			if(changes.Exists(di => di.Operation == EntityChangeOperation.Delete && di.EntityClassName == type.Name && di.EntityId == entity.Id))
+			var key = (EntityChangeOperation.Delete, type.Name, entity.Id);
+			if(registeredChanges.Contains(key))
 				return;
 
 			var hce = new ChangedEntity(EntityChangeOperation.Delete, entity, new List<FieldChange>());
 			changes.Add(hce);
+			registeredChanges.Add(key);
 		}
 
 		public void OnPostInsert(IUnitOfWorkTracked uow, PostInsertEvent insertEvent)
 		{
 			var entity = insertEvent.Entity as IDomainObject;
 			// Мы умеет трекать только объекты реализующие IDomainObject, иначе далее будем падать на получении Id.
-			if(entity == null || !NeedTrace(entity))
+			if(entity == null)
+				return;
+
+			var type = NHibernateProxyHelper.GuessClass(entity);
+			if(!NeedTrace(type))
 				return;
 
 			EnsureCurrentUserDefined();
 
 			//FIXME добавлено чтобы не дублировались записи. Потому что от Nhibernate приходит по 2 события на один объект. Если это удастся починить, то этот код не нужен.
-			if(changes.Any(hce => hce.EntityId == entity.Id
-				&& NHibernateProxyHelper.GuessClass(entity).Name == hce.EntityClassName
-				&& hce.Operation == EntityChangeOperation.Create))
+			var key = (EntityChangeOperation.Create, type.Name, entity.Id);
+			if(registeredChanges.Contains(key))
 				return;
 
 			var fields = Enumerable.Range(0, insertEvent.State.Length)
@@ -77,6 +87,7 @@ namespace QS.HistoryLog
 
 			if(fields.Count > 0) {
 				changes.Add(new ChangedEntity(EntityChangeOperation.Create, insertEvent.Entity, fields));
+				registeredChanges.Add(key);
 			}
 		}
 
@@ -84,15 +95,18 @@ namespace QS.HistoryLog
 		{
 			var entity = updateEvent.Entity as IDomainObject;
 			// Мы умеет трекать только объекты реализующие IDomainObject, иначе далее будем падать на получении Id.
-			if(entity == null || !NeedTrace(entity))
+			if(entity == null)
+				return;
+
+			var type = NHibernateProxyHelper.GuessClass(entity);
+			if(!NeedTrace(type))
 				return;
 
 			EnsureCurrentUserDefined();
 
 			//FIXME добавлено чтобы не дублировались записи. Потому что от Nhibernate приходит по 2 события на один объект. Если это удастся починить, то этот код не нужен.
-			if(changes.Any(hce => hce.EntityId == entity.Id
-				&& NHibernateProxyHelper.GuessClass(entity).Name == hce.EntityClassName
-				&& hce.Operation == EntityChangeOperation.Change))
+			var key = (EntityChangeOperation.Change, type.Name, entity.Id);
+			if(registeredChanges.Contains(key))
 				return;
 
 			var fields = Enumerable.Range(0, updateEvent.State.Length)
@@ -103,6 +117,7 @@ namespace QS.HistoryLog
 			if(fields.Count > 0)
 			{
 				changes.Add(new ChangedEntity(EntityChangeOperation.Change, updateEvent.Entity, fields));
+				registeredChanges.Add(key);
 			}
 		}
 
@@ -123,6 +138,7 @@ namespace QS.HistoryLog
 		public void Reset()
 		{
 			changes.Clear();
+			registeredChanges.Clear();
 		}
 
 		public void OnPostCommit(IUnitOfWorkTracked uow)
