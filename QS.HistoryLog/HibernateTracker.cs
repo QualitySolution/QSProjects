@@ -46,6 +46,8 @@ namespace QS.HistoryLog
 			if(!NeedTrace(type))
 				return;
 
+			EnsureCurrentUserDefined();
+
 			if(changes.Exists(di => di.Operation == EntityChangeOperation.Delete && di.EntityClassName == type.Name && di.EntityId == entity.Id))
 				return;
 
@@ -59,6 +61,8 @@ namespace QS.HistoryLog
 			// Мы умеет трекать только объекты реализующие IDomainObject, иначе далее будем падать на получении Id.
 			if(entity == null || !NeedTrace(entity))
 				return;
+
+			EnsureCurrentUserDefined();
 
 			//FIXME добавлено чтобы не дублировались записи. Потому что от Nhibernate приходит по 2 события на один объект. Если это удастся починить, то этот код не нужен.
 			if(changes.Any(hce => hce.EntityId == entity.Id
@@ -83,6 +87,8 @@ namespace QS.HistoryLog
 			if(entity == null || !NeedTrace(entity))
 				return;
 
+			EnsureCurrentUserDefined();
+
 			//FIXME добавлено чтобы не дублировались записи. Потому что от Nhibernate приходит по 2 события на один объект. Если это удастся починить, то этот код не нужен.
 			if(changes.Any(hce => hce.EntityId == entity.Id
 				&& NHibernateProxyHelper.GuessClass(entity).Name == hce.EntityClassName
@@ -97,6 +103,20 @@ namespace QS.HistoryLog
 			if(fields.Count > 0)
 			{
 				changes.Add(new ChangedEntity(EntityChangeOperation.Change, updateEvent.Entity, fields));
+			}
+		}
+
+		/// <summary>
+		/// Проверяет, что текущий пользователь задан. Вызывается из событий NHibernate внутри транзакции,
+		/// чтобы при отсутствии пользователя запись данных откатилась, а не закоммитилась без истории изменений.
+		/// </summary>
+		private static void EnsureCurrentUserDefined()
+		{
+			if(UserRepository.GetCurrentUserId == null) {
+				throw new InvalidOperationException(
+					"Не задан текущий пользователь (UserRepository.GetCurrentUserId), " +
+					"невозможно записать историю изменений отслеживаемой сущности. " +
+					"Сохранение отменено, чтобы данные не были записаны без истории изменений.");
 			}
 		}
 
