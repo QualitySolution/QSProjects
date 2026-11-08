@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
+    <AvaloniaResource Include="..\QS.ErrorReporting\Assets\ErrorHelper.png" Link="Assets\ErrorHelper.png" />
   </ItemGroup>
 
   <ItemGroup>

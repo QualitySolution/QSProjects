@@ -293,6 +293,9 @@
     <EmbeddedResource Include="Icons\unselect-all.png" />
     <EmbeddedResource Include="Icons\Calendar.png" />
     <EmbeddedResource Include="Icons\SendErrorReport.png" />
+    <EmbeddedResource Include="..\QS.ErrorReporting\Assets\ErrorHelper.png">
+      <LogicalName>QS.Icons.ErrorHelper.png</LogicalName>
+    </EmbeddedResource>
     <EmbeddedResource Include="Icons\blank-square.png" />
     <EmbeddedResource Include="Icons\check-symbol.png" />
     <EmbeddedResource Include="Icons\close-button.png" />

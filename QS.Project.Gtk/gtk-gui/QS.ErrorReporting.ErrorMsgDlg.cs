@@ -63,48 +63,35 @@ namespace QS.ErrorReporting
 			this.hbox1 = new global::Gtk.HBox();
 			this.hbox1.Name = "hbox1";
 			this.hbox1.Spacing = 6;
-			// Container child hbox1.Gtk.Box+BoxChild
-			this.image249 = new global::Gtk.Image();
-			this.image249.Name = "image249";
-			this.image249.Xalign = 0F;
-			this.image249.Yalign = 0F;
-			this.image249.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-dialog-error", global::Gtk.IconSize.Dialog);
-			this.hbox1.Add(this.image249);
-			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.image249]));
-			w2.Position = 0;
-			w2.Expand = false;
-			w2.Fill = false;
-			// Container child hbox1.Gtk.Box+BoxChild
 			this.vbox2 = new global::Gtk.VBox();
 			this.vbox2.Name = "vbox2";
 			this.vbox2.Spacing = 6;
-			// Container child vbox2.Gtk.Box+BoxChild
+			this.table1 = new global::Gtk.Table(((uint)(4)), ((uint)(2)), false);
+			this.table1.Name = "table1";
+			this.table1.RowSpacing = ((uint)(6));
+			this.table1.ColumnSpacing = ((uint)(12));
+			this.image249 = new global::Gtk.Image();
+			this.image249.Name = "image249";
+			this.image249.Pixbuf = global::Gdk.Pixbuf.LoadFromResource("QS.Icons.ErrorHelper.png");
+			this.table1.Attach(this.image249, 0, 1, 0, 1, global::Gtk.AttachOptions.Fill, global::Gtk.AttachOptions.Fill, 0, 0);
+			global::Gtk.VBox headerBox = new global::Gtk.VBox(false, 6);
 			this.label1 = new global::Gtk.Label();
 			this.label1.Name = "label1";
 			this.label1.Xalign = 0F;
-			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString("К сожалению в программе произошла непредвиденная ошибка.");
-			this.vbox2.Add(this.label1);
-			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.label1]));
-			w3.Position = 0;
-			w3.Expand = false;
-			w3.Fill = false;
-			// Container child vbox2.Gtk.Box+BoxChild
+			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString("Что-то пошло не так");
+			headerBox.PackStart(this.label1, false, false, 0);
 			this.label3 = new global::Gtk.Label();
 			this.label3.Name = "label3";
 			this.label3.Xalign = 0F;
-			this.label3.LabelProp = global::Mono.Unix.Catalog.GetString("Вы можете помочь нам улучшить программу и исправить данную проблему. \nДля этого в" +
-					"оспользуйтесь формой отправки отчета об ошибке.\n");
-			this.label3.Justify = ((global::Gtk.Justification)(3));
-			this.vbox2.Add(this.label3);
-			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.label3]));
-			w4.Position = 1;
-			w4.Expand = false;
-			w4.Fill = false;
-			// Container child vbox2.Gtk.Box+BoxChild
-			this.table1 = new global::Gtk.Table(((uint)(3)), ((uint)(2)), false);
-			this.table1.Name = "table1";
-			this.table1.RowSpacing = ((uint)(6));
-			this.table1.ColumnSpacing = ((uint)(6));
+			this.label3.LineWrap = true;
+			this.label3.LabelProp = global::Mono.Unix.Catalog.GetString("Опишите ваши действия перед ошибкой и отправьте отчёт — это поможет нам разобраться.");
+			headerBox.PackStart(this.label3, false, false, 0);
+			this.label5 = new global::Gtk.Label();
+			this.label5.Name = "label5";
+			this.label5.Xalign = 0F;
+			this.label5.LineWrap = true;
+			headerBox.PackStart(this.label5, false, false, 0);
+			this.table1.Attach(headerBox, 1, 2, 0, 1, global::Gtk.AttachOptions.Expand | global::Gtk.AttachOptions.Fill, global::Gtk.AttachOptions.Fill, 0, 0);
 			// Container child table1.Gtk.Table+TableChild
 			this.entryEmail = new global::Gtk.Entry();
 			this.entryEmail.TooltipMarkup = "Можем уточнить детали ошибки или сообщить о её исправлении.";
@@ -163,18 +150,14 @@ namespace QS.ErrorReporting
 			w9.BottomAttach = ((uint)(3));
 			w9.XOptions = ((global::Gtk.AttachOptions)(4));
 			w9.YOptions = ((global::Gtk.AttachOptions)(4));
-			// Container child table1.Gtk.Table+TableChild
-			this.label5 = new global::Gtk.Label();
-			this.label5.Name = "label5";
-			this.label5.LabelProp = global::Mono.Unix.Catalog.GetString("Для отправки отчета, пожалуйста, заполните следующие поля:");
-			this.table1.Add(this.label5);
-			global::Gtk.Table.TableChild w10 = ((global::Gtk.Table.TableChild)(this.table1[this.label5]));
-			w10.RightAttach = ((uint)(2));
-			w10.XOptions = ((global::Gtk.AttachOptions)(4));
-			w10.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Label emailHelp = new global::Gtk.Label();
+			emailHelp.Xalign = 0F;
+			emailHelp.LineWrap = true;
+			emailHelp.LabelProp = global::Mono.Unix.Catalog.GetString("Можем уточнить детали ошибки или сообщить о её исправлении.");
+			this.table1.Attach(emailHelp, 1, 2, 3, 4, global::Gtk.AttachOptions.Expand | global::Gtk.AttachOptions.Fill, global::Gtk.AttachOptions.Fill, 0, 0);
 			this.vbox2.Add(this.table1);
 			global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.table1]));
-			w11.Position = 2;
+			w11.Position = 0;
 			w11.Expand = false;
 			w11.Fill = false;
 			// Container child vbox2.Gtk.Box+BoxChild
@@ -182,7 +165,7 @@ namespace QS.ErrorReporting
 			this.hseparator1.Name = "hseparator1";
 			this.vbox2.Add(this.hseparator1);
 			global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.hseparator1]));
-			w12.Position = 3;
+			w12.Position = 1;
 			w12.Expand = false;
 			w12.Fill = false;
 			// Container child vbox2.Gtk.Box+BoxChild
@@ -209,7 +192,7 @@ namespace QS.ErrorReporting
 			this.errorDetailsBox.Add(this.GtkScrolledWindow);
 			this.vbox2.Add(this.errorDetailsBox);
 			global::Gtk.Box.BoxChild w15 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.errorDetailsBox]));
-			w15.Position = 4;
+			w15.Position = 2;
 			this.hbox1.Add(this.vbox2);
 			global::Gtk.Box.BoxChild w16 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.vbox2]));
 			w16.Position = 1;

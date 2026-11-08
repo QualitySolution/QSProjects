@@ -13,6 +13,8 @@ namespace QS.ErrorReporting {
 		public ErrorMsgDlg(Exception exception, IApplicationInfo application, UserBase user,
 			IErrorReportingSettings settings, ILogService logService, IDataBaseInfo database = null) {
 			Build();
+			image249.Pixbuf = image249.Pixbuf.ScaleSimple(96, 96, Gdk.InterpType.Bilinear);
+			label5.NoShowAll = true;
 			viewModel = new ErrorReportViewModel(exception, application, user, settings, logService, database);
 			entryEmail.Text = viewModel.Email;
 			textviewError.Buffer.Text = viewModel.ExceptionText;
@@ -35,6 +37,8 @@ namespace QS.ErrorReporting {
 
 		private void UpdateInputs() {
 			buttonSendReport.Sensitive = viewModel.CanSend;
+			label5.Text = viewModel.ValidationMessage;
+			label5.Visible = !viewModel.CanSend;
 			if(!String.IsNullOrWhiteSpace(viewModel.Email) && !viewModel.IsEmailValid)
 				entryEmail.ModifyText(StateType.Normal, new Gdk.Color(255, 0, 0));
 			else
