@@ -30,7 +30,7 @@ namespace QS.ErrorReporting
 
 		private global::Gtk.HSeparator hseparator1;
 
-		private global::Gtk.Expander expander1;
+		private global::Gtk.VBox errorDetailsBox;
 
 		private global::Gtk.ScrolledWindow GtkScrolledWindow;
 
@@ -107,9 +107,7 @@ namespace QS.ErrorReporting
 			this.table1.ColumnSpacing = ((uint)(6));
 			// Container child table1.Gtk.Table+TableChild
 			this.entryEmail = new global::Gtk.Entry();
-			this.entryEmail.TooltipMarkup = "Для отправки отчета нам требуется ваш email. Мы будем использовать его для уточне" +
-				"ния информации об ошибке, а также для оперативного информирования об устранении " +
-				"данной проблемы.";
+			this.entryEmail.TooltipMarkup = "Можем уточнить детали ошибки или сообщить о её исправлении.";
 			this.entryEmail.CanFocus = true;
 			this.entryEmail.Name = "entryEmail";
 			this.entryEmail.IsEditable = true;
@@ -155,9 +153,7 @@ namespace QS.ErrorReporting
 			w8.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
 			this.label4 = new global::Gtk.Label();
-			this.label4.TooltipMarkup = "Для отправки отчета нам требуется ваш email. Мы будем использовать его, для уточн" +
-				"ения информации об ошибке, а также для оперативного информирования об устранении" +
-				" данной проблемы.";
+			this.label4.TooltipMarkup = "Можем уточнить детали ошибки или сообщить о её исправлении.";
 			this.label4.Name = "label4";
 			this.label4.Xalign = 1F;
 			this.label4.LabelProp = global::Mono.Unix.Catalog.GetString("E-mail для связи:");
@@ -190,11 +186,15 @@ namespace QS.ErrorReporting
 			w12.Expand = false;
 			w12.Fill = false;
 			// Container child vbox2.Gtk.Box+BoxChild
-			this.expander1 = new global::Gtk.Expander(null);
-			this.expander1.CanFocus = true;
-			this.expander1.Name = "expander1";
-			this.expander1.Expanded = true;
-			// Container child expander1.Gtk.Container+ContainerChild
+			this.errorDetailsBox = new global::Gtk.VBox();
+			this.errorDetailsBox.Name = "errorDetailsBox";
+			this.errorDetailsBox.Spacing = 6;
+			this.GtkLabel1 = new global::Gtk.Label();
+			this.GtkLabel1.Name = "GtkLabel1";
+			this.GtkLabel1.Xalign = 0F;
+			this.GtkLabel1.LabelProp = global::Mono.Unix.Catalog.GetString("Техническая информация");
+			this.errorDetailsBox.PackStart(this.GtkLabel1, false, false, 0);
+			// Container child errorDetailsBox.Gtk.Box+BoxChild
 			this.GtkScrolledWindow = new global::Gtk.ScrolledWindow();
 			this.GtkScrolledWindow.HeightRequest = 203;
 			this.GtkScrolledWindow.Name = "GtkScrolledWindow";
@@ -206,14 +206,9 @@ namespace QS.ErrorReporting
 			this.textviewError.Editable = false;
 			this.textviewError.WrapMode = ((global::Gtk.WrapMode)(2));
 			this.GtkScrolledWindow.Add(this.textviewError);
-			this.expander1.Add(this.GtkScrolledWindow);
-			this.GtkLabel1 = new global::Gtk.Label();
-			this.GtkLabel1.Name = "GtkLabel1";
-			this.GtkLabel1.LabelProp = global::Mono.Unix.Catalog.GetString("Техническая информация");
-			this.GtkLabel1.UseUnderline = true;
-			this.expander1.LabelWidget = this.GtkLabel1;
-			this.vbox2.Add(this.expander1);
-			global::Gtk.Box.BoxChild w15 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.expander1]));
+			this.errorDetailsBox.Add(this.GtkScrolledWindow);
+			this.vbox2.Add(this.errorDetailsBox);
+			global::Gtk.Box.BoxChild w15 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.errorDetailsBox]));
 			w15.Position = 4;
 			this.hbox1.Add(this.vbox2);
 			global::Gtk.Box.BoxChild w16 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.vbox2]));

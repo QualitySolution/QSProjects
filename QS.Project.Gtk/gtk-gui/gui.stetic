@@ -2438,7 +2438,7 @@
                     <child>
                       <widget class="Gtk.Entry" id="entryEmail">
                         <property name="MemberName" />
-                        <property name="Tooltip" translatable="yes">Для отправки отчета нам требуется ваш email. Мы будем использовать его для уточнения информации об ошибке, а также для оперативного информирования об устранении данной проблемы.</property>
+                        <property name="Tooltip" translatable="yes">Можем уточнить детали ошибки или сообщить о её исправлении.</property>
                         <property name="CanFocus">True</property>
                         <property name="IsEditable">True</property>
                         <property name="InvisibleChar">●</property>
@@ -2512,7 +2512,7 @@
                     <child>
                       <widget class="Gtk.Label" id="label4">
                         <property name="MemberName" />
-                        <property name="Tooltip" translatable="yes">Для отправки отчета нам требуется ваш email. Мы будем использовать его, для уточнения информации об ошибке, а также для оперативного информирования об устранении данной проблемы.</property>
+                        <property name="Tooltip" translatable="yes">Можем уточнить детали ошибки или сообщить о её исправлении.</property>
                         <property name="Xalign">1</property>
                         <property name="LabelProp" translatable="yes">E-mail для связи:</property>
                       </widget>
@@ -2568,10 +2568,21 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="Gtk.Expander" id="expander1">
+                  <widget class="Gtk.VBox" id="errorDetailsBox">
                     <property name="MemberName" />
-                    <property name="CanFocus">True</property>
-                    <property name="Expanded">True</property>
+                    <property name="Spacing">6</property>
+                    <child>
+                      <widget class="Gtk.Label" id="GtkLabel1">
+                        <property name="MemberName" />
+                        <property name="Xalign">0</property>
+                        <property name="LabelProp" translatable="yes">Техническая информация</property>
+                      </widget>
+                      <packing>
+                        <property name="Position">0</property>
+                        <property name="Expand">False</property>
+                        <property name="Fill">False</property>
+                      </packing>
+                    </child>
                     <child>
                       <widget class="Gtk.ScrolledWindow" id="GtkScrolledWindow">
                         <property name="MemberName" />
@@ -2588,15 +2599,8 @@
                           </widget>
                         </child>
                       </widget>
-                    </child>
-                    <child>
-                      <widget class="Gtk.Label" id="GtkLabel1">
-                        <property name="MemberName" />
-                        <property name="LabelProp" translatable="yes">Техническая информация</property>
-                        <property name="UseUnderline">True</property>
-                      </widget>
                       <packing>
-                        <property name="type">label_item</property>
+                        <property name="Position">1</property>
                       </packing>
                     </child>
                   </widget>

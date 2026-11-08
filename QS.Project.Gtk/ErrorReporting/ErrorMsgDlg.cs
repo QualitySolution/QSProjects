@@ -1,146 +1,67 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
+using System;
 using Gtk;
-using NLog;
 using QS.Dialog.GtkUI;
 using QS.Project.DB;
 using QS.Project.Domain;
 using QS.Project.Versioning;
 
-namespace QS.ErrorReporting
-{
-	public partial class ErrorMsgDlg : Gtk.Dialog
-	{
-		private static Logger logger = LogManager.GetCurrentClassLogger ();
-		IApplicationInfo application;
-		UserBase user;
-		private readonly ILogService logService;
-		List<Exception> AppExceptions = new List<Exception> ();
-		bool reportSent;
+namespace QS.ErrorReporting {
+	public partial class ErrorMsgDlg : Gtk.Dialog {
+		private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+		private readonly ErrorReportViewModel viewModel;
 
-		protected string AppExceptionText
-		{
-			get{ return string.Join ("\n Следующее исключение:\n", AppExceptions.Select (ex => ex.ToString ()));
-			}
-		}
-
-		private IErrorReportingSettings errorReportingSettings { get; }
-
-		private IDataBaseInfo databaseInfo { get; }
-
-		public ErrorMsgDlg (Exception exception, IApplicationInfo application, UserBase user, IErrorReportingSettings errorReportingSettings, ILogService logService, IDataBaseInfo dataBaseInfo = null)
-		{
-			this.Build ();
-
-			this.application = application;
-			this.user = user;
-			this.logService = logService ?? throw new ArgumentNullException(nameof(logService));
-
-			this.errorReportingSettings = errorReportingSettings ?? throw new ArgumentNullException(nameof(errorReportingSettings));
-			this.databaseInfo = dataBaseInfo;
-
-			AppExceptions.Add (exception);
-			OnExceptionTextUpdate ();
-			buttonSendReport.Sensitive = false;
-
-			entryEmail.Text = user?.Email;
-
-			this.SetPosition (WindowPosition.CenterOnParent);
-
+		public ErrorMsgDlg(Exception exception, IApplicationInfo application, UserBase user,
+			IErrorReportingSettings settings, ILogService logService, IDataBaseInfo database = null) {
+			Build();
+			viewModel = new ErrorReportViewModel(exception, application, user, settings, logService, database);
+			entryEmail.Text = viewModel.Email;
+			textviewError.Buffer.Text = viewModel.ExceptionText;
+			SetPosition(WindowPosition.CenterOnParent);
 			textviewDescription.Buffer.Changed += InputsChanged;
 			entryEmail.Changed += InputsChanged;
+			UpdateInputs();
 		}
 
-		public void AddAnotherException(Exception exception)
-		{
-			AppExceptions.Add (exception);
-			OnExceptionTextUpdate ();
+		public void AddAnotherException(Exception exception) {
+			viewModel.AddException(exception);
+			textviewError.Buffer.Text = viewModel.ExceptionText;
 		}
 
-		public void OnExceptionTextUpdate()
-		{
-			textviewError.Buffer.Text = AppExceptionText;
+		private void InputsChanged(object sender, EventArgs e) {
+			viewModel.Description = textviewDescription.Buffer.Text;
+			viewModel.Email = entryEmail.Text;
+			UpdateInputs();
 		}
 
-		void InputsChanged (object sender, EventArgs e)
-		{
-			var regex = new Regex (@"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$");
-			buttonSendReport.Sensitive =
-				(!errorReportingSettings.RequestDescription || !String.IsNullOrWhiteSpace (textviewDescription.Buffer.Text) 
-				&& (!errorReportingSettings.RequestEmail || regex.IsMatch(entryEmail.Text)));
-			if (sender is Gtk.Entry) {
-				if (!regex.IsMatch (entryEmail.Text))
-					(sender as Gtk.Entry).ModifyText (Gtk.StateType.Normal, new Gdk.Color (255, 0, 0));
-				else
-					(sender as Gtk.Entry).ModifyText (Gtk.StateType.Normal);
-			}
+		private void UpdateInputs() {
+			buttonSendReport.Sensitive = viewModel.CanSend;
+			if(!String.IsNullOrWhiteSpace(viewModel.Email) && !viewModel.IsEmailValid)
+				entryEmail.ModifyText(StateType.Normal, new Gdk.Color(255, 0, 0));
+			else
+				entryEmail.ModifyText(StateType.Normal);
 		}
 
-		protected void OnButtonCopyClicked (object sender, EventArgs e)
-		{
-			Clipboard clipboard = Clipboard.Get (Gdk.Atom.Intern ("CLIPBOARD", false));
-
-			string TextMsg = String.Format ("Продукт: {0}\nВерсия: {1}\nРедакция: {2}\nОшибка: {3}", 
-				                 application.ProductName, 
-				                 application.Version,
-				                 application.Modification,
-								 AppExceptionText
-			                 );
-			clipboard.Text = TextMsg;
-			clipboard.Store ();
+		protected void OnButtonCopyClicked(object sender, EventArgs e) {
+			var clipboard = Clipboard.Get(Gdk.Atom.Intern("CLIPBOARD", false));
+			clipboard.Text = viewModel.CopyText;
+			clipboard.Store();
 		}
 
-		protected void OnButtonSendReportClicked (object sender, EventArgs e)
-		{
-			string log = logService.GetLog();
-			SendReport(log, ReportType.User);
-		}
-
-		private void SendReport(string logContent, ReportType reportType)
-		{
-			using (var reportingService = new ErrorReportingService())
-			{
-				var result = reportingService.SubmitErrorReport(
-					new SubmitErrorRequest {
-						App = new AppInfo{ 
-							ProductCode = application.ProductCode,
-							Modification= application.Modification ?? String.Empty,
-							Version = application.Version.ToString(),
-						},
-						Db = new DatabaseInfo {
-							Name = databaseInfo?.Name ?? String.Empty,
-						},
-						User = new UserInfo {
-							Email = entryEmail.Text,
-							Name = user?.Name ?? String.Empty,
-						},
-						Report = new ErrorInfo {
-							StackTrace = AppExceptionText,
-							UserDescription = textviewDescription.Buffer.Text,
-							Log = logContent,
-						},
-						ReportType = reportType
-					});
-
-				if(result) {
-					this.Respond(ResponseType.Ok);
-					reportSent = true;
-				} else {
-					MessageDialogHelper.RunWarningDialog("Отправка сообщения не удалась.\n" +
-					"Проверьте ваше интернет соединение и повторите попытку. Если отправка не удастся возможно имеются проблемы на стороне сервера.");
+		protected void OnButtonSendReportClicked(object sender, EventArgs e) {
+			try {
+				if(viewModel.Submit(ReportType.User)) {
+					Respond(ResponseType.Ok);
+					return;
 				}
-			}
+			} catch(Exception ex) { logger.Error(ex, "Не удалось отправить отчёт об ошибке"); }
+			MessageDialogHelper.RunWarningDialog("Отправка сообщения не удалась.\nПроверьте ваше интернет соединение и повторите попытку. Если отправка не удастся возможно имеются проблемы на стороне сервера.");
 		}
 
-		protected override void OnDestroyed()
-		{
-			if(errorReportingSettings.SendAutomatically && !reportSent) {
-				string log = logService.GetLog(errorReportingSettings.LogRowCount);
-				SendReport(log, ReportType.Automatic);
-			}
-
+		protected override void OnDestroyed() {
+			try {
+				if(viewModel.SendAutomatically && !viewModel.ReportSent && !viewModel.Submit(ReportType.Automatic))
+					logger.Warn("Автоматический отчёт об ошибке отправить не удалось");
+			} catch(Exception ex) { logger.Error(ex, "Не удалось автоматически отправить отчёт об ошибке"); }
 			base.OnDestroyed();
 		}
 	}

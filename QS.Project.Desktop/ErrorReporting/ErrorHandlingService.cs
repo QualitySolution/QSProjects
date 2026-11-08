@@ -16,19 +16,22 @@ namespace QS.ErrorReporting {
 		private readonly IInteractiveQuestion interactiveQuestion;
 		private readonly IErrorReporter errorReporter;
 		private readonly IErrorReportingSettings settings;
+		private readonly IUnexpectedErrorDialog errorDialog;
 
 		public ErrorHandlingService(
 			IEnumerable<IErrorHandler> handlers,
 			IInteractiveMessage interactiveMessage,
 			IInteractiveQuestion interactiveQuestion,
 			IErrorReporter errorReporter = null,
-			IErrorReportingSettings settings = null)
+			IErrorReportingSettings settings = null,
+			IUnexpectedErrorDialog errorDialog = null)
 		{
 			this.handlers = handlers ?? throw new ArgumentNullException(nameof(handlers));
 			this.interactiveMessage = interactiveMessage ?? throw new ArgumentNullException(nameof(interactiveMessage));
 			this.interactiveQuestion = interactiveQuestion ?? throw new ArgumentNullException(nameof(interactiveQuestion));
 			this.errorReporter = errorReporter;
 			this.settings = settings;
+			this.errorDialog = errorDialog;
 		}
 
 		public void Handle(Exception exception, string operationTitle = null) {
@@ -58,6 +61,10 @@ namespace QS.ErrorReporting {
 		}
 
 		private void ShowUnexpected(Exception exception, string title) {
+			if(errorDialog != null) {
+				errorDialog.Show(exception, title);
+				return;
+			}
 			if(errorReporter == null) {
 				interactiveMessage.ShowMessage(ImportanceLevel.Error, exception.Message, title);
 				return;

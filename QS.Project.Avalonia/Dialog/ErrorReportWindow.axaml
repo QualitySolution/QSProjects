@@ -1,0 +1,32 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="QS.ErrorReporting.ErrorReportWindow"
+        Width="800" Height="620" MinWidth="520" MinHeight="450"
+        WindowStartupLocation="CenterOwner" Title="Ошибка">
+  <Grid Margin="20" RowDefinitions="Auto,Auto,Auto,Auto,*,Auto" RowSpacing="12">
+    <TextBlock FontSize="18" FontWeight="SemiBold" TextWrapping="Wrap"
+               Text="К сожалению, в программе произошла непредвиденная ошибка." />
+    <TextBlock Grid.Row="1" TextWrapping="Wrap"
+               Text="Вы можете помочь нам исправить проблему, отправив отчёт об ошибке." />
+    <Grid Grid.Row="2" ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="12" RowSpacing="8">
+      <TextBlock Text="Описание:" VerticalAlignment="Top" Margin="0,7,0,0" />
+      <TextBox x:Name="DescriptionInput" Grid.Column="1" Height="80" AcceptsReturn="True" TextWrapping="Wrap"
+               PlaceholderText="Опишите действия, которые привели к ошибке" TextChanged="OnInputsChanged" />
+      <TextBlock Grid.Row="1" Text="E-mail для связи:" VerticalAlignment="Center" />
+      <TextBox x:Name="EmailInput" Grid.Row="1" Grid.Column="1" TextChanged="OnInputsChanged" />
+      <TextBlock Grid.Row="2" Grid.Column="1" TextWrapping="Wrap" Opacity="0.7"
+                 Text="Можем уточнить детали ошибки или сообщить о её исправлении." />
+    </Grid>
+    <TextBlock x:Name="ValidationMessage" Grid.Row="3" TextWrapping="Wrap" IsVisible="False" />
+    <Grid Grid.Row="4" RowDefinitions="Auto,*" RowSpacing="6">
+      <TextBlock Text="Техническая информация" />
+      <TextBox x:Name="ExceptionInput" Grid.Row="1" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap"
+               VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
+    </Grid>
+    <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+      <Button x:Name="SendButton" Content="Отправить отчёт" Click="OnSendClicked" />
+      <Button Content="Скопировать" Click="OnCopyClicked" />
+      <Button Content="Понятно" Click="OnCloseClicked" />
+    </StackPanel>
+  </Grid>
+</Window>
