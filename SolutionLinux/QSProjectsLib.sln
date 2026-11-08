@@ -117,7 +117,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QS.Updater.App.Gtk", "..\QS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Project.Abstract", "..\QS.Project.Abstract\QS.Project.Abstract.csproj", "{E95BE5DC-A197-4657-87DC-A2D677EADB76}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.ErrorReporting", "..\QS.ErrorReporting\QS.ErrorReporting.csproj", "{7BAFF136-4379-4D1D-A554-7DC340CAF7A2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.ErrorReporting.Desktop", "..\QS.ErrorReporting.Desktop\QS.ErrorReporting.Desktop.csproj", "{7BAFF136-4379-4D1D-A554-7DC340CAF7A2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Extensions.Observable", "..\QS.Extensions.Observable\QS.Extensions.Observable.csproj", "{2A0710B2-B71B-4959-88DA-0940100E172A}"
 EndProject

@@ -255,9 +255,9 @@
       <Project>{baba2cb7-6efe-4b1b-9324-74cbcbacf257}</Project>
       <Name>QS.ErrorReporting.Client</Name>
     </ProjectReference>
-    <ProjectReference Include="..\QS.ErrorReporting\QS.ErrorReporting.csproj">
+    <ProjectReference Include="..\QS.ErrorReporting.Desktop\QS.ErrorReporting.Desktop.csproj">
       <Project>{7baff136-4379-4d1d-a554-7dc340caf7a2}</Project>
-      <Name>QS.ErrorReporting</Name>
+      <Name>QS.ErrorReporting.Desktop</Name>
     </ProjectReference>
     <ProjectReference Include="..\QS.Extensions.Observable\QS.Extensions.Observable.csproj">
       <Project>{2a0710b2-b71b-4959-88da-0940100e172a}</Project>
@@ -293,7 +293,7 @@
     <EmbeddedResource Include="Icons\unselect-all.png" />
     <EmbeddedResource Include="Icons\Calendar.png" />
     <EmbeddedResource Include="Icons\SendErrorReport.png" />
-    <EmbeddedResource Include="..\QS.ErrorReporting\Assets\ErrorHelper.png">
+    <EmbeddedResource Include="..\QS.ErrorReporting.Desktop\Assets\ErrorHelper.png">
       <LogicalName>QS.Icons.ErrorHelper.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Icons\blank-square.png" />
