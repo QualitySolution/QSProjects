@@ -25,10 +25,7 @@ namespace QS.Cloud.Client
 		#endregion
 		public string UserName { get; private set; }
 
-		private CloudFeaturesClient featuresClient;
 		private LoginManagementCloudClient loginClient;
-		private SessionManagementCloudClient sessionClient;
-		private UserManagementCloudClient userClient;
 
 
 		public QSCloudProvider(IList<ConnectionParameterValue> parameters, string password = null) {
