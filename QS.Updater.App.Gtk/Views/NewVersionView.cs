@@ -32,9 +32,14 @@ namespace QS.Updater.App.Views {
 				.AddBinding(vm => vm.CanSkipUpdate, w => w.Sensitive)
 				.InitializeFromSource();
 
-			for(uint i = 0; i < ViewModel.Releases.Length; i++) {
+			buttonSkip.BindCommand(ViewModel.SkipVersionCommand);
+			buttonLater.BindCommand(ViewModel.LaterCommand);
+			buttonOk.BindCommand(ViewModel.InstallCommand);
+			buttonOffAutoUpdate.BindCommand(ViewModel.OffAutoUpdateCommand);
+
+			for(uint i = 0; i < ViewModel.ReleaseItems.Count; i++) {
 				uint baseRow = i * 4;
-				var release = ViewModel.Releases[i];
+				var release = ViewModel.ReleaseItems[(int)i];
 
 				var emptySpace = new Label();
 				emptySpace.HeightRequest = 15;
@@ -49,19 +54,17 @@ namespace QS.Updater.App.Views {
 						"QS.Updater.App.Icons." + (release.DatabaseUpdate == DatabaseUpdate.BreakingChange
 							? "db-red.png"
 							: "db-violet.png"));
-					image.TooltipText = release.DatabaseUpdate == DatabaseUpdate.BreakingChange
-						? "Требуется обновление базы данных нарушающее обратную совместимость с предыдущими версиями."
-						: "Требуется обновление базы данных.";
+					image.TooltipText = release.DatabaseUpdateText;
 						tableReleases.Attach(image, 1, 2, baseRow + 1, baseRow + 2, AttachOptions.Fill, AttachOptions.Shrink, 0, 0);
 				}
 
-				var dateLabel = new Label($"{release.Date.ToDateTime().ToLongDateString()}");
+				var dateLabel = new Label(release.Date);
 				tableReleases.Attach(dateLabel, 2, 3, baseRow + 1, baseRow + 2, AttachOptions.Fill, AttachOptions.Shrink, 0, 0);
 
-				if(!String.IsNullOrEmpty(release.NewsLink)) {
+				if(release.HasNews) {
 					var newsLabel = new Label{Markup = $"<b><a href=\"{release.NewsLink}\" title=\"Перейти на сайт компании\">Прочитать новость</a></b>"};
 					newsLabel.AddEvents ((int)EventMask.ButtonPressMask);
-					newsLabel.ButtonPressEvent += (o, args) => System.Diagnostics.Process.Start(release.NewsLink);
+					newsLabel.ButtonPressEvent += (o, args) => release.OpenNewsCommand.Execute(null);
 					tableReleases.Attach(newsLabel, 3, 4, baseRow + 1, baseRow + 2, AttachOptions.Fill, AttachOptions.Shrink, 0, 0);
 				}
 
@@ -71,7 +74,7 @@ namespace QS.Updater.App.Views {
 				var changesText = new TextView();
 				changesText.Editable = false;
 				changesText.WrapMode = WrapMode.WordChar;
-				changesText.Buffer.Text = release.Changes.Replace('*','✦');
+				changesText.Buffer.Text = release.Changes;
 				Toplevel.Realized += (sender, args) => {
 					//Здесь таким хитрым способом устанавливаем цвет фона у textView. Подбирал способ очень долго.
 					//Фишка в том что реальная информация о стиле появляется только после Realized, до этого времени если взять цвет фона,
@@ -83,19 +86,5 @@ namespace QS.Updater.App.Views {
 			tableReleases.ShowAll();
 		}
 
-		protected void OnButtonSkipClicked(object sender, EventArgs e) {
-			ViewModel.SkipVersion();
-		}
-
-		protected void OnButtonCancelClicked(object sender, EventArgs e) {
-			ViewModel.Later();
-		}
-
-		protected void OnButtonOkClicked(object sender, EventArgs e) {
-			ViewModel.Install();
-		}
-		protected void OnButtonOffAutoUpdateClicked(object sender, EventArgs e) {
-			ViewModel.OffAutoUpdate();
-		}
 	}
 }

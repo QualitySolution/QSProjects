@@ -1,0 +1,53 @@
+<UserControl x:Class="QS.Updater.App.Views.NewVersionView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:QS.Updater.App.ViewModels;assembly=QS.Updater.App"
+             xmlns:updates="clr-namespace:QS.Updates;assembly=QS.Updates.Client"
+             x:DataType="vm:NewVersionViewModel"
+             MinWidth="600" MinHeight="400">
+    <Grid Margin="20" RowDefinitions="Auto,Auto,Auto,Auto,*,Auto" RowSpacing="10">
+        <TextBlock Text="{Binding MainInfoText}" FontWeight="SemiBold" TextWrapping="Wrap" />
+        <TextBlock Grid.Row="1" Text="{Binding DbInfoText}" IsVisible="{Binding VisibleDbInfo}" />
+        <TextBlock Grid.Row="2" Text="{Binding DbUpdateInfo}" IsVisible="{Binding VisibleDbUpdateInfo}"
+                   TextWrapping="Wrap" Foreground="DarkOrange" />
+        <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="10" IsVisible="{Binding VisibleSelectRelease}">
+            <TextBlock Text="Установить версию:" VerticalAlignment="Center" />
+            <ComboBox ItemsSource="{Binding SelectableReleases}" SelectedItem="{Binding SelectedRelease}" MinWidth="140">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate x:DataType="updates:ReleaseInfo"><TextBlock Text="{Binding Version}" /></DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </StackPanel>
+        <ScrollViewer Grid.Row="4" VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding ReleaseItems}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:ReleaseItem">
+                        <StackPanel Margin="0,0,0,16" Spacing="5">
+                            <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="12">
+                                <TextBlock Text="{Binding Version}" FontWeight="Bold" />
+                                <Panel Grid.Column="1" IsVisible="{Binding HasDatabaseUpdate}"
+                                       ToolTip.Tip="{Binding DatabaseUpdateText}" VerticalAlignment="Center">
+                                    <Image Source="avares://QS.Updater.App.Avalonia/Assets/db-red.png"
+                                           IsVisible="{Binding IsBreakingDatabaseUpdate}" />
+                                    <Image Source="avares://QS.Updater.App.Avalonia/Assets/db-violet.png"
+                                           IsVisible="{Binding !IsBreakingDatabaseUpdate}" />
+                                </Panel>
+                                <TextBlock Grid.Column="2" Text="{Binding Date}" />
+                                <Button Grid.Column="3" Content="Прочитать новость" Command="{Binding OpenNewsCommand}"
+                                        IsVisible="{Binding HasNews}" Padding="4,0" />
+                            </Grid>
+                            <Separator />
+                            <TextBlock Text="{Binding Changes}" TextWrapping="Wrap" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+        <WrapPanel Grid.Row="5" HorizontalAlignment="Right" Orientation="Horizontal">
+            <Button Margin="4" Content="Отключить обновления" Command="{Binding OffAutoUpdateCommand}" IsVisible="{Binding VisibleUpdateOff}" />
+            <Button Margin="4" Content="Пропустить версию" Command="{Binding SkipVersionCommand}" />
+            <Button Margin="4" Content="Позже" Command="{Binding LaterCommand}" />
+            <Button Margin="4" Content="Установить" Command="{Binding InstallCommand}" />
+        </WrapPanel>
+    </Grid>
+</UserControl>

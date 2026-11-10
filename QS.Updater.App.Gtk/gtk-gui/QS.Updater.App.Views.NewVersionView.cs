@@ -179,10 +179,6 @@ namespace QS.Updater.App.Views
 				this.Child.ShowAll();
 			}
 			this.Hide();
-			this.buttonLater.Clicked += new global::System.EventHandler(this.OnButtonCancelClicked);
-			this.buttonSkip.Clicked += new global::System.EventHandler(this.OnButtonSkipClicked);
-			this.buttonOffAutoUpdate.Clicked += new global::System.EventHandler(this.OnButtonOffAutoUpdateClicked);
-			this.buttonOk.Clicked += new global::System.EventHandler(this.OnButtonOkClicked);
 		}
 	}
 }

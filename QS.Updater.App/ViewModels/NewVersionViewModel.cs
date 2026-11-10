@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Windows.Input;
+using QS.Commands;
 using QS.Configuration;
 using QS.Dialog;
 using QS.DomainModel.Entity;
@@ -40,6 +42,10 @@ namespace QS.Updater.App.ViewModels {
 			CheckBaseVersion checkBaseVersion = null,
 			IUpdateChannelService channelService = null,
 			IDataBaseInfo dataBaseInfo = null) : base(navigation) {
+			SkipVersionCommand = new DelegateCommand(SkipVersion, () => CanSkipUpdate);
+			LaterCommand = new DelegateCommand(Later);
+			InstallCommand = new DelegateCommand(Install);
+			OffAutoUpdateCommand = new DelegateCommand(OffAutoUpdate, () => CanSkipUpdate);
 			Title = "Доступна новая версия программы!";
 			WindowPosition = WindowGravity.None;
 			this.Releases = releases ?? throw new ArgumentNullException(nameof(releases));
@@ -49,6 +55,7 @@ namespace QS.Updater.App.ViewModels {
 			this.guiDispatcher = guiDispatcher ?? throw new ArgumentNullException(nameof(guiDispatcher));
 			this.interactive = interactive ?? throw new ArgumentNullException(nameof(interactive));
 			this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+			ReleaseItems = releases.Select(x => new ReleaseItem(x, this.interactive)).ToList();
 			this.checkBaseVersion = checkBaseVersion;
 			this.channelService = channelService;
 
@@ -75,6 +82,11 @@ namespace QS.Updater.App.ViewModels {
 
 		#region Свойства View
 		public readonly ReleaseInfo[] Releases;
+		public IReadOnlyList<ReleaseItem> ReleaseItems { get; }
+		public ICommand SkipVersionCommand { get; }
+		public ICommand LaterCommand { get; }
+		public ICommand InstallCommand { get; }
+		public ICommand OffAutoUpdateCommand { get; }
 		public string MainInfoText => $"Доступная версия: {Releases.First().Version} \t Установленная версия: {applicationInfo.Version.VersionToShortString()}";
 		public string DbInfoText => $"Версия базы данных: {dataBaseInfo?.Version.VersionToShortString() ?? "неизвестно"}";
 		public string DbUpdateInfo {
@@ -120,6 +132,8 @@ namespace QS.Updater.App.ViewModels {
 		public bool VisibleUpdateOff => channelService != null && channelService.CurrentChannel != UpdateChannel.Off;
 		public bool CanSkipUpdate => checkBaseVersion?.Result != CheckBaseResult.BaseVersionGreater;
 		#endregion
+
+		public IReadOnlyList<ReleaseInfo> SelectableReleases => CanSelectedReleases;
 
 		#region Helpers
 		private IEnumerable<ReleaseInfo> WillInstall => Releases.SkipWhile(x => SelectedRelease != x);

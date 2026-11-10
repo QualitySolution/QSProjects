@@ -158,7 +158,6 @@
                 <property name="Type">TextOnly</property>
                 <property name="Label" translatable="yes">Напомнить позже</property>
                 <property name="UseUnderline">True</property>
-                <signal name="Clicked" handler="OnButtonCancelClicked" />
               </widget>
               <packing>
                 <property name="Position">0</property>
@@ -173,7 +172,6 @@
                 <property name="Type">TextOnly</property>
                 <property name="Label" translatable="yes">Пропустить выпуск</property>
                 <property name="UseUnderline">True</property>
-                <signal name="Clicked" handler="OnButtonSkipClicked" />
               </widget>
               <packing>
                 <property name="Position">1</property>
@@ -188,7 +186,6 @@
                 <property name="Type">TextOnly</property>
                 <property name="Label" translatable="yes">Не получать обновления</property>
                 <property name="UseUnderline">True</property>
-                <signal name="Clicked" handler="OnButtonOffAutoUpdateClicked" />
               </widget>
               <packing>
                 <property name="Position">2</property>
@@ -211,7 +208,6 @@
             <property name="Icon">stock:gtk-apply Menu</property>
             <property name="Label" translatable="yes">Скачать и установить</property>
             <property name="UseUnderline">True</property>
-            <signal name="Clicked" handler="OnButtonOkClicked" />
           </widget>
           <packing>
             <property name="Position">6</property>
