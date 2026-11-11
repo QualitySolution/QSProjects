@@ -6,6 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Windows.Input;
+using System.Threading;
+using System.Threading.Tasks;
+using QS.Launcher.Updates;
 using QS.Launcher.AppRunner;
 using QS.Project.Versioning;
 
@@ -75,6 +78,45 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 		public bool VisibleShouldCloseLauncherCheckBox => launcherOptions?.IsStandalone ?? false;
 
 		public ICommand ConnectCommand { get; }
+		public ICommand ShowUpdateCommand { get; }
+		private string availableUpdateVersion;
+		public string AvailableUpdateVersion {
+			get => availableUpdateVersion;
+			private set {
+				this.RaiseAndSetIfChanged(ref availableUpdateVersion, value);
+				this.RaisePropertyChanged(nameof(HasAvailableUpdate));
+				this.RaisePropertyChanged(nameof(UpdateBannerText));
+			}
+		}
+		public bool HasAvailableUpdate => !string.IsNullOrEmpty(AvailableUpdateVersion);
+		public string UpdateBannerText => $"Доступно обновление до версии {AvailableUpdateVersion}";
+		private readonly ILauncherUpdateService updateService;
+		private CancellationTokenSource updateCheck;
+		private bool isPageActive;
+		public void SetPageActive(bool active) {
+			isPageActive = active;
+			updateCheck?.Cancel();
+			if(active && updateService != null) {
+				updateCheck = new CancellationTokenSource();
+				_ = CheckUpdatesAsync(updateCheck.Token);
+			}
+		}
+
+		private async Task CheckUpdatesAsync(CancellationToken token) {
+			try {
+				AvailableUpdateVersion = null;
+				var result = await updateService.CheckAsync(token);
+				if(token.IsCancellationRequested || !isPageActive || IsLaunching || result == null)
+					return;
+				AvailableUpdateVersion = result.Version;
+				if(!result.IsSkipped)
+					updateService.ShowUpdate();
+			}
+			catch(OperationCanceledException) { }
+			catch(Exception ex) {
+				logger.Warn(ex, "Не удалось проверить обновления приложения.");
+			}
+		}
 
 		public event Action<bool> StartLaunchProgram;
 
@@ -99,11 +141,14 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			}
 		}
 
-		public DataBasesVM(IAppRunner appRunner, IApplicationInfo applicationInfo, IInteractiveMessage interactiveMessage, LauncherOptions launcherOptions) {
+		public DataBasesVM(IAppRunner appRunner, IApplicationInfo applicationInfo, IInteractiveMessage interactiveMessage, LauncherOptions launcherOptions, ILauncherUpdateService updateService = null) {
 			this.appRunner = appRunner ?? throw new ArgumentNullException(nameof(appRunner));
 			this.applicationInfo = applicationInfo ?? throw new ArgumentNullException(nameof(applicationInfo));
 			this.interactiveMessage = interactiveMessage ?? throw new ArgumentNullException(nameof(interactiveMessage));
 			this.launcherOptions = launcherOptions;
+			this.updateService = updateService;
+			if(updateService != null) updateService.UpdatesDisabled += () => AvailableUpdateVersion = null;
+			ShowUpdateCommand = ReactiveCommand.Create(() => { if(!IsLaunching) updateService?.ShowUpdate(); });
 			
 			logger.Info($">>> DataBasesVM constructor: launcherOptions={launcherOptions}, IsStandalone={launcherOptions?.IsStandalone}");
 
@@ -139,6 +184,7 @@ namespace QS.Launcher.ViewModels.PageViewModels {
 			if(IsLaunching)
 				return;
 			IsLaunching = true;
+			updateCheck?.Cancel();
 
 			var resp = provider.LoginToDatabase(SelectedDatabase);
 

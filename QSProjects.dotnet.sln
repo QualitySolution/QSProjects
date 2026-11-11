@@ -70,6 +70,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.DbManagement", "QS.DbMan
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Updater.App.Avalonia", "QS.Updater.App.Avalonia\QS.Updater.App.Avalonia.csproj", "{A7A28045-0922-4EE9-8BB8-E8BEF75B487B}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QS.Launcher.Updater.Avalonia", "QS.Launcher.Updater.Avalonia\QS.Launcher.Updater.Avalonia.csproj", "{3E761CC6-C9BE-4314-BA5A-AF7C9BB2F3B4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -204,6 +206,10 @@ Global
 		{A7A28045-0922-4EE9-8BB8-E8BEF75B487B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A7A28045-0922-4EE9-8BB8-E8BEF75B487B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A7A28045-0922-4EE9-8BB8-E8BEF75B487B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E761CC6-C9BE-4314-BA5A-AF7C9BB2F3B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E761CC6-C9BE-4314-BA5A-AF7C9BB2F3B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E761CC6-C9BE-4314-BA5A-AF7C9BB2F3B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E761CC6-C9BE-4314-BA5A-AF7C9BB2F3B4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

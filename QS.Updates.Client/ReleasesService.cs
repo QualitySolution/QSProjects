@@ -1,5 +1,7 @@
 using System;
 using Grpc.Core;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace QS.Updates
 {
@@ -43,6 +45,16 @@ namespace QS.Updates
             return client.CheckForUpdates(request);
         }
         
+        public virtual async Task<CheckForUpdatesResponse> CheckForUpdatesAsync(int productCode, string version, string modification, string serial, ReleaseChannel releaseChannel, CancellationToken cancellationToken)
+        {
+            var client = new Releases.ReleasesClient(Channel);
+            var request = new CheckForUpdatesRequest {
+                Channel = releaseChannel, ProductCode = productCode, Version = version,
+                Modification = modification, SerialNumber = serial
+            };
+            return await client.CheckForUpdatesAsync(request, deadline: DateTime.UtcNow.AddSeconds(15), cancellationToken: cancellationToken).ResponseAsync.ConfigureAwait(false);
+        }
+
         #endregion
 
         public void Dispose()

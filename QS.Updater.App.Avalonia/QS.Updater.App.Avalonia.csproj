@@ -6,11 +6,13 @@
     <AvaloniaUseCompiledBindingsByDefault>True</AvaloniaUseCompiledBindingsByDefault>
   </PropertyGroup>
   <ItemGroup>
+    <AvaloniaResource Include="Assets\**" />
     <AvaloniaResource Include="..\QS.Updater.App.Gtk\Icons\db-red.png" Link="Assets\db-red.png" />
     <AvaloniaResource Include="..\QS.Updater.App.Gtk\Icons\db-violet.png" Link="Assets\db-violet.png" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="12.1.3" />
     <ProjectReference Include="..\QS.Updater.App\QS.Updater.App.csproj" />
+    <ProjectReference Include="..\QS.Project.Avalonia\QS.Project.Avalonia.csproj" />
   </ItemGroup>
 </Project>

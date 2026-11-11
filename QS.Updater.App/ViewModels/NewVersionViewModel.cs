@@ -87,6 +87,8 @@ namespace QS.Updater.App.ViewModels {
 		public ICommand LaterCommand { get; }
 		public ICommand InstallCommand { get; }
 		public ICommand OffAutoUpdateCommand { get; }
+		public string AvailableVersionText => Releases.First().Version;
+		public string InstalledVersionText => applicationInfo.Version.VersionToShortString();
 		public string MainInfoText => $"Доступная версия: {Releases.First().Version} \t Установленная версия: {applicationInfo.Version.VersionToShortString()}";
 		public string DbInfoText => $"Версия базы данных: {dataBaseInfo?.Version.VersionToShortString() ?? "неизвестно"}";
 		public string DbUpdateInfo {

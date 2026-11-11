@@ -19,6 +19,9 @@ namespace QS.Launcher {
 		/// Путь к файлу json с конфигурацией подключений.
 		/// </summary>
 		public string ConnectionsJsonFileName { get; set; }
+
+		/// <summary>Путь к общим настройкам лаунчера.</summary>
+		public string SettingsJsonFileName { get; set; }
 		
 		/// <summary>
 		/// Путь к старому конфигу приложения, для переноса настроек.

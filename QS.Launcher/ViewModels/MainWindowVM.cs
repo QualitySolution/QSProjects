@@ -8,16 +8,22 @@ namespace QS.Launcher.ViewModels {
 		public int PagesCount { get; set; }
 
 		LoginVM login;
+		private readonly DataBasesVM dataBases;
 
 		private int selectedPageIndex;
 		public int SelectedPageIndex {
 			get => selectedPageIndex;
-			set => this.RaiseAndSetIfChanged(ref selectedPageIndex, value);
+			set {
+				if(selectedPageIndex == value) return;
+				this.RaiseAndSetIfChanged(ref selectedPageIndex, value);
+				dataBases?.SetPageActive(value == 1);
+			}
 		}
 
 		public MainWindowVM(DataBasesVM dataBasesVM, LoginVM loginVM, BaseManagementVM baseManagementVM, UserManagementVM userManagementVM
 			, IServiceProvider provider)
 		{
+			dataBases = dataBasesVM;
 			CarouselPageVM[] pages = { dataBasesVM, loginVM, baseManagementVM, userManagementVM };
 			foreach (var page in pages) {
 				page.NextPageCommand = ReactiveCommand.Create(NextPage);

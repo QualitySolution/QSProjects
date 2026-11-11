@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>QS.Launcher.Updates</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\QS.Launcher\QS.Launcher.csproj" />
+    <ProjectReference Include="..\QS.Project.Avalonia\QS.Project.Avalonia.csproj" />
+    <ProjectReference Include="..\QS.Updater.App.Avalonia\QS.Updater.App.Avalonia.csproj" />
+  </ItemGroup>
+</Project>
