@@ -1,5 +1,7 @@
 using System;
 using System.Linq;
+using System.Collections.Generic;
+using QS.BaseParameters;
 using NSubstitute;
 using NUnit.Framework;
 using QS.Configuration;
@@ -304,6 +306,15 @@ namespace QS.Test.Updater.App {
 			Assert.That(info, Does.Contain("до 1.2.0"), 
 				"Должна показываться максимальная версия на которую обновляемся (1.2.0)");
 			Assert.That(info, Does.Not.Contain("Внимание!"), "Не должно быть предупреждение о BreakingChange");
+		}
+
+		[Test]
+		public void DatabaseInfoFromParameters_DisplaysVersionWithoutThrowing() {
+			var parameters = new ParametersService(new Dictionary<string, string> { { "version", "1.0" } });
+			var info = new DataBaseInfo("insider", parameters);
+			var viewModel = CreateViewModel(new[] { CreateRelease("1.2", DatabaseUpdate.Required) }, info);
+			Assert.That(viewModel.DbInfoText, Is.EqualTo("Версия базы данных: 1.0"));
+			Assert.That(viewModel.DbUpdateInfo, Does.Contain("Потребуется провести изменение базы данных"));
 		}
 
 		#region Helper Methods
