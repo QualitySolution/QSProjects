@@ -42,3 +42,9 @@ var connections = configurator.ReadConnections();
 configurator.SaveConnections(connections);
 ```
 
+
+## Общие настройки лаунчера
+
+`Configurator` обслуживает `connections.json`. Общие настройки хранятся отдельно в `settings.json` через `LauncherSettings` (`IChangeableConfiguration`); путь задаёт `LauncherOptions.SettingsJsonFileName`. Перед чтением вызывайте `Reload()`. Изменения сохраняются сразу; механизм `.backup` из `Configurator` здесь не используется.
+
+Подключение обновлений и формат настроек описаны в wiki QSProjects на странице «Обновления программы».
