@@ -3,7 +3,6 @@ using FluentNHibernate.Cfg.Db;
 using FluentNHibernate.Conventions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using QS.BaseParameters;
 using MySqlConnector;
 using NHibernate;
@@ -234,13 +233,10 @@ namespace QS.Project.Core {
 
 		/// <summary>
 		/// Регистрирует провайдер информации о базе данных,
-		/// получая имя из <see cref="MySqlConnectionStringBuilder"/>, а метаданные из <see cref="ParametersService"/>
+		/// получая имя из <see cref="MySqlConnectionStringBuilder"/>, а метаданные из <see cref="ParametersService"/>.
+		/// Обе зависимости должно зарегистрировать приложение.
 		/// </summary>
 		public static IServiceCollection AddDatabaseInfo(this IServiceCollection services) {
-			services.TryAddSingleton<IConnectionFactory>(provider =>
-				new MySqlConnectionFactory(provider.GetRequiredService<MySqlConnectionStringBuilder>().ConnectionString));
-			services.TryAddSingleton<ParametersService>(provider =>
-				new ParametersService(provider.GetRequiredService<IConnectionFactory>().OpenConnection));
 			services.AddSingleton<IDataBaseInfo>((provider) => {
 				var connectionStringBuilder = provider.GetRequiredService<MySqlConnectionStringBuilder>();
 				return new DataBaseInfo(connectionStringBuilder.Database, provider.GetRequiredService<ParametersService>());

@@ -59,17 +59,5 @@ namespace QS.Test.Project.DB {
 				Assert.That(provider.GetRequiredService<IDataBaseInfo>().Version, Is.EqualTo(new Version(1, 7, 8)));
 			}
 		}
-
-		[Test]
-		public void RegistrationProvidesParametersServiceWithoutOpeningConnection() {
-			var services = new ServiceCollection();
-			services.AddSingleton(new MySqlConnectionStringBuilder { Database = "great_company" });
-			services.AddDatabaseInfo();
-			using(var provider = services.BuildServiceProvider()) {
-				Assert.That(provider.GetRequiredService<IConnectionFactory>(), Is.Not.Null);
-				Assert.That(provider.GetRequiredService<ParametersService>(), Is.Not.Null);
-				Assert.That(provider.GetRequiredService<IDataBaseInfo>().Name, Is.EqualTo("great_company"));
-			}
-		}
 	}
 }
