@@ -1,6 +1,7 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:fa="using:FluentAvalonia.UI.Controls">
+        xmlns:fa="using:FluentAvalonia.UI.Controls"
+        xmlns:themes="using:QS.Project.Avalonia.Themes">
     <!--
         Shared semantic styles for QS desktop applications.
         Applications provide the QsBrush* resources in their own palette.
@@ -164,6 +165,15 @@
         <Setter Property="FontWeight" Value="SemiBold" />
     </Style>
 
+    <Style Selector="fa|FANavigationView[PaneDisplayMode=Left] fa|FANavigationViewItem /template/ Grid#NVIRootGrid">
+        <Setter Property="themes:NavigationViewFlyout.Placement" Value="RightEdgeAlignedTop" />
+    </Style>
+    <Style Selector="FlyoutPresenter.NavViewFlyoutStyle">
+        <Setter Property="Background" Value="{DynamicResource QsBrushChrome}" />
+    </Style>
+    <Style Selector="FlyoutPresenter.NavViewFlyoutStyle fa|FANavigationViewItem">
+        <Setter Property="Margin" Value="0" />
+    </Style>
     <Style Selector="fa|FANavigationViewItem:selected">
         <Setter Property="Background" Value="{DynamicResource QsBrushChromePressed}" />
         <Setter Property="Foreground" Value="{DynamicResource QsBrushChromeText}" />
