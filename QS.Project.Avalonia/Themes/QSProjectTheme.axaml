@@ -168,6 +168,9 @@
     <Style Selector="fa|FANavigationView[PaneDisplayMode=Left] fa|FANavigationViewItem /template/ Grid#NVIRootGrid">
         <Setter Property="themes:NavigationViewFlyout.Placement" Value="RightEdgeAlignedTop" />
     </Style>
+    <Style Selector="fa|FANavigationView[PaneDisplayMode=Left][IsPaneOpen=True] fa|FANavigationViewItem fa|FANavigationViewItem">
+        <Setter Property="Margin" Value="-16,0,0,0" />
+    </Style>
     <Style Selector="FlyoutPresenter.NavViewFlyoutStyle">
         <Setter Property="Background" Value="{DynamicResource QsBrushChrome}" />
     </Style>
